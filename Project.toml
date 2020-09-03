@@ -1,0 +1,4 @@
+name = "Astrodynamics"
+uuid = "673e7d9c-15b0-48d3-bce0-fab551f3a174"
+authors = ["Joe Carpinelli <jdcarpinelli@gmail.com>"]
+version = "0.1.0"
