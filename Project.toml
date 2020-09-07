@@ -2,3 +2,10 @@ name = "Astrodynamics"
 uuid = "673e7d9c-15b0-48d3-bce0-fab551f3a174"
 authors = ["Joe Carpinelli <jdcarpinelli@gmail.com>"]
 version = "0.1.0"
+
+[deps]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
+UnitfulAngles = "6fb2a4bd-7999-5318-a3b2-8ad61056cd98"
+UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
