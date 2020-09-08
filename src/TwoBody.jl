@@ -376,20 +376,23 @@ function CartesianToCanonical(
     e_vec = eccentricity_vector(orbit)
 
     Ω = ustrip(n_vec ⋅ ĵ) > 0 ? 
-            acos(u"rad", (n_vec ⋅ î) / norm(n_vec) ) * u"rad" :
-            acos(u"rad", (n_vec ⋅ î) / norm(n_vec) ) - π
+            acos(u"rad", (n_vec ⋅ î) / norm(n_vec) ) :
+            2 * π * u"rad" - 
+                acos(u"rad", (n_vec ⋅ î) / norm(n_vec) )
 
     ω = ustrip(e_vec ⋅ k̂) > 0 ?
             acos(u"rad", (n_vec ⋅ e_vec) / (norm(n_vec) * norm(e_vec)) ) :
-            acos(u"rad", (n_vec ⋅ e_vec) / (norm(n_vec) * norm(e_vec)) ) - π * u"rad"
+            2 * π * u"rad" - 
+                acos(u"rad", (n_vec ⋅ e_vec) / (norm(n_vec) * norm(e_vec)) )
 
     ν = ustrip(orbit.r̲ ⋅  e_vec) > 0 ? 
             acos(u"rad", (e_vec ⋅ orbit.r̲) / (norm(e_vec) * norm(orbit.r̲)) ) :
-            acos(u"rad", (e_vec ⋅ orbit.r̲) / (norm(e_vec) * norm(orbit.r̲)) ) - π * u"rad"
+            2 * π * u"rad" - 
+                acos(u"rad", (e_vec ⋅ orbit.r̲) / (norm(e_vec) * norm(orbit.r̲)) )
 
     return CanonicalOrbit( 
             norm(e_vec),
-            semimajor_axis(orbit),
+            upreferred(semimajor_axis(orbit)),
             acos(u"rad", (h_vec ⋅ k̂) / norm(h_vec) ),
             Ω,
             ω,
