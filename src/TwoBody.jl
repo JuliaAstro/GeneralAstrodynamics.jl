@@ -1,32 +1,78 @@
-#= Orbits.jl
+""" 
+    TwoBody.jl
 
-Define structures & functions for orbits
+Provides structures & functions for two-body orbits.
+"""
 
-=#
+### Dependencies 
 
-## Dependencies 
+using Pkg, Logging
 using StaticArrays
 using LinearAlgebra: ×, ⋅, norm
 using Unitful, UnitfulAstro, UnitfulAngles
 
-## Data Structures
+### Export data structures & constructors
+export CelestialBody, earth, sun
+export CartesianOrbit, CanonicalOrbit
 
-# Orbits ~orbit~ arround a central body
+#### Export functions
+export  semimajor_axis, 
+        eccentricity, 
+        eccentricity_vector,
+        time_since_periapsis, 
+        semi_parameter, 
+        mean_motion,
+        mean_motion_vector, 
+        periapsis_radius, 
+        apoapsis_radius,
+        specific_angular_momentum_vector,
+        specific_angular_momentum, 
+        specific_energy,
+        instantaneous_velocity, 
+        periapsis_vecolity, 
+        apoapsis_velocity,
+        orbital_period, 
+        inclination,
+        true_anomoly, 
+        eccentric_anomoly,
+        CartesianToCanonical, 
+        CanonicalToCartesian
+
+### Data Structures
+
+"""
+    CelestialBody
+
+Enum representing large bodies near Earth.
+Currently only Earth and the Sun are supported.
+"""
 @enum CelestialBody earth sun
 
-# Abstract type for all Orbits
+"""
+    AbstractOrbit
+
+Abstract type for all orbits.
+"""
 abstract type AbstractOrbit end
 
-# Cartesian parameters
+"""
+    CartesianOrbit
+
+Cartesian representation for orbital state.
+"""
 struct CartesianOrbit <: AbstractOrbit
 
-    r̲::SVector{3,Unitful.Length}
-    v̲::SVector{3,Unitful.Velocity}
+    r̅::SVector{3,Unitful.Length}
+    v̅::SVector{3,Unitful.Velocity}
     body::CelestialBody
 
 end
 
-# Keplarian Parameters
+"""
+    CanonicalOrbit
+
+Keplarian representation for orbital state.
+"""
 struct CanonicalOrbit <: AbstractOrbit
 
     e::Unitful.DimensionlessQuantity
@@ -39,10 +85,15 @@ struct CanonicalOrbit <: AbstractOrbit
 
 end
 
-## Functions
+### Functions
 
-# Constructors
+## Constructors
 
+"""
+    CartesianOrbit
+
+Constructor for Cartesian orbital representation.
+"""
 function CartesianOrbit(r̲::AbstractArray{Unitful.Length}, 
                         v̲::AbstractArray{Unitful.Velocity}, 
                         body::CelestialBody)
@@ -53,6 +104,11 @@ function CartesianOrbit(r̲::AbstractArray{Unitful.Length},
             body)
 end
 
+"""
+    CanonicalOrbit
+
+Constructor for Keplarian orbital representation.
+"""
 function CanonicalOrbit(e::Unitful.DimensionlessQuantity, 
                         a::Unitful.Length, 
                         i::Unitful.DimensionlessQuantity, 
@@ -67,20 +123,35 @@ function CanonicalOrbit(e::Unitful.DimensionlessQuantity,
 
 end
 
-# Calculation Functions
+## Calculation (Helper) Functions
 
+"""
+    semimajor_axis
+
+Returns semimajor axis parameter, a.
+"""
 function semimajor_axis(r, v, μ)
    
     return inv( (2 / r) - (v^2 / μ) )
 
 end
 
+"""
+    semimajor_axis
+
+Returns semimajor axis parameter, a, for a Keplarian representation.
+"""
 function semimajor_axis(orbit::CanonicalOrbit)
 
     return orbit.a
 
 end
 
+"""
+    semimajor_axis
+
+Returns semimajor axis parameter, a, for a Cartesian representation.
+"""
 function semimajor_axis(orbit::CartesianOrbit; 
                         μ=(SVector(
                             UnitfulAstro.GMearth, 
@@ -93,30 +164,55 @@ function semimajor_axis(orbit::CartesianOrbit;
 
 end
 
-function specific_angular_momentum_vector(r̲, v̲)
+"""
+    specific_angular_momentum_vector
 
-    return r̲ × v̲
+Returns specific angular momentum vector, h̅.
+"""
+function specific_angular_momentum_vector(r̅, v̅)
+
+    return r̅ × v̅
 
 end
 
+"""
+    specific_angular_momentum_vector
+
+Returns specific angular momentum vector, h̅, for a Cartesian representation.
+"""
 function specific_angular_momentum_vector(orbit::CartesianOrbit)
 
     return specific_angular_momentum_vector(orbit.r̲, orbit.v̲)
 
 end
 
+"""
+    specific_angular_momentum
+
+Returns scalar specific angular momentum vector, h.
+"""
 function specific_angular_momentum(r̲, v̲)
 
     return norm(specific_angular_momentum_vector(r̲, v̲))
 
 end
 
+"""
+    specific_angular_momentum
+
+Returns scalar specific angular momentum, h, for a Cartesian representation.
+"""
 function specific_angular_momentum(orbit::CartesianOrbit)
 
     return specific_angular_momentum(orbit.r̲, orbit.v̲)
 
 end
 
+"""
+    specific_angular_momentum
+
+Returns scalar specific angular momentum, h, for any orbital representation.
+"""
 function specific_angular_momentum(
             orbit::AbstractOrbit, 
             μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
@@ -125,18 +221,33 @@ function specific_angular_momentum(
 
 end
 
+"""
+    specific_energy
+
+Returns specific orbital energy, ϵ.
+"""
 function specific_energy(a, μ)
 
     return ( -μ / (2 * a) )
 
 end
 
+"""
+    specific_energy
+
+Returns specific orbital energy, ϵ.
+"""
 function specific_energy(r, v, μ)
 
     return (v^2 / 2) - (μ / r)
 
 end
 
+"""
+    specific_energy
+
+Returns specific orbital energy, ϵ, for any orbital representation.
+"""
 function specific_energy(
             orbit::AbstractOrbit; 
             μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
@@ -145,14 +256,11 @@ function specific_energy(
 
 end
 
-function eccentricity(r̲, v̲, μ)
+"""
+    eccentricity_vector
 
-    return (1 / μ) * 
-            ((v̲ × specific_angular_momentum_vector(r̲, v̲)) - 
-                μ * r̲ / norm(r̲))
-
-end
-
+Returns orbital eccentricity_vector, e̅.
+"""
 function eccentricity_vector(
             orbit::CartesianOrbit; 
             μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
@@ -161,6 +269,24 @@ function eccentricity_vector(
 
 end
 
+"""
+    eccentricity
+
+Returns orbital eccentricity, e.
+"""
+function eccentricity(r̲, v̲, μ)
+
+    return (1 / μ) * 
+            ((v̲ × specific_angular_momentum_vector(r̲, v̲)) - 
+                μ * r̲ / norm(r̲))
+
+end
+
+"""
+    eccentricity
+
+Returns orbital eccentricity, e.
+"""
 function eccentricity(
             orbit::CartesianOrbit; 
             μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
@@ -169,18 +295,33 @@ function eccentricity(
 
 end
 
+"""
+    eccentricity
+
+Returns orbital eccentricity, e.
+"""
 function eccentricity(orbit::CanonicalOrbit)
 
     return orbit.e
 
 end
 
+"""
+    semi_parameter
+
+Returns semilatus parameter, p.
+"""
 function semi_parameter(a, e)
 
     return a * (1 - e^2)
 
 end
 
+"""
+    semi_parameter
+
+Returns semilatus parameter, p, for any orbital representation.
+"""
 function semi_parameter(orbit::AbstractOrbit)
 
     return semimajor_axis(orbit) * 
@@ -188,18 +329,68 @@ function semi_parameter(orbit::AbstractOrbit)
 
 end
 
+"""
+    semi_parameter
+
+Returns semilatus parameter, p, for a Keplarian representation.
+"""
 function semi_parameter(orbit::CanonicalOrbit)
 
     return orbit.a * (1 - orbit.e^2)
 
 end
 
+"""
+    instantaneous_radius
+
+Returns instantaneous radius, r.
+"""
+function instantaneous_radius(p, e, ν)
+
+    return p / (1 + e * cos(ν))
+
+end
+
+"""
+    instantaneous_radius
+
+Returns instantaneous radius, r, for any orbital representation.
+"""
+function instantaneous_radius(orbit::AbstractOrbit)
+
+    return instantaneous_radius(semi_parameter(orbit),
+                                eccentricity(orbit),
+                                true_anomoly(orbit))
+
+end
+
+"""
+    instantaneous_velocity
+
+Returns instantaneous velocity, v, for any orbital representation.
+"""
+function instantaneous_velocity(r, a, μ)
+
+    return √( (2 * μ / r) - (μ / a))
+
+end
+
+"""
+    periapsis_radius
+
+Returns periapsis radius, r̅_p.
+"""
 function periapsis_radius(a, e)
 
     return a * (1 - e)
 
 end
 
+"""
+    periapsis_radius
+
+Returns periapsis radius, r_p, for any orbital representation.
+"""
 function periapsis_radius(orbit::AbstractOrbit)
 
     return periapsis_radius(semimajor_axis(orbit), 
@@ -207,25 +398,34 @@ function periapsis_radius(orbit::AbstractOrbit)
 
 end
 
+"""
+    apoapsis_radius
+
+Returns periapsis radius, r_a.
+"""
 function apoapsis_radius(a, e)
 
     return a * (1 + e)
 
 end
 
+"""
+    apoapsis_radius
+
+Returns periapsis radius, r_a, for any orbital representation.
+"""
 function apoapsis_radius(orbit::AbstractOrbit)
 
     return apoapsis_radius(semimajor_axis(orbit), 
-                           norm(eccentricity(orbit)))
+                           eccentricity(orbit))
 
 end
 
-function instantaneous_velocity(r, a, μ)
+"""
+    periapsis_vecolity
 
-    return √( (2 * μ / r) - (μ / a))
-
-end
-
+Returns periapsis vecolity, v_p, for any orbital representation.
+"""
 function periapsis_velocity(
             orbit::AbstractOrbit; 
             μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
@@ -237,6 +437,11 @@ function periapsis_velocity(
 
 end
 
+"""
+    apoapsis_vecolity
+
+Returns apoapsis vecolity, v_a, for any orbital representation.
+"""
 function apoapsis_velocity(
             orbit::AbstractOrbit; 
             μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
@@ -248,6 +453,11 @@ function apoapsis_velocity(
 
 end
 
+"""
+    orbital_period
+
+Returns orbital period, Τ, for any orbital representation.
+"""
 function orbital_period(
             orbit::AbstractOrbit; 
             μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
@@ -256,12 +466,22 @@ function orbital_period(
 
 end
 
+"""
+    true_anomoly
+
+Returns true anomoly, ν.
+"""
 function true_anomoly(r, h, e, μ)
 
     return acos( (h^2 - μ * r) / (μ * r * e) )
 
 end
 
+"""
+    true_anomoly
+
+Returns true anomoly, ν, for a Cartesian representation.
+"""
 function true_anomoly(
             orbit::CartesianOrbit; 
             μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
@@ -274,32 +494,48 @@ function true_anomoly(
 
 end
 
+"""
+    true_anomoly
+
+Returns true anomoly, ν, for a Keplarian representation.
+"""
 function true_anomoly(orbit::CanonicalOrbit)
 
     return orbit.ν
 
 end
 
-function instantaneous_radius(p, e, ν)
+"""
+    mean_motion
 
-    return p / (1 + e * cos(ν))
-
-end
-
-function instantaneous_radius(orbit::AbstractOrbit)
-
-    return instantaneous_radius(semi_parameter(orbit),
-                                eccentricity(orbit),
-                                true_anomoly(orbit))
-
-end
-
+Returns mean motion, n.
+"""
 function mean_motion(a, μ)
 
     return √(μ / a^3)
 
 end
 
+"""
+    mean_motion
+
+Returns mean motion, n, for any orbital representation.
+"""
+function mean_motion(
+    orbit::AbstractOrbit; 
+    μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
+
+return mean_motion(
+    semimajor_axis(orbit),
+    μ)
+
+end
+
+"""
+    mean_motion_vector
+
+Returns mean motion vector, n̄, for a Cartesian representation.
+"""
 function mean_motion_vector(
             orbit::CartesianOrbit; 
             μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1],
@@ -311,22 +547,22 @@ function mean_motion_vector(
 
 end
 
-function mean_motion(
-            orbit::AbstractOrbit; 
-            μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
+"""
+    eccentric_anomoly
 
-    return mean_motion(
-            semimajor_axis(orbit),
-            μ)
-
-end
-
+Returns eccentric anomoly, E.
+"""
 function eccentric_anomoly(e, ν)
 
     return atan( u"rad", (√(1 - e^2) * sin(ν)) / (e + cos(ν)) )
 
 end
 
+"""
+    eccentric_anomoly
+
+Returns eccentric anomoly, E, for any orbital representation.
+"""
 function eccentric_anomoly(orbit::AbstractOrbit)
 
     return eccentric_anomoly(
@@ -335,12 +571,22 @@ function eccentric_anomoly(orbit::AbstractOrbit)
 
 end
 
+"""
+    time_since_periapsis
+
+Returns time since periapsis, t.
+"""
 function time_since_periapsis(n, e, E)
 
     return (E - e * sin(E)) / (n)
 
 end
 
+"""
+    time_since_periapsis
+
+Returns time since periapsis, t, for any orbital representation.
+"""
 function time_since_periapsis(orbit::AbstractOrbit)
 
     return time_since_periapsis(
@@ -350,6 +596,11 @@ function time_since_periapsis(orbit::AbstractOrbit)
 
 end
 
+"""
+    inclination
+
+Returns orbital inclination, i, for a Cartesian representation.
+"""
 function inclination(orbit::CartesianOrbit)
 
     h_vec = specific_angular_momentum_vector(orbit)
@@ -357,19 +608,29 @@ function inclination(orbit::CartesianOrbit)
 
 end
 
+"""
+    inclination
+
+Returns orbital inclination, i, for a Keplarian representation.
+"""
 function inclination(orbit::CanonicalOrbit)
 
     return orbit.i
 
 end
 
-# Transformation Functions
+### Transformation Functions
 
-function CartesianToCanonical(
-            orbit::CartesianOrbit; 
-            î=SVector{3, Float64}([1, 0, 0]), 
-            ĵ=SVector{3, Float64}([0, 1, 0]), 
-            k̂=SVector{3, Float64}([0, 0, 1]))
+"""
+    CartesianToCanonical
+
+Returns a Keplarian representation of a Cartesian orbital state.
+"""
+function CartesianToCanonical(orbit::CartesianOrbit)
+
+    î=SVector{3, Float64}([1, 0, 0]) 
+    ĵ=SVector{3, Float64}([0, 1, 0]) 
+    k̂=SVector{3, Float64}([0, 0, 1])
 
     h_vec = specific_angular_momentum_vector(orbit)
     n_vec = mean_motion_vector(orbit)
@@ -401,35 +662,43 @@ function CartesianToCanonical(
 
 end
 
-function CanonicalToCartesian(orbit::CanonicalOrbit)
+"""
+    CanonicalToCartesian
 
+Returns a Cartesian representation of a Keplarian orbital state.
+"""
+function CanonicalToCartesian(
+            orbit::CanonicalOrbit,
+            μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
+
+    # Find semilatus parameter
+    p = semi_parameter(orbit.a, orbit.e)
+
+    # Find scalar radius
+    r = instantaneous_radius(p, orbit.e, orbit.ν)
+
+    # Set perifocal axes
+    P̂=SVector{3, Float64}([1, 0, 0]), 
+    Q̂=SVector{3, Float64}([0, 1, 0]), 
+    Ŵ=SVector{3, Float64}([0, 0, 1])
+
+    # Find state in Perifocal frame
+    r̅_perifocal = (r * cos(orbit.ν) * P̂ + r * sin(orbit.ν) * Q̂)
+    v̅_perifocal = √(μ/p) * (-sin(orbit.ν) * P̂ + (orbit.e + cos(orbit.ν) * Q̂))
+
+    # Set up Perifocal ⟶ Cartesian conversion
+    R_3Ω = SMatrix{3,3,Float64}(
+            [cos(orbit.Ω) sin(orbit.Ω) 0.;
+            -sin(orbit.Ω) cos(orbit.Ω) 0.;
+            0.            0.          1.])
+    R_1i = SMatrix{3,3,Float64}(
+            [cos(orbit.ω) sin(orbit.ω) 0.;
+            -sin(orbit.ω) cos(orbit.ω) 0.;
+            0.            0.          1.])
+    R_3ω = SMatrix{3,3,Float64}(
+            [1.           0.          0.;
+             0. cos(orbit.Ω) sin(orbit.Ω);
+            -sin(orbit.Ω) cos(orbit.Ω) 0.])
 
 
 end
-
-# Export data structures & constructors
-export CelestialBody, earth, sun
-export CartesianOrbit, CanonicalOrbit
-
-# Export functions
-export  semimajor_axis, 
-        eccentricity, 
-        eccentricity_vector,
-        time_since_periapsis, 
-        semi_parameter, 
-        mean_motion,
-        mean_motion_vector, 
-        periapsis_radius, 
-        apoapsis_radius,
-        specific_angular_momentum_vector,
-        specific_angular_momentum, 
-        specific_energy,
-        instantaneous_velocity, 
-        periapsis_vecolity, 
-        apoapsis_velocity,
-        orbital_period, 
-        inclination,
-        true_anomoly, 
-        eccentric_anomoly,
-        CartesianToCanonical, 
-        CanonicalToCartesian
