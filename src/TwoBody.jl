@@ -6,6 +6,7 @@ Provides structures & functions for two-body orbits.
 
 ### Dependencies 
 
+using Base: isapprox, isequal
 using Pkg, Logging
 using StaticArrays
 using LinearAlgebra: ×, ⋅, norm
@@ -28,6 +29,7 @@ export  semimajor_axis,
         specific_angular_momentum_vector,
         specific_angular_momentum, 
         specific_energy,
+        instantaneous_radius,
         instantaneous_velocity, 
         periapsis_vecolity, 
         apoapsis_velocity,
@@ -36,7 +38,9 @@ export  semimajor_axis,
         true_anomoly, 
         eccentric_anomoly,
         CartesianToCanonical, 
-        CanonicalToCartesian
+        CanonicalToCartesian,
+        isapprox,
+        isequal
 
 ### Data Structures
 
@@ -62,8 +66,8 @@ Cartesian representation for orbital state.
 """
 struct CartesianOrbit <: AbstractOrbit
 
-    r̅::SVector{3,Unitful.Length}
-    v̅::SVector{3,Unitful.Velocity}
+    r̅::SVector{3, Unitful.Length}
+    v̅::SVector{3, Unitful.Velocity}
     body::CelestialBody
 
 end
@@ -94,13 +98,13 @@ end
 
 Constructor for Cartesian orbital representation.
 """
-function CartesianOrbit(r̲::AbstractArray{Unitful.Length}, 
-                        v̲::AbstractArray{Unitful.Velocity}, 
+function CartesianOrbit(r̅::AbstractArray{Unitful.Length}, 
+                        v̅::AbstractArray{Unitful.Velocity}, 
                         body::CelestialBody)
 
     return CartesianOrbit(
-            SVector{3,Unitful.Quantity}(r̲),
-            SVector{3,Unitful.Quantity}(v̲),
+            SVector{3,Unitful.Quantity{Float64}}(r̅),
+            SVector{3,Unitful.Quantity{Float64}}(v̅),
             body)
 end
 
@@ -120,6 +124,94 @@ function CanonicalOrbit(e::Unitful.DimensionlessQuantity,
     return CanonicalOrbit(
             e, a, i, 
             Ω, ω, ν, body)
+
+end
+
+"""
+    CanonicalOrbit
+
+Returns a Keplarian representation of a Cartesian orbital state.
+"""
+function CanonicalOrbit(orbit::CartesianOrbit)
+
+    î=SVector{3, Float64}([1, 0, 0]) 
+    ĵ=SVector{3, Float64}([0, 1, 0]) 
+    k̂=SVector{3, Float64}([0, 0, 1])
+
+    h_vec = specific_angular_momentum_vector(orbit)
+    n_vec = mean_motion_vector(orbit)
+    e_vec = eccentricity_vector(orbit)
+
+    Ω = ustrip(n_vec ⋅ ĵ) > 0 ? 
+            acos(u"rad", (n_vec ⋅ î) / norm(n_vec) ) :
+            2 * π * u"rad" - 
+                acos(u"rad", (n_vec ⋅ î) / norm(n_vec) )
+
+    ω = ustrip(e_vec ⋅ k̂) > 0 ?
+            acos(u"rad", (n_vec ⋅ e_vec) / (norm(n_vec) * norm(e_vec)) ) :
+            2 * π * u"rad" - 
+                acos(u"rad", (n_vec ⋅ e_vec) / (norm(n_vec) * norm(e_vec)) )
+
+    ν = ustrip(orbit.r̅ ⋅  e_vec) > 0 ? 
+            acos(u"rad", (e_vec ⋅ orbit.r̅) / (norm(e_vec) * norm(orbit.r̅)) ) :
+            2 * π * u"rad" - 
+                acos(u"rad", (e_vec ⋅ orbit.r̅) / (norm(e_vec) * norm(orbit.r̅)) )
+
+    return CanonicalOrbit( 
+            norm(e_vec),
+            upreferred(semimajor_axis(orbit)),
+            acos(u"rad", (h_vec ⋅ k̂) / norm(h_vec) ),
+            Ω,
+            ω,
+            ν,
+            orbit.body)
+
+end
+
+CartesianOrbit(orbit::CartesianOrbit) = orbit
+CanonicalOrbit(orbit::CanonicalOrbit) = orbit
+
+"""
+    CartesianOrbit
+
+Returns a Cartesian representation of a Keplarian orbital state.
+"""
+function CartesianOrbit(
+            orbit::CanonicalOrbit,
+            μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
+
+    # Find semilatus parameter
+    p = semi_parameter(orbit.a, orbit.e)
+
+    # Find scalar radius
+    r = instantaneous_radius(p, orbit.e, orbit.ν)
+
+    # Set perifocal axes
+    P̂=SVector{3, Float64}([1, 0, 0])
+    Q̂=SVector{3, Float64}([0, 1, 0]) 
+    Ŵ=SVector{3, Float64}([0, 0, 1])
+
+    # Find state in Perifocal frame
+    r̅_perifocal = (r * cos(orbit.ν) * P̂ + r * sin(orbit.ν) * Q̂)
+    v̅_perifocal = √(μ/p) * (-sin(orbit.ν) * P̂ + (orbit.e + cos(orbit.ν) * Q̂))
+
+    # Set up Perifocal ⟶ Cartesian conversion # TODO - move this to a function
+    R_3Ω =  SMatrix{3,3,Float64}(
+            [cos(orbit.Ω)           sin(orbit.Ω)            0.;
+            -sin(orbit.Ω)           cos(orbit.Ω)            0.;
+             0.                     0.                      1.])
+    R_1i = SMatrix{3,3,Float64}(
+            [1.                     0.                      0.;
+             0.                     cos(orbit.i)            sin(orbit.i);
+             0.                    -sin(orbit.i)            cos(orbit.i)])
+    R_3ω = SMatrix{3,3,Float64}(
+            [cos(orbit.ω)           sin(orbit.ω)            0.
+            -sin(orbit.ω)           cos(orbit.ω)            0.
+             0.                     0.                      1.])
+
+    ᴵTₚ = (R_3ω * R_1i * R_3Ω)' 
+
+    return CartesianOrbit(ᴵTₚ * r̅_perifocal, ᴵTₚ * v̅_perifocal, orbit.body)
 
 end
 
@@ -158,8 +250,8 @@ function semimajor_axis(orbit::CartesianOrbit;
                             UnitfulAstro.GMsun)[Int(orbit.body)+1]))
 
     return semimajor_axis(
-                norm(orbit.r̲),
-                norm(orbit.v̲),
+                norm(orbit.r̅),
+                norm(orbit.v̅),
                 μ)
 
 end
@@ -182,7 +274,7 @@ Returns specific angular momentum vector, h̅, for a Cartesian representation.
 """
 function specific_angular_momentum_vector(orbit::CartesianOrbit)
 
-    return specific_angular_momentum_vector(orbit.r̲, orbit.v̲)
+    return specific_angular_momentum_vector(orbit.r̅, orbit.v̅)
 
 end
 
@@ -191,9 +283,9 @@ end
 
 Returns scalar specific angular momentum vector, h.
 """
-function specific_angular_momentum(r̲, v̲)
+function specific_angular_momentum(r̅, v̅)
 
-    return norm(specific_angular_momentum_vector(r̲, v̲))
+    return norm(specific_angular_momentum_vector(r̅, v̅))
 
 end
 
@@ -204,7 +296,7 @@ Returns scalar specific angular momentum, h, for a Cartesian representation.
 """
 function specific_angular_momentum(orbit::CartesianOrbit)
 
-    return specific_angular_momentum(orbit.r̲, orbit.v̲)
+    return specific_angular_momentum(orbit.r̅, orbit.v̅)
 
 end
 
@@ -265,7 +357,7 @@ function eccentricity_vector(
             orbit::CartesianOrbit; 
             μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
 
-    return eccentricity(orbit.r̲, orbit.v̲, μ)
+    return eccentricity(orbit.r̅, orbit.v̅, μ)
 
 end
 
@@ -274,11 +366,11 @@ end
 
 Returns orbital eccentricity, e.
 """
-function eccentricity(r̲, v̲, μ)
+function eccentricity(r̅, v̅, μ)
 
     return (1 / μ) * 
-            ((v̲ × specific_angular_momentum_vector(r̲, v̲)) - 
-                μ * r̲ / norm(r̲))
+            ((v̅ × specific_angular_momentum_vector(r̅, v̅)) - 
+                μ * r̅ / norm(r̅))
 
 end
 
@@ -291,7 +383,7 @@ function eccentricity(
             orbit::CartesianOrbit; 
             μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
 
-    return eccentricity(orbit.r̲, orbit.v̲, μ)
+    return eccentricity(orbit.r̅, orbit.v̅, μ)
 
 end
 
@@ -487,7 +579,7 @@ function true_anomoly(
             μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
 
     return true_anomoly(
-            norm(orbit.r̲),
+            norm(orbit.r̅),
             specific_angular_momentum(orbit),
             eccentricity(orbit),
             μ)
@@ -619,86 +711,42 @@ function inclination(orbit::CanonicalOrbit)
 
 end
 
-### Transformation Functions
+function Base.isapprox(c1::CartesianOrbit, c2::CartesianOrbit; tolerance=1e-8)
 
-"""
-    CartesianToCanonical
-
-Returns a Keplarian representation of a Cartesian orbital state.
-"""
-function CartesianToCanonical(orbit::CartesianOrbit)
-
-    î=SVector{3, Float64}([1, 0, 0]) 
-    ĵ=SVector{3, Float64}([0, 1, 0]) 
-    k̂=SVector{3, Float64}([0, 0, 1])
-
-    h_vec = specific_angular_momentum_vector(orbit)
-    n_vec = mean_motion_vector(orbit)
-    e_vec = eccentricity_vector(orbit)
-
-    Ω = ustrip(n_vec ⋅ ĵ) > 0 ? 
-            acos(u"rad", (n_vec ⋅ î) / norm(n_vec) ) :
-            2 * π * u"rad" - 
-                acos(u"rad", (n_vec ⋅ î) / norm(n_vec) )
-
-    ω = ustrip(e_vec ⋅ k̂) > 0 ?
-            acos(u"rad", (n_vec ⋅ e_vec) / (norm(n_vec) * norm(e_vec)) ) :
-            2 * π * u"rad" - 
-                acos(u"rad", (n_vec ⋅ e_vec) / (norm(n_vec) * norm(e_vec)) )
-
-    ν = ustrip(orbit.r̲ ⋅  e_vec) > 0 ? 
-            acos(u"rad", (e_vec ⋅ orbit.r̲) / (norm(e_vec) * norm(orbit.r̲)) ) :
-            2 * π * u"rad" - 
-                acos(u"rad", (e_vec ⋅ orbit.r̲) / (norm(e_vec) * norm(orbit.r̲)) )
-
-    return CanonicalOrbit( 
-            norm(e_vec),
-            upreferred(semimajor_axis(orbit)),
-            acos(u"rad", (h_vec ⋅ k̂) / norm(h_vec) ),
-            Ω,
-            ω,
-            ν,
-            orbit.body)
+    return all(ustrip(c1.r̅ - c2.r̅) .< tolerance) &&
+           all(ustrip(c1.r̅ - c2.r̅) .< tolerance) &&
+           (c1.body == c2.body)
 
 end
 
-"""
-    CanonicalToCartesian
+function Base.isapprox(c1::CanonicalOrbit, c2::CanonicalOrbit; tolerance=1e-8)
 
-Returns a Cartesian representation of a Keplarian orbital state.
-"""
-function CanonicalToCartesian(
-            orbit::CanonicalOrbit,
-            μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
+    return ustrip(c1.e - c2.e) .< tolerance &&
+           ustrip(c1.a - c2.a) .< tolerance &&
+           ustrip(c1.i - c2.i) .< tolerance &&
+           ustrip(c1.Ω - c2.Ω) .< tolerance &&
+           ustrip(c1.ω - c2.ω) .< tolerance &&
+           ustrip(c1.ν - c2.ν) .< tolerance &&
+           c1.body == c2.body
 
-    # Find semilatus parameter
-    p = semi_parameter(orbit.a, orbit.e)
+end
 
-    # Find scalar radius
-    r = instantaneous_radius(p, orbit.e, orbit.ν)
+function Base.isequal(c1::CartesianOrbit, c2::CartesianOrbit)
 
-    # Set perifocal axes
-    P̂=SVector{3, Float64}([1, 0, 0]), 
-    Q̂=SVector{3, Float64}([0, 1, 0]), 
-    Ŵ=SVector{3, Float64}([0, 0, 1])
+    return all(c1.r̅ .== c2.r̅) &&
+           all(c1.v̅ .== c2.v̅) &&
+           c1.body == c2.body
 
-    # Find state in Perifocal frame
-    r̅_perifocal = (r * cos(orbit.ν) * P̂ + r * sin(orbit.ν) * Q̂)
-    v̅_perifocal = √(μ/p) * (-sin(orbit.ν) * P̂ + (orbit.e + cos(orbit.ν) * Q̂))
+end
 
-    # Set up Perifocal ⟶ Cartesian conversion
-    R_3Ω = SMatrix{3,3,Float64}(
-            [cos(orbit.Ω) sin(orbit.Ω) 0.;
-            -sin(orbit.Ω) cos(orbit.Ω) 0.;
-            0.            0.          1.])
-    R_1i = SMatrix{3,3,Float64}(
-            [cos(orbit.ω) sin(orbit.ω) 0.;
-            -sin(orbit.ω) cos(orbit.ω) 0.;
-            0.            0.          1.])
-    R_3ω = SMatrix{3,3,Float64}(
-            [1.           0.          0.;
-             0. cos(orbit.Ω) sin(orbit.Ω);
-            -sin(orbit.Ω) cos(orbit.Ω) 0.])
+function Base.isequal(c1::CanonicalOrbit, c2::CanonicalOrbit)
 
+    return c1.e == c2.e &&
+           c1.a == c2.a &&
+           c1.i == c2.i &&
+           c1.Ω == c2.Ω &&
+           c1.ω == c2.ω &&
+           c1.ν == c2.ν &&
+           c1.body == c2.body
 
 end
