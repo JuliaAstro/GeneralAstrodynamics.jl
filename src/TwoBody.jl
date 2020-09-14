@@ -44,7 +44,7 @@ export  semimajor_axis,
         isapprox,
         isequal,
         propagate,
-        zero
+        parse_propagation
 
 ### Data Structures
 
@@ -770,24 +770,25 @@ function propagate(orbit::AbstractOrbit;
     # with mixed units (the state vector has length and velocity units).
     # Apparently I was not the only one - one solution (as shown by [2]),
     # is to use ComponentArrays. This also allows me to define a 
-    # dynamical tic function that is vectorized (2 `states` instead of 6).
+    # dynamical tic function that is vectorized.
     ## Set up problem
 
     # Ensure Cartesian representation
     cart = CartesianOrbit(orbit)
 	r₀ = Array(ustrip.(uconvert.(u"m",cart.r̅)))
-	v₀ = Array(ustrip.(uconvert.(u"m/s", cart.v̅)))
+    v₀ = Array(ustrip.(uconvert.(u"m/s", cart.v̅)))
+    
     # Define the problem
     problem = ODEProblem(
                 orbit_tic, 
                 ComponentArray((r̅=r₀, v̅=v₀)), 
-                ustrip.(upreferred.(tspan)), 
-                ustrip.(upreferred(μ)))
+                ustrip.(uconvert.(u"s",tspan)), 
+                ComponentArray((μ=ustrip.(uconvert(u"m^3 / s^2", μ)))))
 
-    ## Solve the problem! 
+    # Solve the problem! 
     solution = solve(problem, alg,
-                     saveat=saveat)
-                     
+                     saveat=ustrip(uconvert(u"s",saveat)))
+    
     return solution
 
 end
@@ -797,7 +798,31 @@ end
 # but I had trouble with mixing units. The solution shown
 # in [2] allows the use of mixed units through the ComponentArrays
 # package.
-function orbit_tic(du, u, μ, t)
+function orbit_tic(du, u, p, t)
     du.r̅ =  u.v̅
-    du.v̅ = -μ .* u.r̅ / norm(u.r̅,2)^3
+    du.v̅ = -p.μ .* u.r̅ / norm(u.r̅,2)^3
+end
+
+function parse_propagation(sol)
+
+    # Parse solution for state variables
+    r̅ = map(a->a.r̅, sol.u)
+    v̅ = map(a->a.v̅, sol.u)
+
+    rx = map(r->r[1], r̅)
+    ry = map(r->r[2], r̅)
+    rz = map(r->r[3], r̅)
+
+    vx = map(v->v[1], v̅)
+    vy = map(v->v[2], v̅)
+    vz = map(v->v[3], v̅)
+    
+    ax = sol.prob.p.μ ./ rx.^2
+    ay = sol.prob.p.μ ./ ry.^2
+    az = sol.prob.p.μ ./ rz.^2
+
+    return hcat(rx,ry,rz), 
+           hcat(vx,vy,vz),
+           hcat(ax,ay,az)
+
 end
