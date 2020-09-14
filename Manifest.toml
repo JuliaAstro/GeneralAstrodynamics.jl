@@ -56,6 +56,11 @@ git-tree-sha1 = "e4581e3fadda3824e0df04396c85258a2107035d"
 uuid = "a603d957-0e48-4f86-8fbd-0b7bc66df689"
 version = "0.2.2"
 
+[[Cassette]]
+git-tree-sha1 = "ff6f5109371926beb67ec3101be17d2c211e497d"
+uuid = "7057c7e9-c182-5462-911a-8362d720325c"
+version = "0.3.3"
+
 [[ChainRulesCore]]
 deps = ["LinearAlgebra", "MuladdMacro"]
 git-tree-sha1 = "ac64a416997ae87eb86550020d0607ff608253d1"
@@ -723,6 +728,12 @@ deps = ["Printf"]
 git-tree-sha1 = "f458ca23ff80e46a630922c555d838303e4b9603"
 uuid = "a759f4b9-e2f1-59dc-863e-4aeb61b1ea8f"
 version = "0.5.6"
+
+[[Traceur]]
+deps = ["Cassette", "InteractiveUtils", "Logging", "MacroTools"]
+git-tree-sha1 = "c61e04e7e3592c3dba1a282bab66af79f3f69674"
+uuid = "37b6cedf-1f77-55f8-9503-c64b63398394"
+version = "0.3.1"
 
 [[TreeViews]]
 deps = ["Test"]

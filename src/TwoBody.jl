@@ -775,15 +775,14 @@ function propagate(orbit::AbstractOrbit;
 
     # Ensure Cartesian representation
     cart = CartesianOrbit(orbit)
-
+	r₀ = Array(ustrip.(uconvert.(u"m",cart.r̅)))
+	v₀ = Array(ustrip.(uconvert.(u"m/s", cart.v̅)))
     # Define the problem
     problem = ODEProblem(
                 orbit_tic, 
-                ComponentArray(
-                    r̅=upreferred.(cart.r̅),
-                    v̅=upreferred.(cart.v̅)), 
-                upreferred.(tspan), 
-                upreferred(μ))
+                ComponentArray((r̅=r₀, v̅=v₀)), 
+                ustrip.(upreferred.(tspan)), 
+                ustrip.(upreferred(μ)))
 
     ## Solve the problem! 
     solution = solve(problem, alg,
@@ -798,7 +797,7 @@ end
 # but I had trouble with mixing units. The solution shown
 # in [2] allows the use of mixed units through the ComponentArrays
 # package.
-function orbit_tic(∂z, z, μ, t)
-    ∂z.r̅ = z.v̅
-    ∂z.v̅ = -μ .* z.r̅ / (norm(z.r̅,2)^3)
+function orbit_tic(du, u, μ, t)
+    du.r̅ =  u.v̅
+    du.v̅ = -μ .* u.r̅ / norm(u.r̅,2)^3
 end
