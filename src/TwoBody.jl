@@ -33,7 +33,7 @@ export  semimajor_axis,
         specific_energy,
         instantaneous_radius,
         instantaneous_velocity, 
-        periapsis_vecolity, 
+        periapsis_velocity, 
         apoapsis_velocity,
         orbital_period, 
         inclination,
@@ -517,9 +517,9 @@ function apoapsis_radius(orbit::AbstractOrbit)
 end
 
 """
-    periapsis_vecolity
+    periapsis_velocity
 
-Returns periapsis vecolity, v_p, for any orbital representation.
+Returns periapsis velocity, v_p, for any orbital representation.
 """
 function periapsis_velocity(
             orbit::AbstractOrbit; 
@@ -533,9 +533,9 @@ function periapsis_velocity(
 end
 
 """
-    apoapsis_vecolity
+    apoapsis_velocity
 
-Returns apoapsis vecolity, v_a, for any orbital representation.
+Returns apoapsis velocity, v_a, for any orbital representation.
 """
 function apoapsis_velocity(
             orbit::AbstractOrbit; 
