@@ -21,3 +21,8 @@ include("TwoBody.jl")
     @test calculated_cart ≈ cart
 
 end
+
+r̅ = [0, 11681, 0] * u"km"
+v̅ = [5.134, 4.226, 2.787] * u"km/s"
+cart = CartesianOrbit(r̅, v̅, earth)
+propagate(cart)
