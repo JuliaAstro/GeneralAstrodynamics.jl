@@ -11,6 +11,7 @@ using Pkg, Logging
 using StaticArrays
 using LinearAlgebra: ×, ⋅, norm
 using Unitful, UnitfulAstro, UnitfulAngles
+using DifferentialEquations
 
 ### Export data structures & constructors
 export CelestialBody, earth, sun
@@ -40,7 +41,9 @@ export  semimajor_axis,
         CartesianToCanonical, 
         CanonicalToCartesian,
         isapprox,
-        isequal
+        isequal,
+        propagate,
+        zero
 
 ### Data Structures
 
@@ -130,7 +133,7 @@ end
 """
     CanonicalOrbit
 
-Returns a Keplarian representation of a Cartesian orbital state.
+Returns a Keplarian representation of an orbital state.
 """
 function CanonicalOrbit(orbit::CartesianOrbit)
 
@@ -167,14 +170,12 @@ function CanonicalOrbit(orbit::CartesianOrbit)
             orbit.body)
 
 end
-
-CartesianOrbit(orbit::CartesianOrbit) = orbit
 CanonicalOrbit(orbit::CanonicalOrbit) = orbit
 
 """
     CartesianOrbit
 
-Returns a Cartesian representation of a Keplarian orbital state.
+Returns a Cartesian representation of an orbital state.
 """
 function CartesianOrbit(
             orbit::CanonicalOrbit,
@@ -214,6 +215,7 @@ function CartesianOrbit(
     return CartesianOrbit(ᴵTₚ * r̅_perifocal, ᴵTₚ * v̅_perifocal, orbit.body)
 
 end
+CartesianOrbit(orbit::CartesianOrbit) = orbit
 
 ## Calculation (Helper) Functions
 
@@ -554,7 +556,7 @@ function orbital_period(
             orbit::AbstractOrbit; 
             μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
 
-    return 2 * π * √(semimajor_axis(orbit)^3 / μ)
+    P = 2 * π * √(semimajor_axis(orbit)^3 / μ)
 
 end
 
@@ -750,3 +752,45 @@ function Base.isequal(c1::CanonicalOrbit, c2::CanonicalOrbit)
            c1.body == c2.body
 
 end
+
+function propagate(orbit::AbstractOrbit;
+                   μ=SVector(1*UnitfulAstro.GMearth, 1*UnitfulAstro.GMsun)[Int(orbit.body)+1],
+                   tspan=(0.0u"s", upreferred(orbital_period(orbit))),
+                   reltol=1e-8,
+                   saveat=0.25u"s",
+                   alg=Tsit5())
+
+    ### Referencing https://diffeq.sciml.ai/v4.0/tutorials/ode_example.html
+
+    ## Set up problem
+
+    # Ensure Cartesian representation
+    cart = CartesianOrbit(orbit)
+
+    # Dynamics tic
+
+
+    # Define problem
+    problem = ODEProblem(orbit_tic, 
+                         upreferred.(vcat(cart.r̅[1:3], cart.v̅[1:3])), 
+                         upreferred.(tspan), 
+                         upreferred(μ))
+
+    ## Solve problem
+    solution = solve(problem, alg,
+                     saveat=saveat)
+
+    return solution
+
+end
+
+function orbit_tic(∂z, z, μ, t)
+    ∂z[1] = z[4]
+    ∂z[2] = z[5] 
+    ∂z[3] = z[6]
+    ∂z[4] = ( -μ * z[1] / (norm(z[1:3],2)^3) )
+    ∂z[5] = ( -μ * z[2] / (norm(z[1:3],2)^3) )
+    ∂z[6] = ( -μ * z[3] / (norm(z[1:3],2)^3) )
+end
+
+Base.zero(a::Array{Quantity{Float64,D,U} where U where D,1}) = zero.(a)
