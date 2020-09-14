@@ -83,7 +83,7 @@ Keplarian representation for orbital state.
 """
 struct CanonicalOrbit <: AbstractOrbit
 
-    e::Unitful.DimensionlessQuantity
+    e
     a::Unitful.Length
     i::Unitful.Quantity
     Ω::Unitful.Quantity
@@ -117,7 +117,7 @@ end
 
 Constructor for Keplarian orbital representation.
 """
-function CanonicalOrbit(e::Unitful.DimensionlessQuantity, 
+function CanonicalOrbit(e, 
                         a::Unitful.Length, 
                         i::Unitful.DimensionlessQuantity, 
                         Ω::Unitful.DimensionlessQuantity, 
