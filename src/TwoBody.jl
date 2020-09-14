@@ -817,9 +817,10 @@ function parse_propagation(sol)
     vy = map(v->v[2], v̅)
     vz = map(v->v[3], v̅)
     
-    ax = sol.prob.p.μ ./ rx.^2
-    ay = sol.prob.p.μ ./ ry.^2
-    az = sol.prob.p.μ ./ rz.^2
+    println(size(norm.(rx + ry + rz).^3))
+    ax = -sol.prob.p.μ .* rx ./ (norm.(rx + ry + rz, Ref(2)).^3)
+    ay = -sol.prob.p.μ .* ry ./ (norm.(rx + ry + rz, Ref(2)).^3)
+    az = -sol.prob.p.μ .* rz ./ (norm.(rx + ry + rz, Ref(2)).^3)
 
     return hcat(rx,ry,rz), 
            hcat(vx,vy,vz),
