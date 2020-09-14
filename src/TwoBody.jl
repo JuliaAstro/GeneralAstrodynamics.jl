@@ -12,6 +12,7 @@ using StaticArrays
 using LinearAlgebra: ×, ⋅, norm
 using Unitful, UnitfulAstro, UnitfulAngles
 using DifferentialEquations
+using ComponentArrays
 
 ### Export data structures & constructors
 export CelestialBody, earth, sun
@@ -760,37 +761,44 @@ function propagate(orbit::AbstractOrbit;
                    saveat=0.25u"s",
                    alg=Tsit5())
 
-    ### Referencing https://diffeq.sciml.ai/v4.0/tutorials/ode_example.html
-
+    ### Referencing:
+    # [1] https://diffeq.sciml.ai/v4.0/tutorials/ode_example.html
+    # [2] https://github.com/SciML/DifferentialEquations.jl/issues/393#issuecomment-658210231
+    
+    # Note: Code from [2] was copied and modified below.
+    # I previously couldn't figure out how to use numerical solvers
+    # with mixed units (the state vector has length and velocity units).
+    # Apparently I was not the only one - one solution (as shown by [2]),
+    # is to use ComponentArrays. This also allows me to define a 
+    # dynamical tic function that is vectorized (2 `states` instead of 6).
     ## Set up problem
 
     # Ensure Cartesian representation
     cart = CartesianOrbit(orbit)
 
-    # Dynamics tic
+    # Define the problem
+    problem = ODEProblem(
+                orbit_tic, 
+                ComponentArray(
+                    r̅=upreferred.(cart.r̅),
+                    v̅=upreferred.(cart.v̅)), 
+                upreferred.(tspan), 
+                upreferred(μ))
 
-
-    # Define problem
-    problem = ODEProblem(orbit_tic, 
-                         upreferred.(vcat(cart.r̅[1:3], cart.v̅[1:3])), 
-                         upreferred.(tspan), 
-                         upreferred(μ))
-
-    ## Solve problem
+    ## Solve the problem! 
     solution = solve(problem, alg,
                      saveat=saveat)
-
+                     
     return solution
 
 end
 
+# Note the citation [2] above - this function was copied and
+# modified from [2]. I originally had a 6 state function,
+# but I had trouble with mixing units. The solution shown
+# in [2] allows the use of mixed units through the ComponentArrays
+# package.
 function orbit_tic(∂z, z, μ, t)
-    ∂z[1] = z[4]
-    ∂z[2] = z[5] 
-    ∂z[3] = z[6]
-    ∂z[4] = ( -μ * z[1] / (norm(z[1:3],2)^3) )
-    ∂z[5] = ( -μ * z[2] / (norm(z[1:3],2)^3) )
-    ∂z[6] = ( -μ * z[3] / (norm(z[1:3],2)^3) )
+    ∂z.r̅ = z.v̅
+    ∂z.v̅ = -μ .* z.r̅ / (norm(z.r̅,2)^3)
 end
-
-Base.zero(a::Array{Quantity{Float64,D,U} where U where D,1}) = zero.(a)
