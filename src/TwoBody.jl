@@ -38,9 +38,7 @@ export  semimajor_axis,
         orbital_period, 
         inclination,
         true_anomoly, 
-        eccentric_anomoly,
-        CartesianToCanonical, 
-        CanonicalToCartesian,
+        eccentric_anomoly, 
         isapprox,
         isequal,
         propagate,
@@ -352,6 +350,17 @@ function specific_energy(
 end
 
 """
+    eccentricity
+
+Returns orbital eccentricity, e.
+"""
+function eccentricity_vector(r̅, v̅, μ)
+
+    return (1 / μ) * ((v̅ × specific_angular_momentum_vector(r̅, v̅)) - μ * r̅ / norm(r̅))
+
+end
+
+"""
     eccentricity_vector
 
 Returns orbital eccentricity_vector, e̅.
@@ -360,20 +369,7 @@ function eccentricity_vector(
             orbit::CartesianOrbit; 
             μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
 
-    return eccentricity(orbit.r̅, orbit.v̅, μ)
-
-end
-
-"""
-    eccentricity
-
-Returns orbital eccentricity, e.
-"""
-function eccentricity(r̅, v̅, μ)
-
-    return (1 / μ) * 
-            ((v̅ × specific_angular_momentum_vector(r̅, v̅)) - 
-                μ * r̅ / norm(r̅))
+    return eccentricity_vector(orbit.r̅, orbit.v̅, μ)
 
 end
 
@@ -386,7 +382,7 @@ function eccentricity(
             orbit::CartesianOrbit; 
             μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
 
-    return eccentricity(orbit.r̅, orbit.v̅, μ)
+    return norm(eccentricity_vector(orbit.r̅, orbit.v̅, μ))
 
 end
 
@@ -489,7 +485,7 @@ Returns periapsis radius, r_p, for any orbital representation.
 function periapsis_radius(orbit::AbstractOrbit)
 
     return periapsis_radius(semimajor_axis(orbit), 
-                            norm(eccentricity(orbit)))
+                            eccentricity(orbit))
 
 end
 
@@ -661,7 +657,7 @@ Returns eccentric anomoly, E, for any orbital representation.
 function eccentric_anomoly(orbit::AbstractOrbit)
 
     return eccentric_anomoly(
-            norm(eccentricity(orbit)),
+            eccentricity(orbit),
             true_anomoly(orbit))
 
 end
@@ -686,7 +682,7 @@ function time_since_periapsis(orbit::AbstractOrbit)
 
     return time_since_periapsis(
             mean_motion(orbit),
-            norm(eccentricity(orbit)),
+            eccentricity(orbit),
             eccentric_anomoly(orbit))
 
 end
