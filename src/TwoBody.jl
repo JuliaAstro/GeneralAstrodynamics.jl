@@ -192,8 +192,8 @@ function CartesianOrbit(
     Ŵ=SVector{3, Float64}([0, 0, 1])
 
     # Find state in Perifocal frame
-    r̅_perifocal = (r * cos(orbit.ν) * P̂ + r * sin(orbit.ν) * Q̂)
-    v̅_perifocal = √(μ/p) * (-sin(orbit.ν) * P̂ + (orbit.e + cos(orbit.ν) * Q̂))
+    r̅_perifocal = (r * cos(orbit.ν) .* P̂ .+ r * sin(orbit.ν) .* Q̂)
+    v̅_perifocal = √(μ/p) .* (-sin(orbit.ν) * P̂ .+ (orbit.e .+ cos(orbit.ν) .* Q̂))
 
     # Set up Perifocal ⟶ Cartesian conversion # TODO - move this to a function
     R_3Ω =  SMatrix{3,3,Float64}(
@@ -712,8 +712,8 @@ end
 
 function Base.isapprox(c1::CartesianOrbit, c2::CartesianOrbit; tolerance=1e-8)
 
-    return all(ustrip(c1.r̅ - c2.r̅) .< tolerance) &&
-           all(ustrip(c1.r̅ - c2.r̅) .< tolerance) &&
+    return all(ustrip.(c1.r̅ - c2.r̅) .< tolerance) &&
+           all(ustrip.(c1.r̅ - c2.r̅) .< tolerance) &&
            (c1.body == c2.body)
 
 end
