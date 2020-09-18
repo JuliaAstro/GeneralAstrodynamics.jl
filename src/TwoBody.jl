@@ -551,7 +551,7 @@ Returns orbital period, Τ, for any orbital representation.
 """
 function orbital_period(
             orbit::AbstractOrbit; 
-            μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
+            μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1] * 1.0)
 
     P = 2 * π * √(semimajor_axis(orbit)^3 / μ)
 

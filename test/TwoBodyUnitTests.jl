@@ -1,5 +1,5 @@
 using Test
-include("TwoBody.jl")
+include("../src/TwoBody.jl")
 
 # Test Cartesian -> Canonical transformation
 @testset "Transformations" begin
