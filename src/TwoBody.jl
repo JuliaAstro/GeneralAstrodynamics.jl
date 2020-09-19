@@ -178,7 +178,7 @@ Returns a Cartesian representation of an orbital state.
 """
 function CartesianOrbit(
             orbit::CanonicalOrbit,
-            μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
+            μ=SVector(1.0*UnitfulAstro.GMearth, 1.0*UnitfulAstro.GMsun)[Int(orbit.body)+1])
 
     # Find semilatus parameter
     p = semi_parameter(orbit.a, orbit.e)
@@ -193,7 +193,7 @@ function CartesianOrbit(
 
     # Find state in Perifocal frame
     r̅_perifocal = (r * cos(orbit.ν) .* P̂ .+ r * sin(orbit.ν) .* Q̂)
-    v̅_perifocal = √(μ/p) .* (-sin(orbit.ν) * P̂ .+ (orbit.e .+ cos(orbit.ν) .* Q̂))
+    v̅_perifocal = √(μ/p) * ((-sin(orbit.ν) * P̂) .+ ((orbit.e + cos(orbit.ν)) .* Q̂))
 
     # Set up Perifocal ⟶ Cartesian conversion # TODO - move this to a function
     R_3Ω =  SMatrix{3,3,Float64}(
@@ -751,9 +751,10 @@ function Base.isequal(c1::CanonicalOrbit, c2::CanonicalOrbit)
 end
 
 function propagate(orbit::AbstractOrbit;
-                   μ=SVector(1*UnitfulAstro.GMearth, 1*UnitfulAstro.GMsun)[Int(orbit.body)+1],
+                   μ=SVector(1.0*UnitfulAstro.GMearth, 1.0*UnitfulAstro.GMsun)[Int(orbit.body)+1],
                    tspan=(0.0u"s", upreferred(orbital_period(orbit))),
-                   reltol=1e-8,
+                   abstol=1e-13,
+                   reltol=1e-13,
                    saveat=0.25u"s",
                    alg=Tsit5())
 
@@ -771,18 +772,20 @@ function propagate(orbit::AbstractOrbit;
 
     # Ensure Cartesian representation
     cart = CartesianOrbit(orbit)
-	r₀ = Array(ustrip.(uconvert.(u"m",cart.r̅)))
-    v₀ = Array(ustrip.(uconvert.(u"m/s", cart.v̅)))
+	r₀ = Array(ustrip.(uconvert.(u"km",cart.r̅)))
+    v₀ = Array(ustrip.(uconvert.(u"km/s", cart.v̅)))
     
     # Define the problem
     problem = ODEProblem(
                 orbit_tic, 
                 ComponentArray((r̅=r₀, v̅=v₀)), 
                 ustrip.(uconvert.(u"s",tspan)), 
-                ComponentArray((μ=ustrip.(uconvert(u"m^3 / s^2", μ)))))
+                ComponentArray((μ=ustrip.(uconvert(u"km^3 / s^2", μ)))))
 
     # Solve the problem! 
     solution = solve(problem, alg,
+                     abstol=abstol,
+                     reoltol=reltol,
                      saveat=ustrip(uconvert(u"s",saveat)))
     
     return solution
