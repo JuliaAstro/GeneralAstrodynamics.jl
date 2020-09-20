@@ -42,7 +42,8 @@ export  semimajor_axis,
         isapprox,
         isequal,
         propagate,
-        parse_propagation
+        parse_propagation,
+        PropagationResult
 
 ### Data Structures
 
@@ -93,6 +94,20 @@ struct CanonicalOrbit <: AbstractOrbit
     ω::Unitful.Quantity
     ν::Unitful.Quantity
     body::Body
+
+end
+
+"""
+    PropagationResult
+
+Wrapper for ODESolution, with optional units.
+"""
+struct PropagationResult{timeType<:Number, posType<:Number, velType<:Number}
+
+    t::AbstractVector{timeType}
+    r̅::AbstractMatrix{posType}
+    v̅::AbstractMatrix{velType}
+    ode_solution::ODESolution
 
 end
 
@@ -759,7 +774,15 @@ function propagate(orbit::AbstractOrbit, Δt::Number = orbital_period(orbit),
                 ComponentArray((μ=ustrip(u"km^3 / s^2", cart.body.μ))))
 
     # Solve the problem! 
-    return solve(problem, ode_alg; options...)
+    sols = solve(problem, ode_alg; options...)
+
+    # Return PropagationResult structure
+    return PropagationResult(
+        u"s" * sols.t,
+        u"km" * vcat(map(x->x.r̅', sols.u)...),
+        u"km/s" * vcat(map(x->x.v̅', sols.u)...),
+        sols
+    )
 
 end
 
