@@ -5,7 +5,7 @@ include("../src/TwoBody.jl")
 @testset "Transformations" begin
     
     # Set up test initial conditions
-    r̅ = [0, 11681, 0] * u"km"
+    r̅ = [0.0, 11681.0, 0.0] * u"km"
     v̅ = [5.134, 4.226, 2.787] * u"km/s"
     cart = CartesianOrbit(r̅, v̅, earth)
 
@@ -23,7 +23,7 @@ include("../src/TwoBody.jl")
 end
 
 @testset "Propagator" begin
-    r̅ = [0, 11681, 0] * u"km"
+    r̅ = [0.0, 11681, 0.0] * u"km"
     v̅ = [5.134, 4.226, 2.787] * u"km/s"
     cart = CartesianOrbit(r̅, v̅, earth)
     propagate(cart)
