@@ -15,7 +15,7 @@ using DifferentialEquations
 using ComponentArrays
 
 ### Export data structures & constructors
-export CelestialBody, earth, sun
+export Body, earth, sun
 export CartesianOrbit, CanonicalOrbit
 
 #### Export functions
@@ -42,27 +42,33 @@ export  semimajor_axis,
         isapprox,
         isequal,
         propagate,
-        parse_propagation
+        parse_propagation,
+        PropagationResult
 
 ### Data Structures
 
 """
-    CelestialBody
+    Body(μ)
 
-Enum representing large bodies near Earth.
-Currently only Earth and the Sun are supported.
+Type representing large bodies in space.
+Current only Earth and the Sun are supported.
 """
-@enum CelestialBody earth sun
+struct Body{T<:Number}
+    μ::T
+end
+
+earth = Body(1.0u"GMearth")
+sun   = Body(1.0u"GMsun")
 
 """
     AbstractOrbit
 
-Abstract type for all orbits.
+Abstract type for all orbital representations.
 """
 abstract type AbstractOrbit end
 
 """
-    CartesianOrbit
+    CartesianOrbit(r̅, v̅, body)
 
 Cartesian representation for orbital state.
 """
@@ -70,24 +76,38 @@ struct CartesianOrbit <: AbstractOrbit
 
     r̅::SVector{3, Unitful.Length}
     v̅::SVector{3, Unitful.Velocity}
-    body::CelestialBody
+    body::Body
 
 end
 
 """
-    CanonicalOrbit
+    CanonicalOrbit(e, a, i , Ω, ω, ν, body)
 
 Keplarian representation for orbital state.
 """
 struct CanonicalOrbit <: AbstractOrbit
 
-    e
+    e::Unitful.DimensionlessQuantity
     a::Unitful.Length
     i::Unitful.Quantity
     Ω::Unitful.Quantity
     ω::Unitful.Quantity
     ν::Unitful.Quantity
-    body::CelestialBody
+    body::Body
+
+end
+
+"""
+    PropagationResult
+
+Wrapper for ODESolution, with optional units.
+"""
+struct PropagationResult{timeType<:Number, posType<:Number, velType<:Number}
+
+    t::AbstractVector{timeType}
+    r̅::AbstractMatrix{posType}
+    v̅::AbstractMatrix{velType}
+    ode_solution::ODESolution
 
 end
 
@@ -102,7 +122,7 @@ Constructor for Cartesian orbital representation.
 """
 function CartesianOrbit(r̅::AbstractArray{Unitful.Length}, 
                         v̅::AbstractArray{Unitful.Velocity}, 
-                        body::CelestialBody)
+                        body::Body)
 
     return CartesianOrbit(
             SVector{3,Unitful.Quantity{Float64}}(r̅),
@@ -115,13 +135,13 @@ end
 
 Constructor for Keplarian orbital representation.
 """
-function CanonicalOrbit(e, 
+function CanonicalOrbit(e::Unitful.DimensionlessQuantity, 
                         a::Unitful.Length, 
                         i::Unitful.DimensionlessQuantity, 
                         Ω::Unitful.DimensionlessQuantity, 
                         ω::Unitful.DimensionlessQuantity, 
                         ν::Unitful.DimensionlessQuantity, 
-                        body::CelestialBody)
+                        body::Body)
 
     return CanonicalOrbit(
             e, a, i, 
@@ -177,11 +197,10 @@ CanonicalOrbit(orbit::CanonicalOrbit) = orbit
 Returns a Cartesian representation of an orbital state.
 """
 function CartesianOrbit(
-            orbit::CanonicalOrbit,
-            μ=SVector(1.0*UnitfulAstro.GMearth, 1.0*UnitfulAstro.GMsun)[Int(orbit.body)+1])
+            orbit::CanonicalOrbit)
 
     # Find semilatus parameter
-    p = semi_parameter(orbit.a, orbit.e)
+    p = semi_parameter(orbit)
 
     # Find scalar radius
     r = instantaneous_radius(p, orbit.e, orbit.ν)
@@ -193,7 +212,7 @@ function CartesianOrbit(
 
     # Find state in Perifocal frame
     r̅_perifocal = (r * cos(orbit.ν) .* P̂ .+ r * sin(orbit.ν) .* Q̂)
-    v̅_perifocal = √(μ/p) * ((-sin(orbit.ν) * P̂) .+ ((orbit.e + cos(orbit.ν)) .* Q̂))
+    v̅_perifocal = √(orbit.body.μ/p) * ((-sin(orbit.ν) * P̂) .+ ((orbit.e + cos(orbit.ν)) .* Q̂))
 
     # Set up Perifocal ⟶ Cartesian conversion # TODO - move this to a function
     R_3Ω =  SMatrix{3,3,Float64}(
@@ -245,15 +264,12 @@ end
 
 Returns semimajor axis parameter, a, for a Cartesian representation.
 """
-function semimajor_axis(orbit::CartesianOrbit; 
-                        μ=(SVector(
-                            UnitfulAstro.GMearth, 
-                            UnitfulAstro.GMsun)[Int(orbit.body)+1]))
+function semimajor_axis(orbit::CartesianOrbit)
 
     return semimajor_axis(
                 norm(orbit.r̅),
                 norm(orbit.v̅),
-                μ)
+                orbit.body.μ)
 
 end
 
@@ -306,9 +322,7 @@ end
 
 Returns scalar specific angular momentum, h, for any orbital representation.
 """
-function specific_angular_momentum(
-            orbit::AbstractOrbit, 
-            μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
+function specific_angular_momentum(orbit::AbstractOrbit)
 
     return apoapsis_radius(orbit) * apoapsis_velocity(orbit)
 
@@ -341,11 +355,9 @@ end
 
 Returns specific orbital energy, ϵ, for any orbital representation.
 """
-function specific_energy(
-            orbit::AbstractOrbit; 
-            μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
+function specific_energy(orbit::AbstractOrbit)
 
-    return specific_energy(semimajor_axis(orbit), μ)
+    return specific_energy(semimajor_axis(orbit), orbit.body.μ)
 
 end
 
@@ -365,11 +377,9 @@ end
 
 Returns orbital eccentricity_vector, e̅.
 """
-function eccentricity_vector(
-            orbit::CartesianOrbit; 
-            μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
+function eccentricity_vector(orbit::CartesianOrbit)
 
-    return eccentricity_vector(orbit.r̅, orbit.v̅, μ)
+    return eccentricity_vector(orbit.r̅, orbit.v̅, orbit.body.μ)
 
 end
 
@@ -378,11 +388,9 @@ end
 
 Returns orbital eccentricity, e.
 """
-function eccentricity(
-            orbit::CartesianOrbit; 
-            μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
+function eccentricity(orbit::CartesianOrbit)
 
-    return norm(eccentricity_vector(orbit.r̅, orbit.v̅, μ))
+    return norm(eccentricity_vector(orbit.r̅, orbit.v̅, orbit.body.μ))
 
 end
 
@@ -517,14 +525,12 @@ end
 
 Returns periapsis velocity, v_p, for any orbital representation.
 """
-function periapsis_velocity(
-            orbit::AbstractOrbit; 
-            μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
+function periapsis_velocity(orbit::AbstractOrbit)
 
     return instantaneous_velocity(
                 periapsis_radius(orbit), 
                 semimajor_axis(orbit),
-                μ)
+                orbit.body.μ)
 
 end
 
@@ -533,14 +539,12 @@ end
 
 Returns apoapsis velocity, v_a, for any orbital representation.
 """
-function apoapsis_velocity(
-            orbit::AbstractOrbit; 
-            μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
+function apoapsis_velocity(orbit::AbstractOrbit)
 
     return instantaneous_velocity(
                 apoapsis_radius(orbit), 
                 semimajor_axis(orbit),
-                μ)
+                orbit.body.μ)
 
 end
 
@@ -549,11 +553,9 @@ end
 
 Returns orbital period, Τ, for any orbital representation.
 """
-function orbital_period(
-            orbit::AbstractOrbit; 
-            μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1] * 1.0)
+function orbital_period(orbit::AbstractOrbit)
 
-    P = 2 * π * √(semimajor_axis(orbit)^3 / μ)
+    P = 2π * u"rad" * √(semimajor_axis(orbit)^3 / orbit.body.μ)
 
 end
 
@@ -573,15 +575,13 @@ end
 
 Returns true anomoly, ν, for a Cartesian representation.
 """
-function true_anomoly(
-            orbit::CartesianOrbit; 
-            μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
+function true_anomoly(orbit::CartesianOrbit)
 
     return true_anomoly(
             norm(orbit.r̅),
             specific_angular_momentum(orbit),
             eccentricity(orbit),
-            μ)
+            orbit.body.μ)
 
 end
 
@@ -612,13 +612,11 @@ end
 
 Returns mean motion, n, for any orbital representation.
 """
-function mean_motion(
-    orbit::AbstractOrbit; 
-    μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1])
+function mean_motion(orbit::AbstractOrbit)
 
 return mean_motion(
     semimajor_axis(orbit),
-    μ)
+    orbit.body.μ)
 
 end
 
@@ -628,8 +626,7 @@ end
 Returns mean motion vector, n̄, for a Cartesian representation.
 """
 function mean_motion_vector(
-            orbit::CartesianOrbit; 
-            μ=SVector(UnitfulAstro.GMearth, UnitfulAstro.GMsun)[Int(orbit.body)+1],
+            orbit::CartesianOrbit,
             î=SVector{3, Float64}([1, 0, 0]), 
             ĵ=SVector{3, Float64}([0, 1, 0]), 
             k̂=SVector{3, Float64}([0, 0, 1]))
@@ -750,45 +747,42 @@ function Base.isequal(c1::CanonicalOrbit, c2::CanonicalOrbit)
 
 end
 
-function propagate(orbit::AbstractOrbit;
-                   μ=SVector(1.0*UnitfulAstro.GMearth, 1.0*UnitfulAstro.GMsun)[Int(orbit.body)+1],
-                   tspan=(0.0u"s", upreferred(orbital_period(orbit))),
-                   abstol=1e-13,
-                   reltol=1e-13,
-                   saveat=0.25u"s",
-                   alg=Tsit5())
+function propagate(orbit::AbstractOrbit, Δt::Number = orbital_period(orbit), 
+                   ode_alg::OrdinaryDiffEqAlgorithm = Tsit5(); kwargs...)
+
+
 
     ### Referencing:
     # [1] https://diffeq.sciml.ai/v4.0/tutorials/ode_example.html
     # [2] https://github.com/SciML/DifferentialEquations.jl/issues/393#issuecomment-658210231
-    
-    # Note: Code from [2] was copied and modified below.
-    # I previously couldn't figure out how to use numerical solvers
-    # with mixed units (the state vector has length and velocity units).
-    # Apparently I was not the only one - one solution (as shown by [2]),
-    # is to use ComponentArrays. This also allows me to define a 
-    # dynamical tic function that is vectorized.
-    ## Set up problem
+    # [3] https://discourse.julialang.org/t/smart-kwargs-dispatch/14571/15
 
-    # Ensure Cartesian representation
+    # Set default kwargs (modified from [3])
+    defaults = (;  reltol=1e-14, abstol=1e-14)
+    options = merge(defaults, kwargs)
+
+    # Ensure Cartesian representation (modified from [2])
     cart = CartesianOrbit(orbit)
-	r₀ = Array(ustrip.(uconvert.(u"km",cart.r̅)))
-    v₀ = Array(ustrip.(uconvert.(u"km/s", cart.v̅)))
+	r₀ = Array(ustrip.(u"km",cart.r̅))
+    v₀ = Array(ustrip.(u"km/s", cart.v̅))
     
-    # Define the problem
+    # Define the problem (modified from [2])
     problem = ODEProblem(
                 orbit_tic, 
                 ComponentArray((r̅=r₀, v̅=v₀)), 
-                ustrip.(uconvert.(u"s",tspan)), 
-                ComponentArray((μ=ustrip.(uconvert(u"km^3 / s^2", μ)))))
+                ustrip.(u"s", (0.0u"s", Δt)), 
+                ComponentArray((μ=ustrip(u"km^3 / s^2", cart.body.μ))))
 
     # Solve the problem! 
-    solution = solve(problem, alg,
-                     abstol=abstol,
-                     reoltol=reltol,
-                     saveat=ustrip(uconvert(u"s",saveat)))
-    
-    return solution
+    sols = solve(problem, ode_alg; options...)
+
+    # Return PropagationResult structure
+    return PropagationResult(
+        u"s" * sols.t,
+        u"km" * vcat(map(x->x.r̅', sols.u)...),
+        u"km/s" * vcat(map(x->x.v̅', sols.u)...),
+        sols
+    )
 
 end
 
@@ -799,7 +793,7 @@ end
 # package.
 function orbit_tic(du, u, p, t)
     du.r̅ =  u.v̅
-    du.v̅ = -p.μ .* u.r̅ / norm(u.r̅,2)^3
+    du.v̅ = -p.μ * (u.r̅ ./ norm(u.r̅,2)^3)
 end
 
 function parse_propagation(sol)
