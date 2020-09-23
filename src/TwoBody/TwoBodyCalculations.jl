@@ -3,64 +3,7 @@
 #
 #   Includes simple calculations relevant to the Two Body Problem.
 
-# Dependencies 
-
-using Base: isapprox, isequal
-using StaticArrays
-using LinearAlgebra: ×, ⋅, norm
-using Unitful, UnitfulAstro, UnitfulAngles
-
-# Data Structures
-
-"""
-    Body(μ)
-
-Type representing large bodies in space.
-Current only Earth and the Sun are supported.
-"""
-struct Body{T<:Number}
-    μ::T
-end
-
-earth = Body(1.0u"GMearth")
-sun   = Body(1.0u"GMsun")
-
-"""
-    AbstractOrbit
-
-Abstract type for all orbital representations.
-"""
-abstract type AbstractOrbit end
-
-"""
-    CartesianOrbit(r̅, v̅, body)
-
-Cartesian representation for orbital state.
-"""
-struct CartesianOrbit <: AbstractOrbit
-
-    r̅::SVector{3, Unitful.Length}
-    v̅::SVector{3, Unitful.Velocity}
-    body::Body
-
-end
-
-"""
-    CanonicalOrbit(e, a, i , Ω, ω, ν, body)
-
-Keplarian representation for orbital state.
-"""
-struct CanonicalOrbit <: AbstractOrbit
-
-    e::Unitful.Quantity
-    a::Unitful.Length
-    i::Unitful.Quantity
-    Ω::Unitful.Quantity
-    ω::Unitful.Quantity
-    ν::Unitful.Quantity
-    body::Body
-
-end
+# Constructors
 
 """
     CartesianState(r̅, v̅, body)
@@ -654,7 +597,7 @@ function inclination(orbit::KeplerianState)
 
 end
 
-function Base.isapprox(c1::CartesianOrbit, c2::CartesianOrbit; atol=1e-8)
+function Base.isapprox(c1::CartesianState, c2::CartesianState; atol=1e-8)
 
     return all(ustrip.(c1.r̅ - c2.r̅) .< atol) &&
            all(ustrip.(c1.r̅ - c2.r̅) .< atol) &&
@@ -662,7 +605,7 @@ function Base.isapprox(c1::CartesianOrbit, c2::CartesianOrbit; atol=1e-8)
 
 end
 
-function Base.isapprox(c1::CanonicalOrbit, c2::CanonicalOrbit; atol=1e-8)
+function Base.isapprox(c1::KeplerianState, c2::KeplerianState; atol=1e-8)
 
     return ustrip(upreferred(c1.e - c2.e)) .< atol &&
            ustrip(upreferred(c1.a - c2.a)) .< atol &&

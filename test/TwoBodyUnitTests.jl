@@ -1,8 +1,8 @@
-using Test
-using Reexport
+module TwoBodyUnitTests
 
-include("../src/Astrodynamics.jl")
-@reexport using .Astrodynamics
+using Test
+
+using Astrodynamics
 
 @testset "Transformations" begin
     
@@ -17,7 +17,7 @@ include("../src/Astrodynamics.jl")
     @test canon.i ≈ 2.6442542356744734 * u"rad"
     @test canon.ν ≈ 1.5707355666179315 * u"rad"
 
-    @test CartesianOrbit(canon) ≈ cart
+    @test CartesianState(canon) ≈ cart
 
     e      =  0.3      * u"rad"
     a      =  15000.   * u"km" + 1.0u"Rearth"
@@ -25,16 +25,18 @@ include("../src/Astrodynamics.jl")
     Ω      =  0.       * u"°"
     ω      =  10.      * u"°"
     ν      =  0.       * u"°"
-    canon  =  CanonicalOrbit(e, a, i, Ω, ω, ν, earth)
+    canon  =  KeplerianState(e, a, i, Ω, ω, ν, earth)
 
-    @test isapprox(canon, CanonicalOrbit(CartesianOrbit(canon)), atol=1e-6)
+    @test isapprox(canon, KeplerianState(CartesianState(canon)), atol=1e-6)
 
 end
 
 @testset "Propagator" begin
     r̅ = [0.0, 11681, 0.0] * u"km"
     v̅ = [5.134, 4.226, 2.787] * u"km/s"
-    cart = CartesianOrbit(r̅, v̅, earth)
+    cart = CartesianState(r̅, v̅, earth)
     sols = propagate(cart)
-    @test CartesianOrbit(sols.r̅[end,:], sols.v̅[end,:], earth) ≈ cart 
+    @test CartesianState(sols.r̅[end,:], sols.v̅[end,:], earth) ≈ cart 
+end
+
 end

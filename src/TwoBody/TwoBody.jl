@@ -11,8 +11,8 @@ using ..AbstractOrbits
 
 using Reexport
 
-using Base: isapprox, isequal
 using Logging
+using Base: isapprox, isequal
 using LinearAlgebra: ×, ⋅, norm
 using DifferentialEquations
 using ComponentArrays
@@ -21,7 +21,6 @@ using ComponentArrays
 @reexport using Unitful, UnitfulAstro, UnitfulAngles
 
 # Export data structures & constructors
-export Body, earth, sun
 export CartesianState, KeplerianState
 
 # Export functions
