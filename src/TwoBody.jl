@@ -164,25 +164,26 @@ function CanonicalOrbit(orbit::CartesianOrbit)
     n_vec = mean_motion_vector(orbit)
     e_vec = eccentricity_vector(orbit)
 
+    local acos_chop(unit, arg) = arg ≈  1.0 ? acos(unit,  1.0) : 
+                                 arg ≈ -1.0 ? acos(unit, -1.0) : 
+                                 acos(unit, arg)
+
     Ω = ustrip(n_vec ⋅ ĵ) > 0 ? 
-            acos(u"rad", (n_vec ⋅ î) / norm(n_vec) ) :
-            2 * π * u"rad" - 
-                acos(u"rad", (n_vec ⋅ î) / norm(n_vec) )
+            acos_chop(u"rad", (n_vec ⋅ î) / norm(n_vec)) :
+            2π * u"rad" - acos_chop(u"rad", (n_vec ⋅ î) / norm(n_vec))
 
     ω = ustrip(e_vec ⋅ k̂) > 0 ?
-            acos(u"rad", (n_vec ⋅ e_vec) / (norm(n_vec) * norm(e_vec)) ) :
-            2 * π * u"rad" - 
-                acos(u"rad", (n_vec ⋅ e_vec) / (norm(n_vec) * norm(e_vec)) )
+            acos_chop(u"rad", (n_vec ⋅ e_vec) / (norm(n_vec) * norm(e_vec))) :
+            2π * u"rad" - acos_chop(u"rad", (n_vec ⋅ e_vec) / (norm(n_vec) * norm(e_vec)))
 
     ν = ustrip(orbit.r̅ ⋅  e_vec) > 0 ? 
-            acos(u"rad", (e_vec ⋅ orbit.r̅) / (norm(e_vec) * norm(orbit.r̅)) ) :
-            2 * π * u"rad" - 
-                acos(u"rad", (e_vec ⋅ orbit.r̅) / (norm(e_vec) * norm(orbit.r̅)) )
+            acos_chop(u"rad", (e_vec ⋅ orbit.r̅) / (norm(e_vec) * norm(orbit.r̅))) :
+            2π * u"rad" - acos_chop(u"rad", (e_vec ⋅ orbit.r̅) / (norm(e_vec) * norm(orbit.r̅)))
 
     return CanonicalOrbit( 
             norm(e_vec),
             upreferred(semimajor_axis(orbit)),
-            acos(u"rad", (h_vec ⋅ k̂) / norm(h_vec) ),
+            acos_chop(u"rad", (h_vec ⋅ k̂) / norm(h_vec)),
             Ω,
             ω,
             ν,
