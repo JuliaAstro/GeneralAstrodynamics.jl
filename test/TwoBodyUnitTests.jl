@@ -1,15 +1,12 @@
 using Test
 include("../src/TwoBody.jl")
 
-# Test Cartesian -> Canonical transformation
 @testset "Transformations" begin
     
-    # Set up test initial conditions
     r̅ = [0.0, 11681.0, 0.0] * u"km"
     v̅ = [5.134, 4.226, 2.787] * u"km/s"
     cart = CartesianOrbit(r̅, v̅, earth)
 
-    # Convert Cartesian form to Canonical form
     canon = CanonicalOrbit(cart)
 
     @test canon.a ≈ 24509.272364065997 * u"km"
@@ -17,8 +14,17 @@ include("../src/TwoBody.jl")
     @test canon.i ≈ 2.6442542356744734 * u"rad"
     @test canon.ν ≈ 1.5707355666179315 * u"rad"
 
-    calculated_cart = CartesianOrbit(canon)
-    @test calculated_cart ≈ cart
+    @test CartesianOrbit(canon) ≈ cart
+
+    e      =  0.3      * u"rad"
+    a      =  15000.   * u"km" + 1.0u"Rearth"
+    i      =  10.      * u"°"
+    Ω      =  0.       * u"°"
+    ω      =  10.      * u"°"
+    ν      =  0.       * u"°"
+    canon  =  CanonicalOrbit(e, a, i, Ω, ω, ν, earth)
+
+    @test isapprox(canon, CanonicalOrbit(CartesianOrbit(canon)), atol=1e-6)
 
 end
 
@@ -26,5 +32,6 @@ end
     r̅ = [0.0, 11681, 0.0] * u"km"
     v̅ = [5.134, 4.226, 2.787] * u"km/s"
     cart = CartesianOrbit(r̅, v̅, earth)
-    propagate(cart)
+    sols = propagate(cart)
+    @test CartesianOrbit(sols.r̅[end,:], sols.v̅[end,:], earth) ≈ cart 
 end

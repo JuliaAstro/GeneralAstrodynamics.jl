@@ -87,7 +87,7 @@ Keplarian representation for orbital state.
 """
 struct CanonicalOrbit <: AbstractOrbit
 
-    e::Unitful.DimensionlessQuantity
+    e::Unitful.Quantity
     a::Unitful.Length
     i::Unitful.Quantity
     Ω::Unitful.Quantity
@@ -164,7 +164,7 @@ function CanonicalOrbit(orbit::CartesianOrbit)
     n_vec = mean_motion_vector(orbit)
     e_vec = eccentricity_vector(orbit)
 
-    local acos_chop(unit, arg) = arg ≈  1.0 ? acos(unit,  1.0) : 
+    acos_chop(unit, arg) = arg ≈  1.0 ? acos(unit,  1.0) : 
                                  arg ≈ -1.0 ? acos(unit, -1.0) : 
                                  acos(unit, arg)
 
@@ -176,12 +176,12 @@ function CanonicalOrbit(orbit::CartesianOrbit)
             acos_chop(u"rad", (n_vec ⋅ e_vec) / (norm(n_vec) * norm(e_vec))) :
             2π * u"rad" - acos_chop(u"rad", (n_vec ⋅ e_vec) / (norm(n_vec) * norm(e_vec)))
 
-    ν = ustrip(orbit.r̅ ⋅  e_vec) > 0 ? 
+    ν = ustrip(orbit.r̅ ⋅  orbit.v̅) > 0 ? 
             acos_chop(u"rad", (e_vec ⋅ orbit.r̅) / (norm(e_vec) * norm(orbit.r̅))) :
             2π * u"rad" - acos_chop(u"rad", (e_vec ⋅ orbit.r̅) / (norm(e_vec) * norm(orbit.r̅)))
 
     return CanonicalOrbit( 
-            norm(e_vec),
+            norm(e_vec) * u"rad",
             upreferred(semimajor_axis(orbit)),
             acos_chop(u"rad", (h_vec ⋅ k̂) / norm(h_vec)),
             Ω,
@@ -708,22 +708,22 @@ function inclination(orbit::CanonicalOrbit)
 
 end
 
-function Base.isapprox(c1::CartesianOrbit, c2::CartesianOrbit; tolerance=1e-8)
+function Base.isapprox(c1::CartesianOrbit, c2::CartesianOrbit; atol=1e-8)
 
-    return all(ustrip.(c1.r̅ - c2.r̅) .< tolerance) &&
-           all(ustrip.(c1.r̅ - c2.r̅) .< tolerance) &&
+    return all(ustrip.(c1.r̅ - c2.r̅) .< atol) &&
+           all(ustrip.(c1.r̅ - c2.r̅) .< atol) &&
            (c1.body == c2.body)
 
 end
 
-function Base.isapprox(c1::CanonicalOrbit, c2::CanonicalOrbit; tolerance=1e-8)
+function Base.isapprox(c1::CanonicalOrbit, c2::CanonicalOrbit; atol=1e-8)
 
-    return ustrip(c1.e - c2.e) .< tolerance &&
-           ustrip(c1.a - c2.a) .< tolerance &&
-           ustrip(c1.i - c2.i) .< tolerance &&
-           ustrip(c1.Ω - c2.Ω) .< tolerance &&
-           ustrip(c1.ω - c2.ω) .< tolerance &&
-           ustrip(c1.ν - c2.ν) .< tolerance &&
+    return ustrip(upreferred(c1.e - c2.e)) .< atol &&
+           ustrip(upreferred(c1.a - c2.a)) .< atol &&
+           ustrip(upreferred(mod(c1.i, 180u"°") - mod(c2.i, 180u"°"))) .< atol &&
+           ustrip(upreferred(mod(c1.Ω, 360u"°") - mod(c2.Ω, 360u"°"))) .< atol &&
+           ustrip(upreferred(mod(c1.ω, 360u"°") - mod(c2.ω, 360u"°"))) .< atol &&
+           ustrip(upreferred(mod(c1.ν, 360u"°") - mod(c2.ν, 360u"°"))) .< atol &&
            c1.body == c2.body
 
 end
@@ -740,10 +740,10 @@ function Base.isequal(c1::CanonicalOrbit, c2::CanonicalOrbit)
 
     return c1.e == c2.e &&
            c1.a == c2.a &&
-           c1.i == c2.i &&
-           c1.Ω == c2.Ω &&
-           c1.ω == c2.ω &&
-           c1.ν == c2.ν &&
+           mod(c1.i, 180u"°") == mod(c2.i, 180u"°") &&
+           mod(c1.Ω, 360u"°") == mod(c2.Ω, 360u"°") &&
+           mod(c1.ω, 360u"°") == mod(c2.ω, 360u"°") &&
+           mod(c1.ν, 360u"°") == mod(c2.ν, 360u"°") &&
            c1.body == c2.body
 
 end
