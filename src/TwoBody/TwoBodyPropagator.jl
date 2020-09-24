@@ -26,8 +26,8 @@ end
 Uses OrdinaryDiffEq solvers to propagate `orbit` Δt into the future.
 All keyword arguments are passed directly to OrdinaryDiffEq solvers.
 """
-function propagate(orbit::AbstractOrbit, Δt::Number = orbital_period(orbit), 
-    ode_alg::OrdinaryDiffEqAlgorithm = Tsit5(); kwargs...)
+function propagate(orbit::T, Δt::N = orbital_period(orbit), 
+    ode_alg::OrdinaryDiffEqAlgorithm = Tsit5(); kwargs...) where {T<:TwoBodyState, N<:Number}
 
     # Referencing:
     # [1] https://diffeq.sciml.ai/v4.0/tutorials/ode_example.html

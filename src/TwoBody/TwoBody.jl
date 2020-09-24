@@ -21,7 +21,9 @@ using ComponentArrays
 @reexport using Unitful, UnitfulAstro, UnitfulAngles
 
 # Export data structures & constructors
-export CartesianState, KeplerianState
+export CartesianState, KeplerianState, TwoBodyState,
+       TwoBodyOrbit, AbstractConic, Circular, 
+       Elliptical, Parabolic, Hyperbolic
 
 # Export functions
 export  semimajor_axis, eccentricity, eccentricity_vector, inclination, true_anomoly, 
@@ -29,11 +31,13 @@ export  semimajor_axis, eccentricity, eccentricity_vector, inclination, true_ano
         instantaneous_radius, instantaneous_velocity, orbital_period, time_since_periapsis, 
         mean_motion, mean_motion_vector, semi_parameter, eccentric_anomoly,
         specific_angular_momentum_vector, specific_angular_momentum, specific_energy,  
-        isapprox, isequal, propagate, PropagationResult
+        isapprox, isequal, propagate, PropagationResult, kepler, TwoBodyOrbit, conic,
+        KeplerianElements
 
 # Include all module source code
 include("TwoBodyStates.jl")
 include("TwoBodyCalculations.jl")
 include("TwoBodyPropagator.jl")
+include("Kepler.jl")
 
 end 

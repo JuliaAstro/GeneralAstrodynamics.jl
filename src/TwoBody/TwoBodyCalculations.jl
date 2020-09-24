@@ -6,36 +6,92 @@
 # Constructors
 
 """
-    CartesianState(r̅, v̅, body)
+    conic(e::T) where T<:Number
 
-Constructor for Cartesian orbital representation.
+Returns the conic section, as specified by eccentricity `e`.
 """
-function CartesianState(r̅::AbstractArray{Unitful.Length}, 
-                        v̅::AbstractArray{Unitful.Velocity}, 
-                        body::Body)
+function conic(e::T) where T<:Number
 
-    return CartesianState(
-            SVector{3,Unitful.Quantity{Float64}}(r̅),
-            SVector{3,Unitful.Quantity{Float64}}(v̅),
-            body)
+    if e ≈ 0
+        return Circular
+    elseif e ≈ 1
+        return Parabolic
+    elseif 0 < e && e < 1
+        return Elliptical
+    else
+        return Hyperbolic
+    end
+
 end
 
 """
-    KeplerianState(e, a, i, Ω, ω, ν, body)
+    conic(r̅, v̅, body) where T<:TwoBodyState
 
-Constructor for Keplarian orbital representation.
+Returns conic section, as specified by Cartesian elements.
 """
-function KeplerianState(e::Unitful.DimensionlessQuantity, 
-                        a::Unitful.Length, 
-                        i::Unitful.DimensionlessQuantity, 
-                        Ω::Unitful.DimensionlessQuantity, 
-                        ω::Unitful.DimensionlessQuantity, 
-                        ν::Unitful.DimensionlessQuantity, 
-                        body::Body)
+function conic(r̅, v̅, body) where T<:TwoBodyState
 
-    return KeplerianState(
-            e, a, i, 
-            Ω, ω, ν, body)
+    return conic(eccentricity(r̅, v̅, body.μ))
+
+end
+
+"""
+    conic(orbit::T) where T<:TwoBodyState
+
+Returns `orbit`'s conic section.
+"""
+function conic(orbit::T) where T<:TwoBodyState
+
+    return conic(eccentricity(orbit))
+
+end
+
+"""
+    TwoBodyOrbit(r̅, v̅, body)
+    
+Construct `TwoBodyOrbit` from Cartesian elements.
+"""
+function TwoBodyOrbit(r̅, v̅, body)
+
+    cartesian = CartesianState(r̅, v̅, body)
+    keplerian = KeplerianState(cartesian)
+
+    return TwoBodyOrbit{conic(cartesian)}(
+                cartesian.r̅, cartesian.v̅, 
+                keplerian.e,keplerian.a,
+                keplerian.i,keplerian.Ω,
+                keplerian.ω,keplerian.ν,
+                body)
+
+end
+
+"""
+    TwoBodyOrbit(e, a, i, Ω, ω, ν, body)
+
+Construct `TwoBodyOrbit` from Keplerian elements.
+"""
+function TwoBodyOrbit(e, a, i, Ω, ω, ν, body)
+
+    keplerian = KeplerianState(e, a, i, Ω, ω, ν, body)
+    cartesian = CartesianState(keplerian)
+
+    return TwoBodyOrbit{conic(keplerian)}(
+                cartesian.r̅, cartesian.v̅, 
+                keplerian.e,keplerian.a,
+                keplerian.i,keplerian.Ω,
+                keplerian.ω,keplerian.ν,
+                body)
+
+end
+
+"""
+KeplerianState(orbit::CartesianState)
+
+Returns a Keplarian representation of a two-body orbital state.
+"""
+function KeplerianState(e, a, i, Ω, ω, ν, body::Body)
+
+    return KeplerianState{conic(e)}(e,a,i,Ω,ω,ν,body)
 
 end
 
@@ -81,11 +137,25 @@ function KeplerianState(orbit::CartesianState)
 
 end
 KeplerianState(orbit::KeplerianState) = orbit
+KeplerianState(orbit::TwoBodyOrbit) = KeplerianState{conic(orbit)}(map(el->getfield(orbit, el), [:e, :a, :i, :Ω, :ω, :ν, :body])...)
+
+"""
+    CartesianState(r̅, v̅, body)
+
+Constructor for Cartesian orbital representation.
+"""
+function CartesianState(r̅, v̅, body)
+
+    return CartesianState{conic(r̅,v̅,body)}(
+            SVector{3}(r̅),
+            SVector{3}(v̅),
+            body)
+end
 
 """
     CartesianState(orbit::KeplerianState)
 
-Returns a Cartesian representation of an orbital state.
+Returns a Cartesian representation of a Keplerian two-body orbital state.
 """
 function CartesianState(orbit::KeplerianState)
 
@@ -120,10 +190,11 @@ function CartesianState(orbit::KeplerianState)
 
     ᴵTₚ = (R_3ω * R_1i * R_3Ω)' 
 
-    return CartesianState(ᴵTₚ * r̅_perifocal, ᴵTₚ * v̅_perifocal, orbit.body)
+    return CartesianState{conic(orbit)}(ᴵTₚ * r̅_perifocal, ᴵTₚ * v̅_perifocal, orbit.body)
 
 end
 CartesianState(orbit::CartesianState) = orbit
+CartesianState(orbit::TwoBodyOrbit) = CartesianState(orbit.r̅, orbit.v̅, orbit.body)
 
 # Calculation (Helper) Functions
 
@@ -143,7 +214,7 @@ end
 
 Returns semimajor axis parameter, a, for a Keplarian representation.
 """
-function semimajor_axis(orbit::KeplerianState)
+function semimajor_axis(orbit::T) where T<:Union{KeplerianState, TwoBodyOrbit}
 
     return orbit.a
 
@@ -175,11 +246,11 @@ function specific_angular_momentum_vector(r̅, v̅)
 end
 
 """
-    specific_angular_momentum_vector(orbit::CartesianState)
+    specific_angular_momentum_vector(orbit::T) where T<:Union{CartesianState, TwoBodyOrbit}
 
 Returns specific angular momentum vector, h̅, for a Cartesian representation.
 """
-function specific_angular_momentum_vector(orbit::CartesianState)
+function specific_angular_momentum_vector(orbit::T) where T<:Union{CartesianState, TwoBodyOrbit}
 
     return specific_angular_momentum_vector(orbit.r̅, orbit.v̅)
 
@@ -197,22 +268,22 @@ function specific_angular_momentum(r̅, v̅)
 end
 
 """
-    specific_angular_momentum(orbit::CartesianState)
+    specific_angular_momentum(orbit::T) where T<:Union{CartesianState, TwoBodyOrbit}
 
 Returns scalar specific angular momentum, h, for a Cartesian representation.
 """
-function specific_angular_momentum(orbit::CartesianState)
+function specific_angular_momentum(orbit::T) where T<:Union{CartesianState, TwoBodyOrbit}
 
     return specific_angular_momentum(orbit.r̅, orbit.v̅)
 
 end
 
 """
-    specific_angular_momentum(orbit::TwoBodyOrbit)
+    specific_angular_momentum(orbit::T) where T<:TwoBodyState
 
 Returns scalar specific angular momentum, h, for any orbital representation.
 """
-function specific_angular_momentum(orbit::TwoBodyOrbit)
+function specific_angular_momentum(orbit::T) where T<:KeplerianState
 
     return apoapsis_radius(orbit) * apoapsis_velocity(orbit)
 
@@ -241,11 +312,11 @@ function specific_energy(r, v, μ)
 end
 
 """
-    specific_energy(orbit::TwoBodyOrbit)
+    specific_energy(orbit::T) where T<:TwoBodyState
 
 Returns specific orbital energy, ϵ, for any orbital representation.
 """
-function specific_energy(orbit::TwoBodyOrbit)
+function specific_energy(orbit::T) where T<:TwoBodyState
 
     return specific_energy(semimajor_axis(orbit), orbit.body.μ)
 
@@ -254,7 +325,7 @@ end
 """
     eccentricity_vector(r̅, v̅, μ)
 
-Returns orbital eccentricity, e.
+Returns orbital eccentricity vector e̅.
 """
 function eccentricity_vector(r̅, v̅, μ)
 
@@ -267,9 +338,20 @@ end
 
 Returns orbital eccentricity_vector, e̅.
 """
-function eccentricity_vector(orbit::CartesianState)
+function eccentricity_vector(orbit::T) where T<:Union{CartesianState, TwoBodyOrbit}
 
     return eccentricity_vector(orbit.r̅, orbit.v̅, orbit.body.μ)
+
+end
+
+"""
+    eccentricity(r̅, v̅, μ)
+
+Returns orbital eccentricity, e.
+"""
+function eccentricity(r̅, v̅, μ)
+
+    return norm(eccentricity_vector(r̅, v̅, μ))
 
 end
 
@@ -285,11 +367,11 @@ function eccentricity(orbit::CartesianState)
 end
 
 """
-    eccentricity(orbit::KeplerianState)
+    eccentricity(orbit::T) where T<:Union{KeplerianState, TwoBodyState}
 
 Returns orbital eccentricity, e.
 """
-function eccentricity(orbit::KeplerianState)
+function eccentricity(orbit::T) where T<:Union{KeplerianState, TwoBodyState}
 
     return orbit.e
 
@@ -307,25 +389,14 @@ function semi_parameter(a, e)
 end
 
 """
-    semi_parameter(orbit::TwoBodyOrbit
+    semi_parameter(orbit::TwoBodyState
 
 Returns semilatus parameter, p, for any orbital representation.
 """
-function semi_parameter(orbit::TwoBodyOrbit)
+function semi_parameter(orbit::T) where T<:TwoBodyState
 
     return semimajor_axis(orbit) * 
             (1 - eccentricity(orbit)^2)
-
-end
-
-"""
-    semi_parameter(orbit::KeplerianState)
-
-Returns semilatus parameter, p, for a Keplarian representation.
-"""
-function semi_parameter(orbit::KeplerianState)
-
-    return orbit.a * (1 - orbit.e^2)
 
 end
 
@@ -341,11 +412,11 @@ function instantaneous_radius(p, e, ν)
 end
 
 """
-    instantaneous_radius(orbit::TwoBodyOrbit)
+    instantaneous_radius(orbit::T) where T<:TwoBodyState
 
 Returns instantaneous radius, r, for any orbital representation.
 """
-function instantaneous_radius(orbit::TwoBodyOrbit)
+function instantaneous_radius(orbit::T) where T<:TwoBodyState
 
     return instantaneous_radius(semi_parameter(orbit),
                                 eccentricity(orbit),
@@ -376,11 +447,11 @@ function periapsis_radius(a, e)
 end
 
 """
-    periapsis_radius(orbit::TwoBodyOrbit)
+    periapsis_radius(orbit::T) where T<:TwoBodyState
 
 Returns periapsis radius, r_p, for any orbital representation.
 """
-function periapsis_radius(orbit::TwoBodyOrbit)
+function periapsis_radius(orbit::T) where T<:TwoBodyState
 
     return periapsis_radius(semimajor_axis(orbit), 
                             eccentricity(orbit))
@@ -399,11 +470,11 @@ function apoapsis_radius(a, e)
 end
 
 """
-    apoapsis_radius(orbit::TwoBodyOrbit)
+    apoapsis_radius(orbit::T) where T<:TwoBodyState
 
 Returns periapsis radius, r_a, for any orbital representation.
 """
-function apoapsis_radius(orbit::TwoBodyOrbit)
+function apoapsis_radius(orbit::T) where T<:TwoBodyState
 
     return apoapsis_radius(semimajor_axis(orbit), 
                            eccentricity(orbit))
@@ -411,11 +482,11 @@ function apoapsis_radius(orbit::TwoBodyOrbit)
 end
 
 """
-    periapsis_velocity(orbit::TwoBodyOrbit)
+    periapsis_velocity(orbit::T) where T<:TwoBodyState
 
 Returns periapsis velocity, v_p, for any orbital representation.
 """
-function periapsis_velocity(orbit::TwoBodyOrbit)
+function periapsis_velocity(orbit::T) where T<:TwoBodyState
 
     return instantaneous_velocity(
                 periapsis_radius(orbit), 
@@ -425,11 +496,11 @@ function periapsis_velocity(orbit::TwoBodyOrbit)
 end
 
 """
-    apoapsis_velocity(orbit::TwoBodyOrbit)
+    apoapsis_velocity(orbit::T) where T<:TwoBodyState
 
 Returns apoapsis velocity, v_a, for any orbital representation.
 """
-function apoapsis_velocity(orbit::TwoBodyOrbit)
+function apoapsis_velocity(orbit::T) where T<:TwoBodyState
 
     return instantaneous_velocity(
                 apoapsis_radius(orbit), 
@@ -439,11 +510,11 @@ function apoapsis_velocity(orbit::TwoBodyOrbit)
 end
 
 """
-    orbital_period(orbit::TwoBodyOrbit)
+    orbital_period(orbit::T) where T<:TwoBodyState
 
 Returns orbital period, Τ, for any orbital representation.
 """
-function orbital_period(orbit::TwoBodyOrbit)
+function orbital_period(orbit::T) where T<:TwoBodyState
 
     P = 2π * u"rad" * √(semimajor_axis(orbit)^3 / orbit.body.μ)
 
@@ -476,11 +547,11 @@ function true_anomoly(orbit::CartesianState)
 end
 
 """
-    true_anomoly(orbit::KeplerianState)
+    true_anomoly(orbit::T) where T<:Union{KeplerianState, TwoBodyState}
 
 Returns true anomoly, ν, for a Keplarian representation.
 """
-function true_anomoly(orbit::KeplerianState)
+function true_anomoly(orbit::T) where T<:Union{KeplerianState, TwoBodyState}
 
     return orbit.ν
 
@@ -498,11 +569,11 @@ function mean_motion(a, μ)
 end
 
 """
-    mean_motion(orbit::TwoBodyOrbit)
+    mean_motion(orbit::T) where T<:TwoBodyState
 
 Returns mean motion, n, for any orbital representation.
 """
-function mean_motion(orbit::TwoBodyOrbit)
+function mean_motion(orbit::T) where T<:TwoBodyState
 
 return mean_motion(
     semimajor_axis(orbit),
@@ -526,27 +597,31 @@ function mean_motion_vector(orbit::CartesianState)
 end
 
 """
-    eccentric_anomoly(e, ν)
+    eccentric_anomoly(orbit::T) where T<:TwoBodyState{Elliptical}
 
-Returns eccentric anomoly, E.
+Returns eccentric anomoly, E, for any orbital representation.
 """
-function eccentric_anomoly(e, ν)
+function eccentric_anomoly(orbit::T) where T<:TwoBodyState{Elliptical}
 
-    return atan( u"rad", (√(1 - e^2) * sin(ν)) / (e + cos(ν)) )
+    e = eccentricity(orbit)
+    ν = true_anomoly(orbit)
+
+    return acos(u"rad", (e + cos(ν) / (1 + e * cos(ν))))
 
 end
 
 """
-    eccentric_anomoly(orbit::TwoBodyOrbit)
+    eccentric_anomoly(orbit::T) where T<:TwoBodyState{Parabolic}
 
 Returns eccentric anomoly, E, for any orbital representation.
 """
-function eccentric_anomoly(orbit::TwoBodyOrbit)
+function eccentric_anomoly(orbit::T) where T<:TwoBodyState{Hyperbolic}
 
-    return eccentric_anomoly(
-            eccentricity(orbit),
-            true_anomoly(orbit))
+    e = eccentricity(orbit)
+    ν = true_anomoly(orbit)
 
+    return acosh(u"rad", (e + cos(ν) / (1 + e * cos(ν))))
+    
 end
 
 """
@@ -561,11 +636,11 @@ function time_since_periapsis(n, e, E)
 end
 
 """
-    time_since_periapsis(orbit::TwoBodyOrbit)
+    time_since_periapsis(orbit::T) where T<:TwoBodyState
 
 Returns time since periapsis, t, for any orbital representation.
 """
-function time_since_periapsis(orbit::TwoBodyOrbit)
+function time_since_periapsis(orbit::T) where T<:TwoBodyState
 
     return time_since_periapsis(
             mean_motion(orbit),
@@ -587,11 +662,11 @@ function inclination(orbit::CartesianState)
 end
 
 """
-    inclination(orbit::KeplerianState)
+    inclination(orbit::T) where T<:Union{KeplerianState, TwoBodyState}
 
 Returns orbital inclination, i, for a Keplarian representation.
 """
-function inclination(orbit::KeplerianState)
+function inclination(orbit::T) where T<:Union{KeplerianState, TwoBodyState}
 
     return orbit.i
 

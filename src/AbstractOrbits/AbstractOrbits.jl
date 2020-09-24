@@ -12,7 +12,7 @@ using Reexport
 export AbstractOrbit, Body, earth, sun
 
 """
-    AbstractOrbital
+    AbstractOrbit
 
 Abstract type for all orbital states.
 """
@@ -26,11 +26,11 @@ and the Sun are supported. All bodies are treated as point
 masses. 
 
 """
-struct Body{T<:Number}
-    μ::T
+struct Body
+    μ::Quantity
 end
 
-earth = Body(1.0u"GMearth")
-sun   = Body(1.0u"GMsun")
+earth = Body(upreferred(1.0u"GMearth"))
+sun   = Body(upreferred(1.0u"GMsun"))
 
 end
