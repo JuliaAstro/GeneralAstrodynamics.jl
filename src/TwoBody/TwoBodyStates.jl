@@ -49,6 +49,13 @@ Type for orbits in the hyperbolic conic section.
 struct Hyperbolic <: AbstractConic end
 
 """
+    Invalid
+
+Type for invalid orbits (orbits with NaN fields)
+"""
+struct Invalid <: AbstractConic end
+
+"""
 
     CartesianState(r̅, v̅, body)
 

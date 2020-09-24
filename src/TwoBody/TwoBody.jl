@@ -28,8 +28,8 @@ export CartesianState, KeplerianState, TwoBodyState,
 # Export functions
 export  semimajor_axis, eccentricity, eccentricity_vector, inclination, true_anomoly, 
         periapsis_radius, apoapsis_radius, periapsis_velocity, apoapsis_velocity,      
-        instantaneous_radius, instantaneous_velocity, orbital_period, time_since_periapsis, 
-        mean_motion, mean_motion_vector, semi_parameter, eccentric_anomoly,
+        radius, radius_vector, velocity, velocity_vector, orbital_period, 
+        time_since_periapsis, mean_motion, mean_motion_vector, semi_parameter, conic_anomoly,
         specific_angular_momentum_vector, specific_angular_momentum, specific_energy,  
         isapprox, isequal, propagate, PropagationResult, kepler, TwoBodyOrbit, conic,
         KeplerianElements

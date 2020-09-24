@@ -18,8 +18,10 @@ function conic(e::T) where T<:Number
         return Parabolic
     elseif 0 < e && e < 1
         return Elliptical
-    else
+    elseif e > 1
         return Hyperbolic
+    else
+        return Invalid
     end
 
 end
@@ -163,7 +165,7 @@ function CartesianState(orbit::KeplerianState)
     p = semi_parameter(orbit)
 
     # Find scalar radius
-    r = instantaneous_radius(p, orbit.e, orbit.ν)
+    r = radius(p, orbit.e, orbit.ν)
 
     # Set perifocal axes
     P̂=SVector{3, Float64}([1, 0, 0])
@@ -401,37 +403,96 @@ function semi_parameter(orbit::T) where T<:TwoBodyState
 end
 
 """
-    instantaneous_radius(p, e, ν)
+    radius(p, e, ν)
 
 Returns instantaneous radius, r.
 """
-function instantaneous_radius(p, e, ν)
+function radius(p, e, ν)
 
     return p / (1 + e * cos(ν))
 
 end
 
 """
-    instantaneous_radius(orbit::T) where T<:TwoBodyState
+    radius(orbit::KeplerianState)
 
-Returns instantaneous radius, r, for any orbital representation.
+Returns instantaneous radius, r.
 """
-function instantaneous_radius(orbit::T) where T<:TwoBodyState
+function radius(orbit::T) where T<:TwoBodyState 
 
-    return instantaneous_radius(semi_parameter(orbit),
+    return radius(semi_parameter(orbit),
                                 eccentricity(orbit),
                                 true_anomoly(orbit))
 
 end
 
 """
-    instantaneous_velocity(r, a, μ)
+    radius_vector(orbit::T) where T<:TwoBodyState
+
+Returns instantaneous radius vector, r̅.
+"""
+function radius_vector(orbit::KeplerianState)
+
+    return CartesianState(orbit).r̅
+
+end
+
+"""
+    radius_vector(orbit::KeplarianState)
+
+Returns instantaneous velocity, v.
+"""
+function radius_vector(orbit::T) where T<:Union{CartesianState, TwoBodyOrbit}
+
+    return orbit.r̅
+
+end
+
+
+"""
+    velocity(r, a, μ)
 
 Returns instantaneous velocity, v, for any orbital representation.
 """
-function instantaneous_velocity(r, a, μ)
+function velocity(r, a, μ)
 
     return √( (2 * μ / r) - (μ / a))
+
+end
+
+"""
+    velocity(orbit::KeplarianState)
+
+Returns instantaneous velocity, v.
+"""
+function velocity(orbit::T) where T<:TwoBodyState
+
+    return velocity(
+                radius(orbit), 
+                semimajor_axis(orbit), 
+                orbit.body.μ)
+
+end
+
+"""
+    velocity_vector(orbit::KeplarianState)
+
+Returns instantaneous velocity, v.
+"""
+function velocity_vector(orbit::KeplerianState)
+
+    return CartesianState(orbit).v̅
+
+end
+
+"""
+    velocity_vector(orbit::T) where T<:Union{CartesianState, TwoBodyOrbit}
+
+Returns instantaneous velocity vector, v̅.
+"""
+function velocity_vector(orbit::T) where T<:Union{CartesianState, TwoBodyOrbit}
+
+    return orbit.v̅
 
 end
 
@@ -488,7 +549,7 @@ Returns periapsis velocity, v_p, for any orbital representation.
 """
 function periapsis_velocity(orbit::T) where T<:TwoBodyState
 
-    return instantaneous_velocity(
+    return velocity(
                 periapsis_radius(orbit), 
                 semimajor_axis(orbit),
                 orbit.body.μ)
@@ -502,7 +563,7 @@ Returns apoapsis velocity, v_a, for any orbital representation.
 """
 function apoapsis_velocity(orbit::T) where T<:TwoBodyState
 
-    return instantaneous_velocity(
+    return velocity(
                 apoapsis_radius(orbit), 
                 semimajor_axis(orbit),
                 orbit.body.μ)
@@ -516,7 +577,7 @@ Returns orbital period, Τ, for any orbital representation.
 """
 function orbital_period(orbit::T) where T<:TwoBodyState
 
-    P = 2π * u"rad" * √(semimajor_axis(orbit)^3 / orbit.body.μ)
+    P = 2π * √(semimajor_axis(orbit)^3 / orbit.body.μ)
 
 end
 
@@ -597,11 +658,11 @@ function mean_motion_vector(orbit::CartesianState)
 end
 
 """
-    eccentric_anomoly(orbit::T) where T<:TwoBodyState{Elliptical}
+    conic_anomoly(orbit::T) where T<:TwoBodyState{Elliptical}
 
 Returns eccentric anomoly, E, for any orbital representation.
 """
-function eccentric_anomoly(orbit::T) where T<:TwoBodyState{Elliptical}
+function conic_anomoly(orbit::T) where T<:TwoBodyState{Elliptical}
 
     e = eccentricity(orbit)
     ν = true_anomoly(orbit)
@@ -611,11 +672,11 @@ function eccentric_anomoly(orbit::T) where T<:TwoBodyState{Elliptical}
 end
 
 """
-    eccentric_anomoly(orbit::T) where T<:TwoBodyState{Parabolic}
+conic_anomoly(orbit::T) where T<:TwoBodyState{Parabolic}
 
-Returns eccentric anomoly, E, for any orbital representation.
+Returns hyperbolic anomoly, E, for any orbital representation.
 """
-function eccentric_anomoly(orbit::T) where T<:TwoBodyState{Hyperbolic}
+function conic_anomoly(orbit::T) where T<:TwoBodyState{Hyperbolic}
 
     e = eccentricity(orbit)
     ν = true_anomoly(orbit)
