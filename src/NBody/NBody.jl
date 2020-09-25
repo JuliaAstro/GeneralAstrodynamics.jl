@@ -13,14 +13,16 @@ using Base: isapprox, isequal
 using LinearAlgebra: ×, ⋅, norm
 using DifferentialEquations
 using ComponentArrays
-using RecursiveArrayTools
+using Plots
 
 @reexport using StaticArrays
 @reexport using Unitful, UnitfulAstro, UnitfulAngles
 
-export BodyState, System, npropagate
+export BodyState, System, npropagate, NBodyPropagationResult, PropagationResult
 
 include("States.jl")
 include("Propagator.jl")
+include("plot.jl")
+
 
 end

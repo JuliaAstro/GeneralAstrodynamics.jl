@@ -15,6 +15,12 @@ struct BodyState
 
 end
 
+function BodyState(r̅::AbstractArray{Unitful.Length}, v̅::AbstractArray{Unitful.Velocity}, m::Unitful.Mass)
+    
+    return BodyState(SVector{3}(r̅), SVector{3}(v̅), m)
+
+end
+
 """
     System
 
