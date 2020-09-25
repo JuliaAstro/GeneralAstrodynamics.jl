@@ -19,8 +19,10 @@ using Reexport
 
 include("AbstractOrbits/AbstractOrbits.jl")
 include("TwoBody/TwoBody.jl")
+include("NBody/NBody.jl")
 
 @reexport using .AbstractOrbits
 @reexport using .TwoBody
+@reexport using .NBody
 
 end # module
