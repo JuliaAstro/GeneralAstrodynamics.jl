@@ -19,7 +19,7 @@ Abstract type for all orbital states.
 abstract type AbstractOrbit end
 
 """
-    Body(μ)
+    Body(μ, R)
 
 Type representing large bodies in space. Current only Earth 
 and the Sun are supported. All bodies are treated as point 
@@ -28,9 +28,10 @@ masses.
 """
 struct Body
     μ::Quantity
+    R::Quantity
 end
 
-earth = Body(upreferred(1.0u"GMearth"))
-sun   = Body(upreferred(1.0u"GMsun"))
+earth = Body(upreferred(1.0u"GMearth"), upreferred(1.0u"Rearth"))
+sun   = Body(upreferred(1.0u"GMsun"), upreferred(1.0u"Rsun"))
 
 end
