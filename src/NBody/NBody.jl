@@ -20,11 +20,11 @@ using Plots
 @reexport using StaticArrays
 @reexport using Unitful, UnitfulAstro, UnitfulAngles
 
-export BodyState, System, propagate, MultibodyPropagationResult
+export MultibodyState, MultibodySystem, propagate_multibody, MultibodyPropagationResult
 
-include("states.jl")
-include("propagator.jl")
-include("plot.jl")
+include("multibody_states.jl")
+include("propagate_multibody.jl")
+include("plot_multibody.jl")
 
 
 end

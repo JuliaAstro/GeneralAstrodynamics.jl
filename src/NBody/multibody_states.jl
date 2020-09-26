@@ -7,7 +7,7 @@
 
 Stores the state of each body in the NBody problem.
 """
-struct MultibodyState <: OrbitalState
+struct Body <: AbstractBody
    
     r̅::SVector{3, Unitful.Length{Float64}}
     v̅::SVector{3, Unitful.Velocity{Float64}}

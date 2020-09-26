@@ -9,7 +9,15 @@ module AbstractTypes
 using Reexport
 @reexport using Unitful, UnitfulAstro
 
-export OrbitalSystem, OrbitalState, PropagationResult
+export AbstractBody, OrbitalSystem, OrbitalState, PropagationResult
+
+""" 
+    AbstractBody
+
+Abstract type for bodies in space: both `CelestialBodies` (in
+`TwoBody.jl`), and `Bodies` (in `NBody.jl`).
+"""
+abstract type AbstractBody end
 
 """
     AbstractSystem

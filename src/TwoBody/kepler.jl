@@ -25,17 +25,25 @@ function kepler(orbit::T, Δtᵢ::N = orbital_period(orbit)) where {T<:TwoBodyOr
         χ₀ = sign(Δt) * √(-a) * log(ℯ, (-2 * orbit.body.μ / orbit.a * Δt) / 
                 (orbit.r̅ ⋅ orbit.v̅₀ + (sign(Δt) * √(-orbit.body.μ * orbit.a) * (1 - norm(orbit.r̅) / orbit.a))))
 
-    else
+    elseif conic_section == Parabolic
 
         Δt = Δtᵢ
         χ₀ = √(semi_parameter(orbit)) * tan(orbit.ν / 2)
 
+    else
+
+        @warn "Kepler's problem failed to converge."
+        return InvalidTwoBodyOrbit(orbit.body)
+
     end
 
     # Iteratively solve for χ
+    # TODO: Compare loop vs. recursion performance here.
+    # There shouldn't be too large of a difference, since this tends
+    # to converge with only a few iterations.
     χₙ, r, ψ, C₂, C₃ = χ(χ₀, Δt, orbit.r̅, orbit.v̅, orbit.a, orbit.body.μ)
 
-    # Convert to Cartesian representation
+    # Convert to a TwoBodyOrbit
     f = 1 - χₙ^2 / norm(orbit.r̅) * C₂
     ḟ = √(orbit.body.μ) / (norm(orbit.r̅) * r) * χₙ * (ψ * C₃ - 1)
     g = Δt - (χₙ^3 / √(orbit.body.μ)) * C₃

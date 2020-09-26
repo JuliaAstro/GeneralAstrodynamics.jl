@@ -94,3 +94,21 @@ struct TwoBodyOrbit{T<:AbstractConic} <: TwoBodySystem{T}
     body::CelestialBody
 
 end
+
+"""
+    InvalidTwoBodyOrbit(body::CelestialBody)
+
+Returns a `TwoBodyOrbit` with `NaN` state values. Used by 
+`propagate_twobody` and `kepler` to indicate failed convergance.
+"""
+InvalidTwoBodyOrbit(body::CelestialBody) = TwoBodyOrbit(SVector{3}(NaN * u"km", NaN * u"km", NaN * u"km"),
+                                                        SVector{3}(NaN * u"km", NaN * u"km", NaN * u"km"),
+                                                        body)
+
+"""
+    isinvalid(orbit::TwoBodyOrbit)
+
+Checks for `NaN` valued orbital states, which are used to
+indicate an invalid `TwoBodyOrbit`.
+"""
+isinvalid(orbit::TwoBodyOrbit)    = all(map(x->!isnan(getfield(orbit, x)), [:r̅, :v̅, :e, :a, :i, :Ω, :ω, :ν])) 
