@@ -1,33 +1,37 @@
 #
-#   TwoBodyPropagator.jl
+#   propagator.jl
 #
 #   Includes functions and structures for propagating orbits 
 #   within the two-body problem.
 #
 
 """
-    PropagationResult
+    TwobodyPropagationResult <: PropagationResult
 
 Wrapper for ODESolution, with optional units.
 """
-struct CartesianPropagationResult{timeType<:Number, posType<:Number, velType<:Number}
+struct TwobodyPropagationResult <: PropagationResult
 
-    t::AbstractVector{timeType}
-    r̅::AbstractMatrix{posType}
-    v̅::AbstractMatrix{velType}
+    t::AbstractVector{Unitful.Time{Float64}}
+    r̅::AbstractMatrix{Unitful.Length{Float64}}
+    v̅::AbstractMatrix{Unitful.Velocity{Float64}}
     ode_solution::ODESolution
 
 end
 
 """
-    propagate(orbit::AbstractOrbit, Δt::Number = orbital_period(orbit), 
-              ode_alg::OrdinaryDiffEqAlgorithm = Tsit5(); kwargs...)
+    propagate_twobody(orbit::TwoBodyOrbit, 
+                   Δt::Unitful.Time=orbital_period(orbit), 
+                   ode_alg::OrdinaryDiffEqAlgorithm=Tsit5(); 
+                   kwargs...)
 
 Uses OrdinaryDiffEq solvers to propagate `orbit` Δt into the future.
 All keyword arguments are passed directly to OrdinaryDiffEq solvers.
 """
-function propagate(orbit::T, Δt::N = orbital_period(orbit), 
-    ode_alg::OrdinaryDiffEqAlgorithm = Tsit5(); kwargs...) where {T<:TwoBodyState, N<:Number}
+function propagate_twobody(orbit::TwoBodyOrbit, 
+                   Δt::Unitful.Time=orbital_period(orbit), 
+                   ode_alg::OrdinaryDiffEqAlgorithm=Tsit5(); 
+                   kwargs...)
 
     # Referencing:
     # [1] https://diffeq.sciml.ai/v4.0/tutorials/ode_example.html
@@ -38,23 +42,22 @@ function propagate(orbit::T, Δt::N = orbital_period(orbit),
     defaults = (;  reltol=1e-14, abstol=1e-14)
     options = merge(defaults, kwargs)
 
-    # Ensure Cartesian representation (modified from [2])
-    cart = CartesianState(orbit)
-    r₀ = Array(ustrip.(u"km",cart.r̅))
-    v₀ = Array(ustrip.(u"km/s", cart.v̅))
+    # Initial conditions
+    r₀ = Array(ustrip.(u"km",orbit.r̅))
+    v₀ = Array(ustrip.(u"km/s", orbit.v̅))
 
     # Define the problem (modified from [2])
     problem = ODEProblem(
-    orbit_tic, 
+    twobody_tic, 
     ComponentArray((r̅=r₀, v̅=v₀)), 
     ustrip.(u"s", (0.0u"s", Δt)), 
-    ComponentArray((μ=ustrip(u"km^3 / s^2", cart.body.μ))))
+    ComponentArray((μ=ustrip(u"km^3 / s^2", orbit.body.μ))))
 
     # Solve the problem! 
     sols = solve(problem, ode_alg; options...)
 
     # Return PropagationResult structure
-    return CartesianPropagationResult(
+    return TwobodyPropagationResult(
         u"s" * sols.t,
         u"km" * vcat(map(x->x.r̅', sols.u)...),
         u"km/s" * vcat(map(x->x.v̅', sols.u)...),
@@ -64,7 +67,7 @@ function propagate(orbit::T, Δt::N = orbital_period(orbit),
 end
 
 
-function orbit_tic(du, u, p, t)
+function twobody_tic(du, u, p, t)
 
     # Note the citation [2] above - this function was copied and
     # modified from [2]. I originally had a 6 state function,

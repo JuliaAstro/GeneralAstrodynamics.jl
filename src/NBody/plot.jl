@@ -2,7 +2,7 @@
 # Plot orbits
 #
 
-function plot_state(sols::NBodyPropagationResult; kwargs...)
+function plot_state(sols::MultibodyPropagationResult; kwargs...)
 
     for i = 1:length(sols.body)
 

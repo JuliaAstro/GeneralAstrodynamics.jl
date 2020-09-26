@@ -17,7 +17,7 @@ abstract type AbstractConic end
 
 Abstract type for all two-body orbital representations.
 """
-abstract type TwoBodyState{T<:AbstractConic} <: AbstractOrbit end
+abstract type TwoBodySystem{T<:AbstractConic} <: OrbitalSystem end
 
 
 """
@@ -56,56 +56,41 @@ Type for invalid orbits (orbits with NaN fields)
 struct Invalid <: AbstractConic end
 
 """
+    CelestialBody(μ, R)
 
-    CartesianState(r̅, v̅, body)
+Type representing large bodies in space. Currently, only Earth 
+and the Sun are supported. All bodies are treated as point 
+masses. 
 
-Cartesian representation for orbital state.
 """
-struct CartesianState{T<:AbstractConic} <: TwoBodyState{T}
-
-    r̅::SVector{3, Unitful.Length}
-    v̅::SVector{3, Unitful.Velocity}
-    body::Body
-
+struct CelestialBody
+    μ::Quantity
+    R::Quantity
 end
 
-"""
-    KeplerianState(e, a, i , Ω, ω, ν, body)
-
-Keplarian representation for orbital state.
-"""
-struct KeplerianState{T<:AbstractConic} <: TwoBodyState{T}
-
-    e::Unitful.DimensionlessQuantity
-    a::Unitful.Length
-    i::Unitful.DimensionlessQuantity
-    Ω::Unitful.DimensionlessQuantity
-    ω::Unitful.DimensionlessQuantity
-    ν::Unitful.DimensionlessQuantity
-    body::Body
-
-end
+Earth = CelestialBody(upreferred(1.0u"GMearth"), upreferred(1.0u"Rearth"))
+Sun   = CelestialBody(upreferred(1.0u"GMsun"), upreferred(1.0u"Rsun"))
 
 """
     TwoBodyOrbit{T<:AbstractConic}
 
 Struct for storing TwoBody orbital states for all conics.
 """
-struct TwoBodyOrbit{T<:AbstractConic} <: TwoBodyState{T}
+struct TwoBodyOrbit{T<:AbstractConic} <: TwoBodySystem{T}
 
     # Cartesian representation
-    r̅::SVector{3, Unitful.Length}
-    v̅::SVector{3, Unitful.Velocity}
+    r̅::SVector{3, Unitful.Length{Float64}}
+    v̅::SVector{3, Unitful.Velocity{Float64}}
 
     # Keplerian representation
-    e::Unitful.DimensionlessQuantity
-    a::Unitful.Length
-    i::Unitful.DimensionlessQuantity
-    Ω::Unitful.DimensionlessQuantity
-    ω::Unitful.DimensionlessQuantity
-    ν::Unitful.DimensionlessQuantity
+    e::Union{Float64,Unitful.DimensionlessQuantity{Float64}}
+    a::Unitful.Length{Float64}
+    i::Unitful.DimensionlessQuantity{Float64}
+    Ω::Unitful.DimensionlessQuantity{Float64}
+    ω::Unitful.DimensionlessQuantity{Float64}
+    ν::Unitful.DimensionlessQuantity{Float64}
 
     # Body
-    body::Body
+    body::CelestialBody
 
 end

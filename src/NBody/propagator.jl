@@ -23,7 +23,7 @@ function nbody_tic(u, p, t)
 
 end
 
-function npropagate(sys::System, Δt::Unitful.Quantity, ode_alg::OrdinaryDiffEqAlgorithm = Tsit5(); kwargs...)
+function propagate(sys::MultibodySystem, Δt::Unitful.Quantity, ode_alg::OrdinaryDiffEqAlgorithm = Tsit5(); kwargs...)
    
     # Referencing:
     # [1] https://diffeq.sciml.ai/v4.0/tutorials/ode_example.html
@@ -44,13 +44,12 @@ function npropagate(sys::System, Δt::Unitful.Quantity, ode_alg::OrdinaryDiffEqA
 
     body_states = Vector()
     for i = 1:length(u₀.body)
-        push!(body_states, PropagationResult(
-            u"m" * vcat(map(x->x.body[i].r̅', sols.u)...),
-            u"m/s" * vcat(map(x->x.body[i].v̅', sols.u)...)
-        ))
+        push!(body_states, NamedTuple(ComponentArray(
+            r̅=(u"m" * vcat(map(x->x.body[i].r̅', sols.u)...)),
+            v̅=(u"m/s" * vcat(map(x->x.body[i].v̅', sols.u)...)))))
     end
 
-    return NBodyPropagationResult(
+    return MultibodyPropagationResult(
         u"s" * sols.t,
         body_states,
         sols
@@ -58,17 +57,10 @@ function npropagate(sys::System, Δt::Unitful.Quantity, ode_alg::OrdinaryDiffEqA
 
 end
 
-struct PropagationResult{posType<:Number, velType<:Number}
+struct MultibodyPropagationResult{T,B} <: PropagationResult
 
-    r̅::AbstractMatrix{posType}
-    v̅::AbstractMatrix{velType}
-
-end
-
-struct NBodyPropagationResult
-
-    t
-    body
+    t::T
+    body::B
     ode_solution::ODESolution
 
 end

@@ -17,11 +17,11 @@ module Astrodynamics
 
 using Reexport
 
-include("AbstractOrbits/AbstractOrbits.jl")
+include("AbstractTypes/AbstractTypes.jl")
 include("TwoBody/TwoBody.jl")
 include("NBody/NBody.jl")
 
-@reexport using .AbstractOrbits
+@reexport using .AbstractTypes
 @reexport using .TwoBody
 @reexport using .NBody
 

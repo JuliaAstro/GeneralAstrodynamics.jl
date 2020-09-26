@@ -6,6 +6,8 @@ and other celestial bodies.
 """
 module NBody
 
+using ..AbstractTypes
+
 using Reexport
 
 using Logging
@@ -18,10 +20,10 @@ using Plots
 @reexport using StaticArrays
 @reexport using Unitful, UnitfulAstro, UnitfulAngles
 
-export BodyState, System, npropagate, NBodyPropagationResult, PropagationResult
+export BodyState, System, propagate, MultibodyPropagationResult
 
-include("States.jl")
-include("Propagator.jl")
+include("states.jl")
+include("propagator.jl")
 include("plot.jl")
 
 

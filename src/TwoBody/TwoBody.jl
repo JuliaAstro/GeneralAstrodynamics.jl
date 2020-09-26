@@ -7,7 +7,7 @@ module TwoBody
 
 # Dependencies 
 
-using ..AbstractOrbits
+using ..AbstractTypes
 
 using Reexport
 
@@ -21,9 +21,8 @@ using ComponentArrays
 @reexport using Unitful, UnitfulAstro, UnitfulAngles
 
 # Export data structures & constructors
-export CartesianState, KeplerianState, TwoBodyState,
-       TwoBodyOrbit, AbstractConic, Circular, 
-       Elliptical, Parabolic, Hyperbolic
+export TwoBodySystem, TwoBodyOrbit, AbstractConic, Circular, 
+       Elliptical, Parabolic, Hyperbolic, Body, Earth, Sun
 
 # Export functions
 export  semimajor_axis, eccentricity, eccentricity_vector, inclination, true_anomoly, 
@@ -31,13 +30,13 @@ export  semimajor_axis, eccentricity, eccentricity_vector, inclination, true_ano
         radius, radius_vector, velocity, velocity_vector, orbital_period, 
         time_since_periapsis, mean_motion, mean_motion_vector, semi_parameter, conic_anomoly,
         specific_angular_momentum_vector, specific_angular_momentum, specific_energy,  
-        isapprox, isequal, propagate, PropagationResult, kepler, TwoBodyOrbit, conic,
-        KeplerianElements
+        isapprox, isequal, propagate_twobody, TwobodyPropagationResult, kepler, conic,
+        orbital_elements, cartesian
 
 # Include all module source code
-include("TwoBodyStates.jl")
-include("TwoBodyCalculations.jl")
-include("TwoBodyPropagator.jl")
-include("Kepler.jl")
+include("states.jl")
+include("calculations.jl")
+include("propagator.jl")
+include("kepler.jl")
 
 end 
