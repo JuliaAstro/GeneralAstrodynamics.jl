@@ -94,7 +94,9 @@ function orbital_elements(r̅, v̅, μ)
             acos_chop(u"rad", (e̅ ⋅ r̅) / (e * norm(r̅))) :
             2π * u"rad" - acos_chop(u"rad", (e̅ ⋅ r̅) / (e * norm(r̅)))
 
-    return e, a, i, Ω, ω, ν
+    return e, uconvert(u"km", a), uconvert(u"°", i), 
+           uconvert(u"°", Ω), uconvert(u"°", ω), 
+           uconvert(u"°", ν)
 
 end
 orbital_elements(r̅, v̅, body::CelestialBody) = orbital_elements(r̅, v̅, body.μ)
@@ -139,7 +141,7 @@ function cartesian(e, a, i, Ω, ω, ν, μ)
 
     ᴵTₚ = (R_3ω * R_1i * R_3Ω)' 
 
-    return ᴵTₚ * r̅ₚ, ᴵTₚ * v̅ₚ
+    return uconvert.(u"km", ᴵTₚ * r̅ₚ), uconvert(u"km/s", ᴵTₚ * v̅ₚ)
 
 end
 cartesian(e, a, i, Ω, ω, ν, body::CelestialBody) = cartesian(e, a, i, Ω, ω, ν, body.μ)
