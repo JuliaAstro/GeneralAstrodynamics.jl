@@ -1,20 +1,21 @@
+module TwoBodyUnitTests
+
 using Test
-include("../src/TwoBody.jl")
+
+using Astrodynamics
 
 @testset "Transformations" begin
     
     r̅ = [0.0, 11681.0, 0.0] * u"km"
     v̅ = [5.134, 4.226, 2.787] * u"km/s"
-    cart = CartesianOrbit(r̅, v̅, earth)
+    orbit = TwoBodyOrbit(r̅, v̅, Earth)
 
-    canon = CanonicalOrbit(cart)
+    @test orbit.a ≈ 24509.272364065997 * u"km"
+    @test orbit.e ≈ 0.7234527725236475
+    @test orbit.i ≈ 2.6442542356744734 * u"rad"
+    @test orbit.ν ≈ 1.5707355666179315 * u"rad"
 
-    @test canon.a ≈ 24509.272364065997 * u"km"
-    @test canon.e ≈ 0.7234527725236475
-    @test canon.i ≈ 2.6442542356744734 * u"rad"
-    @test canon.ν ≈ 1.5707355666179315 * u"rad"
-
-    @test CartesianOrbit(canon) ≈ cart
+    @test TwoBodyOrbit(map(x->getfield(orbit, x), [:e,:a, :i, :Ω, :ω, :ν])..., orbit.body) ≈ orbit
 
     e      =  0.3      * u"rad"
     a      =  15000.   * u"km" + 1.0u"Rearth"
@@ -22,16 +23,18 @@ include("../src/TwoBody.jl")
     Ω      =  0.       * u"°"
     ω      =  10.      * u"°"
     ν      =  0.       * u"°"
-    canon  =  CanonicalOrbit(e, a, i, Ω, ω, ν, earth)
+    orbit  =  TwoBodyOrbit(e, a, i, Ω, ω, ν, Earth)
 
-    @test isapprox(canon, CanonicalOrbit(CartesianOrbit(canon)), atol=1e-6)
+    @test isapprox(orbit, TwoBodyOrbit(orbit.r̅, orbit.v̅, orbit.body), atol=1e-6)
 
 end
 
-@testset "Propagator" begin
+@testset "Propagators" begin
     r̅ = [0.0, 11681, 0.0] * u"km"
     v̅ = [5.134, 4.226, 2.787] * u"km/s"
-    cart = CartesianOrbit(r̅, v̅, earth)
-    sols = propagate(cart)
-    @test CartesianOrbit(sols.r̅[end,:], sols.v̅[end,:], earth) ≈ cart 
+    orbit = TwoBodyOrbit(r̅, v̅, Earth)
+    sols = propagate_twobody(orbit)
+    @test isapprox(sols.step[end],kepler(orbit, orbital_period(orbit)), atol=1e-6) 
+end
+
 end
