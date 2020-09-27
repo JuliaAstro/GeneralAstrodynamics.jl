@@ -28,7 +28,7 @@ function propagate_multibody(sys::MultibodySystem, Δt::Unitful.Quantity, ode_al
     # Referencing:
     # [1] https://diffeq.sciml.ai/v4.0/tutorials/ode_example.html
     # [2] https://github.com/SciML/DifferentialEquations.jl/issues/393#issuecomment-658210231
-     # [3] https://discourse.julialang.org/t/smart-kwargs-dispatch/14571/15
+    # [3] https://discourse.julialang.org/t/smart-kwargs-dispatch/14571/15
 
     # Set default kwargs (modified from [3])
     defaults = (;  reltol=1e-14, abstol=1e-14)
@@ -42,16 +42,19 @@ function propagate_multibody(sys::MultibodySystem, Δt::Unitful.Quantity, ode_al
 
     sols = solve(problem, ode_alg; options...)
 
-    body_states = Vector()
-    for i = 1:length(u₀.body)
-        push!(body_states, NamedTuple(ComponentArray(
-            r̅=(u"m" * vcat(map(x->x.body[i].r̅', sols.u)...)),
-            v̅=(u"m/s" * vcat(map(x->x.body[i].v̅', sols.u)...)))))
-    end
+    bodies = map(x->MultibodySystem(
+                        map(i->Body(u"m" * x.body[i].r̅, u"m/s" * x.body[i].v̅, sys.body[i].m), 
+                        1:length(sys.body))), 
+                    sols.u)
+    #body_states = Vector()
+    #for i = 1:length(u₀.body)
+    #    push!(body_states, (r̅=(u"m" * vcat(map(x->x.body[i].r̅', sols.u)...)),
+    #                        v̅=(u"m/s" * vcat(map(x->x.body[i].v̅', sols.u)...))))
+    #end
 
     return MultibodyPropagationResult(
         u"s" * sols.t,
-        body_states,
+        bodies,
         sols
     )
 
@@ -60,7 +63,7 @@ end
 struct MultibodyPropagationResult{T,B} <: PropagationResult
 
     t::T
-    body::B
+    step::B
     ode_solution::ODESolution
 
 end

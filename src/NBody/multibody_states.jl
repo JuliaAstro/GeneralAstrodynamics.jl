@@ -3,7 +3,7 @@
 #
 
 """
-    MultibodyState
+    Body
 
 Stores the state of each body in the NBody problem.
 """
@@ -15,9 +15,9 @@ struct Body <: AbstractBody
 
 end
 
-function MultibodyState(r̅::AbstractArray{Unitful.Length}, v̅::AbstractArray{Unitful.Velocity}, m::Unitful.Mass)
+function Body(r̅::AbstractArray{Unitful.Length}, v̅::AbstractArray{Unitful.Velocity}, m::Unitful.Mass)
     
-    return MultibodyState(SVector{3}(Float64.(r̅)), SVector{3}(Float64.(v̅)), Float64(m))
+    return Body(SVector{3}(Float64.(r̅)), SVector{3}(Float64.(v̅)), Float64(m))
 
 end
 
@@ -28,6 +28,6 @@ Describes a system of `n` `MultibodyStates`'s.
 """
 struct MultibodySystem <: OrbitalSystem
 
-    body::Array{MultibodyState}
+    body::Array{Body}
 
 end

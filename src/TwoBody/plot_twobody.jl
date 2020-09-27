@@ -2,7 +2,7 @@
 # Plot orbits
 #
 
-function multibody_plot3d(sols::MultibodyPropagationResult; bodies=1:length(sols.step[1].body), kwargs...)
+function twobody_plot3d(sols::TwobodyPropagationResult; kwargs...)
    
     # Referencing:
     # [1] https://discourse.julialang.org/t/smart-kwargs-dispatch/14571/15
@@ -25,14 +25,11 @@ function multibody_plot3d(sols::MultibodyPropagationResult; bodies=1:length(sols
     options = merge(defaults, kwargs)
 
     fig = plot()
-    for i = bodies
 
-        plot!(fig, ustrip.(u"km", map(x -> x.body[i].r̅[1], sols.step)), 
-                   ustrip.(u"km", map(x -> x.body[i].r̅[2], sols.step)), 
-                   ustrip.(u"km", map(x -> x.body[i].r̅[3], sols.step)), 
-                   label=string("Body ", i))
-
-    end
+    plot!(fig, ustrip.(u"km", map(x->x.r̅[1], sols.step)), 
+               ustrip.(u"km", map(x->x.r̅[1], sols.step)), 
+               ustrip.(u"km", map(x->x.r̅[1], sols.step)), 
+               label="Orbit Position")
     plot!(fig; options...)
 
     display(fig)

@@ -10,11 +10,10 @@
 
 Wrapper for ODESolution, with optional units.
 """
-struct TwobodyPropagationResult <: PropagationResult
+struct TwobodyPropagationResult{T} <: PropagationResult
 
     t::AbstractVector{Unitful.Time{Float64}}
-    r̅::AbstractMatrix{Unitful.Length{Float64}}
-    v̅::AbstractMatrix{Unitful.Velocity{Float64}}
+    step::T
     ode_solution::ODESolution
 
 end
@@ -43,15 +42,15 @@ function propagate_twobody(orbit::TwoBodyOrbit,
     options = merge(defaults, kwargs)
 
     # Initial conditions
-    r₀ = Array(ustrip.(u"km",orbit.r̅))
-    v₀ = Array(ustrip.(u"km/s", orbit.v̅))
+    r₀ = Array(ustrip.(u"m",orbit.r̅))
+    v₀ = Array(ustrip.(u"m/s", orbit.v̅))
 
     # Define the problem (modified from [2])
     problem = ODEProblem(
     twobody_tic, 
     ComponentArray((r̅=r₀, v̅=v₀)), 
     ustrip.(u"s", (0.0u"s", Δt)), 
-    ComponentArray((μ=ustrip(u"km^3 / s^2", orbit.body.μ))))
+    ComponentArray((μ=ustrip(u"m^3 / s^2", orbit.body.μ))))
 
     # Solve the problem! 
     sols = solve(problem, ode_alg; options...)
@@ -59,8 +58,7 @@ function propagate_twobody(orbit::TwoBodyOrbit,
     # Return PropagationResult structure
     return TwobodyPropagationResult(
         u"s" * sols.t,
-        u"km" * vcat(map(x->x.r̅', sols.u)...),
-        u"km/s" * vcat(map(x->x.v̅', sols.u)...),
+        map(x -> TwoBodyOrbit(u"m" * x.r̅, u"m/s" * x.v̅, orbit.body), sols.u),
         sols
     )
 
