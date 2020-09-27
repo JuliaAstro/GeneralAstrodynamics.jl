@@ -34,7 +34,7 @@ end
     v̅ = [5.134, 4.226, 2.787] * u"km/s"
     orbit = TwoBodyOrbit(r̅, v̅, Earth)
     sols = propagate_twobody(orbit)
-    @test TwoBodyOrbit(sols.r̅[end,:], sols.v̅[end,:], Earth) ≈ kepler(orbit, orbital_period(orbit)) 
+    @test isapprox(sols.step[end],kepler(orbit, orbital_period(orbit)), atol=1e-6) 
 end
 
 end

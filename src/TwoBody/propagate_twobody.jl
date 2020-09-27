@@ -10,10 +10,10 @@
 
 Wrapper for ODESolution, with optional units.
 """
-struct TwobodyPropagationResult{T} <: PropagationResult
+struct TwobodyPropagationResult <: PropagationResult 
 
     t::AbstractVector{Unitful.Time{Float64}}
-    step::T
+    step
     ode_solution::ODESolution
 
 end
