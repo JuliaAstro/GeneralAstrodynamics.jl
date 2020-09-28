@@ -56,12 +56,13 @@ end
 function χ(χₙ, Δt, r̅₀, v̅₀, a, μ; iter=1, tol=1e-14, max_iter=100)
     
     r₀ = norm(r̅₀)
-    ψ = χₙ^2 / a
+    ψ = upreferred(χₙ^2 / a)
 
     if ψ > 1e-6
         C₂ = (1 - cos(√(ψ))) /  ψ
         C₃ = (√(ψ) - sin(√(ψ))) / √(ψ^3)
     elseif ψ < -1e-6
+        println(√(-ψ))
         C₂ = (1 - cosh(√(-ψ))) / ψ
         C₃ = (sinh(√(-ψ)) - √(-ψ)) / √((-ψ)^3)
     else
