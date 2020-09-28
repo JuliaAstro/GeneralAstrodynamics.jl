@@ -34,4 +34,6 @@ function twobody_plot3d(sols::TwobodyPropagationResult; kwargs...)
 
     display(fig)
 
+    return fig
+
 end
