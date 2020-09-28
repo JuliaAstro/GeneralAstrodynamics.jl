@@ -9,7 +9,7 @@
 
 Solves Kepler's Problem for `orbit` and `Δtᵢ`.
 """
-function kepler(orbit::T, Δtᵢ::N = orbital_period(orbit)) where {T<:TwoBodyOrbit, N<:Number}
+function kepler(orbit::T, Δtᵢ::N = orbital_period(orbit); tol=1e-14, max_iter=100) where {T<:TwoBodyOrbit, N<:Number}
 
     conic_section = conic(orbit)
 
@@ -41,7 +41,7 @@ function kepler(orbit::T, Δtᵢ::N = orbital_period(orbit)) where {T<:TwoBodyOr
     # TODO: Compare loop vs. recursion performance here.
     # There shouldn't be too large of a difference, since this tends
     # to converge with only a few iterations.
-    χₙ, r, ψ, C₂, C₃ = χ(χ₀, Δt, orbit.r̅, orbit.v̅, orbit.a, orbit.body.μ)
+    χₙ, r, ψ, C₂, C₃ = χ(χ₀, Δt, orbit.r̅, orbit.v̅, orbit.a, orbit.body.μ, tol=tol, max_iter=max_iter)
 
     # Convert to a TwoBodyOrbit
     f = 1 - χₙ^2 / norm(orbit.r̅) * C₂
