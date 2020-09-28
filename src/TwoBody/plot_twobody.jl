@@ -21,17 +21,19 @@ function twobody_plot3d(sols::TwobodyPropagationResult; kwargs...)
                     xlabel="X Position (km)", 
                     ylabel="Y Position (km)",
                     zlabel="Z Position (km)",
-                    title ="NBody Positions vs. Time")
+                    title ="Twobody Orbit Positions vs. Time")
     options = merge(defaults, kwargs)
 
     fig = plot()
 
     plot!(fig, ustrip.(u"km", map(x->x.r̅[1], sols.step)), 
-               ustrip.(u"km", map(x->x.r̅[1], sols.step)), 
-               ustrip.(u"km", map(x->x.r̅[1], sols.step)), 
+               ustrip.(u"km", map(x->x.r̅[2], sols.step)), 
+               ustrip.(u"km", map(x->x.r̅[3], sols.step)), 
                label="Orbit Position")
     plot!(fig; options...)
 
     display(fig)
+
+    return fig
 
 end

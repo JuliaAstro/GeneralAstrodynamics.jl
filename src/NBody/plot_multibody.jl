@@ -37,4 +37,6 @@ function multibody_plot3d(sols::MultibodyPropagationResult; bodies=1:length(sols
 
     display(fig)
 
+    return fig
+    
 end
