@@ -19,6 +19,7 @@ using ComponentArrays
 
 @reexport using StaticArrays
 @reexport using Unitful, UnitfulAstro, UnitfulAngles
+@reexport using Plots, Plots.PlotMeasures
 
 # Export data structures & constructors
 export TwoBodySystem, TwoBodyOrbit, AbstractConic, Circular, 
