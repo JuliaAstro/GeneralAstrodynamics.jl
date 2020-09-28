@@ -23,7 +23,7 @@ function kepler(orbit::T, Δtᵢ::N = orbital_period(orbit)) where {T<:TwoBodyOr
         
         Δt = Δtᵢ
         χ₀ = sign(Δt) * √(-orbit.a) * log(ℯ, (-2 * orbit.body.μ / orbit.a * Δt) / 
-                (orbit.r̅ ⋅ orbit.v̅₀ + (sign(Δt) * √(-orbit.body.μ * orbit.a) * (1 - norm(orbit.r̅) / orbit.a))))
+                (orbit.r̅ ⋅ orbit.v̅ + (sign(Δt) * √(-orbit.body.μ * orbit.a) * (1 - norm(orbit.r̅) / orbit.a))))
 
     elseif conic_section == Parabolic
 
