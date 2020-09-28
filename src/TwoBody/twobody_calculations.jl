@@ -141,7 +141,7 @@ function cartesian(e, a, i, Ω, ω, ν, μ)
 
     ᴵTₚ = (R_3ω * R_1i * R_3Ω)' 
 
-    return uconvert.(u"km", ᴵTₚ * r̅ₚ), uconvert(u"km/s", ᴵTₚ * v̅ₚ)
+    return uconvert.(u"km", ᴵTₚ * r̅ₚ), uconvert.(u"km/s", ᴵTₚ * v̅ₚ)
 
 end
 cartesian(e, a, i, Ω, ω, ν, body::CelestialBody) = cartesian(e, a, i, Ω, ω, ν, body.μ)
