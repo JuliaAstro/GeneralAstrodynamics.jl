@@ -66,10 +66,11 @@ masses.
 struct CelestialBody
     μ::Quantity
     R::Quantity
+    m::Quantity
 end
 
-Earth = CelestialBody(upreferred(1.0u"GMearth"), upreferred(1.0u"Rearth"))
-Sun   = CelestialBody(upreferred(1.0u"GMsun"), upreferred(1.0u"Rsun"))
+Earth = CelestialBody(upreferred(1.0u"GMearth"), upreferred(1.0u"Rearth"), upreferred(1.0u"Mearth"))
+Sun   = CelestialBody(upreferred(1.0u"GMsun"), upreferred(1.0u"Rsun"), upreferred(1.0u"Msun"))
 
 """
     TwoBodyOrbit{T<:AbstractConic}
