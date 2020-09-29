@@ -17,6 +17,10 @@ This package was created to learn more about Astrodynamics, and will be develope
 
 ## Usage
 
+#### Units are Required!
+
+Currently, `Astrodynamics.jl` `reexport`'s `Unitful`, `UnitfulAstro`, and `UnitfulAngles`. Units are required for all `TwoBody` and `NBody` computations. In the future, I'd like make units optional.
+
 #### Two-body Problem
 
 The `TwoBody` module handles Astrodynamics scenarios within the two-body problem. You can make a `TwoBodyOrbit` by specifying a `CelestialBody` (currently only `Earth` and `Sun` are supported), and a Cartesian or Keplerian state.
