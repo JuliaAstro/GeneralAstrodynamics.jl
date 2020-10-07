@@ -23,7 +23,7 @@ Currently, `Astrodynamics.jl` `reexport`'s `Unitful`, `UnitfulAstro`, and `Unitf
 
 #### Two-body Problem
 
-The `TwoBody` module handles Astrodynamics scenarios within the two-body problem. You can make a `TwoBodyOrbit` by specifying a `CelestialBody` (currently only `Earth` and `Sun` are supported), and a Cartesian or Keplerian state.
+The `TwoBody` module handles Astrodynamics scenarios within the two-body problem. You can make a `TwoBodyOrbit` by specifying a `CelestialBody` (Sun, Earth, Moon, Mars, etc.), and a Cartesian or Keplerian state.
 
 ```Julia
     # Cartesian state to TwoBodyOrbit
