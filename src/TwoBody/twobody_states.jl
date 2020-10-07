@@ -56,22 +56,61 @@ Type for invalid orbits (orbits with NaN fields)
 struct Invalid <: AbstractConic end
 
 """
-    CelestialBody(μ, R)
+    struct CelestialBody(m, R, μ)
+    CelestialBody(m, R) = CelestialBody(m, R, G * m)
 
-Type representing large bodies in space. Currently, only Earth 
-and the Sun are supported. All bodies are treated as point 
-masses. 
+Type representing large bodies in space. Currently, the following
+solar system bodies are supported:
 
+Sun, Mercury, Venus, Earth, Moon (Luna), Mars, Jupiter, 
+Saturn, Uranus, Neptune, Pluto.
 """
 struct CelestialBody
-    μ::Quantity
-    R::Quantity
     m::Quantity
+    R::Quantity
+    μ::Quantity
 end
+CelestialBody(m, R) = CelestialBody(m, R, G * m)
 
-Earth = CelestialBody(upreferred(1.0u"GMearth"), upreferred(1.0u"Rearth"), upreferred(1.0u"Mearth"))
-Sun   = CelestialBody(upreferred(1.0u"GMsun"), upreferred(1.0u"Rsun"), upreferred(1.0u"Msun"))
 
+# All data pulled from the following references:
+# [1] https://en.wikipedia.org/wiki/List_of_Solar_System_objects_by_size
+# [2] https://docs.astropy.org/en/stable/constants/#module-astropy.constants
+Sun = CelestialBody(
+    1.98840987e30u"kg",
+    696342.0u"km")
+Mercury = CelestialBody(
+    330.1e21u"kg",
+    2439.7u"km")
+Venus = CelestialBody(
+    4867.5e21u"kg",
+    6051.8u"km")
+Earth = CelestialBody(
+    5.97216787e24u"kg",
+    6371.0u"km")
+Moon = CelestialBody(
+    73.42e21u"kg",
+    1737.4u"km")
+Luna = Moon
+Mars = CelestialBody(
+    641.7e21u"kg",
+    3389.5u"km")
+Jupiter = CelestialBody(
+    1.8981246e27u"kg",
+    69911.0u"km")
+Saturn = CelestialBody(
+    568340e21u"kg",
+    58232.0u"km")
+Uranus = CelestialBody(
+    86813e21u"kg",
+    25362.0u"km")
+Neptune = CelestialBody(
+    102413e21u"kg",
+    24622.0u"km")
+Pluto = CelestialBody(
+    13.03e21u"kg",
+    1188.3u"km")
+    
 """
     TwoBodyOrbit{T<:AbstractConic}
 
