@@ -17,13 +17,19 @@ using LinearAlgebra: ×, ⋅, norm
 using DifferentialEquations
 using ComponentArrays
 
+# Newton's Gravitation Constant
+import PhysicalConstants.CODATA2018
+G = 1.0 * CODATA2018.G
+
 @reexport using StaticArrays
 @reexport using Unitful, UnitfulAstro, UnitfulAngles
 @reexport using Plots, Plots.PlotMeasures
 
-# Export data structures & constructors
+# Export data structures, constants, and constructors
 export TwoBodySystem, TwoBodyOrbit, AbstractConic, Circular, 
-       Elliptical, Parabolic, Hyperbolic, Body, Earth, Sun
+       Elliptical, Parabolic, Hyperbolic, Body, G, CelestialBody,
+       Sun, Mercury, Venus, Earth, Moon, Luna, Mars, Jupiter, 
+       Saturn, Uranus, Neptune, Pluto
 
 # Export functions
 export  semimajor_axis, eccentricity, eccentricity_vector, inclination, true_anomoly, 
