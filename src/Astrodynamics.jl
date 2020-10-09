@@ -20,9 +20,13 @@ using Reexport
 include("AbstractTypes/AbstractTypes.jl")
 include("TwoBody/TwoBody.jl")
 include("NBody/NBody.jl")
+include("Propagators/Propagators.jl")
+include("Plots/Plots.jl")
 
 @reexport using .AbstractTypes
 @reexport using .TwoBody
 @reexport using .NBody
+@reexport using .Propagators
+@reexport using .Plots
 
 end # module
