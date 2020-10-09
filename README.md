@@ -75,15 +75,12 @@ true_anomoly,
 periapsis_radius
 apoapsis_radius
 periapsis_velocity
-apoapsis_velocity,      
-radius
-radius_vector 
+apoapsis_velocity
+radius 
 velocity
-velocity_vector
 orbital_period
 time_since_periapsis
 mean_motion
-mean_motion_vector
 semi_parameter
 conic_anomoly
 specific_angular_momentum
