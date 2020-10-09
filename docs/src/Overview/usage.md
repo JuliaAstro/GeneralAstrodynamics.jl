@@ -1,27 +1,10 @@
-# Astrodynamics.jl
-A simple Astrodynamics package, written with Julia!
+## Getting Started
 
-## Motivation 
-
-This package was created to learn more about Astrodynamics, and will be developed alongside a Graduate Astrodynamics course at the University of Maryland. The package [JuliaSpace/Astrodynamics.jl](https://github.com/JuliaSpace/Astrodynamics.jl) is much more thought out, and is more fully featured. Basically, if you're not me, use that one!
-
-## Credits
-
-\[1\] Vallado, David A. Fundamentals of astrodynamics and applications. Vol. 12. Springer Science & Business Media, 2001.
-* All equations and algorithms within `Astrodynamics` are pulled from Vallado's _Fundamentals of Astrodynamics and Applications_, as well as course notes from ENAE 601 (Astrodynamics) at the University of Maryland.
-
-\[2\] [JuliaAstro/AstroBase.jl](https://github.com/JuliaAstro/AstroBase.jl)
-* `AstroBase` is referenced as a well thought-out Julia package structure example (I'm new to Julia!), as well as feature ideas.
-* For example: my first shot at implementing `TwoBody` used separate structures for Cartesian two-body orbits, and Keplerian two-body orbits. `AstroBase` seems to keep these in one structure - that's way better! 
-* Now my `Orbit` structure tracks both Cartesian and Keplerian representations for orbit conditions _in the background_. You provide a Cartesian or Keplerian representation to the `Orbit` constructor, and `TwoBody` handles the transformations behind the scenes.
-
-## Usage
-
-#### Units are Required!
+### Units are Required!
 
 Currently, `Astrodynamics.jl` `reexport`'s `Unitful`, `UnitfulAstro`, and `UnitfulAngles`. Units are required for all `TwoBody` and `NBody` computations. In the future, I'd like to make units optional.
 
-#### Two-body Problem
+### Two-body Problem
 
 The `TwoBody` module handles Astrodynamics scenarios within the two-body problem. You can make a `Orbit` by specifying a `CelestialBody` (Sun, Earth, Moon, Mars, etc.), and a Cartesian or Keplerian state.
 
@@ -63,7 +46,7 @@ plot3d(sols; title="Plots.jl keywords work!", xlabel="Woo")
 sols.step[end] ≈ orbit_later
 ```
 
-You may have noticed the `orbital_period` function. All common two-body problem equations have been included as functions with common arguments,`orbital_period(a, μ)`, and with `Astrodynamics.jl` structure arguments, `orbital_period(orbit)`. The current list of supported functions is shown below.
+You may have noticed the `orbital_period` function. All common two-body problem equations have been included as functions with common arguments,`orbital_period(a, μ)`, and with `Astrodynamics.jl` structure arguments, `orbital_period(orbit)`. The current list of supported functions is shown below, and is described in [`TwoBody` Calculations](@ref).
 
 ```Julia
 # Look at ~all~ those functions
@@ -75,9 +58,11 @@ true_anomoly,
 periapsis_radius
 apoapsis_radius
 periapsis_velocity
-apoapsis_velocity
-radius 
+apoapsis_velocity,      
+radius
+radius_vector 
 velocity
+velocity_vector
 orbital_period
 time_since_periapsis
 mean_motion
@@ -100,7 +85,7 @@ search: eccentricity eccentricity_vector
   Returns orbital eccentricity, e.
 ```
 
-#### NBody
+### NBody
 
 The `NBody` module helps to solve the classical gravitational `NBody` problem. This is the baby version - point mass bodies, and no relativity. But it's still useful!
 
@@ -140,10 +125,3 @@ As with a two-body `Orbit`, you can also plot each timestep in the n-body propag
 # Plot n-body propagation results
 plot3d(sols; title="Plots.jl keywords work!", xlabel="Woo")
 ```
-
-## More to come!
-
-~ Joe
-
-
-

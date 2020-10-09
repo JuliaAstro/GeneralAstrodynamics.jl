@@ -9,7 +9,7 @@ module AbstractTypes
 using Reexport
 @reexport using Unitful, UnitfulAstro
 
-export AbstractBody, OrbitalSystem, OrbitalState, PropagationResult
+export AbstractBody, OrbitalSystem, PropagationResult
 
 """ 
     AbstractBody

@@ -19,8 +19,7 @@ using StaticArrays
 
 @reexport using Unitful, UnitfulAstro, UnitfulAngles
 
-export Body, MultibodySystem, propagate_multibody, 
-       MultibodyPropagationResult, system_energy, 
+export Body, MultibodySystem, system_energy, 
        system_angular_momentum
 
 include("multibody_states.jl")
