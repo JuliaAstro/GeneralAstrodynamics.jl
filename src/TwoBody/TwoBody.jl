@@ -26,15 +26,15 @@ G = 1.0 * CODATA2018.G
 
 # Export data structures, constants, and constructors
 export TwoBodySystem, Orbit, AbstractConic, Circular, InvalidOrbit,
-       Elliptical, Parabolic, Hyperbolic, Body, CelestialBody,
+       Elliptical, Parabolic, Hyperbolic, Invalid, Body, CelestialBody,
        Sun, Mercury, Venus, Earth, Moon, Luna, Mars, Jupiter, 
        Saturn, Uranus, Neptune, Pluto
 
 # Export functions
 export  semimajor_axis, eccentricity, eccentricity_vector, inclination, true_anomoly, 
         periapsis_radius, apoapsis_radius, periapsis_velocity, apoapsis_velocity,      
-        radius, radius_vector, velocity, velocity_vector, orbital_period, 
-        time_since_periapsis, mean_motion, mean_motion_vector, semi_parameter, conic_anomoly,
+        radius, velocity, orbital_period, 
+        time_since_periapsis, mean_motion, semi_parameter, conic_anomoly,
         specific_angular_momentum_vector, specific_angular_momentum, specific_energy,  
         isapprox, isequal, TwobodyPropagationResult, kepler, conic,
         orbital_elements, cartesian, isinvalid
