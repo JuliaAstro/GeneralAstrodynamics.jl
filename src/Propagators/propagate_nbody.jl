@@ -2,6 +2,24 @@
 # Propagator for the NBody problem.
 #
 
+"""
+    MultibodyPropagationResult{T,B} <: PropagationResult
+
+Struct to hold n-body propagation results.
+"""
+struct MultibodyPropagationResult{T,B} <: PropagationResult
+
+    t::T
+    step::B
+    ode_solution::ODESolution
+
+end
+
+"""
+    nbody_tic
+
+Currently not exported. Used for n-body numerical integration.
+"""
 function nbody_tic(u, p, t)
 
     ∂u = ComponentArray(body = map(x->ComponentVector(r̅=SVector(0.0, 0.0, 0.0), v̅=SVector(0.0, 0.0, 0.0)), u.body))
@@ -23,7 +41,13 @@ function nbody_tic(u, p, t)
 
 end
 
-function propagate_multibody(sys::MultibodySystem, Δt::Unitful.Quantity, ode_alg::OrdinaryDiffEqAlgorithm = Tsit5(); kwargs...)
+"""
+    propagate(sys::MultibodySystem, Δt::Unitful.Quantity, ode_alg::OrdinaryDiffEqAlgorithm = Tsit5(); kwargs...)
+
+Uses OrdinaryDiffEq solvers to propagate `sys` Δt into the future.
+All keyword arguments are passed directly to OrdinaryDiffEq solvers.
+"""
+function propagate(sys::MultibodySystem, Δt::Unitful.Quantity, ode_alg::OrdinaryDiffEqAlgorithm = Tsit5(); kwargs...)
    
     # Referencing:
     # [1] https://diffeq.sciml.ai/v4.0/tutorials/ode_example.html
@@ -46,25 +70,12 @@ function propagate_multibody(sys::MultibodySystem, Δt::Unitful.Quantity, ode_al
                         map(i->Body(u"m" * x.body[i].r̅, u"m/s" * x.body[i].v̅, sys.body[i].m), 
                         1:length(sys.body))), 
                     sols.u)
-    #body_states = Vector()
-    #for i = 1:length(u₀.body)
-    #    push!(body_states, (r̅=(u"m" * vcat(map(x->x.body[i].r̅', sols.u)...)),
-    #                        v̅=(u"m/s" * vcat(map(x->x.body[i].v̅', sols.u)...))))
-    #end
 
     return MultibodyPropagationResult(
         u"s" * sols.t,
         bodies,
         sols
     )
-
-end
-
-struct MultibodyPropagationResult{T,B} <: PropagationResult
-
-    t::T
-    step::B
-    ode_solution::ODESolution
 
 end
     

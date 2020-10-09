@@ -5,11 +5,11 @@
 #
 
 """
-    kepler(orbit::T, Δtᵢ::N = orbital_period(orbit)) where {T<:TwoBodyOrbit, N<:Number}
+    kepler(orbit::T, Δtᵢ::N = orbital_period(orbit)) where {T<:Orbit, N<:Number}
 
 Solves Kepler's Problem for `orbit` and `Δtᵢ`.
 """
-function kepler(orbit::T, Δtᵢ::N = orbital_period(orbit); tol=1e-14, max_iter=100) where {T<:TwoBodyOrbit, N<:Number}
+function kepler(orbit::T, Δtᵢ::N = orbital_period(orbit); tol=1e-14, max_iter=100) where {T<:Orbit, N<:Number}
 
     conic_section = conic(orbit)
 
@@ -33,7 +33,7 @@ function kepler(orbit::T, Δtᵢ::N = orbital_period(orbit); tol=1e-14, max_iter
     else
 
         @warn "Kepler's problem failed to converge."
-        return InvalidTwoBodyOrbit(orbit.body)
+        return InvalidOrbit(orbit.body)
 
     end
 
@@ -43,13 +43,13 @@ function kepler(orbit::T, Δtᵢ::N = orbital_period(orbit); tol=1e-14, max_iter
     # to converge with only a few iterations.
     χₙ, r, ψ, C₂, C₃ = χ(χ₀, Δt, orbit.r̅, orbit.v̅, orbit.a, orbit.body.μ, tol=tol, max_iter=max_iter)
 
-    # Convert to a TwoBodyOrbit
+    # Convert to a Orbit
     f = 1 - χₙ^2 / norm(orbit.r̅) * C₂
     ḟ = √(orbit.body.μ) / (norm(orbit.r̅) * r) * χₙ * (ψ * C₃ - 1)
     g = Δt - (χₙ^3 / √(orbit.body.μ)) * C₃
     ġ = 1 - (χₙ^2 / r) * C₂
 
-    return TwoBodyOrbit(f * orbit.r̅ + g * orbit.v̅, ḟ * orbit.r̅ + ġ * orbit.v̅, orbit.body)
+    return Orbit(f * orbit.r̅ + g * orbit.v̅, ḟ * orbit.r̅ + ġ * orbit.v̅, orbit.body)
 
 end
 

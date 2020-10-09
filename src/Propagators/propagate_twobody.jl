@@ -8,7 +8,7 @@
 """
     TwobodyPropagationResult <: PropagationResult
 
-Wrapper for ODESolution, with optional units.
+Struct to hold two-body propagation results.
 """
 struct TwobodyPropagationResult <: PropagationResult 
 
@@ -19,7 +19,25 @@ struct TwobodyPropagationResult <: PropagationResult
 end
 
 """
-    propagate_twobody(orbit::TwoBodyOrbit, 
+    twobody_tic
+
+Currently not exported. Used for two-body numerical integration.
+"""
+function twobody_tic(du, u, p, t)
+
+    # Note the citation [2] above - this function was copied and
+    # modified from [2]. I originally had a 6 state function,
+    # but I had trouble with mixing units. The solution shown
+    # in [2] allows the use of mixed units through the ComponentArrays
+    # package.
+
+    du.r̅ =  u.v̅
+    du.v̅ = -p.μ * (u.r̅ ./ norm(u.r̅,2)^3)
+
+end
+
+"""
+    propagate_twobody(orbit::Orbit, 
                    Δt::Unitful.Time=orbital_period(orbit), 
                    ode_alg::OrdinaryDiffEqAlgorithm=Tsit5(); 
                    kwargs...)
@@ -27,7 +45,7 @@ end
 Uses OrdinaryDiffEq solvers to propagate `orbit` Δt into the future.
 All keyword arguments are passed directly to OrdinaryDiffEq solvers.
 """
-function propagate_twobody(orbit::TwoBodyOrbit, 
+function propagate(orbit::Orbit, 
                    Δt::Unitful.Time=orbital_period(orbit), 
                    ode_alg::OrdinaryDiffEqAlgorithm=Tsit5(); 
                    kwargs...)
@@ -58,22 +76,8 @@ function propagate_twobody(orbit::TwoBodyOrbit,
     # Return PropagationResult structure
     return TwobodyPropagationResult(
         u"s" * sols.t,
-        map(x -> TwoBodyOrbit(u"m" * x.r̅, u"m/s" * x.v̅, orbit.body), sols.u),
+        map(x -> Orbit(u"m" * x.r̅, u"m/s" * x.v̅, orbit.body), sols.u),
         sols
     )
-
-end
-
-
-function twobody_tic(du, u, p, t)
-
-    # Note the citation [2] above - this function was copied and
-    # modified from [2]. I originally had a 6 state function,
-    # but I had trouble with mixing units. The solution shown
-    # in [2] allows the use of mixed units through the ComponentArrays
-    # package.
-
-    du.r̅ =  u.v̅
-    du.v̅ = -p.μ * (u.r̅ ./ norm(u.r̅,2)^3)
 
 end

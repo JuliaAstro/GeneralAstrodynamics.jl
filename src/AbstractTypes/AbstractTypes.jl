@@ -14,8 +14,8 @@ export AbstractBody, OrbitalSystem, OrbitalState, PropagationResult
 """ 
     AbstractBody
 
-Abstract type for bodies in space: both `CelestialBodies` (in
-`TwoBody.jl`), and `Bodies` (in `NBody.jl`).
+Abstract type for bodies in space: both `CelestialBody`s (in
+`TwoBody.jl`), and `Body`s (in `NBody.jl`).
 """
 abstract type AbstractBody end
 
@@ -25,13 +25,6 @@ abstract type AbstractBody end
 Abstract type describing all states in select Astrodynamics problems.
 """
 abstract type OrbitalSystem end
-
-"""
-    AbstractState
-
-Abstract type for orbital states.
-"""
-abstract type OrbitalState end
 
 """
     PropagationResult

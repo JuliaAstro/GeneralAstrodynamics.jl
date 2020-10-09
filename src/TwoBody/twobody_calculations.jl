@@ -6,7 +6,7 @@
 
 """
     conic(e::T) where T<:Number
-    conic(orbit::TwoBodyOrbit)
+    conic(orbit::Orbit)
 
 Returns the conic section, as specified by eccentricity `e`.
 """
@@ -25,17 +25,17 @@ function conic(e::T) where T<:Number
     end
 
 end
-conic(orbit::TwoBodyOrbit) = conic(eccentricity(orbit))
+conic(orbit::Orbit) = conic(eccentricity(orbit))
 
 """
-    TwoBodyOrbit(r̅, v̅, body)
+    Orbit(r̅, v̅, body)
     
-Construct `TwoBodyOrbit` from Cartesian elements.
+Construct `Orbit` from Cartesian elements.
 """
-function TwoBodyOrbit(r̅, v̅, body)
+function Orbit(r̅, v̅, body)
 
 
-    return TwoBodyOrbit{conic(eccentricity(r̅, v̅, body.μ))}(
+    return Orbit{conic(eccentricity(r̅, v̅, body.μ))}(
                 SVector{3}(Float64.(r̅)), 
                 SVector{3}(Float64.(v̅)), 
                 orbital_elements(r̅, v̅, body)...,
@@ -44,14 +44,14 @@ function TwoBodyOrbit(r̅, v̅, body)
 end
 
 """
-    TwoBodyOrbit(e, a, i, Ω, ω, ν, body)
+    Orbit(e, a, i, Ω, ω, ν, body)
 
-Construct `TwoBodyOrbit` from Keplerian elements.
+Construct `Orbit` from Keplerian elements.
 """
-function TwoBodyOrbit(e, a, i, Ω, ω, ν, body)
+function Orbit(e, a, i, Ω, ω, ν, body)
 
     r̅, v̅ = cartesian(e, a, i, Ω, ω, ν, body)
-    return TwoBodyOrbit{conic(e)}(
+    return Orbit{conic(e)}(
                 SVector{3}(Float64.(r̅)), 
                 SVector{3}(Float64.(v̅)),
                 map(Float64, [e,a,i,Ω,ω,ν])...,
@@ -149,7 +149,7 @@ cartesian(e, a, i, Ω, ω, ν, body::CelestialBody) = cartesian(e, a, i, Ω, ω,
 
 """
     semimajor_axis(r, v, μ)
-    semimajor_axis(orbit::TwoBodyOrbit)
+    semimajor_axis(orbit::Orbit)
 
 Returns semimajor axis parameter, a.
 """
@@ -158,11 +158,11 @@ function semimajor_axis(r, v, μ)
     return inv( (2 / r) - (v^2 / μ) )
 
 end
-semimajor_axis(orbit::TwoBodyOrbit) = orbit.a
+semimajor_axis(orbit::Orbit) = orbit.a
 
 """
     specific_angular_momentum_vector(r̅, v̅)
-    specific_angular_momentum_vector(orbit::TwoBodyOrbit)
+    specific_angular_momentum_vector(orbit::Orbit)
 
 Returns specific angular momentum vector, h̅.
 """
@@ -171,32 +171,32 @@ function specific_angular_momentum_vector(r̅, v̅)
     return r̅ × v̅
 
 end
-specific_angular_momentum_vector(orbit::TwoBodyOrbit) = 
+specific_angular_momentum_vector(orbit::Orbit) = 
     specific_angular_momentum_vector(orbit.r̅, orbit.v̅)
 
 """
     specific_angular_momentum(r̅, v̅)
-    specific_angular_momentum(orbit::TwoBodyOrbit)
+    specific_angular_momentum(orbit::Orbit)
 
 Returns scalar specific angular momentum vector, h.
 """
 specific_angular_momentum(r̅, v̅) = norm(specific_angular_momentum_vector(r̅, v̅))
-specific_angular_momentum(orbit::TwoBodyOrbit) = specific_angular_momentum(orbit.r̅, orbit.v̅)
+specific_angular_momentum(orbit::Orbit) = specific_angular_momentum(orbit.r̅, orbit.v̅)
 
 """
     specific_energy(a, μ)
     specific_energy(r, v, μ)
-    specific_energy(orbit::TwoBodyOrbit)
+    specific_energy(orbit::Orbit)
 
 Returns specific orbital energy, ϵ.
 """
 specific_energy(a, μ) = ( -μ / (2 * a) )
 specific_energy(r, v, μ) = (v^2 / 2) - (μ / r)
-specific_energy(orbit::TwoBodyOrbit) = specific_energy(orbit.a, orbit.body.μ)
+specific_energy(orbit::Orbit) = specific_energy(orbit.a, orbit.body.μ)
 
 """
     eccentricity_vector(r̅, v̅, μ)
-    eccentricity_vector(orbit::TwoBodyOrbit)
+    eccentricity_vector(orbit::Orbit)
 
 Returns orbital eccentricity vector e̅.
 """
@@ -205,79 +205,79 @@ function eccentricity_vector(r̅, v̅, μ)
     return (1 / μ) * ((v̅ × specific_angular_momentum_vector(r̅, v̅)) - μ * r̅ / norm(r̅))
 
 end
-eccentricity_vector(orbit::TwoBodyOrbit) = eccentricity_vector(orbit.r̅, orbit.v̅, orbit.body.μ)
+eccentricity_vector(orbit::Orbit) = eccentricity_vector(orbit.r̅, orbit.v̅, orbit.body.μ)
 
 """
     eccentricity(r̅, v̅, μ)
-    eccentricity(orbit::TwoBodyOrbit)
+    eccentricity(orbit::Orbit)
 
 Returns orbital eccentricity, e.
 """
 eccentricity(r̅, v̅, μ) = norm(eccentricity_vector(r̅, v̅, μ))
-eccentricity(orbit::TwoBodyOrbit) = orbit.e
+eccentricity(orbit::Orbit) = orbit.e
 
 """
     semi_parameter(a, e)
-    semi_parameter(orbit::TwoBodyOrbit)
+    semi_parameter(orbit::Orbit)
 
 Returns semilatus parameter, p.
 """
 semi_parameter(a, e) = a * (1 - e^2)
-semi_parameter(orbit::TwoBodyOrbit) = semi_parameter(orbit.a, orbit.e)
+semi_parameter(orbit::Orbit) = semi_parameter(orbit.a, orbit.e)
 
 """
     radius(p, e, ν)
-    radius(orbit::TwoBodyOrbit)
+    radius(orbit::Orbit)
 
 Returns instantaneous radius, r.
 """
 radius(p, e, ν) = p / (1 + e * cos(ν))
-radius(orbit::TwoBodyOrbit) = radius(semi_parameter(orbit), orbit.e, orbit.ν)
+radius(orbit::Orbit) = radius(semi_parameter(orbit), orbit.e, orbit.ν)
 
 """
     velocity(r, a, μ)
-    velocity(orbit::TwoBodyOrbit)
+    velocity(orbit::Orbit)
 
 Returns instantaneous velocity, v, for any orbital representation.
 """
 velocity(r, a, μ) =  √( (2 * μ / r) - (μ / a))
-velocity(orbit::TwoBodyOrbit) = velocity(radius(orbit), orbit.a, orbit.body.μ)
+velocity(orbit::Orbit) = velocity(radius(orbit), orbit.a, orbit.body.μ)
 
 """
     periapsis_radius(a, e)
-    periapsis_radius(orbit::TwoBodyOrbit)
+    periapsis_radius(orbit::Orbit)
 
 Returns periapsis radius, r̅_p.
 """
 periapsis_radius(a, e) = a * (1 - e)
-periapsis_radius(orbit::TwoBodyOrbit) = periapsis_radius(orbit.a, orbit.e)
+periapsis_radius(orbit::Orbit) = periapsis_radius(orbit.a, orbit.e)
 
 """
     apoapsis_radius(a, e)
-    apoapsis_radius(orbit::TwoBodyOrbit)
+    apoapsis_radius(orbit::Orbit)
 
 Returns periapsis radius, r_a.
 """
 apoapsis_radius(a, e) = a * (1 + e)
-apoapsis_radius(orbit::TwoBodyOrbit) = apoapsis_radius(orbit.a, orbit.e)
+apoapsis_radius(orbit::Orbit) = apoapsis_radius(orbit.a, orbit.e)
 
 """
-    periapsis_velocity(orbit::T) where T<:TwoBodyOrbit
+    periapsis_velocity(orbit::T) where T<:Orbit
 
 Returns periapsis velocity, v_p, for any orbital representation.
 """
-function periapsis_velocity(orbit::TwoBodyOrbit)
+function periapsis_velocity(orbit::Orbit)
 
     return velocity(periapsis_radius(orbit), orbit.a, orbit.body.μ)
 
 end
 
 """
-    apoapsis_velocity(orbit::T) where T<:TwoBodyOrbit
+    apoapsis_velocity(orbit::T) where T<:Orbit
 
 Returns apoapsis velocity, v_a, for any orbital representation.
 """
-function apoapsis_velocity(orbit::TwoBodyOrbit)
+function apoapsis_velocity(orbit::Orbit)
 
     return velocity(
                 apoapsis_radius(orbit), 
@@ -288,12 +288,12 @@ end
 
 """
     orbital_period(a, μ)
-    orbital_period(orbit::TwoBodyOrbit)
+    orbital_period(orbit::Orbit)
 
 Returns the orbital period.
 """
 orbital_period(a, μ) = 2π * √(a^3 / μ)
-orbital_period(orbit::TwoBodyOrbit) = orbital_period(orbit.a, orbit.body.μ)
+orbital_period(orbit::Orbit) = orbital_period(orbit.a, orbit.body.μ)
 
 """
     true_anomoly(r, h, e, μ)
@@ -301,23 +301,23 @@ orbital_period(orbit::TwoBodyOrbit) = orbital_period(orbit.a, orbit.body.μ)
 Returns true anomoly, ν.
 """
 true_anomoly(r, h, e, μ) = acos( (h^2 - μ * r) / (μ * r * e) )
-true_anomoly(orbit::TwoBodyOrbit) = orbit.ν
+true_anomoly(orbit::Orbit) = orbit.ν
 
 """
     mean_motion(a, μ)
-    mean_motion(orbit::TwoBodyOrbit)
+    mean_motion(orbit::Orbit)
 
 Returns mean motion, n.
 """
 mean_motion(a, μ) = √(μ / a^3)
-mean_motion(orbit::TwoBodyOrbit) = mean_motion(orbit.a, orbit.μ)
+mean_motion(orbit::Orbit) = mean_motion(orbit.a, orbit.μ)
 
 """
-    mean_motion̅tor(orbit::TwoBodyOrbit)
+    mean_motion̅tor(orbit::Orbit)
 
 Returns mean motion vector, n̄.
 """
-function mean_motion̅tor(orbit::TwoBodyOrbit)
+function mean_motion̅tor(orbit::Orbit)
 
 #   î = SVector{3, Float64}([1, 0, 0]) 
 #   ĵ = SVector{3, Float64}([0, 1, 0]) 
@@ -328,13 +328,13 @@ function mean_motion̅tor(orbit::TwoBodyOrbit)
 end
 
 """
-    conic_anomoly(orbit::TwoBodyOrbit{Elliptical})
-    conic_anomoly(orbit::TwoBodyOrbit{Hyperbolic})
+    conic_anomoly(orbit::Orbit{Elliptical})
+    conic_anomoly(orbit::Orbit{Hyperbolic})
 
 Returns eccentric anomoly, E, parabolic anomoly, B, or hyperbolic 
 anomoly, H. 
 """
-function conic_anomoly(orbit::TwoBodyOrbit{Elliptical})
+function conic_anomoly(orbit::Orbit{Elliptical})
 
     e = eccentricity(orbit)
     ν = true_anomoly(orbit)
@@ -342,7 +342,7 @@ function conic_anomoly(orbit::TwoBodyOrbit{Elliptical})
     return acos(u"rad", (e + cos(ν) / (1 + e * cos(ν))))
 
 end
-function conic_anomoly(orbit::TwoBodyOrbit{Hyperbolic})
+function conic_anomoly(orbit::Orbit{Hyperbolic})
 
     e = eccentricity(orbit)
     ν = true_anomoly(orbit)
@@ -353,30 +353,30 @@ end
 
 """
     time_since_periapsis(n, e, E)
-    time_since_periapsis(orbit::TwoBodyOrbit)
+    time_since_periapsis(orbit::Orbit)
 
 Returns time since periapsis, t.
 """
 time_since_periapsis(n, e, E) = (E - e * sin(E)) / (n)
-time_since_periapsis(orbit::TwoBodyOrbit) = 
+time_since_periapsis(orbit::Orbit) = 
     time_since_periapsis(
         mean_motion(orbit),
         orbit.e,
         eccentric_anomoly(orbit))
 
 """
-    inclination(orbit::TwoBodyOrbit)
+    inclination(orbit::Orbit)
 
 Returns orbital inclination, i.
 """
-inclination(orbit::TwoBodyOrbit) =  orbit.i
+inclination(orbit::Orbit) =  orbit.i
 
 """
-    isapprox(::TwoBodyOrbit, ::TwoBodyOrbit; atol=1e-8)
+    isapprox(::Orbit, ::Orbit; atol=1e-8)
 
 Returns true if all elements in each system are within `atol` of the other.
 """
-function Base.isapprox(c1::TwoBodyOrbit, c2::TwoBodyOrbit; atol=1e-8)
+function Base.isapprox(c1::Orbit, c2::Orbit; atol=1e-8)
 
     return all(ustrip.(c1.r̅ - c2.r̅) .< atol) &&
            all(ustrip.(c1.r̅ - c2.r̅) .< atol) &&
@@ -391,11 +391,11 @@ function Base.isapprox(c1::TwoBodyOrbit, c2::TwoBodyOrbit; atol=1e-8)
 end
 
 """
-    isequal(::TwoBodyOrbit, ::TwoBodyOrbit)
+    isequal(::Orbit, ::Orbit)
 
 Returns true if all elements of each system are identically equal.
 """
-function Base.isequal(c1::TwoBodyOrbit, c2::TwoBodyOrbit)
+function Base.isequal(c1::Orbit, c2::Orbit)
 
     return all(c1.r̅ .== c2.r̅) &&
            all(c1.v̅ .== c2.v̅) &&

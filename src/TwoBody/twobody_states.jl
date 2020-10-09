@@ -112,11 +112,11 @@ Pluto = CelestialBody(
     1188.3u"km")
     
 """
-    TwoBodyOrbit{T<:AbstractConic}
+    Orbit{T<:AbstractConic}
 
 Struct for storing TwoBody orbital states for all conics.
 """
-struct TwoBodyOrbit{T<:AbstractConic} <: TwoBodySystem{T}
+struct Orbit{T<:AbstractConic} <: TwoBodySystem{T}
 
     # Cartesian representation
     r̅::SVector{3, Unitful.Length{Float64}}
@@ -136,19 +136,19 @@ struct TwoBodyOrbit{T<:AbstractConic} <: TwoBodySystem{T}
 end
 
 """
-    InvalidTwoBodyOrbit(body::CelestialBody)
+    InvalidOrbit(body::CelestialBody)
 
-Returns a `TwoBodyOrbit` with `NaN` state values. Used by 
+Returns a `Orbit` with `NaN` state values. Used by 
 `propagate_twobody` and `kepler` to indicate failed convergance.
 """
-InvalidTwoBodyOrbit(body::CelestialBody) = TwoBodyOrbit(SVector{3}(NaN * u"km", NaN * u"km", NaN * u"km"),
+InvalidOrbit(body::CelestialBody) = Orbit(SVector{3}(NaN * u"km", NaN * u"km", NaN * u"km"),
                                                         SVector{3}(NaN * u"km", NaN * u"km", NaN * u"km"),
                                                         body)
 
 """
-    isinvalid(orbit::TwoBodyOrbit)
+    isinvalid(orbit::Orbit)
 
 Checks for `NaN` valued orbital states, which are used to
-indicate an invalid `TwoBodyOrbit`.
+indicate an invalid `Orbit`.
 """
-isinvalid(orbit::TwoBodyOrbit)    = all(map(x->!isnan(getfield(orbit, x)), [:r̅, :v̅, :e, :a, :i, :Ω, :ω, :ν])) 
+isinvalid(orbit::Orbit)    = all(map(x->!isnan(getfield(orbit, x)), [:r̅, :v̅, :e, :a, :i, :Ω, :ω, :ν])) 
