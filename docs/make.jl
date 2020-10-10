@@ -1,4 +1,5 @@
-using Documenter, Astrodynamics
+using Documenter
+using Astrodynamics
 
 makedocs(modules=[Astrodynamics],
     format=Documenter.HTML(),
