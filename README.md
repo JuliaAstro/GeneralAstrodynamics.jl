@@ -1,3 +1,6 @@
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/cadojo/Astrodynamics.jl/RunTests/main)
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://cadojo.github.io/Astrodynamics.jl/stable)
+[![](https://img.shields.io/badge/docs-latest-lightblue.svg)](https://cadojo.github.io/Astrodynamics.jl/dev)
 # Astrodynamics.jl
 A simple Astrodynamics package, written with Julia!
 
@@ -17,13 +20,11 @@ This package was created to learn more about Astrodynamics, and will be develope
 
 ## Usage
 
-#### Units are Required!
-
-Currently, `Astrodynamics.jl` `reexport`'s `Unitful`, `UnitfulAstro`, and `UnitfulAngles`. Units are required for all `TwoBody` and `NBody` computations. In the future, I'd like to make units optional.
+Check out the [Getting Started](https://cadojo.github.io/Astrodynamics.jl/stable/Overview/usage/#Getting-Started) for usage examples, and more detail about using this package. Some quick examples are shown below!
 
 #### Two-body Problem
 
-The `TwoBody` module handles Astrodynamics scenarios within the two-body problem. You can make a `Orbit` by specifying a `CelestialBody` (Sun, Earth, Moon, Mars, etc.), and a Cartesian or Keplerian state.
+The `TwoBody` module handles Astrodynamics scenarios within the two-body problem. 
 
 ```Julia
 # Cartesian state to Orbit
@@ -62,49 +63,9 @@ plot3d(sols; title="Plots.jl keywords work!", xlabel="Woo")
 # Another true fact!
 sols.step[end] ≈ orbit_later
 ```
-
-You may have noticed the `orbital_period` function. All common two-body problem equations have been included as functions with common arguments,`orbital_period(a, μ)`, and with `Astrodynamics.jl` structure arguments, `orbital_period(orbit)`. The current list of supported functions is shown below.
-
-```Julia
-# Look at ~all~ those functions
-semimajor_axis
-eccentricity
-eccentricity_vector
-inclination
-true_anomoly, 
-periapsis_radius
-apoapsis_radius
-periapsis_velocity
-apoapsis_velocity
-radius 
-velocity
-orbital_period
-time_since_periapsis
-mean_motion
-semi_parameter
-conic_anomoly
-specific_angular_momentum
-specific_angular_momentum_vector
-specific_energy
-```
-
-Not sure how to use one of those? Check the docstrings in Julia's REPL!
-
-```Julia
-help?> eccentricity
-search: eccentricity eccentricity_vector
-
-  eccentricity(r̅, v̅, μ)
-  eccentricity(orbit::Orbit)
-
-  Returns orbital eccentricity, e.
-```
-
 #### NBody
 
-The `NBody` module helps to solve the classical gravitational `NBody` problem. This is the baby version - point mass bodies, and no relativity. But it's still useful!
-
-You can make your own `Body` by specifying an initial Cartesian state, and a mass.
+The `NBody` module helps to solve the classical gravitational `NBody` problem. 
 
 ```Julia
 # It's MY Earth, and I want it now
@@ -127,23 +88,12 @@ A `MultibodySystem` contains an array of `Bodies`.
 sys = MultibodySystem([myEarth, mySatellite])
 ```
 
-And you can __propagate__ a `MultibodySystem` through time to numerically find the final states for each `Body`. The package `DifferentialEquations.jl` is used for the numerical integration. For all __propagation__ functions in `Astrodynamics.jl`, you can specify `kwargs` as you would for a `DifferentialEquations.jl` `solve` call.
+The `propagate` and `plot3d` functions work with `MultibodySystem`s too!
 
 ```Julia
 # Propagate n-body system
 sols = propagate(sys, 10000u"s"; abstol=1e-14, reltol=1e-14)
-```
 
-As with a two-body `Orbit`, you can also plot each timestep in the n-body propagation.
-
-```Julia
 # Plot n-body propagation results
 plot3d(sols; title="Plots.jl keywords work!", xlabel="Woo")
 ```
-
-## More to come!
-
-~ Joe
-
-
-
