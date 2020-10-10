@@ -36,8 +36,6 @@ deploydocs(
     target = "build",
     repo   = "github.com/cadojo/Astrodynamics.jl",
     branch = "gh-pages",
-    deps   = nothing | <Function>,
-    make   = nothing | <Function>,
     devbranch = "main",
     devurl = "dev",
     versions = ["stable" => "v^", "v#.#", devurl => devurl],
