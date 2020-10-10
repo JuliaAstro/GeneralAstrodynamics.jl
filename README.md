@@ -1,5 +1,6 @@
-![RunTests](https://github.com/cadojo/Astrodynamics.jl/workflows/RunTests/badge.svg)
-![Documentation](https://github.com/cadojo/Astrodynamics.jl/workflows/Documentation/badge.svg)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/cadojo/Astrodynamics.jl/RunTests/main)
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://cadojo.github.io/Astrodynamics.jl/stable)
+[![](https://img.shields.io/badge/docs-latest-lightblue.svg)](https://cadojo.github.io/Astrodynamics.jl/dev)
 # Astrodynamics.jl
 A simple Astrodynamics package, written with Julia!
 
