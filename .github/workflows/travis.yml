@@ -1,5 +1,7 @@
 language: julia
 
+on: push
+
 os:
   - linux
 
