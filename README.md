@@ -1,6 +1,5 @@
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/cadojo/Astrodynamics.jl/RunTests/main)
-[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://cadojo.github.io/Astrodynamics.jl/stable)
-[![](https://img.shields.io/badge/docs-latest-lightblue.svg)](https://cadojo.github.io/Astrodynamics.jl/dev)
+![RunTests](https://github.com/cadojo/Astrodynamics.jl/workflows/RunTests/badge.svg)
+![Documentation](https://github.com/cadojo/Astrodynamics.jl/workflows/Documentation/badge.svg)
 # Astrodynamics.jl
 A simple Astrodynamics package, written with Julia!
 
@@ -46,11 +45,7 @@ orbit1 ≈ orbit2
 
 # For the rest of this section...
 orbit = orbit1
-```
 
-Now you can solve __Kepler's Prediction Problem__,  __propagate__ the satellite's trajectory over a specified intervol in time, and __plot__ the resultant trajectory with `Plots.jl`.
-
-```Julia
 # Kepler's Prediction problem
 orbit_later = kepler(orbit, orbital_period(orbit))
 
@@ -63,6 +58,7 @@ plot3d(sols; title="Plots.jl keywords work!", xlabel="Woo")
 # Another true fact!
 sols.step[end] ≈ orbit_later
 ```
+
 #### NBody
 
 The `NBody` module helps to solve the classical gravitational `NBody` problem. 
@@ -79,18 +75,10 @@ r̅₂ = [0.0, 11681.0, 0.0]u"km"
 v̅₂ = [5.134, 4.226, 2.787]u"km/s"
 m₂ = 1000.0u"kg"
 mySatellite = Body(r̅₂, v̅₂, m₂)
-```
 
-A `MultibodySystem` contains an array of `Bodies`.
-
-```Julia
 # Construct a MultibodySystem
 sys = MultibodySystem([myEarth, mySatellite])
-```
 
-The `propagate` and `plot3d` functions work with `MultibodySystem`s too!
-
-```Julia
 # Propagate n-body system
 sols = propagate(sys, 10000u"s"; abstol=1e-14, reltol=1e-14)
 
