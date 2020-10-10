@@ -76,18 +76,10 @@ r̅₂ = [0.0, 11681.0, 0.0]u"km"
 v̅₂ = [5.134, 4.226, 2.787]u"km/s"
 m₂ = 1000.0u"kg"
 mySatellite = Body(r̅₂, v̅₂, m₂)
-```
 
-A `MultibodySystem` contains an array of `Bodies`.
-
-```Julia
 # Construct a MultibodySystem
 sys = MultibodySystem([myEarth, mySatellite])
-```
 
-The `propagate` and `plot3d` functions work with `MultibodySystem`s too!
-
-```Julia
 # Propagate n-body system
 sols = propagate(sys, 10000u"s"; abstol=1e-14, reltol=1e-14)
 
