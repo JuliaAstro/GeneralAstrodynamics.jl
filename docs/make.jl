@@ -38,8 +38,4 @@ deploydocs(
     branch = "gh-pages",
     devbranch = "main",
     versions = ["stable" => "v^", "v#.#"],
-    push_preview    = false,
-    repo_previews   = repo,
-    branch_previews = branch,
 )
-
