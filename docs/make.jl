@@ -1,3 +1,4 @@
+push!(LOAD_PATH,"../src/")
 using Documenter
 using Astrodynamics
 
@@ -38,5 +39,5 @@ deploydocs(
     deps   = nothing,
     make   = nothing,
     devbranch = "main",
-    versions = ["stable" => "v^", "v#.#"],
+    versions = ["" => "v^", "v#.#"],
 )
