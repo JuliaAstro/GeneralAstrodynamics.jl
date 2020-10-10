@@ -1,3 +1,4 @@
 [deps]
+Astrodynamics = "673e7d9c-15b0-48d3-bce0-fab551f3a174"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 Roots = "f2b01f46-fcfa-551c-844a-d8ac1e96c665"
