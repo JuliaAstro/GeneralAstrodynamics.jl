@@ -46,11 +46,7 @@ orbit1 ≈ orbit2
 
 # For the rest of this section...
 orbit = orbit1
-```
 
-Now you can solve __Kepler's Prediction Problem__,  __propagate__ the satellite's trajectory over a specified intervol in time, and __plot__ the resultant trajectory with `Plots.jl`.
-
-```Julia
 # Kepler's Prediction problem
 orbit_later = kepler(orbit, orbital_period(orbit))
 
@@ -63,6 +59,7 @@ plot3d(sols; title="Plots.jl keywords work!", xlabel="Woo")
 # Another true fact!
 sols.step[end] ≈ orbit_later
 ```
+
 #### NBody
 
 The `NBody` module helps to solve the classical gravitational `NBody` problem. 
