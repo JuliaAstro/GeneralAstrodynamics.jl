@@ -32,7 +32,6 @@ makedocs(modules=[Astrodynamics],
 )
 
 deploydocs(
-    deploy_config = Documenter.GitHubActions,
     target = "build",
     repo="github.com/cadojo/Astrodynamics.jl.git",
     branch = "gh-pages",
