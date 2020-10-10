@@ -1,4 +1,5 @@
-using Documenter, Astrodynamics
+using Documenter
+using Astrodynamics
 
 makedocs(modules=[Astrodynamics],
     format=Documenter.HTML(),
@@ -31,17 +32,14 @@ makedocs(modules=[Astrodynamics],
 )
 
 deploydocs(
-    root   = "docs/",
+    deploy_config = Documenter.GitHubActions,
     target = "build",
-    repo   = "github.com/cadojo/Astrodynamics.jl",
+    repo="github.com/cadojo/Astrodynamics.jl.git",
     branch = "gh-pages",
-    deps   = nothing | <Function>,
-    make   = nothing | <Function>,
-    devbranch = "main",
+    deps   = nothing,
+    make   = nothing,
+    devbranch = "dev",
     devurl = "dev",
-    versions = ["stable" => "v^", "v#.#", devurl => devurl],
+    versions = ["stable" => "v^", "v#.#"],
     push_preview    = false,
-    repo_previews   = repo,
-    branch_previews = branch,
 )
-
