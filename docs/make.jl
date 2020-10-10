@@ -39,5 +39,5 @@ deploydocs(
     deps   = nothing,
     make   = nothing,
     devbranch = "main",
-    versions = ["" => "v^", "v#.#"],
+    versions = ["stable" => "v^", "v#.#"],
 )
