@@ -1,7 +1,10 @@
 name: Documentation
 
 on:
-  - push
+  push:
+    branches:
+      - main
+      - dev
 jobs:
   Documenter:
     name: Documentation
