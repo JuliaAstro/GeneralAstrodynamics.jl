@@ -19,7 +19,7 @@ after_success:
 
 jobs:
   include:
-    - stage: "Documentation"
+#    - stage: "Documentation"
       julia: 1.5
       os: linux
       script:
