@@ -1,3 +1,5 @@
+push!(LOAD_PATH,"..")
+
 using Documenter
 using Astrodynamics
 
