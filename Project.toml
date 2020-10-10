@@ -25,3 +25,5 @@ UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 
 [compat]
 Roots = "1.0"
+Documenter = "0.25"
+Reexport = "0.2"
