@@ -123,9 +123,9 @@ version = "0.3.3+0"
 
 [[ComponentArrays]]
 deps = ["ArrayInterface", "LinearAlgebra", "Requires"]
-git-tree-sha1 = "53aa2f82017d90713fe5a4e69196b296019ec302"
+git-tree-sha1 = "549e34aa650a0db908c27b863281228e61de28f9"
 uuid = "b0b7db55-cfe3-40fc-9ded-d10e2dbeff66"
-version = "0.8.5"
+version = "0.8.6"
 
 [[ConstructionBase]]
 git-tree-sha1 = "a2a6a5fea4d6f730ec4c18a76d27ec10e8ec1c50"
