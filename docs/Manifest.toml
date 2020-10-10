@@ -44,7 +44,7 @@ version = "1.3.0"
 
 [[Astrodynamics]]
 deps = ["ComponentArrays", "DifferentialEquations", "Documenter", "Lazy", "LinearAlgebra", "LiveServer", "Logging", "PhysicalConstants", "Plots", "RecursiveArrayTools", "Reexport", "Revise", "Roots", "StaticArrays", "Test", "Unitful", "UnitfulAngles", "UnitfulAstro"]
-git-tree-sha1 = "a92d2c9de53821d49584a6ecae1c5265556bc0a8"
+git-tree-sha1 = "cd118290739aa0d7642f28243f09baaa4ef07453"
 repo-rev = "dev"
 repo-url = "https://github.com/cadojo/Astrodynamics.jl"
 uuid = "673e7d9c-15b0-48d3-bce0-fab551f3a174"
@@ -66,10 +66,10 @@ uuid = "764a87c0-6b3e-53db-9096-fe964310641d"
 version = "2.5.0"
 
 [[Bzip2_jll]]
-deps = ["Libdl", "Pkg"]
-git-tree-sha1 = "03a44490020826950c68005cafb336e5ba08b7e8"
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
+git-tree-sha1 = "c3598e525718abcc440f69cc6d5f60dda0a1b61e"
 uuid = "6e34b625-4abd-537c-b88f-471c36dfa7a0"
-version = "1.0.6+4"
+version = "1.0.6+5"
 
 [[CEnum]]
 git-tree-sha1 = "215a9aa4a1f23fbd05b92769fdd62559488d70e9"
@@ -313,9 +313,9 @@ version = "0.4.0"
 
 [[FFMPEG_jll]]
 deps = ["Artifacts", "Bzip2_jll", "FreeType2_jll", "FriBidi_jll", "JLLWrappers", "LAME_jll", "LibVPX_jll", "Libdl", "Ogg_jll", "OpenSSL_jll", "Opus_jll", "Pkg", "Zlib_jll", "libass_jll", "libfdk_aac_jll", "libvorbis_jll", "x264_jll", "x265_jll"]
-git-tree-sha1 = "ef1fb99ef8f4727dd9ea46fc4c10920a955a8162"
+git-tree-sha1 = "13a934b9e74a8722bf1786c989de346a9602e695"
 uuid = "b22a6f82-2f65-5046-a5b2-351ab43fb4e5"
-version = "4.3.1+3"
+version = "4.3.1+2"
 
 [[FastClosures]]
 git-tree-sha1 = "acebe244d53ee1b461970f8910c235b259e772ef"
@@ -662,10 +662,10 @@ uuid = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
 version = "1.3.0"
 
 [[Ogg_jll]]
-deps = ["Libdl", "Pkg"]
-git-tree-sha1 = "4c3275cda1ba99d1244d0b82a9d0ca871c3cf66b"
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
+git-tree-sha1 = "a42c0f138b9ebe8b58eba2271c5053773bde52d0"
 uuid = "e7412a2a-1a6e-54c0-be00-318e2571c051"
-version = "1.3.4+1"
+version = "1.3.4+2"
 
 [[OpenBLAS_jll]]
 deps = ["CompilerSupportLibraries_jll", "Libdl", "Pkg"]
