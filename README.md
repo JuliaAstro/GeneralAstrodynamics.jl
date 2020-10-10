@@ -1,3 +1,5 @@
+[![Actions Status](https://github.com/{owner}/{repo}/workflows/{workflow_name}/badge.svg)](https://github.com/{owner}/{repo}/actions)
+
 # Astrodynamics.jl
 A simple Astrodynamics package, written with Julia!
 
