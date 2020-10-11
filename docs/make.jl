@@ -2,9 +2,9 @@ push!(LOAD_PATH,"../src/")
 using Documenter
 using UnitfulAstrodynamics
 
-makedocs(modules=[Astrodynamics],
+makedocs(modules=[UnitfulAstrodynamics],
     format=Documenter.HTML(),
-    sitename="Astrodynamics.jl",
+    sitename="UnitfulAstrodynamics.jl",
     pages=[
         "Home" => "index.md",
         "Overview" => Any[
@@ -34,7 +34,7 @@ makedocs(modules=[Astrodynamics],
 
 deploydocs(
     target = "build",
-    repo="github.com/cadojo/Astrodynamics.jl.git",
+    repo="github.com/cadojo/UnitfulAstrodynamics.jl.git",
     branch = "gh-pages",
     deps   = nothing,
     make   = nothing,
