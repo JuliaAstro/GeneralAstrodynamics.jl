@@ -1,5 +1,5 @@
 #
-# Run all unit tests in Astrodynamics.jl
+# Run all unit tests in UnitulAstrodynamics.jl
 #
 
 include("TwoBody/test_twobody.jl")
