@@ -1,7 +1,7 @@
 module PlotsUnitTests
 
 using Test
-using Astrodynamics
+using UnitfulAstrodynamics
 
 @testset "Plots" begin
     
