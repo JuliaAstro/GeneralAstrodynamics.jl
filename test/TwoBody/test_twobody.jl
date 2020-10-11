@@ -1,7 +1,7 @@
 module TwoBodyUnitTests
 
 using Test
-using Astrodynamics
+using UnitfulAstrodynamics
 
 @testset "Transformations" begin
     
