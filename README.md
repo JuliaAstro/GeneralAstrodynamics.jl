@@ -19,7 +19,7 @@ This package was created to learn more about Astrodynamics, and will be develope
 
 ## Usage
 
-Check out the [Getting Started](https://cadojo.github.io/Astrodynamics.jl/stable/Overview/usage/#Getting-Started) documentation for code examples, and more detail about using this package. Some quick examples are shown below!
+Check out the [Getting Started](https://cadojo.github.io/UnitfulAstrodynamics.jl/stable/Overview/usage/#Getting-Started) documentation for code examples, and more detail about using this package. Some quick examples are shown below!
 
 #### Two-body Problem
 
