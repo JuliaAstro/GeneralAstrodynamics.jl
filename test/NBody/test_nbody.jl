@@ -1,7 +1,7 @@
 module NBodyUnitTests
 
 using Test
-using Astrodynamics
+using UnitfulAstrodynamics
 
 r̅₁ = [0.0, 0.0, 0.0]u"km"
 v̅₁ = [0.0, 0.0, 0.0]u"km/s"
