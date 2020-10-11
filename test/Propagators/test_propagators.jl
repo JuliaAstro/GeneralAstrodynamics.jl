@@ -1,7 +1,7 @@
 module PropagatorUnitTests
 
 using Test
-using Astrodynamics
+using UnitfulAstrodynamics
 
 @testset "Propagators" begin
 

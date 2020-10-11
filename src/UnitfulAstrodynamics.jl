@@ -1,10 +1,10 @@
 """
-    Astrodynamics
+    UnitfulAstrodynamics
 
 Julia package developed alongside ENAE601 at the University of Maryland.
 Includes structures and functions to handle common Astrodynamics problems.
 """
-module Astrodynamics
+module UnitfulAstrodynamics
 
 # References:
 # 

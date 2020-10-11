@@ -1,6 +1,6 @@
 ## Package Overview
 
-`Astrodynamics.jl` is a `Unitful` Astrodynamics library, which includes `TwoBody` and `NBody` problem calculations, as well as orbit propagation and plotting!
+`UnitfulAstrodynamics.jl` is a `Unitful` Astrodynamics library, which includes `TwoBody` and `NBody` problem calculations, as well as orbit propagation and plotting!
 
 ## Motivation 
 

@@ -1,6 +1,6 @@
 push!(LOAD_PATH,"../src/")
 using Documenter
-using Astrodynamics
+using UnitfulAstrodynamics
 
 makedocs(modules=[Astrodynamics],
     format=Documenter.HTML(),
