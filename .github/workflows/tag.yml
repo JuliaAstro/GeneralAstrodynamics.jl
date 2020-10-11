@@ -1,0 +1,9 @@
+name: TagBot 
+on:
+  push:
+    branches:
+      - main
+jobs:
+  tagbot:
+    - name: Julia TagBot
+      uses: JuliaRegistries/TagBot@v1
