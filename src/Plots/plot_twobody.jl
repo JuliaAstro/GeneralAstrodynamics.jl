@@ -32,13 +32,11 @@ function plot3d(sols::TwobodyPropagationResult; kwargs...)
 
     fig = plot()
 
-    plot!(fig, ustrip.(u"km", map(x->x.r̅[1], sols.step)), 
-               ustrip.(u"km", map(x->x.r̅[2], sols.step)), 
-               ustrip.(u"km", map(x->x.r̅[3], sols.step)), 
+    plot!(fig, ustrip.(u"km", map(x->x.rᵢ[1], sols.step)), 
+               ustrip.(u"km", map(x->x.rᵢ[2], sols.step)), 
+               ustrip.(u"km", map(x->x.rᵢ[3], sols.step)), 
                label="Orbit Position")
     plot!(fig; options...)
-
-    display(fig)
 
     return fig
 

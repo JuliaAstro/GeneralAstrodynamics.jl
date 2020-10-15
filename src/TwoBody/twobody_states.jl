@@ -17,7 +17,7 @@ abstract type AbstractConic end
 
 Abstract type for all two-body orbital representations.
 """
-abstract type TwoBodySystem{T<:AbstractConic} <: OrbitalSystem end
+abstract type TwoBodySystem{C<:AbstractConic} <: OrbitalSystem end
 
 
 """
@@ -69,8 +69,8 @@ struct CelestialBody
     m::Quantity
     R::Quantity
     μ::Quantity
+    CelestialBody(m, R) = new(m, R, G * m)
 end
-CelestialBody(m, R) = CelestialBody(m, R, G * m)
 
 
 # All data pulled from the following references:
@@ -116,23 +116,94 @@ Pluto = CelestialBody(
 
 Struct for storing TwoBody orbital states for all conics.
 """
-struct Orbit{T<:AbstractConic} <: TwoBodySystem{T}
+struct Orbit{
+            C  <: AbstractConic,
+            F  <: AbstractFloat,
+            R  <: Unitful.Length{F},
+            V  <: Unitful.Velocity{F},
+            RP <: Unitful.Length{F},
+            VP <: Unitful.Velocity{F},
+            A  <: Unitful.Length{F},
+            I  <: Unitful.DimensionlessQuantity{F},
+            O  <: Unitful.DimensionlessQuantity{F},
+            W  <: Unitful.DimensionlessQuantity{F},
+            N  <: Unitful.DimensionlessQuantity{F}
+        } <: TwoBodySystem{C}
 
     # Cartesian representation
-    r̅::SVector{3, Unitful.Length{Float64}}
-    v̅::SVector{3, Unitful.Velocity{Float64}}
+    rᵢ::SVector{3, R}
+    vᵢ::SVector{3, V}
+
+    # Perifocal (in-orbital-plane) representation
+    rₚ::SVector{3, RP}
+    vₚ::SVector{3, VP}
 
     # Keplerian representation
-    e::Union{Float64,Unitful.DimensionlessQuantity{Float64}}
-    a::Unitful.Length{Float64}
-    i::Unitful.DimensionlessQuantity{Float64}
-    Ω::Unitful.DimensionlessQuantity{Float64}
-    ω::Unitful.DimensionlessQuantity{Float64}
-    ν::Unitful.DimensionlessQuantity{Float64}
+    e::F
+    a::A
+    i::I
+    Ω::O
+    ω::W
+    ν::N
 
     # Body
     body::CelestialBody
 
+end
+
+"""
+    show(io::IO, orbit::Orbit)
+
+Overloads Base.show() for ::Orbit instances.
+"""
+function Base.show(io::IO, orbit::Orbit)
+
+    println(io, crayon"green", conic(orbit), " Two Body Orbit:")
+    println(io, "")
+
+    println(io, crayon"cyan", "    Position (inertial):    [", 
+                ustrip(u"km", orbit.rᵢ[1]), ", ", 
+                ustrip(u"km", orbit.rᵢ[2]), ", ", 
+                ustrip(u"km", orbit.rᵢ[3]), "] ", u"km")
+    println(io, crayon"cyan", "    Velocity (inertial):    [", 
+                ustrip(u"km/s", orbit.vᵢ[1]), ", ", 
+                ustrip(u"km/s", orbit.vᵢ[2]), ", ", 
+                ustrip(u"km/s", orbit.vᵢ[3]), "] ", u"km/s")
+
+    println(io, "")
+    println(io, crayon"blue", "    Position (perifocal):   [", 
+                round(ustrip(u"km", orbit.rₚ[1]), digits=6), ", ", 
+                round(ustrip(u"km", orbit.rₚ[2]), digits=6), ", ", 
+                round(ustrip(u"km", orbit.rₚ[3]), digits=6), "] ", u"km/s")
+    println(io, crayon"blue", "    Velocity (perifocal):   [", 
+                round(ustrip(u"km/s", orbit.vₚ[1]), digits=6), ", ", 
+                round(ustrip(u"km/s", orbit.vₚ[2]), digits=6), ", ", 
+                round(ustrip(u"km/s", orbit.vₚ[3]), digits=6), "] ", u"km/s") 
+    
+    println(io, "")
+    println(io, crayon"light_magenta", 
+                "    Eccentricity:      ", 
+                orbit.e)    
+    println(io, crayon"light_magenta", 
+                "    Semimajor Axis:    ", 
+                ustrip(u"km", orbit.a), " ", u"km")
+    println(io, crayon"light_magenta", 
+                "    Inclination:       ", 
+                ustrip(u"°", orbit.i), u"°")
+    println(io, crayon"light_magenta", 
+                "    RAAN:              ", 
+                ustrip(u"°", orbit.Ω), u"°")
+    println(io, crayon"light_magenta", 
+                "    Arg. Periapsis:    ", 
+                ustrip(u"°", orbit.ω), u"°")
+    println(io, crayon"light_magenta", 
+                "    True Anomoly:      ", 
+                ustrip(u"°", orbit.ν), u"°")
+
+    println(io, "")
+    println(io, crayon"magenta", 
+                "    Body (μ):          ",
+                ustrip(u"km^3 / s^2", orbit.body.μ), " ", u"km^3/s^2")
 end
 
 """
@@ -141,9 +212,10 @@ end
 Returns a `Orbit` with `NaN` state values. Used by 
 `propagate_twobody` and `kepler` to indicate failed convergance.
 """
-InvalidOrbit(body::CelestialBody) = Orbit(SVector{3}(NaN * u"km", NaN * u"km", NaN * u"km"),
-                                                        SVector{3}(NaN * u"km", NaN * u"km", NaN * u"km"),
-                                                        body)
+InvalidOrbit(body::CelestialBody) = Orbit(
+    SVector{3}(NaN * u"km", NaN * u"km", NaN * u"km"),
+    SVector{3}(NaN * u"km/s", NaN * u"km/s", NaN * u"km/s"),
+    NaN * u"km", NaN * u"km/s", body)
 
 """
     isinvalid(orbit::Orbit)
@@ -151,4 +223,4 @@ InvalidOrbit(body::CelestialBody) = Orbit(SVector{3}(NaN * u"km", NaN * u"km", N
 Checks for `NaN` valued orbital states, which are used to
 indicate an invalid `Orbit`.
 """
-isinvalid(orbit::Orbit)    = all(map(x->!isnan(getfield(orbit, x)), [:r̅, :v̅, :e, :a, :i, :Ω, :ω, :ν])) 
+isinvalid(orbit::Orbit)    = all(map(x->!isnan(getfield(orbit, x)), [:rᵢ, :vᵢ, :e, :a, :i, :Ω, :ω, :ν])) 

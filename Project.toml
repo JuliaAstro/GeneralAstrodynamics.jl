@@ -5,6 +5,7 @@ version = "0.5.0"
 
 [deps]
 ComponentArrays = "b0b7db55-cfe3-40fc-9ded-d10e2dbeff66"
+Crayons = "a8cc5b0e-0ffa-5ad4-8c14-923d3ee1735f"
 DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
@@ -18,7 +19,6 @@ UnitfulAngles = "6fb2a4bd-7999-5318-a3b2-8ad61056cd98"
 UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 
 [compat]
-julia = "1"
 ComponentArrays = "0.8"
 DifferentialEquations = "6.15"
 PhysicalConstants = "0.2"
@@ -29,3 +29,4 @@ StaticArrays = "0.12"
 Unitful = "1.4"
 UnitfulAngles = "0.6"
 UnitfulAstro = "1.0"
+julia = "1"

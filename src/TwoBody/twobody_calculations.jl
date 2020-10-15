@@ -28,18 +28,33 @@ end
 conic(orbit::Orbit) = conic(eccentricity(orbit))
 
 """
-    Orbit(r̅, v̅, body)
+    Orbit(rᵢ, vᵢ, body)
     
 Construct `Orbit` from Cartesian elements.
 """
-function Orbit(r̅, v̅, body)
+function Orbit(rᵢ, vᵢ, body)
 
-
-    return Orbit{conic(eccentricity(r̅, v̅, body.μ))}(
-                SVector{3}(Float64.(r̅)), 
-                SVector{3}(Float64.(v̅)), 
-                orbital_elements(r̅, v̅, body)...,
-                body)
+    e, a, i, Ω, ω, ν = orbital_elements(rᵢ, vᵢ, body)
+    rₚ = perifocal(i,Ω,ν,rᵢ)
+    vₚ = perifocal(i,Ω,ν,vᵢ)
+    return Orbit{
+            conic(eccentricity(rᵢ, vᵢ, body.μ)),
+            Float64,
+            eltype(rᵢ),
+            eltype(vᵢ),
+            eltype(rₚ),
+            eltype(vₚ),
+            typeof(a),
+            typeof(i),
+            typeof(Ω),
+            typeof(ω),
+            typeof(ν)
+        }(SVector{3}(Float64.(rᵢ)), 
+          SVector{3}(Float64.(vᵢ)), 
+          SVector{3}(Float64.(rₚ)),
+          SVector{3}(Float64.(vₚ)),
+          map(Float64, [e,a,i,Ω,ω,ν])...,
+          body)
 
 end
 
@@ -50,22 +65,37 @@ Construct `Orbit` from Keplerian elements.
 """
 function Orbit(e, a, i, Ω, ω, ν, body)
 
-    r̅, v̅ = cartesian(e, a, i, Ω, ω, ν, body)
-    return Orbit{conic(e)}(
-                SVector{3}(Float64.(r̅)), 
-                SVector{3}(Float64.(v̅)),
-                map(Float64, [e,a,i,Ω,ω,ν])...,
-                body)
+    rᵢ, vᵢ = cartesian(e, a, i, Ω, ω, ν, body)
+    rₚ = perifocal(i,Ω,ν,rᵢ)
+    vₚ = perifocal(i,Ω,ν,vᵢ)
+    return Orbit{
+            conic(e),
+            Float64,
+            eltype(rᵢ),
+            eltype(vᵢ),
+            eltype(rₚ),
+            eltype(vₚ),
+            typeof(a),
+            typeof(i),
+            typeof(Ω),
+            typeof(ω),
+            typeof(ν)
+        }(SVector{3}(Float64.(rᵢ)), 
+          SVector{3}(Float64.(vᵢ)), 
+          SVector{3}(rₚ),
+          SVector{3}(vₚ),
+          map(Float64, [e,a,i,Ω,ω,ν])...,
+          body)
 
 end
 
 """
-    orbital_elements(r̅, v̅, body::CelestialBody)
+    orbital_elements(rᵢ, vᵢ, body::CelestialBody)
 
 Returns a Keplarian representation of a Cartesian orbital state.
 Algorithm taught in ENAE601.
 """
-function orbital_elements(r̅, v̅, μ)
+function orbital_elements(rᵢ, vᵢ, μ)
 
     î = SVector{3, Float64}([1, 0, 0]) 
     ĵ = SVector{3, Float64}([0, 1, 0]) 
@@ -75,10 +105,10 @@ function orbital_elements(r̅, v̅, μ)
                          val ≈ -1.0 ? acos(un, -1.0) : 
                          acos(un, val)
 
-    h̅ = specific_angular_momentum_vector(r̅, v̅)
-    a = semimajor_axis(norm(r̅), norm(v̅), μ)
-    n̅ = k̂ × specific_angular_momentum_vector(r̅, v̅)
-    e̅ = eccentricity_vector(r̅, v̅, μ)
+    h̅ = specific_angular_momentum_vector(rᵢ, vᵢ)
+    a = semimajor_axis(norm(rᵢ), norm(vᵢ), μ)
+    n̅ = k̂ × specific_angular_momentum_vector(rᵢ, vᵢ)
+    e̅ = eccentricity_vector(rᵢ, vᵢ, μ)
     e = norm(e̅)
     i = acos_chop(u"rad", (h̅ ⋅ k̂) / norm(h̅))
 
@@ -90,22 +120,24 @@ function orbital_elements(r̅, v̅, μ)
             acos_chop(u"rad", (n̅ ⋅ e̅) / (norm(n̅) * e)) :
             2π * u"rad" - acos_chop(u"rad", (n̅ ⋅ e̅) / (norm(n̅) * e))
 
-    ν = ustrip(r̅ ⋅  v̅) > 0 ? 
-            acos_chop(u"rad", (e̅ ⋅ r̅) / (e * norm(r̅))) :
-            2π * u"rad" - acos_chop(u"rad", (e̅ ⋅ r̅) / (e * norm(r̅)))
+    ν = ustrip(rᵢ ⋅  vᵢ) > 0 ? 
+            acos_chop(u"rad", (e̅ ⋅ rᵢ) / (e * norm(rᵢ))) :
+            2π * u"rad" - acos_chop(u"rad", (e̅ ⋅ rᵢ) / (e * norm(rᵢ)))
 
     return e, uconvert(u"km", a), uconvert(u"°", i), 
            uconvert(u"°", Ω), uconvert(u"°", ω), 
            uconvert(u"°", ν)
 
 end
-orbital_elements(r̅, v̅, body::CelestialBody) = orbital_elements(r̅, v̅, body.μ)
-
+orbital_elements(rᵢ, vᵢ, body::CelestialBody) = orbital_elements(rᵢ, vᵢ, body.μ)
+orbital_elements(orbit::Orbit) = orbit.e, orbit.a, orbit.i, 
+                                 orbit.Ω, orbit.ω, orbit.ν
 
 """
     cartesian(e, a, i, Ω, ω, ν, μ)
 
-Returns a Cartesian representation of a Keplerian two-body orbital state.
+Returns a Cartesian representation of a Keplerian two-body orbital state
+in an inertial frame, centered at the center of mass of the central body.
 Algorithm taught in ENAE601.
 """
 function cartesian(e, a, i, Ω, ω, ν, μ)
@@ -122,8 +154,23 @@ function cartesian(e, a, i, Ω, ω, ν, μ)
     Ŵ=SVector{3, Float64}([0, 0, 1])
 
     # Find state in Perifocal frame
-    r̅ₚ = (r * cos(ν) .* P̂ .+ r * sin(ν) .* Q̂)
-    v̅ₚ = √(μ/p) * ((-sin(ν) * P̂) .+ ((e + cos(ν)) .* Q̂))
+    rₚ = (r * cos(ν) .* P̂ .+ r * sin(ν) .* Q̂)
+    vₚ = √(μ/p) * ((-sin(ν) * P̂) .+ ((e + cos(ν)) .* Q̂))
+
+    return  uconvert.(u"km",    inertial(i,Ω,ω,rₚ)), 
+            uconvert.(u"km/s",  inertial(i,Ω,ω,vₚ))
+
+end
+cartesian(e, a, i, Ω, ω, ν, body::CelestialBody) = cartesian(e, a, i, Ω, ω, ν, body.μ)
+cartesian(orbit::Orbit) = orbit.rᵢ, orbit.vᵢ
+
+"""
+    inertial(i, Ω, ω, vec₃)
+    inertial(orbit::Orbit)
+
+Transforms 3-vector from Perifocal frame to Cartesian space (x,y,z).
+"""
+function inertial(i, Ω, ω, vec₃)
 
     # Set up Perifocal ⟶ Cartesian conversion
     R_3Ω =  SMatrix{3,3,Float64}(
@@ -139,13 +186,41 @@ function cartesian(e, a, i, Ω, ω, ν, μ)
             -sin(ω)           cos(ω)            0.
              0.               0.                1.])
 
-    ᴵTₚ = (R_3ω * R_1i * R_3Ω)' 
+    ᴵTₚ = transpose(R_3ω * R_1i * R_3Ω)
 
-    return uconvert.(u"km", ᴵTₚ * r̅ₚ), uconvert.(u"km/s", ᴵTₚ * v̅ₚ)
+    return ᴵTₚ * vec₃
 
 end
-cartesian(e, a, i, Ω, ω, ν, body::CelestialBody) = cartesian(e, a, i, Ω, ω, ν, body.μ)
+inertial(orbit::Orbit) = orbit.rᵢ, orbit.vᵢ
 
+"""
+    perifocal(i, Ω, ω, vec₃)
+    perifocal(orbit::Orbit)
+
+Transforms 3-vector from Cartesian frame to Perifocal frame.
+"""
+function perifocal(i, Ω, ω, vec₃)
+
+    # Set up Perifocal ⟶ Cartesian conversion
+    R_3Ω =  SMatrix{3,3,Float64}(
+            [cos(Ω)           sin(Ω)            0.;
+            -sin(Ω)           cos(Ω)            0.;
+             0.               0.                1.])
+    R_1i = SMatrix{3,3,Float64}(
+            [1.               0.                0.;
+             0.               cos(i)            sin(i);
+             0.              -sin(i)            cos(i)])
+    R_3ω = SMatrix{3,3,Float64}(
+            [cos(ω)           sin(ω)            0.
+            -sin(ω)           cos(ω)            0.
+             0.               0.                1.])
+
+    ᵖTᵢ = R_3ω * R_1i * R_3Ω
+
+    return ᵖTᵢ * vec₃
+
+end
+perifocal(orbit::Orbit) = orbit.rₚ, orbit.vₚ
 
 """
     semimajor_axis(r, v, μ)
@@ -161,27 +236,27 @@ end
 semimajor_axis(orbit::Orbit) = orbit.a
 
 """
-    specific_angular_momentum_vector(r̅, v̅)
+    specific_angular_momentum_vector(rᵢ, vᵢ)
     specific_angular_momentum_vector(orbit::Orbit)
 
 Returns specific angular momentum vector, h̅.
 """
-function specific_angular_momentum_vector(r̅, v̅)
+function specific_angular_momentum_vector(rᵢ, vᵢ)
 
-    return r̅ × v̅
+    return rᵢ × vᵢ
 
 end
 specific_angular_momentum_vector(orbit::Orbit) = 
-    specific_angular_momentum_vector(orbit.r̅, orbit.v̅)
+    specific_angular_momentum_vector(orbit.rᵢ, orbit.vᵢ)
 
 """
-    specific_angular_momentum(r̅, v̅)
+    specific_angular_momentum(rᵢ, vᵢ)
     specific_angular_momentum(orbit::Orbit)
 
 Returns scalar specific angular momentum vector, h.
 """
-specific_angular_momentum(r̅, v̅) = norm(specific_angular_momentum_vector(r̅, v̅))
-specific_angular_momentum(orbit::Orbit) = specific_angular_momentum(orbit.r̅, orbit.v̅)
+specific_angular_momentum(rᵢ, vᵢ) = norm(specific_angular_momentum_vector(rᵢ, vᵢ))
+specific_angular_momentum(orbit::Orbit) = specific_angular_momentum(orbit.rᵢ, orbit.vᵢ)
 
 """
     specific_energy(a, μ)
@@ -195,25 +270,25 @@ specific_energy(r, v, μ) = (v^2 / 2) - (μ / r)
 specific_energy(orbit::Orbit) = specific_energy(orbit.a, orbit.body.μ)
 
 """
-    eccentricity_vector(r̅, v̅, μ)
+    eccentricity_vector(rᵢ, vᵢ, μ)
     eccentricity_vector(orbit::Orbit)
 
 Returns orbital eccentricity vector e̅.
 """
-function eccentricity_vector(r̅, v̅, μ)
+function eccentricity_vector(rᵢ, vᵢ, μ)
 
-    return (1 / μ) * ((v̅ × specific_angular_momentum_vector(r̅, v̅)) - μ * r̅ / norm(r̅))
+    return (1 / μ) * ((vᵢ × specific_angular_momentum_vector(rᵢ, vᵢ)) - μ * rᵢ / norm(rᵢ))
 
 end
-eccentricity_vector(orbit::Orbit) = eccentricity_vector(orbit.r̅, orbit.v̅, orbit.body.μ)
+eccentricity_vector(orbit::Orbit) = eccentricity_vector(orbit.rᵢ, orbit.vᵢ, orbit.body.μ)
 
 """
-    eccentricity(r̅, v̅, μ)
+    eccentricity(rᵢ, vᵢ, μ)
     eccentricity(orbit::Orbit)
 
 Returns orbital eccentricity, e.
 """
-eccentricity(r̅, v̅, μ) = norm(eccentricity_vector(r̅, v̅, μ))
+eccentricity(rᵢ, vᵢ, μ) = norm(eccentricity_vector(rᵢ, vᵢ, μ))
 eccentricity(orbit::Orbit) = orbit.e
 
 """
@@ -247,7 +322,7 @@ velocity(orbit::Orbit) = velocity(radius(orbit), orbit.a, orbit.body.μ)
     periapsis_radius(a, e)
     periapsis_radius(orbit::Orbit)
 
-Returns periapsis radius, r̅_p.
+Returns periapsis radius, rᵢ_p.
 """
 periapsis_radius(a, e) = a * (1 - e)
 periapsis_radius(orbit::Orbit) = periapsis_radius(orbit.a, orbit.e)
@@ -378,8 +453,8 @@ Returns true if all elements in each system are within `atol` of the other.
 """
 function Base.isapprox(c1::Orbit, c2::Orbit; atol=1e-8)
 
-    return all(ustrip.(c1.r̅ - c2.r̅) .< atol) &&
-           all(ustrip.(c1.r̅ - c2.r̅) .< atol) &&
+    return all(ustrip.(c1.rᵢ - c2.rᵢ) .< atol) &&
+           all(ustrip.(c1.rᵢ - c2.rᵢ) .< atol) &&
            ustrip(upreferred(c1.e - c2.e)) .< atol &&
            ustrip(upreferred(c1.a - c2.a)) .< atol &&
            ustrip(upreferred(mod(c1.i, 180u"°") - mod(c2.i, 180u"°"))) .< atol &&
@@ -397,8 +472,8 @@ Returns true if all elements of each system are identically equal.
 """
 function Base.isequal(c1::Orbit, c2::Orbit)
 
-    return all(c1.r̅ .== c2.r̅) &&
-           all(c1.v̅ .== c2.v̅) &&
+    return all(c1.rᵢ .== c2.rᵢ) &&
+           all(c1.vᵢ .== c2.vᵢ) &&
            c1.e == c2.e &&
            c1.a == c2.a &&
            mod(c1.i, 180u"°") == mod(c2.i, 180u"°") &&
