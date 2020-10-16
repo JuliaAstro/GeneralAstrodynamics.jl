@@ -5,11 +5,13 @@ Often, these functions are provided with common arguments (such as `orbital_peri
 
 ## Orbital Representations
 
-You can convert between Cartesian and Keplerian `TwoBody` orbital representations by using [`cartesian`](@ref) and [`orbital_elements`](@ref).
+You can convert between Cartesian and Keplerian `TwoBody` orbital representations by using [`cartesian`](@ref) and [`keplerian`](@ref).
 
 ```@docs
 cartesian
-orbital_elements
+keplerian
+inertial
+perifocal
 ```
 
 ## Kepler's Prediction Problem

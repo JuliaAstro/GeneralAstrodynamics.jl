@@ -1,11 +1,11 @@
 [![Tests](https://github.com/cadojo/UnitfulAstrodynamics.jl/workflows/Tests/badge.svg)](https://github.com/cadojo/UnitfulAstrodynamics.jl/actions?query=workflow%3ATests)
-[![Docs](https://github.com/cadojo/UnitfulAstrodynamics.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/UnitfulAstrodynamics.jl/stable)
+[![Docs](https://github.com/cadojo/UnitfulAstrodynamics.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/UnitfulAstrodynamics.jl/dev)
 # UnitfulAstrodynamics.jl
 A simple Astrodynamics package, written with Julia!
 
 ## Motivation 
 
-This package aims to provide a simple interface for common astrodynamics problems. It was created to learn more about Astrodynamics, and will be developed alongside a Graduate Astrodynamics course at the University of Maryland. The packages [JuliaSpace/Astrodynamics.jl](https://github.com/JuliaSpace/Astrodynamics.jl) [JuliaAstro/AstroBase.jl](https://github.com/JuliaAstro/AstroBase.jl)are more fully featured. I will continue adding features to this package, but for a more complete feature set, use the packages provided by [JuliaSpace](https://github.com/JuliaSpace) and [JuliaAstro](https://github.com/JuliaAstro).
+This package aims to provide a simple interface for common astrodynamics problems. It was created to learn more about Astrodynamics, and will be developed alongside a Graduate Astrodynamics course at the University of Maryland. The packages [JuliaSpace/Astrodynamics.jl](https://github.com/JuliaSpace/Astrodynamics.jl) and [JuliaAstro/AstroBase.jl](https://github.com/JuliaAstro/AstroBase.jl) are more fully featured. I will continue adding features to this package, but for a more complete feature set, use the packages provided by [JuliaSpace](https://github.com/JuliaSpace) and [JuliaAstro](https://github.com/JuliaAstro).
 
 ## Credits
 
@@ -13,13 +13,13 @@ This package aims to provide a simple interface for common astrodynamics problem
 * All equations and algorithms within `UnitfulAstrodynamics` are pulled from Vallado's _Fundamentals of Astrodynamics and Applications_, as well as course notes from ENAE 601 (Astrodynamics) at the University of Maryland.
 
 \[2\] [JuliaAstro/AstroBase.jl](https://github.com/JuliaAstro/AstroBase.jl)
-* `AstroBase` is referenced as a well thought-out Julia package structure example (I'm new to Julia!), as well as feature ideas.
+* `AstroBase` is referenced as a well thought-out Julia package structure example, as well as feature ideas.
 
 \[3\] [Unitful.jl](https://github.com/PainterQubits/Unitful.jl) and [UnitfulAstro.jl](https://github.com/JuliaAstro/UnitfulAstro.jl) are used for unit handling.
 
 ## Usage
 
-Check out the [Getting Started](https://cadojo.github.io/UnitfulAstrodynamics.jl/stable/Overview/usage/#Getting-Started) documentation for code examples, and more detail about using this package. Some quick examples are shown below!
+Check out the [Getting Started](https://cadojo.github.io/UnitfulAstrodynamics.jl/dev/Getting-Started) documentation for code examples, and more detail about using this package. Some quick examples are shown below!
 
 #### Two-body Problem
 

@@ -30,11 +30,11 @@ conic(orbit::Orbit) = conic(eccentricity(orbit))
 """
     Orbit(rᵢ, vᵢ, body)
     
-Construct `Orbit` from Cartesian elements.
+Construct `Orbit` from Cartesian elements (in the inertial frame).
 """
 function Orbit(rᵢ, vᵢ, body)
 
-    e, a, i, Ω, ω, ν = orbital_elements(rᵢ, vᵢ, body)
+    e, a, i, Ω, ω, ν = keplerian(rᵢ, vᵢ, body)
     rₚ = perifocal(i,Ω,ν,rᵢ)
     vₚ = perifocal(i,Ω,ν,vᵢ)
     return Orbit{
@@ -90,12 +90,12 @@ function Orbit(e, a, i, Ω, ω, ν, body)
 end
 
 """
-    orbital_elements(rᵢ, vᵢ, body::CelestialBody)
+    keplerian(rᵢ, vᵢ, body::CelestialBody)
 
 Returns a Keplarian representation of a Cartesian orbital state.
 Algorithm taught in ENAE601.
 """
-function orbital_elements(rᵢ, vᵢ, μ)
+function keplerian(rᵢ, vᵢ, μ)
 
     î = SVector{3, Float64}([1, 0, 0]) 
     ĵ = SVector{3, Float64}([0, 1, 0]) 
@@ -129,8 +129,8 @@ function orbital_elements(rᵢ, vᵢ, μ)
            uconvert(u"°", ν)
 
 end
-orbital_elements(rᵢ, vᵢ, body::CelestialBody) = orbital_elements(rᵢ, vᵢ, body.μ)
-orbital_elements(orbit::Orbit) = orbit.e, orbit.a, orbit.i, 
+keplerian(rᵢ, vᵢ, body::CelestialBody) = keplerian(rᵢ, vᵢ, body.μ)
+keplerian(orbit::Orbit) = orbit.e, orbit.a, orbit.i, 
                                  orbit.Ω, orbit.ω, orbit.ν
 
 """
