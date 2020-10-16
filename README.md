@@ -27,9 +27,9 @@ The `TwoBody` module handles Astrodynamics scenarios within the two-body problem
 
 ```Julia
 # Cartesian state to Orbit
-r̅      = [0.0, 11681.0, 0.0]u"km"
-v̅      = [5.134, 4.226, 2.787]u"km/s"
-orbit1 = Orbit(r̅, v̅, Earth)
+rᵢ = [0.0, 11681.0, 0.0] * u"km"
+vᵢ = [5.134, 4.226, 2.787] * u"km/s"
+orbit1 = Orbit(rᵢ, vᵢ, Earth)
 
 # Keplerian state to Orbit
 e      =  0.3      * u"rad"
@@ -65,16 +65,16 @@ The `NBody` module helps to solve the classical gravitational `NBody` problem.
 
 ```Julia
 # It's MY Earth, and I want it now
-r̅₁ = [0.0, 0.0, 0.0]u"km"
-v̅₁ = [0.0, 0.0, 0.0]u"km/s"
+r₁ = [0.0, 0.0, 0.0]u"km"
+v₁ = [0.0, 0.0, 0.0]u"km/s"
 m₁ = Earth.m
-myEarth = Body(r̅₁, v̅₁, m₁)
+myEarth = Body(r₁, v₁, m₁)
 
 # And we'll need a satellite...
-r̅₂ = [0.0, 11681.0, 0.0]u"km"
-v̅₂ = [5.134, 4.226, 2.787]u"km/s"
+r₂ = [0.0, 11681.0, 0.0]u"km"
+v₂ = [5.134, 4.226, 2.787]u"km/s"
 m₂ = 1000.0u"kg"
-mySatellite = Body(r̅₂, v̅₂, m₂)
+mySatellite = Body(r₂, v₂, m₂)
 
 # Construct a MultibodySystem
 sys = MultibodySystem([myEarth, mySatellite])
