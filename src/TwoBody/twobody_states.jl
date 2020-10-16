@@ -72,6 +72,24 @@ struct CelestialBody
     CelestialBody(m, R) = new(m, R, G * m)
 end
 
+"""
+    show(io::IO, body::CelestialBody)
+
+Custom display for `CelestialBody` instances.
+"""
+function Base.show(io::IO, body::CelestialBody)
+
+    println(io, crayon"blue", "CelestialBody:")
+    println(io, crayon"cyan", 
+        "    Mass:           ", ustrip(u"kg", body.m), " ", u"kg")
+    println(io, crayon"light_blue", 
+        "    Radius:         ", ustrip(u"km", body.R), " ", u"km")
+    println(io, crayon"light_magenta",
+        "    Mass Parameter: ", ustrip(u"km^3/s^2", body.μ), " ", u"km^3/s^2")
+
+end
+
+
 
 # All data pulled from the following references:
 # [1] https://en.wikipedia.org/wiki/List_of_Solar_System_objects_by_size
@@ -154,7 +172,7 @@ end
 """
     show(io::IO, orbit::Orbit)
 
-Overloads Base.show() for ::Orbit instances.
+Custom display for Orbit instances.
 """
 function Base.show(io::IO, orbit::Orbit)
 
