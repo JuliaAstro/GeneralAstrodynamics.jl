@@ -1,5 +1,5 @@
 [![Tests](https://github.com/cadojo/UnitfulAstrodynamics.jl/workflows/Tests/badge.svg)](https://github.com/cadojo/UnitfulAstrodynamics.jl/actions?query=workflow%3ATests)
-[![Docs](https://github.com/cadojo/UnitfulAstrodynamics.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/UnitfulAstrodynamics.jl/dev)
+[![Docs](https://github.com/cadojo/UnitfulAstrodynamics.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/UnitfulAstrodynamics.jl/stable)
 # UnitfulAstrodynamics.jl
 A simple Astrodynamics package, written with Julia!
 
@@ -19,7 +19,7 @@ This package aims to provide a simple interface for common astrodynamics problem
 
 ## Usage
 
-Check out the [Getting Started](https://cadojo.github.io/UnitfulAstrodynamics.jl/dev/#Getting-Started) documentation for code examples, and more detail about using this package. Some quick examples are shown below!
+Check out the [Getting Started](https://cadojo.github.io/UnitfulAstrodynamics.jl/stable/#Getting-Started) documentation for code examples, and more detail about using this package. Some quick examples are shown below!
 
 #### Two-body Problem
 
