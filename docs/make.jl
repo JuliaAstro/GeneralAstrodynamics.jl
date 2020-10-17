@@ -6,10 +6,10 @@ makedocs(modules=[UnitfulAstrodynamics],
     format=Documenter.HTML(),
     sitename="UnitfulAstrodynamics.jl",
     pages=[
-        "Home" => "index.md",
-        "Overview" => Any[
+        "Getting Started" => "index.md",
+        "Index" => Any[
             "About" => "Overview/about.md",
-            "Usage" => "Overview/usage.md"
+            "Table of Contents" => "Overview/contents.md"
         ],
         "`TwoBody`" => Any[
             "Data Structures and Types" => "TwoBody/types.md",

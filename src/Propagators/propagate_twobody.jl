@@ -10,10 +10,15 @@
 
 Struct to hold two-body propagation results.
 """
-struct TwobodyPropagationResult <: PropagationResult 
+struct TwobodyPropagationResult{
+        T<:Unitful.Time,
+        O<:TwoBodySystem,
+        VT<:AbstractVector{T},
+        VO<:AbstractVector{O}
+} <: PropagationResult 
 
-    t::AbstractVector{Unitful.Time{Float64}}
-    step
+    t::VT
+    step::VO
     ode_solution::ODESolution
 
 end
@@ -31,8 +36,8 @@ function twobody_tic(du, u, p, t)
     # in [2] allows the use of mixed units through the ComponentArrays
     # package.
 
-    du.r̅ =  u.v̅
-    du.v̅ = -p.μ * (u.r̅ ./ norm(u.r̅,2)^3)
+    du.rᵢ =  u.vᵢ
+    du.vᵢ = -p.μ * (u.rᵢ ./ norm(u.rᵢ,2)^3)
 
 end
 
@@ -60,13 +65,13 @@ function propagate(orbit::Orbit,
     options = merge(defaults, kwargs)
 
     # Initial conditions
-    r₀ = Array(ustrip.(u"m",orbit.r̅))
-    v₀ = Array(ustrip.(u"m/s", orbit.v̅))
+    r₀ = Array(ustrip.(u"m",orbit.rᵢ))
+    v₀ = Array(ustrip.(u"m/s", orbit.vᵢ))
 
     # Define the problem (modified from [2])
     problem = ODEProblem(
     twobody_tic, 
-    ComponentArray((r̅=r₀, v̅=v₀)), 
+    ComponentArray((rᵢ=r₀, vᵢ=v₀)), 
     ustrip.(u"s", (0.0u"s", Δt)), 
     ComponentArray((μ=ustrip(u"m^3 / s^2", orbit.body.μ))))
 
@@ -75,8 +80,8 @@ function propagate(orbit::Orbit,
 
     # Return PropagationResult structure
     return TwobodyPropagationResult(
-        u"s" * sols.t,
-        map(x -> Orbit(u"m" * x.r̅, u"m/s" * x.v̅, orbit.body), sols.u),
+        u"s" .* sols.t,
+        map(x -> Orbit(u"m" * x.rᵢ, u"m/s" * x.vᵢ, orbit.body), sols.u),
         sols
     )
 
