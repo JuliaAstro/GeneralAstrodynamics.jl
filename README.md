@@ -1,7 +1,7 @@
 [![Tests](https://github.com/cadojo/UnitfulAstrodynamics.jl/workflows/Tests/badge.svg)](https://github.com/cadojo/UnitfulAstrodynamics.jl/actions?query=workflow%3ATests)
 [![Docs](https://github.com/cadojo/UnitfulAstrodynamics.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/UnitfulAstrodynamics.jl/stable)
 # UnitfulAstrodynamics.jl
-A simple Astrodynamics package, written with Julia!
+Common Astrodynamics calculations with units!
 
 ## Motivation 
 
@@ -32,7 +32,7 @@ vᵢ = [5.134, 4.226, 2.787] * u"km/s"
 orbit1 = Orbit(rᵢ, vᵢ, Earth)
 
 # Keplerian state to Orbit
-e      =  0.3      * u"rad"
+e      =  0.3      
 a      =  15000    * u"km" + Earth.R
 i      =  10       * u"°"
 Ω      =  0        * u"°"
