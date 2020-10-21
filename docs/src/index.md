@@ -29,7 +29,7 @@ v      = [5.134, 4.226, 2.787]u"km/s"
 orbit1 = Orbit(r, v, Earth)
 
 # Keplerian state to Orbit
-e      =  0.3      * u"rad"
+e      =  0.3
 a      =  15000    * u"km" + Earth.R
 i      =  10       * u"°"
 Ω      =  0        * u"°"
