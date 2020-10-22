@@ -7,14 +7,13 @@ module TwoBody
 
 # Dependencies 
 
-using ..AbstractTypes
+using ..CommonTypes
 
 using Reexport
 
 using Logging
 using Base: isapprox, isequal, show
 using LinearAlgebra: ×, ⋅, norm
-using DifferentialEquations
 using ComponentArrays
 using StaticArrays
 using Crayons
@@ -22,8 +21,6 @@ using Crayons
 # Newton's Gravitation Constant
 import PhysicalConstants.CODATA2018
 G = 1.0 * CODATA2018.G
-
-@reexport using Unitful, UnitfulAstro, UnitfulAngles
 
 # Export data structures, constants, and constructors
 export TwoBodySystem, Orbit, AbstractConic, Circular, InvalidOrbit,

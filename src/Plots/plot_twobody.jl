@@ -3,12 +3,12 @@
 #
 
 """
-    plot3d(sols::TwobodyPropagationResult; kwargs...)
+    plot(sols::TwobodyPropagationResult; kwargs...)
 
 Plots every timestep in `sols` in `3D` space. All keyward 
 arguments are passed directly to `Plots.jl`.
 """
-function plot3d(sols::TwobodyPropagationResult; kwargs...)
+function plot(sols::TwobodyPropagationResult; kwargs...)
    
     # Referencing:
     # [1] https://discourse.julialang.org/t/smart-kwargs-dispatch/14571/15

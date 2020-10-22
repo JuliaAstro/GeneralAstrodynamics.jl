@@ -4,40 +4,40 @@
 
 ```@contents
 Pages = ["Overview/about.md", "Overview/usage.md"]
-Depth = 3
+Depth = 4
 ```
 
 ### TwoBody
 
 ```@contents
 Pages = ["TwoBody/types.md", "TwoBody/functions.md"]
-Depth = 3
+Depth = 4
 ```
 
 ### NBody
 
 ```@contents
 Pages = ["NBody/types.md", "NBody/functions.md"]
-Depth = 3
+Depth = 4
 ```
 
 ### Propagators
 
 ```@contents
 Pages = ["Propagators/types.md", "Propagators/functions.md"]
-Depth = 3
+Depth = 4
 ```
 
 ### Plots
 
 ```@contents
 Pages = ["Plots/functions.md"]
-Depth = 3
+Depth = 4
 ```
 
-### Common Abstract Types
+### Common Common Types
 
 ```@contents
-Pages = ["AbstractTypes/types.md"]
-Depth = 3
+Pages = ["CommonTypes/types.md"]
+Depth = 4
 ```
