@@ -11,6 +11,7 @@
 ]add UnitfulAstrodynamics
 
 # Or, with `Pkg`
+import Pkg
 Pkg.add("UnitfulAstrodynamics")
 ```
 
