@@ -3,12 +3,12 @@
 #
 
 """
-    plot(sols::MultibodyPropagationResult; kwargs...)
+    plot(sols::TwobodyPropagationResult; kwargs...)
 
 Plots every timestep in `sols` in `3D` space. All keyward 
 arguments are passed directly to `Plots.jl`.
 """
-function plot(sols::MultibodyPropagationResult; bodies=1:length(sols.step[1].body), kwargs...)
+function plot(sols::TwobodyPropagationResult; kwargs...)
    
     # Referencing:
     # [1] https://discourse.julialang.org/t/smart-kwargs-dispatch/14571/15
@@ -27,22 +27,17 @@ function plot(sols::MultibodyPropagationResult; bodies=1:length(sols.step[1].bod
                     xlabel="X Position (km)", 
                     ylabel="Y Position (km)",
                     zlabel="Z Position (km)",
-                    title ="NBody Positions vs. Time")
+                    title ="Twobody Orbit Positions vs. Time")
     options = merge(defaults, kwargs)
 
-    fig = plot()
-    for i = bodies
+    fig = Plots.plot()
 
-        plot!(fig, ustrip.(u"km", map(x -> x.body[i].r̅[1], sols.step)), 
-                   ustrip.(u"km", map(x -> x.body[i].r̅[2], sols.step)), 
-                   ustrip.(u"km", map(x -> x.body[i].r̅[3], sols.step)), 
-                   label=string("Body ", i))
-
-    end
-    plot!(fig; options...)
-
-    display(fig)
+    Plots.plot!(fig, ustrip.(u"km", map(x->x.rᵢ[1], sols.step)), 
+                     ustrip.(u"km", map(x->x.rᵢ[2], sols.step)), 
+                     ustrip.(u"km", map(x->x.rᵢ[3], sols.step)), 
+                     label="Orbit Position")
+    Plots.plot!(fig; options...)
 
     return fig
-    
+
 end

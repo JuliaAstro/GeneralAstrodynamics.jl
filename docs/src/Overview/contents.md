@@ -31,7 +31,7 @@ Depth = 4
 ### Plots
 
 ```@contents
-Pages = ["Plots/functions.md"]
+Pages = ["AstroPlots/functions.md"]
 Depth = 4
 ```
 

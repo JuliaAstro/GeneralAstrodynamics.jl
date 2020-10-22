@@ -3,7 +3,7 @@ module PlotsUnitTests
 using Test
 using UnitfulAstrodynamics
 
-@testset "Plots" begin
+@testset "AstroPlots" begin
     
     # Twobody Orbit
     r̅ = [0.0, 11681, 0.0] * u"km"
@@ -11,7 +11,7 @@ using UnitfulAstrodynamics
     orbit = Orbit(r̅, v̅, Earth)
 
     # Does plot run?
-    fig = plot3d(propagate(orbit, 1u"s"))
+    fig = plot(propagate(orbit, 1u"s"))
 
     @test true
 

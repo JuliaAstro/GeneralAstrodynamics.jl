@@ -56,7 +56,7 @@ orbit_later = kepler(orbit, orbital_period(orbit))
 sols = propagate(orbit, orbital_period(orbit))
 
 # Plotting (with Plots.jl kwargs)
-plot3d(sols; title="Plots.jl keywords work!", xlabel="Woo")
+plot(sols; title="Plots.jl keywords work!", xlabel="Woo")
 
 # Another true fact!
 sols.step[end] ≈ orbit_later
@@ -86,5 +86,5 @@ sys = MultibodySystem([myEarth, mySatellite])
 sols = propagate(sys, 10000u"s"; abstol=1e-14, reltol=1e-14)
 
 # Plot n-body propagation results
-plot3d(sols; title="Plots.jl keywords work!", xlabel="Woo")
+plot(sols; title="Plots.jl keywords work!", xlabel="Woo")
 ```
