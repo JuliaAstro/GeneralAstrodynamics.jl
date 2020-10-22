@@ -2,7 +2,6 @@
 [![Docs](https://github.com/cadojo/UnitfulAstrodynamics.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/UnitfulAstrodynamics.jl/stable)
 
 [![version](https://juliahub.com/docs/UnitfulAstrodynamics/version.svg)](https://juliahub.com/ui/Packages/UnitfulAstrodynamics/uJGLZ)
-[![pkgeval](https://juliahub.com/docs/UnitfulAstrodynamics/pkgeval.svg)](https://juliahub.com/ui/Packages/UnitfulAstrodynamics/uJGLZ)
 
 # UnitfulAstrodynamics.jl
 Common astrodynamics calculations with units!
