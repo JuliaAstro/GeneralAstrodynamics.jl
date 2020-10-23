@@ -55,7 +55,7 @@ orbit_later = kepler(orbit, orbital_period(orbit))
 sols = propagate(orbit, orbital_period(orbit))
 
 # Plotting (with Plots.jl kwargs)
-plot3d(sols; title="Plots.jl keywords work!", xlabel="Woo")
+plot(sols; title="Plots.jl keywords work!", xlabel="Woo")
 
 # Another true fact!
 sols.step[end] ≈ orbit_later
@@ -113,5 +113,5 @@ As with a two-body `Orbit`, you can also plot each timestep in the n-body propag
 
 ```Julia
 # Plot n-body propagation results
-plot3d(sols; title="Plots.jl keywords work!", xlabel="Woo")
+plot(sols; title="Plots.jl keywords work!", xlabel="Woo")
 ```

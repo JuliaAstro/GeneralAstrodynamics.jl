@@ -6,14 +6,13 @@ and other celestial bodies.
 """
 module NBody
 
-using ..AbstractTypes
+using ..CommonTypes
 
 using Reexport
 
 using Logging
 using Base: isapprox, isequal
 using LinearAlgebra: ×, ⋅, norm
-using DifferentialEquations
 using ComponentArrays
 using StaticArrays
 

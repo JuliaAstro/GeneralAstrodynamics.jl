@@ -23,11 +23,11 @@ makedocs(modules=[UnitfulAstrodynamics],
             "Data Structures and Types" => "Propagators/types.md",
             "Functions" => "Propagators/functions.md"
         ],
-        "`Plots`" => Any[
-            "Functions" => "Plots/functions.md"
+        "`AstroPlots`" => Any[
+            "Functions" => "AstroPlots/functions.md"
         ],
-        "Common `AbstractTypes`" => Any[
-            "Types" => "AbstractTypes/types.md"
+        "Common `CommonTypes`" => Any[
+            "Types" => "CommonTypes/types.md"
         ]
     ]
 )

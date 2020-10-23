@@ -1,10 +1,10 @@
 """
-    AbstractTypes
+    CommonTypes
 
 Contains abstractions for describing orbital states and bodies.
 Implementations are provided in TwoBody, and NBody.
 """
-module AbstractTypes
+module CommonTypes
 
 using Reexport
 @reexport using Unitful, UnitfulAstro

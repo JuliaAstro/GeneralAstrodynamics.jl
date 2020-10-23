@@ -6,7 +6,7 @@ and the n-body problem.
 """
 module Propagators
 
-using ..AbstractTypes
+using ..CommonTypes
 using ..NBody
 using ..TwoBody
 
@@ -15,11 +15,9 @@ using Reexport
 using Logging
 using Base: isapprox, isequal
 using LinearAlgebra: ×, ⋅, norm
-using DifferentialEquations
 using ComponentArrays
 using StaticArrays
-
-@reexport using Unitful, UnitfulAstro, UnitfulAngles
+using OrdinaryDiffEq
 
 export  TwobodyPropagationResult, 
         MultibodyPropagationResult, 
