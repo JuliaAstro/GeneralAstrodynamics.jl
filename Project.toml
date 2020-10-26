@@ -21,6 +21,7 @@ UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 [compat]
 ComponentArrays = "0.8"
 Crayons = "4.0"
+OrdinaryDiffEq = "5.43"
 PhysicalConstants = "0.2"
 Plots = "1.6"
 Reexport = "0.2"
