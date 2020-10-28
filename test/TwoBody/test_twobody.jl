@@ -14,7 +14,7 @@ using UnitfulAstrodynamics
     @test orbit.i ≈ 2.6442542356744734 * u"rad"
     @test orbit.ν ≈ 1.5707355666179315 * u"rad"
 
-    @test Orbit(map(x->getfield(orbit, x), [:e,:a, :i, :Ω, :ω, :ν])..., orbit.body) ≈ orbit
+    @test Orbit(map(x->getfield(orbit, x), [:e, :a, :i, :Ω, :ω, :ν])..., orbit.body) ≈ orbit
 
     e      =  0.3
     a      =  15000.   * u"km" + 1.0u"Rearth"
