@@ -28,16 +28,10 @@ end
 
 Currently not exported. Used for two-body numerical integration.
 """
-function twobody_tic(du, u, p, t)
+function twobody_tic!(∂u, u, p, t)
 
-    # Note the citation [2] above - this function was copied and
-    # modified from [2]. I originally had a 6 state function,
-    # but I had trouble with mixing units. The solution shown
-    # in [2] allows the use of mixed units through the ComponentArrays
-    # package.
-
-    du.rᵢ =  u.vᵢ
-    du.vᵢ = -p.μ * (u.rᵢ ./ norm(u.rᵢ,2)^3)
+    ∂u.rᵢ =  u.vᵢ
+    ∂u.vᵢ = -p.μ * (u.rᵢ ./ norm(u.rᵢ,2)^3) .+ (normalize(u.vᵢ) .* p.T)
 
 end
 
@@ -52,7 +46,8 @@ All keyword arguments are passed directly to OrdinaryDiffEq solvers.
 """
 function propagate(orbit::Orbit, 
                    Δt::Unitful.Time=orbital_period(orbit), 
-                   ode_alg::OrdinaryDiffEqAlgorithm=Tsit5(); 
+                   ode_alg::OrdinaryDiffEqAlgorithm=Tsit5(),
+                   thrust::Unitful.Acceleration=0.0u"N/kg";
                    kwargs...)
 
     # Referencing:
@@ -70,10 +65,10 @@ function propagate(orbit::Orbit,
 
     # Define the problem (modified from [2])
     problem = ODEProblem(
-    twobody_tic, 
+    twobody_tic!, 
     ComponentArray((rᵢ=r₀, vᵢ=v₀)), 
     ustrip.(u"s", (0.0u"s", Δt)), 
-    ComponentArray((μ=ustrip(u"m^3 / s^2", orbit.body.μ))))
+    ComponentArray((μ=ustrip(u"m^3 / s^2", orbit.body.μ), T=ustrip(u"N/kg", thrust))))
 
     # Solve the problem! 
     sols = solve(problem, ode_alg; options...)

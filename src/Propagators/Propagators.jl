@@ -14,7 +14,7 @@ using Reexport
 
 using Logging
 using Base: isapprox, isequal
-using LinearAlgebra: ×, ⋅, norm
+using LinearAlgebra: ×, ⋅, norm, normalize
 using ComponentArrays
 using StaticArrays
 using OrdinaryDiffEq
