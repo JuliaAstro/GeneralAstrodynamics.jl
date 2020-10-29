@@ -52,6 +52,9 @@ orbit = orbit1
 # Kepler's Prediction problem
 orbit_later = kepler(orbit, orbital_period(orbit))
 
+# Lambert's Proplem
+v₁, v₂ = lambert(orbit.rᵢ, orbit_later.rᵢ, Earth.μ, orbital_period(orbit), :short)
+
 # Orbit propagation
 sols = propagate(orbit, orbital_period(orbit))
 

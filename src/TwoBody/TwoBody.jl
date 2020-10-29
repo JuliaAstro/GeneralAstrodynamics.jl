@@ -32,14 +32,16 @@ export TwoBodySystem, Orbit, AbstractConic, Circular, InvalidOrbit,
 export  semimajor_axis, eccentricity, eccentricity_vector, inclination, true_anomoly, 
         periapsis_radius, apoapsis_radius, periapsis_velocity, apoapsis_velocity,      
         radius, velocity, orbital_period, perifocal, inertial,
-        time_since_periapsis, mean_motion, semi_parameter, conic_anomoly,
-        specific_angular_momentum_vector, specific_angular_momentum, specific_energy,  
-        isapprox, isequal, TwobodyPropagationResult, kepler, conic,
-        keplerian, cartesian, isinvalid
+        time_since_periapsis, mean_motion, mean_motion_vector, 
+        semi_parameter, conic_anomoly, specific_angular_momentum_vector, 
+        specific_angular_momentum, specific_energy,  
+        isapprox, isequal, TwobodyPropagationResult, kepler, lambert,
+        conic, keplerian, cartesian, isinvalid
 
 # Include all module source code
 include("twobody_states.jl")
 include("twobody_calculations.jl")
 include("kepler.jl")
+include("lambert.jl")
 
 end 

@@ -35,8 +35,8 @@ Construct `Orbit` from Cartesian elements (in the inertial frame).
 function Orbit(rᵢ, vᵢ, body)
 
     e, a, i, Ω, ω, ν = keplerian(rᵢ, vᵢ, body)
-    rₚ = perifocal(i,Ω,ν,rᵢ)
-    vₚ = perifocal(i,Ω,ν,vᵢ)
+    rₚ, vₚ = perifocal(a, e, ν, body.μ)
+
     return Orbit{
             conic(eccentricity(rᵢ, vᵢ, body.μ)),
             Float64,
@@ -66,8 +66,8 @@ Construct `Orbit` from Keplerian elements.
 function Orbit(e, a, i, Ω, ω, ν, body)
 
     rᵢ, vᵢ = cartesian(e, a, i, Ω, ω, ν, body)
-    rₚ = perifocal(i,Ω,ν,rᵢ)
-    vₚ = perifocal(i,Ω,ν,vᵢ)
+    rₚ, vₚ = perifocal(a, e, ν, body.μ)
+    
     return Orbit{
             conic(e),
             Float64,
@@ -142,23 +142,9 @@ Algorithm taught in ENAE601.
 """
 function cartesian(e, a, i, Ω, ω, ν, μ)
 
-    # Find semilatus parameter
-    p = semi_parameter(a, e)
-
-    # Find scalar radius
-    r = radius(p, e, ν)
-
-    # Set perifocal axes
-    P̂=SVector{3, Float64}([1, 0, 0])
-    Q̂=SVector{3, Float64}([0, 1, 0]) 
-    Ŵ=SVector{3, Float64}([0, 0, 1])
-
-    # Find state in Perifocal frame
-    rₚ = (r * cos(ν) .* P̂ .+ r * sin(ν) .* Q̂)
-    vₚ = √(μ/p) * ((-sin(ν) * P̂) .+ ((e + cos(ν)) .* Q̂))
-
-    return  uconvert.(u"km",    inertial(i,Ω,ω,rₚ)), 
-            uconvert.(u"km/s",  inertial(i,Ω,ω,vₚ))
+    rᵢ, vᵢ = inertial(i, Ω, ω, perifocal(a, e, ν, μ)...)
+    return  uconvert.(u"km",    rᵢ), 
+            uconvert.(u"km/s",  vᵢ)
 
 end
 cartesian(e, a, i, Ω, ω, ν, body::CelestialBody) = cartesian(e, a, i, Ω, ω, ν, body.μ)
@@ -170,7 +156,7 @@ cartesian(orbit::Orbit) = orbit.rᵢ, orbit.vᵢ
 
 Transforms 3-vector from Perifocal frame to Cartesian space (x,y,z).
 """
-function inertial(i, Ω, ω, vec₃)
+function inertial(i, Ω, ω, rₚ, vₚ)
 
     # Set up Perifocal ⟶ Cartesian conversion
     R_3Ω =  SMatrix{3,3,Float64}(
@@ -188,36 +174,30 @@ function inertial(i, Ω, ω, vec₃)
 
     ᴵTₚ = transpose(R_3ω * R_1i * R_3Ω)
 
-    return ᴵTₚ * vec₃
+    return ᴵTₚ * rₚ, ᴵTₚ * vₚ
 
 end
 inertial(orbit::Orbit) = orbit.rᵢ, orbit.vᵢ
 
 """
-    perifocal(i, Ω, ω, vec₃)
+    perifocal(a, e, ν, μ)
     perifocal(orbit::Orbit)
 
-Transforms 3-vector from Cartesian frame to Perifocal frame.
+Returns position and velocity vectors in the Perifocal frame.
 """
-function perifocal(i, Ω, ω, vec₃)
+function perifocal(a, e, ν, μ)
 
-    # Set up Perifocal ⟶ Cartesian conversion
-    R_3Ω =  SMatrix{3,3,Float64}(
-            [cos(Ω)           sin(Ω)            0.;
-            -sin(Ω)           cos(Ω)            0.;
-             0.               0.                1.])
-    R_1i = SMatrix{3,3,Float64}(
-            [1.               0.                0.;
-             0.               cos(i)            sin(i);
-             0.              -sin(i)            cos(i)])
-    R_3ω = SMatrix{3,3,Float64}(
-            [cos(ω)           sin(ω)            0.
-            -sin(ω)           cos(ω)            0.
-             0.               0.                1.])
-
-    ᵖTᵢ = R_3ω * R_1i * R_3Ω
-
-    return ᵖTᵢ * vec₃
+        p = semi_parameter(a, e)
+        r = radius(p, e, ν)
+        
+        P̂=SVector{3, Float64}([1, 0, 0])
+        Q̂=SVector{3, Float64}([0, 1, 0])
+        Ŵ=SVector{3, Float64}([0, 0, 1])
+        
+        rₚ = (r * cos(ν) .* P̂ .+ r * sin(ν) .* Q̂)
+        vₚ = √(μ/p) * ((-sin(ν) * P̂) .+ ((e + cos(ν)) .* Q̂))
+        
+        return rₚ, vₚ
 
 end
 perifocal(orbit::Orbit) = orbit.rₚ, orbit.vₚ
@@ -388,11 +368,11 @@ mean_motion(a, μ) = √(μ / a^3)
 mean_motion(orbit::Orbit) = mean_motion(orbit.a, orbit.μ)
 
 """
-    mean_motion̅tor(orbit::Orbit)
+    mean_motion_vector(orbit::Orbit)
 
 Returns mean motion vector, n̄.
 """
-function mean_motion̅tor(orbit::Orbit)
+function mean_motion_vector(orbit::Orbit)
 
 #   î = SVector{3, Float64}([1, 0, 0]) 
 #   ĵ = SVector{3, Float64}([0, 1, 0]) 

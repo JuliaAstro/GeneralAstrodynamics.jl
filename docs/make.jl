@@ -1,4 +1,3 @@
-push!(LOAD_PATH,"../src/")
 using Documenter
 using UnitfulAstrodynamics
 
@@ -6,10 +5,10 @@ makedocs(modules=[UnitfulAstrodynamics],
     format=Documenter.HTML(),
     sitename="UnitfulAstrodynamics.jl",
     pages=[
-        "Getting Started" => "index.md",
-        "Index" => Any[
+        "Guide" => "index.md",
+        "Overview" => Any[
             "About" => "Overview/about.md",
-            "Table of Contents" => "Overview/contents.md"
+            "Getting Stated" => "Overview/getting-started.md"
         ],
         "`TwoBody`" => Any[
             "Data Structures and Types" => "TwoBody/types.md",
@@ -22,6 +21,10 @@ makedocs(modules=[UnitfulAstrodynamics],
         "`Propagators`" => Any[
             "Data Structures and Types" => "Propagators/types.md",
             "Functions" => "Propagators/functions.md"
+        ],
+        "`Maneuvers`" => Any[
+            "Data Structures and Types" => "Maneuvers/types.md",
+            "Functions" => "Maneuvers/functions.md"
         ],
         "`AstroPlots`" => Any[
             "Functions" => "AstroPlots/functions.md"
