@@ -8,7 +8,7 @@
 Plots every timestep in `sols` in `3D` space. All keyward 
 arguments are passed directly to `Plots.jl`.
 """
-function plot(sols::MultibodyPropagationResult; bodies=1:length(sols.step[1].body), kwargs...)
+function Plots.plot(sols::MultibodyPropagationResult; bodies=1:length(sols.step[1].body), kwargs...)
    
     # Referencing:
     # [1] https://discourse.julialang.org/t/smart-kwargs-dispatch/14571/15
