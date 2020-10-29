@@ -22,6 +22,14 @@ The function `kepler` can solve Kepler's Prediction Problem for an `Orbit`.
 kepler
 ```
 
+## Lambert's Problem
+
+The function `lambert` can solve Lambert's Problem for an `Orbit`.
+
+```@docs
+lambert
+```
+
 ## Common `TwoBody` Problem Calculations
 
 ```@docs
