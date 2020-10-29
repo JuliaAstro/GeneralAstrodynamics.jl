@@ -58,10 +58,10 @@ function χₖ(χₙ, Δt, rᵢ₀, vᵢ₀, a, μ; iter=1, tol=1e-14, max_iter=
     r₀ = norm(rᵢ₀)
     ψ = upreferred(χₙ^2 / a)
 
-    if ψ > 1e-6
+    if ψ > tol
         C₂ = (1 - cos(√(ψ))) /  ψ
         C₃ = (√(ψ) - sin(√(ψ))) / √(ψ^3)
-    elseif ψ < -1e-6
+    elseif ψ < -tol
         println(√(-ψ))
         C₂ = (1 - cosh(√(-ψ))) / ψ
         C₃ = (sinh(√(-ψ)) - √(-ψ)) / √((-ψ)^3)

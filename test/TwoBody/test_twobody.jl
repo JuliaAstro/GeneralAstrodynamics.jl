@@ -45,13 +45,13 @@ end
     initial = Orbit(rᵢ, vᵢ, Earth)
 
     Δt = 1000u"s"
-    final = kepler(initial, Δt; tol=1e-10)
+    final = kepler(initial, Δt; tol=1e-12)
 
-    v₁, v₂ = lambert(initial.rᵢ, final.rᵢ, Earth.μ, Δt, :short; tol=1e-14, max_iter=10000)
+    v₁, v₂ = lambert(initial.rᵢ, final.rᵢ, Earth.μ, Δt, :short; tol=1e-12, max_iter=1000)
 
     # 1e-2 km/s is a larger error than I would expect... but 1e-3 fails
-    @test isapprox(ustrip.(u"km/s", v₁), ustrip.(u"km/s", initial.vᵢ); atol=1e-2)
-    @test isapprox(ustrip.(u"km/s", v₂), ustrip.(u"km/s", final.vᵢ); atol=1e-2)
+    @test isapprox(ustrip.(u"km/s", v₁), ustrip.(u"km/s", initial.vᵢ); atol=1e-6)
+    @test isapprox(ustrip.(u"km/s", v₂), ustrip.(u"km/s", final.vᵢ); atol=1e-6)
 
 end
 

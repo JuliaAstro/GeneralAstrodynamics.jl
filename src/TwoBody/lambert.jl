@@ -34,22 +34,22 @@ function lambert(r̅₁, r̅₂, μ, Δt, trajectory=:short; tol=1e-6, max_iter=
     end
 
     ψₙ = 0.0
-    c₂ = 1/2
-    c₃ = 1/6
+    C₂ = 1/2
+    C₃ = 1/6
 
     ψ₊ = 4π^2
     ψ₋ = -4π
-    yₙ = r₁ + r₂ + (A * (ψₙ*c₃ - 1) / √(c₂))
+    yₙ = r₁ + r₂ + (A * (ψₙ*C₃ - 1) / √(C₂))
 
     Δtₙ = Δt + 1u"s"
     iter = 0
 
     while (iter < max_iter) && 
-          (abs(Δtₙ - Δt) > (tol * oneunit(Δt))) || (A > 0u"m" && yₙ < 0u"m")
+          (abs(Δtₙ - Δt) > (tol * oneunit(Δt))) || (A > 0 *oneunit(A) && yₙ < 0 * oneunit(yₙ))
 
-        yₙ = r₁ + r₂ + (A * (ψₙ*c₃ - 1) / √(c₂))
-        χₙ = √(yₙ / c₂)
-        Δtₙ = (χₙ^3 * c₃ + A*√(yₙ)) / √(μ)
+        yₙ = r₁ + r₂ + (A * (ψₙ*C₃ - 1) / √(C₂))
+        χₙ = √(yₙ / C₂)
+        Δtₙ = (χₙ^3 * C₃ + A*√(yₙ)) / √(μ)
 
         if Δtₙ < Δt
             ψ₋ = ψₙ
