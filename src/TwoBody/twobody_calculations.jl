@@ -368,11 +368,11 @@ mean_motion(a, μ) = √(μ / a^3)
 mean_motion(orbit::Orbit) = mean_motion(orbit.a, orbit.μ)
 
 """
-    mean_motion̅tor(orbit::Orbit)
+    mean_motion_vector(orbit::Orbit)
 
 Returns mean motion vector, n̄.
 """
-function mean_motion̅tor(orbit::Orbit)
+function mean_motion_vector(orbit::Orbit)
 
 #   î = SVector{3, Float64}([1, 0, 0]) 
 #   ĵ = SVector{3, Float64}([0, 1, 0]) 

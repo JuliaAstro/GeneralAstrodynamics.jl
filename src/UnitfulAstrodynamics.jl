@@ -21,12 +21,14 @@ include("CommonTypes/CommonTypes.jl")
 include("TwoBody/TwoBody.jl")
 include("NBody/NBody.jl")
 include("Propagators/Propagators.jl")
+include("Maneuvers/Maneuvers.jl")
 include("AstroPlots/AstroPlots.jl")
 
 @reexport using .CommonTypes
 @reexport using .TwoBody
 @reexport using .NBody
 @reexport using .Propagators
+@reexport using .Maneuvers
 @reexport using .AstroPlots
 
 end # module
