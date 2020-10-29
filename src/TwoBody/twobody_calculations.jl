@@ -286,7 +286,7 @@ semi_parameter(orbit::Orbit) = semi_parameter(orbit.a, orbit.e)
 
 Returns instantaneous radius, r.
 """
-radius(p, e, ν) = p / (1 + e * cos(ν))
+radius(p, e, ν) = upreferred(p / (1 + e * cos(ν)))
 radius(orbit::Orbit) = radius(semi_parameter(orbit), orbit.e, orbit.ν)
 
 """
@@ -295,7 +295,7 @@ radius(orbit::Orbit) = radius(semi_parameter(orbit), orbit.e, orbit.ν)
 
 Returns instantaneous velocity, v, for any orbital representation.
 """
-velocity(r, a, μ) =  √( (2 * μ / r) - (μ / a))
+velocity(r, a, μ) =  upreferred(√( (2 * μ / r) - (μ / a)))
 velocity(orbit::Orbit) = velocity(radius(orbit), orbit.a, orbit.body.μ)
 
 """
