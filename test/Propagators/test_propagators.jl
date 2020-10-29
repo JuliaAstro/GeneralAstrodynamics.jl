@@ -12,7 +12,7 @@ using UnitfulAstrodynamics
 
     # Propagate twobody
     sols = propagate(orbit, 5u"s"; save_everystep=false)
-    @test isapprox(sols.step[end], kepler(orbit, 5u"s"), atol=1e-6) 
+    @test isapprox(sols.step[end], kepler(orbit, 5u"s"; tol=1e-14), atol=1e-6) 
 
 end
 

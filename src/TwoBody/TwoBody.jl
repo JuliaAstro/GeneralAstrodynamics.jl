@@ -35,11 +35,12 @@ export  semimajor_axis, eccentricity, eccentricity_vector, inclination, true_ano
         time_since_periapsis, mean_motion, semi_parameter, conic_anomoly,
         specific_angular_momentum_vector, specific_angular_momentum, specific_energy,  
         isapprox, isequal, TwobodyPropagationResult, kepler, conic,
-        keplerian, cartesian, isinvalid
+        keplerian, cartesian, isinvalid, lambert
 
 # Include all module source code
 include("twobody_states.jl")
 include("twobody_calculations.jl")
 include("kepler.jl")
+include("lambert.jl")
 
 end 

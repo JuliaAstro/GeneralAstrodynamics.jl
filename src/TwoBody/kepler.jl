@@ -9,7 +9,7 @@
 
 Solves Kepler's Problem for `orbit` and `Δtᵢ`.
 """
-function kepler(orbit::Orbit, Δtᵢ::T = orbital_period(orbit); tol=1e-14, max_iter=100) where T<:Unitful.Time
+function kepler(orbit::Orbit, Δtᵢ::T = orbital_period(orbit); tol=1e-6, max_iter=100) where T<:Unitful.Time
 
     conic_section = conic(orbit)
 
@@ -41,7 +41,7 @@ function kepler(orbit::Orbit, Δtᵢ::T = orbital_period(orbit); tol=1e-14, max_
     # TODO: Compare loop vs. recursion performance here.
     # There shouldn't be too large of a difference, since this tends
     # to converge with only a few iterations.
-    χₙ, r, ψ, C₂, C₃ = χ(χ₀, Δt, orbit.rᵢ, orbit.vᵢ, orbit.a, orbit.body.μ, tol=tol, max_iter=max_iter)
+    χₙ, r, ψ, C₂, C₃ = χₖ(χ₀, Δt, orbit.rᵢ, orbit.vᵢ, orbit.a, orbit.body.μ, tol=tol, max_iter=max_iter)
 
     # Convert to a Orbit
     f = 1 - χₙ^2 / norm(orbit.rᵢ) * C₂
@@ -53,7 +53,7 @@ function kepler(orbit::Orbit, Δtᵢ::T = orbital_period(orbit); tol=1e-14, max_
 
 end
 
-function χ(χₙ, Δt, rᵢ₀, vᵢ₀, a, μ; iter=1, tol=1e-14, max_iter=100)
+function χₖ(χₙ, Δt, rᵢ₀, vᵢ₀, a, μ; iter=1, tol=1e-14, max_iter=100)
     
     r₀ = norm(rᵢ₀)
     ψ = upreferred(χₙ^2 / a)
@@ -78,7 +78,7 @@ function χ(χₙ, Δt, rᵢ₀, vᵢ₀, a, μ; iter=1, tol=1e-14, max_iter=100
     elseif abs(χₙ₊₁ - χₙ) < oneunit(χₙ) * tol
         return  χₙ, r, ψ, C₂, C₃
     else
-        return χ(χₙ₊₁, Δt, rᵢ₀, vᵢ₀, a, μ; iter=iter+1, tol=tol, max_iter=max_iter)
+        return χₖ(χₙ₊₁, Δt, rᵢ₀, vᵢ₀, a, μ; iter=iter+1, tol=tol, max_iter=max_iter)
     end
     
 end

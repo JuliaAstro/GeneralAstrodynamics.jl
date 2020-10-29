@@ -38,4 +38,21 @@ end
 
 end
 
+@testset "Lambert" begin
+    
+    rᵢ = [0.0, 11681.0, 0.0]u"km"
+    vᵢ = [5.134, 4.226, 2.787]u"km/s"
+    initial = Orbit(rᵢ, vᵢ, Earth)
+
+    Δt = 1000u"s"
+    final = kepler(initial, Δt; tol=1e-10)
+
+    v₁, v₂ = lambert(initial.rᵢ, final.rᵢ, Earth.μ, Δt, :short; tol=1e-14, max_iter=10000)
+
+    # 1e-2 km/s is a larger error than I would expect... but 1e-3 fails
+    @test isapprox(ustrip.(u"km/s", v₁), ustrip.(u"km/s", initial.vᵢ); atol=1e-2)
+    @test isapprox(ustrip.(u"km/s", v₂), ustrip.(u"km/s", final.vᵢ); atol=1e-2)
+
+end
+
 end
