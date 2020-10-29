@@ -14,7 +14,7 @@ using Reexport
 using Logging
 
 export AbstractManeuver, ConstantManeuver
-export escape_radius, escape_velocity, escape_time
+export escape_radius, escape_velocity, escape_time, escape_path_length
 
 include("maneuver_types.jl")
 include("twobody_maneuver_calculations.jl")

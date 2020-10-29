@@ -6,4 +6,5 @@ Currently, `Maneuvers` focuses on the twobody problem. The following functions h
 escape_radius
 escape_velocity
 escape_time
+escape_path_length
 ```
