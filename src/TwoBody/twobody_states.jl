@@ -201,22 +201,22 @@ function Base.show(io::IO, orbit::Orbit)
     
     println(io, "")
     println(io, crayon"light_magenta", 
-                "    Eccentricity:      ", 
+                "    Eccentricity:           ", 
                 orbit.e)    
     println(io, crayon"light_magenta", 
-                "    Semimajor Axis:    ", 
+                "    Semimajor Axis:         ", 
                 ustrip(u"km", orbit.a), " ", u"km")
     println(io, crayon"light_magenta", 
-                "    Inclination:       ", 
+                "    Inclination:            ", 
                 ustrip(u"°", orbit.i), u"°")
     println(io, crayon"light_magenta", 
-                "    RAAN:              ", 
+                "    RAAN:                   ", 
                 ustrip(u"°", orbit.Ω), u"°")
     println(io, crayon"light_magenta", 
-                "    Arg. Periapsis:    ", 
+                "    Arg. Periapsis:         ", 
                 ustrip(u"°", orbit.ω), u"°")
     println(io, crayon"light_magenta", 
-                "    True Anomoly:      ", 
+                "    True Anomoly:           ", 
                 ustrip(u"°", orbit.ν), u"°")
 
     println(io, "")
