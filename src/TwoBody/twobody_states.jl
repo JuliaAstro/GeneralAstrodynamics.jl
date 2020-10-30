@@ -70,6 +70,7 @@ struct CelestialBody
     R::Quantity
     μ::Quantity
     CelestialBody(m, R) = new(m, R, G * m)
+    CelestialBody(m, R, μ) = new(m, R, μ)
 end
 
 """
