@@ -3,7 +3,7 @@ module TwoBodyUnitTests
 using Test
 using UnitfulAstrodynamics
 
-@testset "Transformations" begin
+@testset "Transforms" begin
     
     rᵢ = [0.0, 11681.0, 0.0] * u"km"
     vᵢ = [5.134, 4.226, 2.787] * u"km/s"
