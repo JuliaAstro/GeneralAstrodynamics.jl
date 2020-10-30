@@ -1,4 +1,4 @@
-## `TwoBody` Data Structures
+# `TwoBody` Data Structures
 
 The `TwoBody` module contains two key structures: `Orbit` and `CelestialBody`.
 

@@ -1,4 +1,4 @@
-## `Maneuvers` Calculations
+# `Maneuvers` Calculations
 
 Currently, `Maneuvers` focuses on the twobody problem. The following functions have been developed. More to come!
 

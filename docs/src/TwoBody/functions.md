@@ -1,4 +1,4 @@
-## `TwoBody` Calculations
+# `TwoBody` Calculations
 
 For convenience, common `TwoBody` problem calculations are provided through functions. 
 Often, these functions are provided with common arguments (such as `orbital_period(a,μ)`), _and_ with [`TwoBody` Data Structures](@ref) arguments (such as `orbital_period(::Orbit)`).
