@@ -31,7 +31,7 @@ Currently not exported. Used for two-body numerical integration.
 function twobody_tic!(∂u, u, p, t)
 
     ∂u.rᵢ =  u.vᵢ
-    ∂u.vᵢ = -p.μ * (u.rᵢ ./ norm(u.rᵢ,2)^3) .+ (normalize(u.vᵢ) .* p.T)
+    ∂u.vᵢ = (-p.μ .* (u.rᵢ ./ norm(u.rᵢ,2)^3)) .+ (normalize(u.vᵢ) .* p.T)
 
 end
 
@@ -60,15 +60,15 @@ function propagate(orbit::Orbit,
     options = merge(defaults, kwargs)
 
     # Initial conditions
-    r₀ = Array(ustrip.(u"m",orbit.rᵢ))
+    r₀ = Array(ustrip.(u"m",   orbit.rᵢ))
     v₀ = Array(ustrip.(u"m/s", orbit.vᵢ))
 
     # Define the problem (modified from [2])
-    problem = ODEProblem(
-    twobody_tic!, 
-    ComponentArray((rᵢ=r₀, vᵢ=v₀)), 
-    ustrip.(u"s", (0.0u"s", Δt)), 
-    ComponentArray((μ=ustrip(u"m^3 / s^2", orbit.body.μ), T=ustrip(u"N/kg", thrust))))
+    problem = ODEProblem(twobody_tic!, 
+                         ComponentArray((rᵢ=r₀, vᵢ=v₀)), 
+                         ustrip.(u"s", (0.0u"s", Δt)), 
+                         ComponentArray((μ=ustrip(u"m^3 / s^2", orbit.body.μ), 
+                                         T=ustrip(u"N/kg", thrust))))
 
     # Solve the problem! 
     sols = solve(problem, ode_alg; options...)
