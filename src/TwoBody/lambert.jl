@@ -77,8 +77,8 @@ function lambert(r̅₁, r̅₂, μ, Δt, trajectory=:short; tol=1e-6, max_iter=
     ġ = 1 - yₙ/r₂
     g = A * √(yₙ/μ)
 
-    v̅₁ = upreferred((r̅₂ .- (f .* r̅₁)) ./ g)
-    v̅₂ = upreferred(((ġ .* r̅₂) .- r̅₁) ./ g)
+    v̅₁ = upreferred.((r̅₂ .- (f .* r̅₁)) ./ g)
+    v̅₂ = upreferred.(((ġ .* r̅₂) .- r̅₁) ./ g)
 
     return v̅₁, v̅₂
     
