@@ -1,4 +1,4 @@
-name: Julia-Nightly
+name: Windows
 on:
   schedule:
     - cron: 0 0 * * *
