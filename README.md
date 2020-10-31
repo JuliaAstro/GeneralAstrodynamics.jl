@@ -65,7 +65,7 @@ plot(sols; title="Plots.jl keywords work!", xlabel="Woo")
 sols.step[end] ≈ orbit_later
 ```
 
-#### NBody
+#### N-Body Problem
 
 The `NBody` module helps to solve the classical gravitational `NBody` problem. 
 
