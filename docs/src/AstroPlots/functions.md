@@ -1,6 +1,6 @@
 # Plotting `TwoBody` and `NBody` Systems
 
-Currently, two functions are provided to calculate information for a `MultibodySystem`: [`system_energy`](@ref), which calculates the total energy for the system, and [`system_angular_momentum`](@ref), which calculates the total angular momentum for the system.
+`TwoBodyPropagationResult` and `MultibodyPropagationResult` structs can be plotted with the `plot` function. Currently, two-body orbits can be plotted in the `Perifocal` (2D) frame, and the `Cartesian` (3D) frame. N-body systems can currently only be plotted in 3D.
 
 ```@docs
 plot
