@@ -22,7 +22,7 @@ This package aims to provide a simple interface for common astrodynamics problem
 
 ## Usage
 
-Check out the [Getting Started](https://cadojo.github.io/UnitfulAstrodynamics.jl/stable/#Getting-Started) documentation for code examples, and more detail about using this package. Some quick examples are shown below!
+Check out the [Getting Started](https://cadojo.github.io/UnitfulAstrodynamics.jl/stable/Overview/getting-started/#Getting-Started) documentation for code examples, and more detail about using this package. Some quick examples are shown below!
 
 #### Two-body Problem
 
