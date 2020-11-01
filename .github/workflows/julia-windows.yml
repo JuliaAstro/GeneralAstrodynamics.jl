@@ -1,3 +1,4 @@
+
 name: Windows-Tests
 on:
   schedule:
@@ -11,10 +12,9 @@ jobs:
       fail-fast: false
       matrix:
         version:
-          - ['1', 'nightly']
+          - 'nightly'
         os:
           - ubuntu-latest
-          - macOS-latest
         arch:
           - x64
     steps:
