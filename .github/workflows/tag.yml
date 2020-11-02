@@ -1,7 +1,5 @@
 name: TagBot
 on:
-  schedule:
-    - cron: 0 */6 * * *
   issue_comment:
     types:
       - created
