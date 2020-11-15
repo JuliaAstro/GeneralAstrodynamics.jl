@@ -1,5 +1,8 @@
 using Documenter
+using DocStringExtensions
 using UnitfulAstrodynamics
+
+UnitfulAstrodynamics.CommonTypes.include_sourcecode(true)
 
 makedocs(modules=[UnitfulAstrodynamics],
     format=Documenter.HTML(),
@@ -42,5 +45,5 @@ deploydocs(
     deps   = nothing,
     make   = nothing,
     devbranch = "main",
-    versions = ["stable" => "v^", "v#.#", "v#.#.#"],
+    versions = ["stable" => "v^", "manual", "v#.#", "v#.#.#"],
 )
