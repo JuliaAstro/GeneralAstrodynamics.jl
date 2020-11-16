@@ -174,7 +174,7 @@ Custom display for Orbit instances.
 function Base.show(io::IO, orbit::Orbit)
 
     println(io, crayon"green", conic(orbit), " Two Body Orbit:")
-    println(io, "")
+    println(io, crayon"default", "")
 
     println(io, "    Position (inertial):    [", 
                 ustrip(u"km", orbit.rᵢ[1]), ", ", 
