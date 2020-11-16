@@ -176,48 +176,41 @@ function Base.show(io::IO, orbit::Orbit)
     println(io, crayon"green", conic(orbit), " Two Body Orbit:")
     println(io, "")
 
-    println(io, crayon"cyan", "    Position (inertial):    [", 
+    println(io, "    Position (inertial):    [", 
                 ustrip(u"km", orbit.rᵢ[1]), ", ", 
                 ustrip(u"km", orbit.rᵢ[2]), ", ", 
                 ustrip(u"km", orbit.rᵢ[3]), "] ", u"km")
-    println(io, crayon"cyan", "    Velocity (inertial):    [", 
+    println(io, "    Velocity (inertial):    [", 
                 ustrip(u"km/s", orbit.vᵢ[1]), ", ", 
                 ustrip(u"km/s", orbit.vᵢ[2]), ", ", 
                 ustrip(u"km/s", orbit.vᵢ[3]), "] ", u"km/s")
 
     println(io, "")
-    println(io, crayon"blue", "    Position (perifocal):   [", 
+    println(io, "    Position (perifocal):   [", 
                 round(ustrip(u"km", orbit.rₚ[1]), digits=6), ", ", 
                 round(ustrip(u"km", orbit.rₚ[2]), digits=6), ", ", 
                 round(ustrip(u"km", orbit.rₚ[3]), digits=6), "] ", u"km/s")
-    println(io, crayon"blue", "    Velocity (perifocal):   [", 
+    println(io, "    Velocity (perifocal):   [", 
                 round(ustrip(u"km/s", orbit.vₚ[1]), digits=6), ", ", 
                 round(ustrip(u"km/s", orbit.vₚ[2]), digits=6), ", ", 
                 round(ustrip(u"km/s", orbit.vₚ[3]), digits=6), "] ", u"km/s") 
     
     println(io, "")
-    println(io, crayon"light_magenta", 
-                "    Eccentricity:           ", 
+    println(io, "    Eccentricity:           ", 
                 orbit.e)    
-    println(io, crayon"light_magenta", 
-                "    Semimajor Axis:         ", 
+    println(io, "    Semimajor Axis:         ", 
                 ustrip(u"km", orbit.a), " ", u"km")
-    println(io, crayon"light_magenta", 
-                "    Inclination:            ", 
+    println(io, "    Inclination:            ", 
                 ustrip(u"°", orbit.i), u"°")
-    println(io, crayon"light_magenta", 
-                "    RAAN:                   ", 
+    println(io, "    RAAN:                   ", 
                 ustrip(u"°", orbit.Ω), u"°")
-    println(io, crayon"light_magenta", 
-                "    Arg. Periapsis:         ", 
+    println(io, "    Arg. Periapsis:         ", 
                 ustrip(u"°", orbit.ω), u"°")
-    println(io, crayon"light_magenta", 
-                "    True Anomoly:           ", 
+    println(io, "    True Anomoly:           ", 
                 ustrip(u"°", orbit.ν), u"°")
 
     println(io, "")
-    println(io, crayon"magenta", 
-                "    Body (μ):          ",
+    println(io, "    Body (μ):               ",
                 ustrip(u"km^3 / s^2", orbit.body.μ), " ", u"km^3/s^2")
 end
 
