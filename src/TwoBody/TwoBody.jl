@@ -29,11 +29,13 @@ export TwoBodySystem, Orbit, AbstractConic, Circular, InvalidOrbit,
        Saturn, Uranus, Neptune, Pluto, G
 
 # Export functions
-export  semimajor_axis, eccentricity, eccentricity_vector, inclination, true_anomoly, 
-        periapsis_radius, apoapsis_radius, periapsis_velocity, apoapsis_velocity,      
-        radius, velocity, orbital_period, perifocal, inertial,
+export  semimajor_axis, semi_parameter, eccentricity, 
+        eccentricity_vector, inclination, true_anomoly, 
+        periapsis_radius, apoapsis_radius, periapsis_velocity, 
+        apoapsis_velocity, radius, velocity, orbital_period, 
+        mass, mass_parameter, perifocal, inertial,
         time_since_periapsis, mean_motion, mean_motion_vector, 
-        semi_parameter, conic_anomoly, specific_angular_momentum_vector, 
+        conic_anomoly, specific_angular_momentum_vector, 
         specific_angular_momentum, specific_energy,  
         isapprox, isequal, TwobodyPropagationResult, kepler, lambert,
         conic, keplerian, cartesian, isinvalid

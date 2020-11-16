@@ -39,16 +39,7 @@ function Orbit(rᵢ, vᵢ, body)
 
     return Orbit{
             conic(eccentricity(rᵢ, vᵢ, body.μ)),
-            Float64,
-            eltype(rᵢ),
-            eltype(vᵢ),
-            eltype(rₚ),
-            eltype(vₚ),
-            typeof(a),
-            typeof(i),
-            typeof(Ω),
-            typeof(ω),
-            typeof(ν)
+            Float64
         }(SVector{3}(Float64.(rᵢ)), 
           SVector{3}(Float64.(vᵢ)), 
           SVector{3}(Float64.(rₚ)),
@@ -70,20 +61,11 @@ function Orbit(e, a, i, Ω, ω, ν, body)
     
     return Orbit{
             conic(e),
-            Float64,
-            eltype(rᵢ),
-            eltype(vᵢ),
-            eltype(rₚ),
-            eltype(vₚ),
-            typeof(a),
-            typeof(i),
-            typeof(Ω),
-            typeof(ω),
-            typeof(ν)
+            Float64
         }(SVector{3}(Float64.(rᵢ)), 
           SVector{3}(Float64.(vᵢ)), 
-          SVector{3}(rₚ),
-          SVector{3}(vₚ),
+          SVector{3}(Float64.(rₚ)),
+          SVector{3}(Float64.(vₚ)),
           map(Float64, [e,a,i,Ω,ω,ν])...,
           body)
 
@@ -101,28 +83,24 @@ function keplerian(rᵢ, vᵢ, μ)
     ĵ = SVector{3, Float64}([0, 1, 0]) 
     k̂ = SVector{3, Float64}([0, 0, 1])
 
-    acos_chop(un, val) = val ≈  1.0 ? acos(un,  1.0) : 
-                         val ≈ -1.0 ? acos(un, -1.0) : 
-                         acos(un, val)
-
     h̅ = specific_angular_momentum_vector(rᵢ, vᵢ)
     a = semimajor_axis(norm(rᵢ), norm(vᵢ), μ)
     n̅ = k̂ × specific_angular_momentum_vector(rᵢ, vᵢ)
     e̅ = eccentricity_vector(rᵢ, vᵢ, μ)
     e = norm(e̅)
-    i = acos_chop(u"rad", (h̅ ⋅ k̂) / norm(h̅))
+    i = acos(u"rad", (h̅ ⋅ k̂) / norm(h̅))
 
     Ω = ustrip(n̅ ⋅ ĵ) > 0 ? 
-            acos_chop(u"rad", (n̅ ⋅ î) / norm(n̅)) :
-            2π * u"rad" - acos_chop(u"rad", (n̅ ⋅ î) / norm(n̅))
+            acos(u"rad", (n̅ ⋅ î) / norm(n̅)) :
+            2π * u"rad" - acos(u"rad", (n̅ ⋅ î) / norm(n̅))
 
     ω = ustrip(e̅ ⋅ k̂) > 0 ?
-            acos_chop(u"rad", (n̅ ⋅ e̅) / (norm(n̅) * e)) :
-            2π * u"rad" - acos_chop(u"rad", (n̅ ⋅ e̅) / (norm(n̅) * e))
+            acos(u"rad", (n̅ ⋅ e̅) / (norm(n̅) * e)) :
+            2π * u"rad" - acos(u"rad", (n̅ ⋅ e̅) / (norm(n̅) * e))
 
     ν = ustrip(rᵢ ⋅  vᵢ) > 0 ? 
-            acos_chop(u"rad", (e̅ ⋅ rᵢ) / (e * norm(rᵢ))) :
-            2π * u"rad" - acos_chop(u"rad", (e̅ ⋅ rᵢ) / (e * norm(rᵢ)))
+            acos(u"rad", (e̅ ⋅ rᵢ) / (e * norm(rᵢ))) :
+            2π * u"rad" - acos(u"rad", (e̅ ⋅ rᵢ) / (e * norm(rᵢ)))
 
     return e, uconvert(u"km", a), uconvert(u"°", i), 
            uconvert(u"°", Ω), uconvert(u"°", ω), 
@@ -257,7 +235,8 @@ Returns orbital eccentricity vector e̅.
 """
 function eccentricity_vector(rᵢ, vᵢ, μ)
 
-    return (1 / μ) * ((vᵢ × specific_angular_momentum_vector(rᵢ, vᵢ)) - μ * rᵢ / norm(rᵢ))
+    return map(x-> abs(x) < eps(typeof(x)) ? 0.0 : x, 
+               (1 / μ) * ((vᵢ × specific_angular_momentum_vector(rᵢ, vᵢ)) - μ * rᵢ / norm(rᵢ)))
 
 end
 eccentricity_vector(orbit::Orbit) = eccentricity_vector(orbit.rᵢ, orbit.vᵢ, orbit.body.μ)
@@ -283,11 +262,12 @@ semi_parameter(orbit::Orbit) = semi_parameter(orbit.a, orbit.e)
 """
     radius(p, e, ν)
     radius(orbit::Orbit)
-
-Returns instantaneous radius, r.
+    radius(body::CelestialBody)
+Returns radius, r.
 """
 radius(p, e, ν) = upreferred(p / (1 + e * cos(ν)))
 radius(orbit::Orbit) = radius(semi_parameter(orbit), orbit.e, orbit.ν)
+radius(body::CelestialBody) = body.R
 
 """
     velocity(r, a, μ)
@@ -340,6 +320,20 @@ function apoapsis_velocity(orbit::Orbit)
                 orbit.body.μ)
 
 end
+
+"""
+    mass(body::CelestialBody)
+
+Returns mass `m`.
+"""
+mass(body::CelestialBody) = body.μ / G
+
+"""
+    mass_parameter(body::CelestialBody)
+
+Returns mass parameter `μ`.
+"""
+mass_parameter(body::CelestialBody) = body.μ
 
 """
     orbital_period(a, μ)
