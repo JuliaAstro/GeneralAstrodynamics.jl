@@ -71,7 +71,7 @@ struct CelestialBody{F<:AbstractFloat}
     μ::Quantity{F}
 
     CelestialBody(m::Unitful.Mass{T}, R::Unitful.Length{T}) where T<:AbstractFloat = new{T}(R, T(G * m))
-    CelestialBody(R::Unitful.Length{T}, μ::Unitful.Quantity{T}) where T<:AbstractFloat = new{T}(m, R, μ)
+    CelestialBody(R::Unitful.Length{T}, μ::Unitful.Quantity{T}) where T<:AbstractFloat = new{T}(R, μ)
 
     CelestialBody(m::Unitful.Mass, R::Unitful.Length) = new{Float64}(Float64(m), Float64(R), Float64(G * m))
     CelestialBody(R::Unitful.Length, μ::Unitful.Quantity) = new{Float64}(Float64(R), Float64(μ))
