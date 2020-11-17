@@ -7,6 +7,7 @@ Three Body Problem.
 module ThreeBody
 
 using ..CommonTypes
+using ..TwoBody
 
 using Reexport
 

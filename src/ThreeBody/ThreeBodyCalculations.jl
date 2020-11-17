@@ -26,4 +26,4 @@ potential_energy(r, μ, x₁, x₂) = @views @. (r[1]^2 + r[2]^2) + (2(1-μ)/pos
 """
 Returns the Jacobi Constant `C`.
 """
-jacobi_constant(r, v, μ, x₁, x₂) = @views @. potential_energy(r, μ, x₁, x₂) - (v⋅v)
+jacobi_constant(r, v, μ, x₁, x₂) = potential_energy(r, μ, x₁, x₂) - (v⋅v)
