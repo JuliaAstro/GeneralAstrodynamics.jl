@@ -86,12 +86,10 @@ Custom display for `CelestialBody` instances.
 function Base.show(io::IO, body::CelestialBody)
 
     println(io, crayon"blue", "CelestialBody:")
-    println(io, crayon"cyan", 
-        "    Mass:           ", ustrip(u"kg", body.m), " ", u"kg")
-    println(io, crayon"light_blue", 
-        "    Radius:         ", ustrip(u"km", body.R), " ", u"km")
-    println(io, crayon"light_magenta",
-        "    Mass Parameter: ", ustrip(u"km^3/s^2", body.μ), " ", u"km^3/s^2")
+    println(io, crayon"default", 
+                "    Mass:           ", ustrip(u"kg", body.μ / G), " ", u"kg")
+    println(io, "    Radius:         ", ustrip(u"km", body.R), " ", u"km")
+    println(io, "    Mass Parameter: ", ustrip(u"km^3/s^2", body.μ), " ", u"km^3/s^2")
 
 end
 

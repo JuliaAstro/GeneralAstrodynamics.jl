@@ -19,9 +19,9 @@ using StaticArrays
 @reexport using Unitful, UnitfulAstro, UnitfulAngles
 
 export ThreeBodySystem
+export nondimensionalize, position, potential_energy, jacobi_constant
 
-include("threebody_states.jl")
-include("threebody_calculations.jl")
-
+include("ThreeBodyStates.jl")
+include("ThreeBodyCalculations.jl")
 
 end

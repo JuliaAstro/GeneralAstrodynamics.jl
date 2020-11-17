@@ -11,13 +11,17 @@ Problem system.
 struct ThreeBodySystem{F<:AbstractFloat} <: OrbitalSystem
 
     # Dimensional Units
-    m₁::Unitful.Mass{F}
-    m₂::Unitful.Mass{F}
-    x₁::Unitful.Length{F}
-    x₂::Unitful.Length{F}
+    μ₁::Unitful.Quantity{F}
+    μ₂::Unitful.Quantity{F}
+    r::Unitful.Length{F}
+    v::Unitful.Velocity{F}
+    t::Unitful.Time{F}
 
     # Non-dimensional Units
-    μ::Unitful.Quantity{F}
-    
+    M::Unitful.DimensionlessQuantity{F}
+    μ::Unitful.DimensionlessQuantity{F}
+    x₁::Unitful.DimensionlessQuantity{F}
+    x₂::Unitful.DimensionlessQuantity{F}
+    T::Unitful.DimensionlessQuantity{F}
     
 end
