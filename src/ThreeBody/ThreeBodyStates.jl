@@ -25,6 +25,7 @@ struct ThreeBodySystem{F<:AbstractFloat} <: OrbitalSystem
     x₂::F
     rₛ::SVector{3, F}
     vₛ::SVector{3, F}
+    tₛ::F
 
     function ThreeBodySystem(a, μ₁, μ₂, r, v, t)
 
@@ -32,17 +33,19 @@ struct ThreeBodySystem{F<:AbstractFloat} <: OrbitalSystem
         throw(ArgumentError(string("Both `r` and `v` provided to `ThreeBodySystem` ",
             "constructor must have length 3.")))
         end
+
         if μ₂ > μ₁
         @warn string("The second mass parameter is larger than the first. ",
-            "Did you mean to switch those two? Assuming the second ",
-            "mass parameter is the primary body.")
-        end 
+                     "Did you mean to switch those two? Assuming the second ",
+                     "mass parameter is the primary body.")
+        end
+
         μ = min(μ₁, μ₂) / (μ₁+μ₂)
         Tₛ = orbital_period(a, μ₁+μ₂)
         return new{Float64}(map(x->Float64.(x), (
             a, μ₁, μ₂, SVector{3}(r), SVector{3}(v), t, Tₛ, 
-            μ, -μ, 1-μ, nondimensionalize(SVector{3}(r), a), nondimensionalize(SVector{3}(v), a, Tₛ))
-        )...)
+            μ, -μ, 1-μ, nondimensionalize(SVector{3}(r), a), nondimensionalize(SVector{3}(v), a, Tₛ), t/Tₛ))...
+        )
 
     end
 
@@ -61,16 +64,18 @@ struct ThreeBodySystem{F<:AbstractFloat} <: OrbitalSystem
         throw(ArgumentError(string("Both `r` and `v` provided to `ThreeBodySystem` ",
             "constructor must have length 3.")))
         end
+
         if μ₂ > μ₁
         @warn string("The second mass parameter is larger than the first. ",
             "Did you mean to switch those two? Assuming the second ",
             "mass parameter is the primary body.")
-        end 
+        end
+
         μ = min(μ₁, μ₂) / (μ₁+μ₂)
         Tₛ = orbital_period(a, μ₁+μ₂)
         return new{T}(
             a, μ₁, μ₂, SVector{3}(r), SVector{3}(v), t, Tₛ, 
-            μ, -μ, 1-μ, nondimensionalize(SVector{3}(r), a), nondimensionalize(SVector{3}(v), a, Tₛ)
+            μ, -μ, 1-μ, nondimensionalize(SVector{3}(r), a), nondimensionalize(SVector{3}(v), a, Tₛ), t/Tₛ
         )
     end
 end
