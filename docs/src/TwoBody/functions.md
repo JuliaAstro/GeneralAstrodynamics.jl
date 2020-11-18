@@ -44,6 +44,8 @@ periapsis_velocity
 apoapsis_velocity
 radius
 velocity
+mass
+mass_parameter
 orbital_period
 time_since_periapsis
 mean_motion

@@ -19,6 +19,7 @@ using Reexport
 
 include("CommonTypes/CommonTypes.jl")
 include("TwoBody/TwoBody.jl")
+include("ThreeBody/ThreeBody.jl")
 include("NBody/NBody.jl")
 include("Propagators/Propagators.jl")
 include("Maneuvers/Maneuvers.jl")
@@ -26,6 +27,7 @@ include("AstroPlots/AstroPlots.jl")
 
 @reexport using .CommonTypes
 @reexport using .TwoBody
+@reexport using .ThreeBody
 @reexport using .NBody
 @reexport using .Propagators
 @reexport using .Maneuvers

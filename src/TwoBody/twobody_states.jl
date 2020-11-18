@@ -65,12 +65,17 @@ solar system bodies are supported:
 Sun, Mercury, Venus, Earth, Moon (Luna), Mars, Jupiter, 
 Saturn, Uranus, Neptune, Pluto.
 """
-struct CelestialBody
-    m::Quantity
-    R::Quantity
-    μ::Quantity
-    CelestialBody(m, R) = new(m, R, G * m)
-    CelestialBody(m, R, μ) = new(m, R, μ)
+struct CelestialBody{F<:AbstractFloat}
+
+    R::Unitful.Length{F}
+    μ::Quantity{F}
+
+    CelestialBody(m::Unitful.Mass{T}, R::Unitful.Length{T}) where T<:AbstractFloat = new{T}(R, T(G * m))
+    CelestialBody(R::Unitful.Length{T}, μ::Unitful.Quantity{T}) where T<:AbstractFloat = new{T}(R, μ)
+
+    CelestialBody(m::Unitful.Mass, R::Unitful.Length) = new{Float64}(Float64(m), Float64(R), Float64(G * m))
+    CelestialBody(R::Unitful.Length, μ::Unitful.Quantity) = new{Float64}(Float64(R), Float64(μ))
+
 end
 
 """
@@ -81,12 +86,10 @@ Custom display for `CelestialBody` instances.
 function Base.show(io::IO, body::CelestialBody)
 
     println(io, crayon"blue", "CelestialBody:")
-    println(io, crayon"cyan", 
-        "    Mass:           ", ustrip(u"kg", body.m), " ", u"kg")
-    println(io, crayon"light_blue", 
-        "    Radius:         ", ustrip(u"km", body.R), " ", u"km")
-    println(io, crayon"light_magenta",
-        "    Mass Parameter: ", ustrip(u"km^3/s^2", body.μ), " ", u"km^3/s^2")
+    println(io, crayon"default", 
+                "    Mass:           ", ustrip(u"kg", body.μ / G), " ", u"kg")
+    println(io, "    Radius:         ", ustrip(u"km", body.R), " ", u"km")
+    println(io, "    Mass Parameter: ", ustrip(u"km^3/s^2", body.μ), " ", u"km^3/s^2")
 
 end
 
@@ -137,33 +140,24 @@ Struct for storing TwoBody orbital states for all conics.
 """
 struct Orbit{
             C  <: AbstractConic,
-            F  <: AbstractFloat,
-            R  <: Unitful.Length{F},
-            V  <: Unitful.Velocity{F},
-            RP <: Unitful.Length{F},
-            VP <: Unitful.Velocity{F},
-            A  <: Unitful.Length{F},
-            I  <: Unitful.DimensionlessQuantity{F},
-            O  <: Unitful.DimensionlessQuantity{F},
-            W  <: Unitful.DimensionlessQuantity{F},
-            N  <: Unitful.DimensionlessQuantity{F}
+            F  <: AbstractFloat
         } <: TwoBodySystem{C}
 
     # Cartesian representation
-    rᵢ::SVector{3, R}
-    vᵢ::SVector{3, V}
+    rᵢ::SVector{3, Unitful.Length{F}}
+    vᵢ::SVector{3, Unitful.Velocity{F}}
 
     # Perifocal (in-orbital-plane) representation
-    rₚ::SVector{3, RP}
-    vₚ::SVector{3, VP}
+    rₚ::SVector{3, Unitful.Length{F}}
+    vₚ::SVector{3, Unitful.Velocity{F}}
 
     # Keplerian representation
     e::F
-    a::A
-    i::I
-    Ω::O
-    ω::W
-    ν::N
+    a::Unitful.Length{F}
+    i::Unitful.DimensionlessQuantity{F}
+    Ω::Unitful.DimensionlessQuantity{F}
+    ω::Unitful.DimensionlessQuantity{F}
+    ν::Unitful.DimensionlessQuantity{F}
 
     # Body
     body::CelestialBody
@@ -178,50 +172,43 @@ Custom display for Orbit instances.
 function Base.show(io::IO, orbit::Orbit)
 
     println(io, crayon"green", conic(orbit), " Two Body Orbit:")
-    println(io, "")
+    println(io, crayon"default", "")
 
-    println(io, crayon"cyan", "    Position (inertial):    [", 
+    println(io, "    Position (inertial):    [", 
                 ustrip(u"km", orbit.rᵢ[1]), ", ", 
                 ustrip(u"km", orbit.rᵢ[2]), ", ", 
                 ustrip(u"km", orbit.rᵢ[3]), "] ", u"km")
-    println(io, crayon"cyan", "    Velocity (inertial):    [", 
+    println(io, "    Velocity (inertial):    [", 
                 ustrip(u"km/s", orbit.vᵢ[1]), ", ", 
                 ustrip(u"km/s", orbit.vᵢ[2]), ", ", 
                 ustrip(u"km/s", orbit.vᵢ[3]), "] ", u"km/s")
 
     println(io, "")
-    println(io, crayon"blue", "    Position (perifocal):   [", 
+    println(io, "    Position (perifocal):   [", 
                 round(ustrip(u"km", orbit.rₚ[1]), digits=6), ", ", 
                 round(ustrip(u"km", orbit.rₚ[2]), digits=6), ", ", 
                 round(ustrip(u"km", orbit.rₚ[3]), digits=6), "] ", u"km/s")
-    println(io, crayon"blue", "    Velocity (perifocal):   [", 
+    println(io, "    Velocity (perifocal):   [", 
                 round(ustrip(u"km/s", orbit.vₚ[1]), digits=6), ", ", 
                 round(ustrip(u"km/s", orbit.vₚ[2]), digits=6), ", ", 
                 round(ustrip(u"km/s", orbit.vₚ[3]), digits=6), "] ", u"km/s") 
     
     println(io, "")
-    println(io, crayon"light_magenta", 
-                "    Eccentricity:           ", 
+    println(io, "    Eccentricity:           ", 
                 orbit.e)    
-    println(io, crayon"light_magenta", 
-                "    Semimajor Axis:         ", 
+    println(io, "    Semimajor Axis:         ", 
                 ustrip(u"km", orbit.a), " ", u"km")
-    println(io, crayon"light_magenta", 
-                "    Inclination:            ", 
+    println(io, "    Inclination:            ", 
                 ustrip(u"°", orbit.i), u"°")
-    println(io, crayon"light_magenta", 
-                "    RAAN:                   ", 
+    println(io, "    RAAN:                   ", 
                 ustrip(u"°", orbit.Ω), u"°")
-    println(io, crayon"light_magenta", 
-                "    Arg. Periapsis:         ", 
+    println(io, "    Arg. Periapsis:         ", 
                 ustrip(u"°", orbit.ω), u"°")
-    println(io, crayon"light_magenta", 
-                "    True Anomoly:           ", 
+    println(io, "    True Anomoly:           ", 
                 ustrip(u"°", orbit.ν), u"°")
 
     println(io, "")
-    println(io, crayon"magenta", 
-                "    Body (μ):          ",
+    println(io, "    Body (μ):               ",
                 ustrip(u"km^3 / s^2", orbit.body.μ), " ", u"km^3/s^2")
 end
 
