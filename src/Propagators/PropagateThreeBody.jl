@@ -32,8 +32,8 @@ function threebody_tic!(∂u, u, p, t)
 
     ∂u.rₛ    =  u.vₛ
     ∂u.vₛ[1] =  2u.vₛ[2] + u.rₛ[1] - 
-                     (1-p.μ)*(u.rₛ[1] - p.x₁) / ThreeBody.position(u.rₛ, p.x₁) - 
-                      p.μ*(u.rₛ[1] - p.x₂)    / ThreeBody.position(u.rₛ, p.x₂)
+                     (1-p.μ)*(u.rₛ[1] - p.x₁) / ThreeBody.position(u.rₛ, p.x₁)^3 - 
+                      p.μ*(u.rₛ[1] - p.x₂)    / ThreeBody.position(u.rₛ, p.x₂)^3
     ∂u.vₛ[2] = -2u.vₛ[1] + u.rₛ[2] - ( (1-p.μ)/ThreeBody.position(u.rₛ, p.x₁)^3 + (p.μ/ThreeBody.position(u.rₛ, p.x₂)^3)) * u.rₛ[2]
     ∂u.vₛ[3] = -( (1-p.μ) / ThreeBody.position(u.rₛ, p.x₁)^3 + (p.μ / ThreeBody.position(u.rₛ, p.x₂)^3)) * u.rₛ[3]
 
