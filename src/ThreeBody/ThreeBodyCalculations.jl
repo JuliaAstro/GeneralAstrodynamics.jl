@@ -42,7 +42,7 @@ jacobi_constant(r, v, μ, x₁, x₂) = potential_energy(r, μ, x₁, x₂) - (v
 """
 Returns the position and velocity vectors in the inertial reference frame.
 """
-function inertial(rₛ, vₛ, t, ω=1.0)
+function inertial(vecₛ, t, ω=1.0)
 
     θ = ω*t
     ᴵTₛ = [
@@ -51,7 +51,7 @@ function inertial(rₛ, vₛ, t, ω=1.0)
         0      0      1
     ]
 
-    return  ᴵTₛ * rₛ, ᴵTₛ * vₛ
+    return  ᴵTₛ * vecₛ
 
 end
 
