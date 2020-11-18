@@ -9,6 +9,7 @@ module Propagators
 using ..CommonTypes
 using ..NBody
 using ..TwoBody
+using ..ThreeBody 
 
 using Reexport
 
@@ -20,10 +21,12 @@ using StaticArrays
 using OrdinaryDiffEq
 
 export  TwobodyPropagationResult, 
+        ThreeBodyPropagationResult,
         MultibodyPropagationResult, 
         propagate
 
-include("propagate_twobody.jl")
-include("propagate_nbody.jl")
+include("PropagateTwoBody.jl")
+include("PropagateThreeBody.jl")
+include("PropagateNBody.jl")
 
 end

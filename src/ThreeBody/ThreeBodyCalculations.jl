@@ -10,8 +10,19 @@ If two scalar arguments are provided, then the first is assumed
 to be the `length_scalar`, and the  second is assumed to be the
 `time_scalar`.
 """
-nondimensionalize(vec, scalar) = @. upreferred(vec / scalar)
-nondimensionalize(vec, length_scalar, time_scalar) = nondimensionalize(vec, length_scalar / time_scalar)
+nondimensionalize(vec::T, scalar) where T<:AbstractVector = @. upreferred(vec / scalar)
+nondimensionalize(vec::T, length_scalar, time_scalar) where T<:AbstractVector = nondimensionalize(vec, length_scalar / time_scalar)
+nondimensionalize(time::T, scalar) where T<:Number = time / scalar
+
+"""
+Returns `vec` re-dimensionalized (`vec` multiplied by `scalar`).
+If two scalar arguments are provided, then the first is assumed
+to be the `length_scalar`, and the second is assumed to be the
+`time_scalar`.
+"""
+redimensionalize(vec::T, scalar) where T<:AbstractVector = @. upreferred(vec * scalar)
+redimensionalize(vec::T, length_scalar, time_scalar) where T<:AbstractVector = redimensionalize(vec, length_scalar / time_scalar)
+redimensionalize(time::T, scalar) where T<:Number = time * scalar
 
 """
 Returns the position w.r.t. body 1 (or 2).
@@ -27,3 +38,24 @@ potential_energy(r, μ, x₁, x₂) = @views @. (r[1]^2 + r[2]^2) + (2(1-μ)/pos
 Returns the Jacobi Constant `C`.
 """
 jacobi_constant(r, v, μ, x₁, x₂) = potential_energy(r, μ, x₁, x₂) - (v⋅v)
+
+"""
+Returns the position and velocity vectors in the inertial reference frame.
+"""
+function inertial(rₛ, vₛ, t, ω=1.0)
+
+    θ = ω*t
+    ᴵTₛ = [
+        cos(θ) sin(θ) 0
+       -sin(θ) cos(θ) 0
+        0      0      1
+    ]
+
+    return  ᴵTₛ * rₛ, ᴵTₛ * vₛ
+
+end
+
+"""
+Returns the position and velocity vectors in the synodic (rotating) reference frame.
+"""
+synodic(rᵢ, vᵢ, a, Tₛ) = nondimensionalize(rᵢ, a), nondimensionalize(vᵢ, a, Tₛ)
