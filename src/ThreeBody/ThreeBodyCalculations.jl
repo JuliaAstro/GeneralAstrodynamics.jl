@@ -58,4 +58,4 @@ end
 """
 Returns the position and velocity vectors in the synodic (rotating) reference frame.
 """
-synodic(rᵢ, vᵢ, a, Tₛ) = nondimensionalize(rᵢ, a), nondimensionalize(vᵢ, a, Tₛ)
+synodic(rᵢ, vᵢ, a, Tₛ) =  nondimensionalize(rᵢ, a), nondimensionalize(vᵢ, a, Tₛ)
