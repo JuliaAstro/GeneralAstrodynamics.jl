@@ -20,15 +20,14 @@ using StaticArrays
 @reexport using Unitful, UnitfulAstro, UnitfulAngles
 
 export ThreeBodySystem
-export rendimensionalize, 
+export redimensionalize, 
        nondimensionalize, 
        potential_energy, 
        jacobi_constant,
        position,  
        inertial, 
-       synodic,
-       threebody_tic!
-
+       synodic
+       
 include("ThreeBodyStates.jl")
 include("ThreeBodyCalculations.jl")
 

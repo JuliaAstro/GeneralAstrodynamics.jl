@@ -23,7 +23,10 @@ using OrdinaryDiffEq
 export  TwobodyPropagationResult, 
         ThreeBodyPropagationResult,
         MultibodyPropagationResult, 
-        propagate
+        propagate,
+        twobody_tic!,
+        threebody_tic!,
+        nbody_tic
 
 include("PropagateTwoBody.jl")
 include("PropagateThreeBody.jl")
