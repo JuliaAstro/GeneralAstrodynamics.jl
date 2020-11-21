@@ -19,7 +19,7 @@ using StaticArrays
 @reexport using Unitful, UnitfulAstro, UnitfulAngles
 
 export Body, MultibodySystem, system_energy, 
-       system_angular_momentum
+       system_angular_momentum, promote, convert
 
 include("multibody_states.jl")
 include("multibody_calculations.jl")
