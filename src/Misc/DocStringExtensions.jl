@@ -15,6 +15,7 @@ const SOURCECODE = SourceCode()
 function DocStringExtensions.format(abbrv::SourceCode, buf, doc)
 
     if include_source_in_docstring
+        println("Adding source code!")
         file = doc.data[:path]
         if isfile(file)
             lines = Base.Iterators.drop(eachline(file), doc.data[:linenumber] - 1)
@@ -25,6 +26,8 @@ function DocStringExtensions.format(abbrv::SourceCode, buf, doc)
             println(buf, rstrip(text[from:to]))
             println(buf, "```")
         end
+    else
+        println("Skipping sourceode.")
     end
 
     return nothing
@@ -34,15 +37,10 @@ end
 include_source_in_docstring = false
 include_sourcecode(b::Bool) = include_source_in_docstring = b
 
-@template DEFAULT = 
-"""
-$(SIGNATURES)
-$(DOCSTRING)
-"""
-
 @template (FUNCTIONS, METHODS, MACROS) =
 """
 $(METHODLIST)
 $(DOCSTRING)
-$(SOURCECODE)
 """
+
+# export SOURCECODE
