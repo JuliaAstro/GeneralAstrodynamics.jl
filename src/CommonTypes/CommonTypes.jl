@@ -4,6 +4,8 @@ Implementations are provided in TwoBody, and NBody.
 """
 module CommonTypes
 
+include("../Misc/DocStringExtensions.jl")
+
 using Reexport
 
 @reexport using Unitful, UnitfulAstro

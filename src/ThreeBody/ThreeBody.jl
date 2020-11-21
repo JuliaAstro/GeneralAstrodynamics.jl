@@ -4,6 +4,8 @@ Three Body Problem.
 """
 module ThreeBody
 
+include("../Misc/DocStringExtensions.jl")
+
 using ..CommonTypes
 using ..TwoBody
 

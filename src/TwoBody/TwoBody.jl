@@ -3,6 +3,8 @@ Provides structures & functions for the two-body problem.
 """
 module TwoBody
 
+include("../Misc/DocStringExtensions.jl")
+
 # Dependencies 
 
 using ..CommonTypes

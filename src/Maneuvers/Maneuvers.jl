@@ -3,6 +3,8 @@ Provides calculations for orbit maneuvers.
 """
 module Maneuvers
 
+include("../Misc/DocStringExtensions.jl")
+
 using ..CommonTypes
 using ..NBody
 using ..TwoBody

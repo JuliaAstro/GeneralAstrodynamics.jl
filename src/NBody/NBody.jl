@@ -4,6 +4,8 @@ and other celestial bodies.
 """
 module NBody
 
+include("../Misc/DocStringExtensions.jl")
+
 using ..CommonTypes
 
 using Reexport

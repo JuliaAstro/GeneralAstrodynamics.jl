@@ -4,6 +4,8 @@ and the n-body problem.
 """
 module Propagators
 
+include("../Misc/DocStringExtensions.jl")
+
 using ..CommonTypes
 using ..NBody
 using ..TwoBody
