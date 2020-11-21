@@ -2,7 +2,15 @@ using Documenter
 using DocStringExtensions
 using UnitfulAstrodynamics
 
-UnitfulAstrodynamics.include_sourcecode(true)
+source = true
+UnitfulAstrodynamics.include_sourcecode(source)
+UnitfulAstrodynamics.AstroPlots.include_sourcecode(source)
+UnitfulAstrodynamics.CommonTypes.include_sourcecode(source)
+UnitfulAstrodynamics.Maneuvers.include_sourcecode(source)
+UnitfulAstrodynamics.NBody.include_sourcecode(source)
+UnitfulAstrodynamics.Propagators.include_sourcecode(source)
+UnitfulAstrodynamics.ThreeBody.include_sourcecode(source)
+UnitfulAstrodynamics.TwoBody.include_sourcecode(source)
 
 makedocs(modules=[UnitfulAstrodynamics],
     format=Documenter.HTML(),

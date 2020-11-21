@@ -9,19 +9,6 @@
 
 using DocStringExtensions
 
-@template DEFAULT = 
-"""
-$(SIGNATURES)
-$(DOCSTRING)
-"""
-
-@template (FUNCTIONS, METHODS, MACROS) =
-"""
-$(TYPEDSIGNATURES)
-$(DOCSTRING)
-$(METHODLIST)
-"""
-
 struct SourceCode <: DocStringExtensions.Abbreviation end
 const SOURCECODE = SourceCode()
 
@@ -46,5 +33,18 @@ end
 
 include_source_in_docstring = false
 include_sourcecode(b::Bool) = include_source_in_docstring = b
+
+@template DEFAULT = 
+"""
+$(SIGNATURES)
+$(DOCSTRING)
+"""
+
+@template (FUNCTIONS, METHODS, MACROS) =
+"""
+$(METHODLIST)
+$(DOCSTRING)
+$(SOURCECODE)
+"""
 
 # export SOURCECODE
