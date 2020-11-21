@@ -13,8 +13,8 @@ struct SourceCode <: DocStringExtensions.Abbreviation end
 const SOURCECODE = SourceCode()
 
 function DocStringExtensions.format(abbrv::SourceCode, buf, doc)
+
     if include_source_in_docstring
-        println("put source in docstring")
         file = doc.data[:path]
         if isfile(file)
             lines = Base.Iterators.drop(eachline(file), doc.data[:linenumber] - 1)
@@ -25,10 +25,10 @@ function DocStringExtensions.format(abbrv::SourceCode, buf, doc)
             println(buf, rstrip(text[from:to]))
             println(buf, "```")
         end
-    else
-        println("no source in docstring")
     end
+
     return nothing
+    
 end
 
 include_source_in_docstring = false
@@ -46,5 +46,3 @@ $(METHODLIST)
 $(DOCSTRING)
 $(SOURCECODE)
 """
-
-# export SOURCECODE
