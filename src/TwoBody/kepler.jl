@@ -12,7 +12,7 @@ function kepler(orbit::Orbit, Δtᵢ::T = orbital_period(orbit); tol=1e-6, max_i
     conic_section = conic(orbit)
 
     # Guess χ₀
-    if conic_section ∈ (Circular, Elliptical)
+    if conic_section == Circular || conic_section == Elliptical
 
         Δt = mod(Δtᵢ, orbital_period(orbit))
         χ₀ = √(orbit.body.μ) * Δt / orbit.a

@@ -60,6 +60,10 @@ struct CelestialBody{F<:AbstractFloat}
     CelestialBody(R::Unitful.Length, μ::Unitful.Quantity) = new{Float64}(Float64(R), Float64(μ))
 
 end
+Base.convert(::Type{T}, b::CelestialBody) where {
+        T<:AbstractFloat} = CelestialBody(T(b.R), T(b.μ))
+Base.promote(::Type{CelestialBody{A}}, ::Type{CelestialBody{B}}) where {
+        A<:AbstractFloat, B<:AbstractFloat} = CelestialBody{promote_type(A,B)}
 
 """
 Custom display for `CelestialBody` instances.
@@ -74,46 +78,6 @@ function Base.show(io::IO, body::CelestialBody)
 
 end
 
-
-
-# All data pulled from the following references:
-# [1] https://en.wikipedia.org/wiki/List_of_Solar_System_objects_by_size
-# [2] https://docs.astropy.org/en/stable/constants/#module-astropy.constants
-Sun = CelestialBody(
-    1.98840987e30u"kg",
-    696342.0u"km")
-Mercury = CelestialBody(
-    330.1e21u"kg",
-    2439.7u"km")
-Venus = CelestialBody(
-    4867.5e21u"kg",
-    6051.8u"km")
-Earth = CelestialBody(
-    5.97216787e24u"kg",
-    6371.0u"km")
-Moon = CelestialBody(
-    73.42e21u"kg",
-    1737.4u"km")
-Luna = Moon
-Mars = CelestialBody(
-    641.7e21u"kg",
-    3389.5u"km")
-Jupiter = CelestialBody(
-    1.8981246e27u"kg",
-    69911.0u"km")
-Saturn = CelestialBody(
-    568340e21u"kg",
-    58232.0u"km")
-Uranus = CelestialBody(
-    86813e21u"kg",
-    25362.0u"km")
-Neptune = CelestialBody(
-    102413e21u"kg",
-    24622.0u"km")
-Pluto = CelestialBody(
-    13.03e21u"kg",
-    1188.3u"km")
-    
 """
 Struct for storing TwoBody orbital states for all conics.
 """
@@ -142,6 +106,10 @@ struct Orbit{
     body::CelestialBody
 
 end
+Base.convert(::Type{T}, o::Orbit) where {
+        T<:AbstractFloat} = Orbit(T.(o.rᵢ), T.(o.vᵢ), T(o.body))
+Base.promote(::Type{Orbit{E,A}}, ::Type{Orbit{E,B}}) where {
+        E, A<:AbstractFloat, B<:AbstractFloat} = Orbit{E, promote_type(A,B)}
 
 """
 Custom display for Orbit instances.
@@ -202,4 +170,71 @@ InvalidOrbit(body::CelestialBody) = Orbit(
 Checks for `NaN` valued orbital states, which are used to
 indicate an invalid `Orbit`.
 """
-isinvalid(orbit::Orbit)    = all(map(x->!isnan(getfield(orbit, x)), [:rᵢ, :vᵢ, :e, :a, :i, :Ω, :ω, :ν])) 
+isinvalid(orbit::Orbit) = all(map(x->!isnan(getfield(orbit, x)), [:rᵢ, :vᵢ, :e, :a, :i, :Ω, :ω, :ν])) 
+
+# Constants
+
+# All data pulled from the following references:
+# [1] https://en.wikipedia.org/wiki/List_of_Solar_System_objects_by_size
+# [2] https://docs.astropy.org/en/stable/constants/#module-astropy.constants
+
+"""
+Constant `CelestialBody` for our sun!
+"""
+const Sun = CelestialBody(1.98840987e30u"kg", 696342.0u"km")
+
+"""
+Constant `CelestialBody` for Mercury.
+"""
+const Mercury = CelestialBody(330.1e21u"kg", 2439.7u"km")
+
+"""
+Constant `CelestialBody` for Venus.
+"""
+const Venus = CelestialBody(4867.5e21u"kg", 6051.8u"km")
+
+"""
+Constant `CelestialBody` for your home planet!
+"""
+const Earth = CelestialBody(5.97216787e24u"kg", 6371.0u"km")
+
+"""
+Constant `CelestialBody` for our moon.
+"""
+const Moon = CelestialBody(73.42e21u"kg", 1737.4u"km")
+
+"""
+Constant `CelestialBody` (alias for our mooon).
+"""
+const Luna = Moon
+
+"""
+Constant `CelestialBody` for Mars.
+"""
+const Mars = CelestialBody(641.7e21u"kg", 3389.5u"km")
+
+"""
+Constant `CelestialBody` for Jupiter.
+"""
+const Jupiter = CelestialBody(1.8981246e27u"kg", 69911.0u"km")
+
+"""
+Constant `CelestialBody` for Saturn.
+"""
+const Saturn = CelestialBody(568340e21u"kg", 58232.0u"km")
+
+"""
+Constant `CelestialBody` for Uranus.
+"""
+const Uranus = CelestialBody(86813e21u"kg", 25362.0u"km")
+
+"""
+Constant `CelestialBody` for Neptune.
+"""
+const Neptune = CelestialBody(102413e21u"kg", 24622.0u"km")
+
+"""
+Constant `CelestialBody` for Pluto. We couldn't leave you out again!
+"""
+const Pluto = CelestialBody(13.03e21u"kg", 1188.3u"km")
+    

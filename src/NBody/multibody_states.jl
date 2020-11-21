@@ -32,8 +32,10 @@ struct Body{F<:AbstractFloat} <: AbstractBody
     Body(r, v, m) = Body(Float64.(r), Float64.(v), Float64(m))
 
 end
-Base.convert(::Type{T}, b::Body) where {T<:AbstractFloat} = Body(T.(b.r̅), T.(b.v̅), T(b.m))
-Base.promote(::Type{Body{A}}, ::Type{Body{B}}) where {A<:AbstractFloat, B<:AbstractFloat} = Body{promote_type(A,B)}
+Base.convert(::Type{T}, b::Body) where {
+        T<:AbstractFloat} = Body(T.(b.r̅), T.(b.v̅), T(b.m))
+Base.promote(::Type{Body{A}}, ::Type{Body{B}}) where {
+        A<:AbstractFloat, B<:AbstractFloat} = Body{promote_type(A,B)}
 
 
 
@@ -53,3 +55,8 @@ struct MultibodySystem{N, T<:AbstractFloat} <: OrbitalSystem
     MultibodySystem(b::VB) where {B<:Body, VB<:AbstractVector{B}} = MultibodySystem(b...)
 
 end
+Base.convert(::Type{T}, sys::MultibodySystem) where {
+        T<:AbstractFloat} = MultibodySystem(convert.(Ref(T), sys.body)...)
+Base.promote(::Type{MultibodySystem{N, A}}, ::Type{MultibodySystem{N, B}}) where {
+        A<:AbstractFloat, B<:AbstractFloat,N} = MultibodySystem{promote_type(A,B)}
+

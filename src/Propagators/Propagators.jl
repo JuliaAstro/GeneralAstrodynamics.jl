@@ -26,7 +26,8 @@ export  TwobodyPropagationResult,
         propagate,
         twobody_tic!,
         threebody_tic!,
-        nbody_tic
+        nbody_tic,
+        show
 
 include("PropagateTwoBody.jl")
 include("PropagateThreeBody.jl")

@@ -38,7 +38,7 @@ export  semimajor_axis, semi_parameter, eccentricity,
         conic_anomoly, specific_angular_momentum_vector, 
         specific_angular_momentum, specific_energy,  
         isapprox, isequal, TwobodyPropagationResult, kepler, lambert,
-        conic, keplerian, cartesian, isinvalid
+        conic, keplerian, cartesian, isinvalid, promote, convert
 
 # Include all module source code
 include("twobody_states.jl")

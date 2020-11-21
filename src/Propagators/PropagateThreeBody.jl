@@ -22,6 +22,20 @@ struct ThreebodyPropagationResult{
 end
 
 """
+Show `ThreebodyPropagationResult` in REPL.
+"""
+function Base.show(io::IO, result::ThreebodyPropagationResult)
+
+    println(io, typeof(result), " with ", length(result.t), " timesteps")
+    println(io, "  ", "t::", string(typeof(result.t)))
+    println(io, "  ", "step::", string(typeof(result.step)))
+    println(io, "  ", "ode_solution::", string(typeof(result.ode_solution)))
+
+end
+
+"""
+    threebody_tic
+
 Currently not exported. Used for two-body numerical integration.
 """
 function threebody_tic!(∂u, u, p, t)
