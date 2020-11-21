@@ -1,6 +1,4 @@
 """
-    NBody
-
 Handles the non-relativistic NBody problem for planets,
 and other celestial bodies.
 """

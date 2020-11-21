@@ -5,60 +5,43 @@
 # 
 
 """
-    AbstractConic
-
 Abstract type for all four conic sections.
 """
 abstract type AbstractConic end
 
 
 """
-    TwoBodyState
-
 Abstract type for all two-body orbital representations.
 """
 abstract type TwoBodySystem{C<:AbstractConic} <: OrbitalSystem end
 
 
 """
-    Circular
-
 Type for orbits in the circular conic section.
 """
 struct Circular <: AbstractConic end
 
 """
-    Elliptical
-
 Type for orbits in the elliptical conic section.
 """
 struct Elliptical <: AbstractConic end
 
 """
-    Parabolic
-
 Type for orbits in the parabolic conic section.
 """
 struct Parabolic <: AbstractConic end
 
 """
-    Hyperbolic
-
 Type for orbits in the hyperbolic conic section.
 """
 struct Hyperbolic <: AbstractConic end
 
 """
-    Invalid
-
 Type for invalid orbits (orbits with NaN fields)
 """
 struct Invalid <: AbstractConic end
 
 """
-    struct CelestialBody(m, R, μ)
-    CelestialBody(m, R) = CelestialBody(m, R, G * m)
-
 Type representing large bodies in space. Currently, the following
 solar system bodies are supported:
 
@@ -79,8 +62,6 @@ struct CelestialBody{F<:AbstractFloat}
 end
 
 """
-    show(io::IO, body::CelestialBody)
-
 Custom display for `CelestialBody` instances.
 """
 function Base.show(io::IO, body::CelestialBody)
@@ -134,8 +115,6 @@ Pluto = CelestialBody(
     1188.3u"km")
     
 """
-    Orbit{T<:AbstractConic}
-
 Struct for storing TwoBody orbital states for all conics.
 """
 struct Orbit{
@@ -165,8 +144,6 @@ struct Orbit{
 end
 
 """
-    show(io::IO, orbit::Orbit)
-
 Custom display for Orbit instances.
 """
 function Base.show(io::IO, orbit::Orbit)
@@ -213,8 +190,6 @@ function Base.show(io::IO, orbit::Orbit)
 end
 
 """
-    InvalidOrbit(body::CelestialBody)
-
 Returns a `Orbit` with `NaN` state values. Used by 
 `propagate_twobody` and `kepler` to indicate failed convergance.
 """
@@ -224,8 +199,6 @@ InvalidOrbit(body::CelestialBody) = Orbit(
     NaN * u"km", NaN * u"km/s", body)
 
 """
-    isinvalid(orbit::Orbit)
-
 Checks for `NaN` valued orbital states, which are used to
 indicate an invalid `Orbit`.
 """

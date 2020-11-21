@@ -2,7 +2,7 @@ using Documenter
 using DocStringExtensions
 using UnitfulAstrodynamics
 
-UnitfulAstrodynamics.CommonTypes.include_sourcecode(true)
+UnitfulAstrodynamics.include_sourcecode(true)
 
 makedocs(modules=[UnitfulAstrodynamics],
     format=Documenter.HTML(),

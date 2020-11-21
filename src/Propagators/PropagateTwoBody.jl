@@ -6,8 +6,6 @@
 #
 
 """
-    TwobodyPropagationResult <: PropagationResult
-
 Struct to hold two-body propagation results.
 """
 struct TwobodyPropagationResult{
@@ -24,8 +22,6 @@ struct TwobodyPropagationResult{
 end
 
 """
-    twobody_tic
-
 Currently not exported. Used for two-body numerical integration.
 """
 function twobody_tic!(∂u, u, p, t)
@@ -36,11 +32,6 @@ function twobody_tic!(∂u, u, p, t)
 end
 
 """
-    propagate_twobody(orbit::Orbit, 
-                   Δt::Unitful.Time=orbital_period(orbit), 
-                   ode_alg::OrdinaryDiffEqAlgorithm=Tsit5(); 
-                   kwargs...)
-
 Uses OrdinaryDiffEq solvers to propagate `orbit` Δt into the future.
 All keyword arguments are passed directly to OrdinaryDiffEq solvers.
 """

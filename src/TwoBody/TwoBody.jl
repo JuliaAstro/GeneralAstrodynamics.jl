@@ -1,6 +1,4 @@
 """ 
-    TwoBody
-
 Provides structures & functions for the two-body problem.
 """
 module TwoBody

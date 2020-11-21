@@ -6,8 +6,6 @@
 #
 
 """
-    lambert(r̅₁, r̅₂, μ, Δt, trajectory=:short; tol=1e-6, max_iter=100)
-
 Solves Lambert's problem through the use of univeral variables.
 """
 function lambert(r̅₁, r̅₂, μ, Δt, trajectory=:short; tol=1e-6, max_iter=100)

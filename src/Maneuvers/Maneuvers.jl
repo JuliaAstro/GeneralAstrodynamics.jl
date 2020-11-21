@@ -1,6 +1,4 @@
 """
-    Maneuvers
-
 Provides calculations for orbit maneuvers.
 """
 module Maneuvers

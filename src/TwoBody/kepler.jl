@@ -5,8 +5,6 @@
 #
 
 """
-    kepler(orbit::T, Δtᵢ::N = orbital_period(orbit)) where {T<:Orbit, N<:Number}
-
 Solves Kepler's Problem for `orbit` and `Δtᵢ`.
 """
 function kepler(orbit::Orbit, Δtᵢ::T = orbital_period(orbit); tol=1e-6, max_iter=100) where T<:Unitful.Time
