@@ -6,19 +6,16 @@ module Propagators
 
 include("../Misc/DocStringExtensions.jl")
 
-using ..CommonTypes
+using Reexport 
+@reexport using ..CommonTypes
+
 using ..NBody
 using ..TwoBody
 using ..ThreeBody 
 
-using Reexport
-
-using Logging
-using Base: isapprox, isequal
-using LinearAlgebra: ×, ⋅, norm, normalize
-using ComponentArrays
-using StaticArrays
 using OrdinaryDiffEq
+using LinearAlgebra: norm, normalize, cross, ×, dot, ⋅
+using ComponentArrays
 
 export  TwobodyPropagationResult, 
         ThreeBodyPropagationResult,

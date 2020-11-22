@@ -5,13 +5,12 @@ module Maneuvers
 
 include("../Misc/DocStringExtensions.jl")
 
-using ..CommonTypes
+using Reexport
+@reexport using ..CommonTypes
+
 using ..NBody
 using ..TwoBody
-
-using Reexport
-
-using Logging
+using LinearAlgebra: norm, cross, ×, dot, ⋅
 
 export AbstractManeuver, TwoBodyManeuver, ConstantManeuver
 export escape_radius, escape_velocity, escape_time, escape_path_length

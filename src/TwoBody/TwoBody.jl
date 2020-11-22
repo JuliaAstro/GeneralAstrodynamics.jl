@@ -7,16 +7,12 @@ include("../Misc/DocStringExtensions.jl")
 
 # Dependencies 
 
-using ..CommonTypes
-
 using Reexport
+@reexport using ..CommonTypes
 
-using Logging
-using Base: isapprox, isequal, show
-using LinearAlgebra: ×, ⋅, norm
-using ComponentArrays
-using StaticArrays
 using Crayons
+using LinearAlgebra: norm, cross, ×, dot, ⋅
+using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
 
 # Newton's Gravitation Constant
 import PhysicalConstants.CODATA2018

@@ -6,18 +6,13 @@ module AstroPlots
 
 include("../Misc/DocStringExtensions.jl")
 
-using ..CommonTypes
+using Reexport
+@reexport using ..CommonTypes
+
 using ..TwoBody
 using ..NBody
 using ..Propagators
 
-using Reexport
-
-using Logging
-using Base: isapprox, isequal
-using LinearAlgebra: ×, ⋅, norm
-using ComponentArrays
-using StaticArrays
 using Plots
 using Plots.PlotMeasures
 

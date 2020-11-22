@@ -6,17 +6,10 @@ module NBody
 
 include("../Misc/DocStringExtensions.jl")
 
-using ..CommonTypes
-
 using Reexport
+@reexport using ..CommonTypes
 
-using Logging
-using Base: isapprox, isequal
-using LinearAlgebra: ×, ⋅, norm
-using ComponentArrays
-using StaticArrays
-
-@reexport using Unitful, UnitfulAstro, UnitfulAngles
+using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
 
 export Body, MultibodySystem, system_energy, 
        system_angular_momentum, promote, convert

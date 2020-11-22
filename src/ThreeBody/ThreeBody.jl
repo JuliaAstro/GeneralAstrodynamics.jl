@@ -6,18 +6,13 @@ module ThreeBody
 
 include("../Misc/DocStringExtensions.jl")
 
-using ..CommonTypes
-using ..TwoBody
-
 using Reexport
 
-using Logging
-using Base: isapprox, isequal
-using LinearAlgebra: ×, ⋅, norm
-using ComponentArrays
-using StaticArrays
+@reexport using ..CommonTypes
+using ..TwoBody
 
-@reexport using Unitful, UnitfulAstro, UnitfulAngles
+using LinearAlgebra: norm, cross, ×, dot, ⋅
+using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
 
 export ThreeBodySystem
 export redimensionalize, 

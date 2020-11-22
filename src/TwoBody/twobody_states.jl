@@ -50,14 +50,14 @@ Saturn, Uranus, Neptune, Pluto.
 """
 struct CelestialBody{F<:AbstractFloat}
 
-    R::Unitful.Length{F}
-    μ::Quantity{F}
+    R::Length{F}
+    μ::MassParameter{F}
 
-    CelestialBody(m::Unitful.Mass{T}, R::Unitful.Length{T}) where T<:AbstractFloat = new{T}(R, T(G * m))
-    CelestialBody(R::Unitful.Length{T}, μ::Unitful.Quantity{T}) where T<:AbstractFloat = new{T}(R, μ)
+    CelestialBody(m::Mass{T}, R::Length{T}) where T<:AbstractFloat = new{T}(R, T(G * m))
+    CelestialBody(R::Length{T}, μ::MassParameter{T}) where T<:AbstractFloat = new{T}(R, μ)
 
-    CelestialBody(m::Unitful.Mass, R::Unitful.Length) = new{Float64}(Float64(m), Float64(R), Float64(G * m))
-    CelestialBody(R::Unitful.Length, μ::Unitful.Quantity) = new{Float64}(Float64(R), Float64(μ))
+    CelestialBody(m::Mass, R::Length) = new{Float64}(Float64(m), Float64(R), Float64(G * m))
+    CelestialBody(R::Length, μ::MassParameter) = new{Float64}(Float64(R), Float64(μ))
 
 end
 Base.convert(::Type{T}, b::CelestialBody) where {
@@ -87,20 +87,20 @@ struct Orbit{
         } <: TwoBodySystem{C}
 
     # Cartesian representation
-    rᵢ::SVector{3, Unitful.Length{F}}
-    vᵢ::SVector{3, Unitful.Velocity{F}}
+    rᵢ::SVector{3, Length{F}}
+    vᵢ::SVector{3, Velocity{F}}
 
     # Perifocal (in-orbital-plane) representation
-    rₚ::SVector{3, Unitful.Length{F}}
-    vₚ::SVector{3, Unitful.Velocity{F}}
+    rₚ::SVector{3, Length{F}}
+    vₚ::SVector{3, Velocity{F}}
 
     # Keplerian representation
     e::F
-    a::Unitful.Length{F}
-    i::Unitful.DimensionlessQuantity{F}
-    Ω::Unitful.DimensionlessQuantity{F}
-    ω::Unitful.DimensionlessQuantity{F}
-    ν::Unitful.DimensionlessQuantity{F}
+    a::Length{F}
+    i::DimensionlessQuantity{F}
+    Ω::DimensionlessQuantity{F}
+    ω::DimensionlessQuantity{F}
+    ν::DimensionlessQuantity{F}
 
     # Body
     body::CelestialBody
