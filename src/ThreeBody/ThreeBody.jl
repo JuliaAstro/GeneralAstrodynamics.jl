@@ -15,13 +15,22 @@ using LinearAlgebra: norm, cross, ×, dot, ⋅
 using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
 
 export ThreeBodySystem
-export redimensionalize, 
-       nondimensionalize, 
+export nondimensionalize_length,
+       nondimensionalize_velocity,
+       nondimensionalize_time,
+       nondimensionalize_mass_parameter,
+       nondimensionalize,
+       redimensionalize_length,
+       redimensionalize_velocity,
+       redimensionalize_time,
+       redimensionalize,
        potential_energy, 
        jacobi_constant,
-       position,  
+       nondimensional_radius,  
        inertial, 
-       synodic
+       synodic,
+       convert,
+       promote
        
 include("ThreeBodyStates.jl")
 include("ThreeBodyCalculations.jl")

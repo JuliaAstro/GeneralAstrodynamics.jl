@@ -15,21 +15,21 @@ struct ThreeBodySystem{F<:AbstractFloat} <: OrbitalSystem
     t::Time{F}
 
     # Non-dimensional Units
-    μ::F
     rₛ::SVector{3, F}
     vₛ::SVector{3, F}
     tₛ::F
+    μ::F
 
     function ThreeBodySystem(a::A, μ₁::U1, μ₂::U2, 
                              r::VR, v::VV,  t::TT) where {
-            A  <: Length,
-            U1 <: MassParameter,
-            U2 <: MassParameter,
-            R  <: Length, 
-            V  <: Velocity, 
+            A  <: Length{<:AbstractFloat},
+            U1 <: MassParameter{<:AbstractFloat},
+            U2 <: MassParameter{<:AbstractFloat},
+            R  <: Length{<:AbstractFloat}, 
+            V  <: Velocity{<:AbstractFloat}, 
             VR <: AbstractVector{R}, 
             VV <: AbstractVector{V},
-            TT <: Time
+            TT <: Time{<:AbstractFloat}
         }
 
         T = typeof(promote(a, μ₁, μ₂, r, v, t)[1]).val
@@ -45,13 +45,17 @@ struct ThreeBodySystem{F<:AbstractFloat} <: OrbitalSystem
                      "mass parameter is the primary body.")
         end
 
-        μ = min(μ₁, μ₂) / (μ₁+μ₂)
-        Tₛ = orbital_period(a, μ₁+μ₂)
-        return new{T}(map(x->T.(x), (
-            a, μ₁, μ₂, SVector{3}(r), SVector{3}(v), t, Tₛ, 
-            μ, -μ, 1-μ, nondimensionalize(SVector{3}(r), a), nondimensionalize(SVector{3}(v), a, Tₛ), t/Tₛ))...
-        )
+        return new{T}(a, μ₁, μ₂, t, nondimensionalize(r, v, t, μ₁, μ₂, a)...)
 
     end
+    ThreeBodySystem(a, μ₁, μ₂, r, v, t) = ThreeBodySystem(
+        Float64(a), Float64(μ₁), Float64(μ₂),
+        Float64.(r), Float64.(v), Float64(t))
 
 end
+Base.convert(::Type{T}, t::ThreeBodySystem) where {
+        T<:AbstractFloat
+    } = ThreeBodySystem(map(f->T.(getfield(t,f), fieldnames(t)))...)
+Base.promote(::Type{ThreeBodySystem{A}}, ::Type{ThreeBodySystem{B}}) where {
+        A<:AbstractFloat, B<:AbstractFloat
+    } = ThreeBodySystem{promote_type(A,B)}

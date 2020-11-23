@@ -118,12 +118,12 @@ redimensionalize(t::T1, a::A, μ₁::U1, μ₂::U2) where {
 """
 Returns the spacecraft's nondimensional position w.r.t. body 1 (or 2).
 """
-radius(r, xᵢ=0) = √( (r[1]-xᵢ)^2 + r[2]^2 + r[3]^2 )
+nondimensional_radius(r, xᵢ=0) = √( (r[1]-xᵢ)^2 + r[2]^2 + r[3]^2 )
 
 """
 Returns the potential energy `U`.
 """
-potential_energy(r, μ, x₁, x₂) = (r[1]^2 + r[2]^2) + (2(1-μ)/radius(r,x₁)) + (2μ/radius(r,x₂))
+potential_energy(r, μ, x₁, x₂) = (r[1]^2 + r[2]^2) + (2(1-μ)/nondimensional_radius(r,x₁)) + (2μ/nondimensional_radius(r,x₂))
 
 """
 Returns the Jacobi Constant `C`.
