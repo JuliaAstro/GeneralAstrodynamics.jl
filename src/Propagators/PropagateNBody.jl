@@ -3,8 +3,6 @@
 #
 
 """
-    MultibodyPropagationResult{T,B} <: PropagationResult
-
 Struct to hold n-body propagation results.
 """
 struct MultibodyPropagationResult{T,B} <: PropagationResult
@@ -16,8 +14,6 @@ struct MultibodyPropagationResult{T,B} <: PropagationResult
 end
 
 """
-    nbody_tic
-
 Currently not exported. Used for n-body numerical integration.
 """
 function nbody_tic(u, p, t)
@@ -42,8 +38,6 @@ function nbody_tic(u, p, t)
 end
 
 """
-    propagate(sys::MultibodySystem, Δt::Unitful.Quantity, ode_alg::OrdinaryDiffEqAlgorithm = Tsit5(); kwargs...)
-
 Uses OrdinaryDiffEq solvers to propagate `sys` Δt into the future.
 All keyword arguments are passed directly to OrdinaryDiffEq solvers.
 """

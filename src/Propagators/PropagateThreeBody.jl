@@ -6,8 +6,6 @@
 #
 
 """
-    ThreebodyPropagationResult <: PropagationResult
-
 Struct to hold three-body propagation results.
 """
 struct ThreebodyPropagationResult{
@@ -24,8 +22,6 @@ struct ThreebodyPropagationResult{
 end
 
 """
-    threebody_tic
-
 Currently not exported. Used for two-body numerical integration.
 """
 function threebody_tic!(∂u, u, p, t)
@@ -40,11 +36,6 @@ function threebody_tic!(∂u, u, p, t)
 end
 
 """
-    propagate(sys::ThreeBodySystem, 
-              Δt::Unitful.Time=orbital_period(orbit), 
-              ode_alg::OrdinaryDiffEqAlgorithm=Tsit5(); 
-              kwargs...)
-
 Uses OrdinaryDiffEq solvers to propagate `orbit` Δt into the future.
 All keyword arguments are passed directly to OrdinaryDiffEq solvers.
 """

@@ -1,10 +1,10 @@
 """
-    Propagators
-
 Provides orbit propagators for the two-body problem, 
 and the n-body problem.
 """
 module Propagators
+
+include("../Misc/DocStringExtensions.jl")
 
 using ..CommonTypes
 using ..NBody

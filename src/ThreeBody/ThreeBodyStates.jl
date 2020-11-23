@@ -3,8 +3,6 @@
 #
 
 """
-    ThreeBodySystem
-
 Describes a Circular Restricted Three-Body
 Problem system.
 """

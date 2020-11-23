@@ -3,8 +3,6 @@
 #
 
 """
-    plot(sols::MultibodyPropagationResult; kwargs...)
-
 Plots every timestep in `sols` in `3D` space. All keyward 
 arguments are passed directly to `Plots.jl`.
 """

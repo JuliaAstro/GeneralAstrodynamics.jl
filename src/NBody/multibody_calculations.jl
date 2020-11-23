@@ -3,8 +3,6 @@
 #
 
 """
-    system_energy(sys::MultibodySystem)
-
 Returns total energy for `NBody` system.
 """
 function system_energy(sys::MultibodySystem)
@@ -28,8 +26,6 @@ function system_energy(sys::MultibodySystem)
 end
 
 """
-    system_angular_momentum(sys::MultibodySystem)
-
 Returns total angular momentum for `NBody` system.
 """
 function system_angular_momentum(sys::MultibodySystem)

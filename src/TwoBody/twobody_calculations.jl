@@ -5,9 +5,6 @@
 
 
 """
-    conic(e::T) where T<:Number
-    conic(orbit::Orbit)
-
 Returns the conic section, as specified by eccentricity `e`.
 """
 function conic(e::T) where T<:Number
@@ -28,8 +25,6 @@ end
 conic(orbit::Orbit) = conic(eccentricity(orbit))
 
 """
-    Orbit(rᵢ, vᵢ, body)
-    
 Construct `Orbit` from Cartesian elements (in the inertial frame).
 """
 function Orbit(rᵢ, vᵢ, body)
@@ -50,8 +45,6 @@ function Orbit(rᵢ, vᵢ, body)
 end
 
 """
-    Orbit(e, a, i, Ω, ω, ν, body)
-
 Construct `Orbit` from Keplerian elements.
 """
 function Orbit(e, a, i, Ω, ω, ν, body)
@@ -72,8 +65,6 @@ function Orbit(e, a, i, Ω, ω, ν, body)
 end
 
 """
-    keplerian(rᵢ, vᵢ, body::CelestialBody)
-
 Returns a Keplarian representation of a Cartesian orbital state.
 Algorithm taught in ENAE601.
 """
@@ -112,8 +103,6 @@ keplerian(orbit::Orbit) = orbit.e, orbit.a, orbit.i,
                                  orbit.Ω, orbit.ω, orbit.ν
 
 """
-    cartesian(e, a, i, Ω, ω, ν, μ)
-
 Returns a Cartesian representation of a Keplerian two-body orbital state
 in an inertial frame, centered at the center of mass of the central body.
 Algorithm taught in ENAE601.
@@ -129,9 +118,6 @@ cartesian(e, a, i, Ω, ω, ν, body::CelestialBody) = cartesian(e, a, i, Ω, ω,
 cartesian(orbit::Orbit) = orbit.rᵢ, orbit.vᵢ
 
 """
-    inertial(i, Ω, ω, vec₃)
-    inertial(orbit::Orbit)
-
 Transforms 3-vector from Perifocal frame to Cartesian space (x,y,z).
 """
 function inertial(i, Ω, ω, rₚ, vₚ)
@@ -158,9 +144,6 @@ end
 inertial(orbit::Orbit) = orbit.rᵢ, orbit.vᵢ
 
 """
-    perifocal(a, e, ν, μ)
-    perifocal(orbit::Orbit)
-
 Returns position and velocity vectors in the Perifocal frame.
 """
 function perifocal(a, e, ν, μ)
@@ -181,9 +164,6 @@ end
 perifocal(orbit::Orbit) = orbit.rₚ, orbit.vₚ
 
 """
-    semimajor_axis(r, v, μ)
-    semimajor_axis(orbit::Orbit)
-
 Returns semimajor axis parameter, a.
 """
 function semimajor_axis(r, v, μ)
@@ -194,9 +174,6 @@ end
 semimajor_axis(orbit::Orbit) = orbit.a
 
 """
-    specific_angular_momentum_vector(rᵢ, vᵢ)
-    specific_angular_momentum_vector(orbit::Orbit)
-
 Returns specific angular momentum vector, h̅.
 """
 function specific_angular_momentum_vector(rᵢ, vᵢ)
@@ -208,19 +185,12 @@ specific_angular_momentum_vector(orbit::Orbit) =
     specific_angular_momentum_vector(orbit.rᵢ, orbit.vᵢ)
 
 """
-    specific_angular_momentum(rᵢ, vᵢ)
-    specific_angular_momentum(orbit::Orbit)
-
 Returns scalar specific angular momentum vector, h.
 """
 specific_angular_momentum(rᵢ, vᵢ) = norm(specific_angular_momentum_vector(rᵢ, vᵢ))
 specific_angular_momentum(orbit::Orbit) = specific_angular_momentum(orbit.rᵢ, orbit.vᵢ)
 
 """
-    specific_energy(a, μ)
-    specific_energy(r, v, μ)
-    specific_energy(orbit::Orbit)
-
 Returns specific orbital energy, ϵ.
 """
 specific_energy(a, μ) = ( -μ / (2 * a) )
@@ -228,9 +198,6 @@ specific_energy(r, v, μ) = (v^2 / 2) - (μ / r)
 specific_energy(orbit::Orbit) = specific_energy(orbit.a, orbit.body.μ)
 
 """
-    eccentricity_vector(rᵢ, vᵢ, μ)
-    eccentricity_vector(orbit::Orbit)
-
 Returns orbital eccentricity vector e̅.
 """
 function eccentricity_vector(rᵢ, vᵢ, μ)
@@ -242,27 +209,18 @@ end
 eccentricity_vector(orbit::Orbit) = eccentricity_vector(orbit.rᵢ, orbit.vᵢ, orbit.body.μ)
 
 """
-    eccentricity(rᵢ, vᵢ, μ)
-    eccentricity(orbit::Orbit)
-
 Returns orbital eccentricity, e.
 """
 eccentricity(rᵢ, vᵢ, μ) = norm(eccentricity_vector(rᵢ, vᵢ, μ))
 eccentricity(orbit::Orbit) = orbit.e
 
 """
-    semi_parameter(a, e)
-    semi_parameter(orbit::Orbit)
-
 Returns semilatus parameter, p.
 """
 semi_parameter(a, e) = a * (1 - e^2)
 semi_parameter(orbit::Orbit) = semi_parameter(orbit.a, orbit.e)
 
 """
-    radius(p, e, ν)
-    radius(orbit::Orbit)
-    radius(body::CelestialBody)
 Returns radius, r.
 """
 radius(p, e, ν) = upreferred(p / (1 + e * cos(ν)))
@@ -270,36 +228,25 @@ radius(orbit::Orbit) = radius(semi_parameter(orbit), orbit.e, orbit.ν)
 radius(body::CelestialBody) = body.R
 
 """
-    velocity(r, a, μ)
-    velocity(orbit::Orbit)
-
 Returns instantaneous velocity, v, for any orbital representation.
 """
 velocity(r, a, μ) =  upreferred(√( (2 * μ / r) - (μ / a)))
 velocity(orbit::Orbit) = velocity(radius(orbit), orbit.a, orbit.body.μ)
 
 """
-    periapsis_radius(a, e)
-    periapsis_radius(orbit::Orbit)
-
-Returns periapsis radius, rᵢ_p.
+Returns periapsis radius, rₚ.
 """
 periapsis_radius(a, e) = a * (1 - e)
 periapsis_radius(orbit::Orbit) = periapsis_radius(orbit.a, orbit.e)
 
 """
-    apoapsis_radius(a, e)
-    apoapsis_radius(orbit::Orbit)
-
-Returns periapsis radius, r_a.
+Returns periapsis radius, rₐ.
 """
 apoapsis_radius(a, e) = a * (1 + e)
 apoapsis_radius(orbit::Orbit) = apoapsis_radius(orbit.a, orbit.e)
 
 """
-    periapsis_velocity(orbit::T) where T<:Orbit
-
-Returns periapsis velocity, v_p, for any orbital representation.
+Returns periapsis velocity, vₚ, for any orbital representation.
 """
 function periapsis_velocity(orbit::Orbit)
 
@@ -308,8 +255,6 @@ function periapsis_velocity(orbit::Orbit)
 end
 
 """
-    apoapsis_velocity(orbit::T) where T<:Orbit
-
 Returns apoapsis velocity, v_a, for any orbital representation.
 """
 function apoapsis_velocity(orbit::Orbit)
@@ -322,48 +267,34 @@ function apoapsis_velocity(orbit::Orbit)
 end
 
 """
-    mass(body::CelestialBody)
-
 Returns mass `m`.
 """
 mass(body::CelestialBody) = body.μ / G
 
 """
-    mass_parameter(body::CelestialBody)
-
 Returns mass parameter `μ`.
 """
 mass_parameter(body::CelestialBody) = body.μ
 
 """
-    orbital_period(a, μ)
-    orbital_period(orbit::Orbit)
-
 Returns the orbital period.
 """
 orbital_period(a, μ) = 2π * √(a^3 / μ)
 orbital_period(orbit::Orbit) = orbital_period(orbit.a, orbit.body.μ)
 
 """
-    true_anomoly(r, h, e, μ)
-
 Returns true anomoly, ν.
 """
 true_anomoly(r, h, e, μ) = acos( (h^2 - μ * r) / (μ * r * e) )
 true_anomoly(orbit::Orbit) = orbit.ν
 
 """
-    mean_motion(a, μ)
-    mean_motion(orbit::Orbit)
-
 Returns mean motion, n.
 """
 mean_motion(a, μ) = √(μ / a^3)
 mean_motion(orbit::Orbit) = mean_motion(orbit.a, orbit.μ)
 
 """
-    mean_motion_vector(orbit::Orbit)
-
 Returns mean motion vector, n̄.
 """
 function mean_motion_vector(orbit::Orbit)
@@ -377,9 +308,6 @@ function mean_motion_vector(orbit::Orbit)
 end
 
 """
-    conic_anomoly(orbit::Orbit{Elliptical})
-    conic_anomoly(orbit::Orbit{Hyperbolic})
-
 Returns eccentric anomoly, E, parabolic anomoly, B, or hyperbolic 
 anomoly, H. 
 """
@@ -401,9 +329,6 @@ function conic_anomoly(orbit::Orbit{Hyperbolic})
 end
 
 """
-    time_since_periapsis(n, e, E)
-    time_since_periapsis(orbit::Orbit)
-
 Returns time since periapsis, t.
 """
 time_since_periapsis(n, e, E) = (E - e * sin(E)) / (n)
@@ -414,15 +339,11 @@ time_since_periapsis(orbit::Orbit) =
         eccentric_anomoly(orbit))
 
 """
-    inclination(orbit::Orbit)
-
 Returns orbital inclination, i.
 """
 inclination(orbit::Orbit) =  orbit.i
 
 """
-    isapprox(::Orbit, ::Orbit; atol=1e-8)
-
 Returns true if all elements in each system are within `atol` of the other.
 """
 function Base.isapprox(c1::Orbit, c2::Orbit; atol=1e-8)
@@ -440,8 +361,6 @@ function Base.isapprox(c1::Orbit, c2::Orbit; atol=1e-8)
 end
 
 """
-    isequal(::Orbit, ::Orbit)
-
 Returns true if all elements of each system are identically equal.
 """
 function Base.isequal(c1::Orbit, c2::Orbit)

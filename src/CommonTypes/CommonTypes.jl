@@ -1,34 +1,29 @@
 """
-    CommonTypes
-
 Contains abstractions for describing orbital states and bodies.
 Implementations are provided in TwoBody, and NBody.
 """
 module CommonTypes
 
+include("../Misc/DocStringExtensions.jl")
+
 using Reexport
+
 @reexport using Unitful, UnitfulAstro
 
 export AbstractBody, OrbitalSystem, PropagationResult
 
 """ 
-    AbstractBody
-
 Abstract type for bodies in space: both `CelestialBody`s (in
 `TwoBody.jl`), and `Body`s (in `NBody.jl`).
 """
 abstract type AbstractBody end
 
 """
-    AbstractSystem
-
 Abstract type describing all states in select Astrodynamics problems.
 """
 abstract type OrbitalSystem end
 
 """
-    PropagationResult
-
 Abstract type describing a collection of states resulting from 
 """
 abstract type PropagationResult end
