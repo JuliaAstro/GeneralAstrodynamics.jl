@@ -14,6 +14,13 @@ Pages = ["TwoBody/types.md", "TwoBody/functions.md"]
 Depth = 1
 ```
 
+## ThreeBody
+
+```@contents
+Pages = ["ThreeBody/types.md", "ThreeBody/functions.md"]
+Depth = 1
+```
+
 ## NBody
 
 ```@contents

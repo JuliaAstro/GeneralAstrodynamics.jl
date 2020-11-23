@@ -4,8 +4,6 @@ Includes structures and functions to handle common Astrodynamics problems.
 """
 module UnitfulAstrodynamics
 
-include("Misc/DocStringExtensions.jl")
-
 # References:
 # 
 # I troubleshooted Julia's module scope/export rules for a while.
@@ -32,5 +30,8 @@ include("AstroPlots/AstroPlots.jl")
 @reexport using .Propagators
 @reexport using .Maneuvers
 @reexport using .AstroPlots
+
+include("Misc/DocStringExtensions.jl")
+include("Misc/UnitfulAliases.jl")
 
 end # module

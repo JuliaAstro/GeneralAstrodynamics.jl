@@ -10,7 +10,6 @@ You can convert between Cartesian and Keplerian `TwoBody` orbital representation
 ```@docs
 cartesian
 keplerian
-inertial
 perifocal
 ```
 
@@ -57,6 +56,4 @@ specific_angular_momentum_vector
 specific_energy
 conic
 isinvalid
-isapprox
-isequal
 ```

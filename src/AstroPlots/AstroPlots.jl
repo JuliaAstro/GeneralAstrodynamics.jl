@@ -4,10 +4,11 @@ and the two-body problem. Uses `Plots.jl`
 """
 module AstroPlots
 
-include("../Misc/DocStringExtensions.jl")
-
 using Reexport
 @reexport using ..CommonTypes
+
+include("../Misc/DocStringExtensions.jl")
+include("../Misc/UnitfulAliases.jl")
 
 using ..TwoBody
 using ..NBody

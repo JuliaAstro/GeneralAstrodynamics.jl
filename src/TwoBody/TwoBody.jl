@@ -3,12 +3,13 @@ Provides structures & functions for the two-body problem.
 """
 module TwoBody
 
-include("../Misc/DocStringExtensions.jl")
-
 # Dependencies 
 
 using Reexport
 @reexport using ..CommonTypes
+
+include("../Misc/DocStringExtensions.jl")
+include("../Misc/UnitfulAliases.jl")
 
 using Crayons
 using LinearAlgebra: norm, cross, ×, dot, ⋅
@@ -29,7 +30,7 @@ export  semimajor_axis, semi_parameter, eccentricity,
         eccentricity_vector, inclination, true_anomoly, 
         periapsis_radius, apoapsis_radius, periapsis_velocity, 
         apoapsis_velocity, radius, velocity, orbital_period, 
-        mass, mass_parameter, perifocal, inertial,
+        mass, mass_parameter, perifocal,
         time_since_periapsis, mean_motion, mean_motion_vector, 
         conic_anomoly, specific_angular_momentum_vector, 
         specific_angular_momentum, specific_energy,  

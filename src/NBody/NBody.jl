@@ -4,10 +4,11 @@ and other celestial bodies.
 """
 module NBody
 
-include("../Misc/DocStringExtensions.jl")
-
 using Reexport
 @reexport using ..CommonTypes
+
+include("../Misc/DocStringExtensions.jl")
+include("../Misc/UnitfulAliases.jl")
 
 using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
 

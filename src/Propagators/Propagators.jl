@@ -4,10 +4,11 @@ and the n-body problem.
 """
 module Propagators
 
-include("../Misc/DocStringExtensions.jl")
-
 using Reexport 
 @reexport using ..CommonTypes
+
+include("../Misc/DocStringExtensions.jl")
+include("../Misc/UnitfulAliases.jl")
 
 using ..NBody
 using ..TwoBody

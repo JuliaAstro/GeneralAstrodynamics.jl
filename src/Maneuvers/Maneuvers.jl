@@ -3,10 +3,11 @@ Provides calculations for orbit maneuvers.
 """
 module Maneuvers
 
-include("../Misc/DocStringExtensions.jl")
-
 using Reexport
 @reexport using ..CommonTypes
+
+include("../Misc/DocStringExtensions.jl")
+include("../Misc/UnitfulAliases.jl")
 
 using ..NBody
 using ..TwoBody

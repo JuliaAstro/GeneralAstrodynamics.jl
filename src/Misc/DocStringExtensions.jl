@@ -9,6 +9,30 @@
 
 using DocStringExtensions
 
+struct TerseMethods <: DocStringExtensions.Abbreviation end
+const TERSEMETHODS = TerseMethods()
+
+function DocStringExtensions.format(::TerseMethods, buf, doc)
+    local binding = doc.data[:binding]
+    local typesig = doc.data[:typesig]
+    local modname = doc.data[:module]
+    local func = Docs.resolve(binding)
+    local groups = DocStringExtensions.methodgroups(func, typesig, modname; exact = false)
+    if !isempty(groups)
+        println(buf)
+        println(buf, "```julia")
+        for group in groups
+            for method in group
+                DocStringExtensions.printmethod(buf, binding, func, method)
+                println(buf)
+            end
+        end
+        println(buf, "```\n")
+        println(buf)
+    end
+    return nothing
+end
+
 struct SourceCode <: DocStringExtensions.Abbreviation end
 const SOURCECODE = SourceCode()
 
@@ -39,8 +63,6 @@ include_sourcecode(b::Bool) = include_source_in_docstring = b
 
 @template (FUNCTIONS, METHODS, MACROS) =
 """
-$(METHODLIST)
+$(TERSEMETHODS)
 $(DOCSTRING)
 """
-
-# export SOURCECODE

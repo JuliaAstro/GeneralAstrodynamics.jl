@@ -4,18 +4,20 @@ Three Body Problem.
 """
 module ThreeBody
 
-include("../Misc/DocStringExtensions.jl")
-
 using Reexport
 
 @reexport using ..CommonTypes
 using ..TwoBody
 
+include("../Misc/DocStringExtensions.jl")
+include("../Misc/UnitfulAliases.jl")
+
 using LinearAlgebra: norm, cross, ×, dot, ⋅
 using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
 
 export ThreeBodySystem
-export nondimensionalize_length,
+export time_scale_factor,
+       nondimensionalize_length,
        nondimensionalize_velocity,
        nondimensionalize_time,
        nondimensionalize_mass_parameter,

@@ -30,34 +30,64 @@ Returns nondimensional mass parameter, `μ`.
 nondimensionalize_mass_parameter(μ₁, μ₂) = min(μ₁,μ₂) ÷ (μ₁+μ₂)
 
 """
-Returns nondimensional form of (`Unitful`) position or velocity vectors, 
-time duration, or mass parameter for the Circular Restricted Three-body
-problem.
+Returns nondimensional form of (`Unitful`) scalar posiion.
 """
 nondimensionalize(rᵢ::R, a::A) where {
         R<:Length, A<:Length
     } = nondimensionalize_length(rᵢ, a)
+
+"""
+Returns nondimensional form of (`Unitful`) position vector.
+"""
 nondimensionalize(rᵢ::R, a::A) where {
         U<:Length, R<:AbstractVector{U}, A<:Length
     } = nondimensionalize_length(rᵢ, a)
+
+"""
+Returns nondimensional form of (`Unitful`) scalar velocity.
+"""
 nondimensionalize(vᵢ::V, a::A) where {
         V<:Velocity, A<:Length
     } = nondimensionalize_length(vᵢ, a)
+
+"""
+Returns nondimensional form of (`Unitful`) velocity vector.
+"""
 nondimensionalize(vᵢ::V, a::A, Tₛ::T) where {
         U<:Velocity, V<:AbstractVector{U}, A<:Length, T<:Time
     } = nondimensionalize_velocity(vᵢ, a, Tₛ)
+
+"""
+Returns nondimensional form of (`Unitful`) velocity vector.
+"""
 nondimensionalize(vᵢ::V, a::A, μ₁::U1, μ₂::U2) where {
         U<:Velocity, V<:AbstractVector{U}, A<:Length, U1<:MassParameter, U2<:MassParameter
     } = nondimensionalize_velocity(vᵢ, a, time_scale_factor(a, μ₁, μ₂))
+
+"""
+Returns nondimensional form of (`Unitful`) time duration.
+"""
 nondimensionalize(t::T1, Tₛ::T2) where {
         T1<:Time, T2<:Time
     } = t ÷ Tₛ
+
+"""
+Returns nondimensional form of (`Unitful`) time duration.
+"""
 nondimensionalize(t::T1, a::A, μ₁::U1, μ₂::U2) where {
         T1<:Time, A<:Length, U1<:MassParameter, U2<:MassParameter
     } = nondimensionalize(t, time_scale_factor(a, μ₁, μ₂))
+
+"""
+Returns nondimensional form of (`Unitful`) graviational parameters.
+"""
 nondimensionalize(μ₁::U1, μ₂::U2) where {
         U1<:MassParameter, U2<:MassParameter
     } = min(μ₁, μ₂) ÷ (μ₁+μ₂)
+
+"""
+Returns nondimensional Circular Restricted Three-body State.
+"""
 function nondimensionalize(r₃::R, v₃::V, Δt::T, μ₁::U1, μ₂::U2, a::A) where {
         RT<:Length, R<:AbstractVector{RT},
         VT<:Velocity, V<:AbstractVector{VT},
@@ -89,28 +119,52 @@ Returns dimensional time unit.
 redimensionalize_time(t, a, μ₁, μ₂) = t * time_scale_factor(a, μ₁, μ₂)
 
 """
-Returns dimensional (inertial) form of (`Unitful`) position or velocity vectors, 
-time duration, or mass parameter for the Circular Restricted Three-body
-problem.
+Returns dimensional (inertial) form of (`Unitful`) scalar posiion.
 """
 redimensionalize(rᵢ::R, a::A) where {
         R<:Length, A<:Length
     } = redimensionalize_length(rᵢ, a)
+
+"""
+Returns dimensional (inertial) form of (`Unitful`) position vector.
+"""
 redimensionalize(rᵢ::R, a::A) where {
         U<:Length, R<:AbstractVector{U}, A<:Length
     } = redimensionalize_length(rᵢ, a)
+
+
+"""
+Returns dimensional (inertial) form of (`Unitful`) scalar velocity.
+"""
 redimensionalize(vᵢ::V, a::A) where {
         V<:Velocity, A<:Length
     } = redimensionalize_length(vᵢ, a)
+
+
+"""
+Returns dimensional (inertial) form of (`Unitful`) velocity vector.
+"""
 redimensionalize(vᵢ::V, a::A, Tₛ::T) where {
         U<:Velocity, V<:AbstractVector{U}, A<:Length, T<:Time
     } = redimensionalize_velocity(vᵢ, a, Tₛ)
+
+"""
+Returns dimensional (inertial) form of (`Unitful`) velocity vector.
+"""
 redimensionalize(vᵢ::V, a::A, μ₁::U1, μ₂::U2) where {
         U<:Velocity, V<:AbstractVector{U}, A<:Length, U1<:MassParameter, U2<:MassParameter
     } = redimensionalize_velocity(vᵢ, a, time_scale_factor(a, μ₁, μ₂))
+
+"""
+Returns dimensional (inertial) form of (`Unitful`) time duration.
+"""
 redimensionalize(t::T1, Tₛ::T2) where {
         T1<:Time, T2<:Time
     } = t ÷ Tₛ
+
+"""
+Returns dimensional (inertial) form of (`Unitful`) time duration.
+"""
 redimensionalize(t::T1, a::A, μ₁::U1, μ₂::U2) where {
         T1<:Time, A<:Length, U1<:MassParameter, U2<:MassParameter
     } = redimensionalize(t, time_scale_factor(a, μ₁, μ₂))

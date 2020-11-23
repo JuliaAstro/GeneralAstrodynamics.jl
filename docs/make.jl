@@ -21,26 +21,30 @@ makedocs(modules=[UnitfulAstrodynamics],
             "About" => "Overview/about.md",
             "Getting Stated" => "Overview/getting-started.md"
         ],
-        "`TwoBody`" => Any[
+        "Two-body" => Any[
             "Data Structures and Types" => "TwoBody/types.md",
             "Functions" => "TwoBody/functions.md"
         ],
-        "`NBody`" => Any[
+        "Three-body" => Any[
+            "Data Structures and Types" => "ThreeBody/types.md",
+            "Functions" => "ThreeBody/functions.md"
+        ],
+        "N-body" => Any[
             "Data Structures and Types" => "NBody/types.md",
             "Functions" => "NBody/functions.md"
         ],
-        "`Propagators`" => Any[
+        "Propagators" => Any[
             "Data Structures and Types" => "Propagators/types.md",
             "Functions" => "Propagators/functions.md"
         ],
-        "`Maneuvers`" => Any[
+        "Maneuvers" => Any[
             "Data Structures and Types" => "Maneuvers/types.md",
             "Functions" => "Maneuvers/functions.md"
         ],
-        "`AstroPlots`" => Any[
+        "Plotting" => Any[
             "Functions" => "AstroPlots/functions.md"
         ],
-        "Common `CommonTypes`" => Any[
+        "Common Types" => Any[
             "Types" => "CommonTypes/types.md"
         ]
     ]

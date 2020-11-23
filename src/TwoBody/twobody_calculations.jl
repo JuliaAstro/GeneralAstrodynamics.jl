@@ -109,7 +109,7 @@ Algorithm taught in ENAE601.
 """
 function cartesian(e, a, i, Ω, ω, ν, μ)
 
-    rᵢ, vᵢ = inertial(i, Ω, ω, perifocal(a, e, ν, μ)...)
+    rᵢ, vᵢ = cartesian(i, Ω, ω, perifocal(a, e, ν, μ)...)
     return  uconvert.(u"km",    rᵢ), 
             uconvert.(u"km/s",  vᵢ)
 
@@ -118,9 +118,9 @@ cartesian(e, a, i, Ω, ω, ν, body::CelestialBody) = cartesian(e, a, i, Ω, ω,
 cartesian(orbit::Orbit) = orbit.rᵢ, orbit.vᵢ
 
 """
-Transforms 3-vector from Perifocal frame to Cartesian space (x,y,z).
+Returns a Cartesian (inertial) representation of the provied Perifocal state.
 """
-function inertial(i, Ω, ω, rₚ, vₚ)
+function cartesian(i, Ω, ω, rₚ, vₚ)
 
     # Set up Perifocal ⟶ Cartesian conversion
     R_3Ω =  SMatrix{3,3,Float64}(
@@ -141,7 +141,6 @@ function inertial(i, Ω, ω, rₚ, vₚ)
     return ᴵTₚ * rₚ, ᴵTₚ * vₚ
 
 end
-inertial(orbit::Orbit) = orbit.rᵢ, orbit.vᵢ
 
 """
 Returns position and velocity vectors in the Perifocal frame.
