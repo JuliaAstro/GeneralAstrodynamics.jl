@@ -4,11 +4,11 @@ Implementations are provided in TwoBody, and NBody.
 """
 module CommonTypes
 
-include("../Misc/DocStringExtensions.jl")
-
 using Reexport
+@reexport using Unitful, UnitfulAngles, UnitfulAstro
 
-@reexport using Unitful, UnitfulAstro
+include("../Misc/DocStringExtensions.jl")
+include("../Misc/UnitfulAliases.jl")
 
 export AbstractBody, OrbitalSystem, PropagationResult
 

@@ -14,6 +14,20 @@ struct MultibodyPropagationResult{T,B} <: PropagationResult
 end
 
 """
+Show `MultibodyPropagationResult` in REPL.
+"""
+function Base.show(io::IO, result::MultibodyPropagationResult)
+
+    println(io, typeof(result), " with ", length(result.t), " timesteps")
+    println(io, "  ", "t::", string(typeof(result.t)))
+    println(io, "  ", "step::", string(typeof(result.step)))
+    println(io, "  ", "ode_solution::", string(typeof(result.ode_solution)))
+
+end
+
+"""
+    nbody_tic
+
 Currently not exported. Used for n-body numerical integration.
 """
 function nbody_tic(u, p, t)

@@ -4,22 +4,16 @@ and other celestial bodies.
 """
 module NBody
 
-include("../Misc/DocStringExtensions.jl")
-
-using ..CommonTypes
-
 using Reexport
+@reexport using ..CommonTypes
 
-using Logging
-using Base: isapprox, isequal
-using LinearAlgebra: ×, ⋅, norm
-using ComponentArrays
-using StaticArrays
+include("../Misc/DocStringExtensions.jl")
+include("../Misc/UnitfulAliases.jl")
 
-@reexport using Unitful, UnitfulAstro, UnitfulAngles
+using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
 
 export Body, MultibodySystem, system_energy, 
-       system_angular_momentum
+       system_angular_momentum, promote, convert
 
 include("multibody_states.jl")
 include("multibody_calculations.jl")

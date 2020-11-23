@@ -47,9 +47,9 @@ version = "0.5.1"
 
 [[ChainRulesCore]]
 deps = ["LinearAlgebra", "MuladdMacro", "SparseArrays"]
-git-tree-sha1 = "d41ca57a864c23444ad80e9d30beeea192fe9446"
+git-tree-sha1 = "007f084f0136c0e2d87d3ac53e9d8eab06cec27f"
 uuid = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
-version = "0.9.18"
+version = "0.9.19"
 
 [[ColorSchemes]]
 deps = ["ColorTypes", "Colors", "FixedPointNumbers", "Random", "StaticArrays"]
@@ -89,9 +89,9 @@ version = "0.3.4+0"
 
 [[ComponentArrays]]
 deps = ["ArrayInterface", "LinearAlgebra", "Requires"]
-git-tree-sha1 = "dfc7dd5393d4f789019ccdc73e04bed61ab31903"
+git-tree-sha1 = "bcf26bd8d7cfd54dd064e4c653767125439af595"
 uuid = "b0b7db55-cfe3-40fc-9ded-d10e2dbeff66"
-version = "0.8.8"
+version = "0.8.10"
 
 [[ConstructionBase]]
 git-tree-sha1 = "a2a6a5fea4d6f730ec4c18a76d27ec10e8ec1c50"
@@ -531,9 +531,9 @@ uuid = "2774e3e8-f4cf-5e23-947b-6d7e65073b56"
 version = "4.4.1"
 
 [[NaNMath]]
-git-tree-sha1 = "c84c576296d0e2fbb3fc134d3e09086b3ea617cd"
+git-tree-sha1 = "bfe47e760d60b82b66b61d2d44128b62e3a369fb"
 uuid = "77ba4419-2d1f-58cd-9bb1-8ffee604a2e3"
-version = "0.3.4"
+version = "0.3.5"
 
 [[OffsetArrays]]
 deps = ["Adapt"]
@@ -572,9 +572,9 @@ version = "1.3.2"
 
 [[OrdinaryDiffEq]]
 deps = ["Adapt", "ArrayInterface", "DataStructures", "DiffEqBase", "ExponentialUtilities", "FastClosures", "FiniteDiff", "ForwardDiff", "GenericSVD", "LinearAlgebra", "Logging", "MacroTools", "MuladdMacro", "NLsolve", "RecursiveArrayTools", "Reexport", "SparseArrays", "SparseDiffTools", "StaticArrays", "UnPack"]
-git-tree-sha1 = "7ea4d187575fb5256409d755819afb66e1812f2b"
+git-tree-sha1 = "e782c1ff432a6ba8677b6fced19a92a6878a5c68"
 uuid = "1dea7af3-3e70-54e6-95c3-0bf5283fa5ed"
-version = "5.45.0"
+version = "5.45.1"
 
 [[PCRE_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -639,10 +639,10 @@ uuid = "784f63db-0788-585a-bace-daefebcd302b"
 version = "2019.1.0+2"
 
 [[Qt_jll]]
-deps = ["Fontconfig_jll", "Glib_jll", "Libdl", "Pkg", "Xorg_libXext_jll", "Xorg_libxcb_jll", "Xorg_xcb_util_image_jll", "Xorg_xcb_util_keysyms_jll", "Xorg_xcb_util_renderutil_jll", "Xorg_xcb_util_wm_jll", "Zlib_jll", "xkbcommon_jll"]
-git-tree-sha1 = "b3979580c712b167a131bd1a4152a840d6df89cb"
+deps = ["Artifacts", "Fontconfig_jll", "Glib_jll", "JLLWrappers", "Libdl", "Pkg", "Xorg_libXext_jll", "Xorg_libxcb_jll", "Xorg_xcb_util_image_jll", "Xorg_xcb_util_keysyms_jll", "Xorg_xcb_util_renderutil_jll", "Xorg_xcb_util_wm_jll", "Zlib_jll", "xkbcommon_jll"]
+git-tree-sha1 = "72244a8e084251aea25968c61bbf5c001aaa7d5a"
 uuid = "ede63266-ebff-546c-83e0-1c6fb6d0efc8"
-version = "5.15.0+3"
+version = "5.15.1+0"
 
 [[REPL]]
 deps = ["InteractiveUtils", "Markdown", "Sockets"]

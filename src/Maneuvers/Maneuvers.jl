@@ -3,15 +3,15 @@ Provides calculations for orbit maneuvers.
 """
 module Maneuvers
 
-include("../Misc/DocStringExtensions.jl")
+using Reexport
+@reexport using ..CommonTypes
 
-using ..CommonTypes
+include("../Misc/DocStringExtensions.jl")
+include("../Misc/UnitfulAliases.jl")
+
 using ..NBody
 using ..TwoBody
-
-using Reexport
-
-using Logging
+using LinearAlgebra: norm, cross, ×, dot, ⋅
 
 export AbstractManeuver, TwoBodyManeuver, ConstantManeuver
 export escape_radius, escape_velocity, escape_time, escape_path_length

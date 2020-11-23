@@ -3,20 +3,17 @@ Provides structures & functions for the two-body problem.
 """
 module TwoBody
 
-include("../Misc/DocStringExtensions.jl")
-
 # Dependencies 
 
-using ..CommonTypes
-
 using Reexport
+@reexport using ..CommonTypes
 
-using Logging
-using Base: isapprox, isequal, show
-using LinearAlgebra: ×, ⋅, norm
-using ComponentArrays
-using StaticArrays
+include("../Misc/DocStringExtensions.jl")
+include("../Misc/UnitfulAliases.jl")
+
 using Crayons
+using LinearAlgebra: norm, cross, ×, dot, ⋅
+using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
 
 # Newton's Gravitation Constant
 import PhysicalConstants.CODATA2018
@@ -33,12 +30,12 @@ export  semimajor_axis, semi_parameter, eccentricity,
         eccentricity_vector, inclination, true_anomoly, 
         periapsis_radius, apoapsis_radius, periapsis_velocity, 
         apoapsis_velocity, radius, velocity, orbital_period, 
-        mass, mass_parameter, perifocal, inertial,
+        mass, mass_parameter, perifocal,
         time_since_periapsis, mean_motion, mean_motion_vector, 
         conic_anomoly, specific_angular_momentum_vector, 
         specific_angular_momentum, specific_energy,  
         isapprox, isequal, TwobodyPropagationResult, kepler, lambert,
-        conic, keplerian, cartesian, isinvalid
+        conic, keplerian, cartesian, isinvalid, promote, convert
 
 # Include all module source code
 include("twobody_states.jl")

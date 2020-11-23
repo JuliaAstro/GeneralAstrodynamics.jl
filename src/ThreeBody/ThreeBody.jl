@@ -4,29 +4,35 @@ Three Body Problem.
 """
 module ThreeBody
 
-include("../Misc/DocStringExtensions.jl")
-
-using ..CommonTypes
-using ..TwoBody
-
 using Reexport
 
-using Logging
-using Base: isapprox, isequal
-using LinearAlgebra: ×, ⋅, norm
-using ComponentArrays
-using StaticArrays
+@reexport using ..CommonTypes
+using ..TwoBody
 
-@reexport using Unitful, UnitfulAstro, UnitfulAngles
+include("../Misc/DocStringExtensions.jl")
+include("../Misc/UnitfulAliases.jl")
+
+using LinearAlgebra: norm, cross, ×, dot, ⋅
+using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
 
 export ThreeBodySystem
-export redimensionalize, 
-       nondimensionalize, 
+export time_scale_factor,
+       nondimensionalize_length,
+       nondimensionalize_velocity,
+       nondimensionalize_time,
+       nondimensionalize_mass_parameter,
+       nondimensionalize,
+       redimensionalize_length,
+       redimensionalize_velocity,
+       redimensionalize_time,
+       redimensionalize,
        potential_energy, 
        jacobi_constant,
-       position,  
+       nondimensional_radius,  
        inertial, 
-       synodic
+       synodic,
+       convert,
+       promote
        
 include("ThreeBodyStates.jl")
 include("ThreeBodyCalculations.jl")

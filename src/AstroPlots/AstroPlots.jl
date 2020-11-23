@@ -4,20 +4,16 @@ and the two-body problem. Uses `Plots.jl`
 """
 module AstroPlots
 
-include("../Misc/DocStringExtensions.jl")
+using Reexport
+@reexport using ..CommonTypes
 
-using ..CommonTypes
+include("../Misc/DocStringExtensions.jl")
+include("../Misc/UnitfulAliases.jl")
+
 using ..TwoBody
 using ..NBody
 using ..Propagators
 
-using Reexport
-
-using Logging
-using Base: isapprox, isequal
-using LinearAlgebra: ×, ⋅, norm
-using ComponentArrays
-using StaticArrays
 using Plots
 using Plots.PlotMeasures
 

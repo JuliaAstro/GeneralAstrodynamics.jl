@@ -11,23 +11,52 @@ struct Body{F<:AbstractFloat} <: AbstractBody
     v̅::SVector{3, Unitful.Velocity{F}}
     m::Unitful.Mass{F}
 
-    function Body(r̅, v̅, m) where F <: AbstractFloat
-    
-        return new{F}(SVector{3}(F.(r̅)), SVector{3}(F.(v̅)), F(m))
-    
-    end
+    function Body(r::VR, v::VV, m::M) where {
+            T1  <: AbstractFloat, 
+            T2  <: AbstractFloat, 
+            T3  <: AbstractFloat, 
+            R   <: Unitful.Length{T1},
+            V   <: Unitful.Velocity{T2},
+            VR  <: AbstractVector{R}, 
+            VV  <: AbstractVector{V},
+            M   <: Unitful.Mass{T3}}
 
-    Body(r̅, v̅, m) = new{Float64}(SVector{3}(Float64.(r̅)), SVector{3}(Float64.(v̅)), Float64(m))
+        if length(r) ≢ length(v) ≢ 3
+            error("The `Body` constructor requires 3 element vectors for position `r` and velocity `v`")
+        else
+            T = promote_type(T1, T2, T3)
+            return new{T}(SVector{3}(T.(r)), SVector{3}(T.(v)), T(m))
+        end
+
+    end
+    Body(r, v, m) = Body(Float64.(r), Float64.(v), Float64(m))
 
 end
+Base.convert(::Type{T}, b::Body) where {
+        T<:AbstractFloat} = Body(T.(b.r̅), T.(b.v̅), T(b.m))
+Base.promote(::Type{Body{A}}, ::Type{Body{B}}) where {
+        A<:AbstractFloat, B<:AbstractFloat} = Body{promote_type(A,B)}
 
 
 
 """
 Describes a system of `n` `MultibodyStates`'s.
 """
-struct MultibodySystem <: OrbitalSystem
+struct MultibodySystem{N, T<:AbstractFloat} <: OrbitalSystem
 
-    body::Array{Body}
+    body::SVector{N, Body{T}}
+
+    function MultibodySystem(b::B...) where B<:Body
+        N = length(b)
+        bodies = promote(b...)
+        T = typeof(first(bodies).m.val)
+        return new{length(b),T}(SVector{N, Body{T}}(bodies...))
+    end
+    MultibodySystem(b::VB) where {B<:Body, VB<:AbstractVector{B}} = MultibodySystem(b...)
 
 end
+Base.convert(::Type{T}, sys::MultibodySystem) where {
+        T<:AbstractFloat} = MultibodySystem(convert.(Ref(T), sys.body)...)
+Base.promote(::Type{MultibodySystem{N, A}}, ::Type{MultibodySystem{N, B}}) where {
+        A<:AbstractFloat, B<:AbstractFloat,N} = MultibodySystem{promote_type(A,B)}
+
