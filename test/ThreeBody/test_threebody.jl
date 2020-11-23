@@ -16,7 +16,7 @@ using UnitfulAstrodynamics
     t = 500u"d"
 
     # Construct nondimensional state
-    sys = ThreeBodySystem(AU, μₛ, μₑ, r, v, t);
+    sys = ThreeBodySystem(1.0u"AU", μₛ, μₑ, r, v, t);
 
     @test true
     
