@@ -278,7 +278,7 @@ mass_parameter(body::CelestialBody) = body.μ
 """
 Returns the orbital period.
 """
-orbital_period(a, μ) = upreferred(2π * √(a^3 / μ))
+orbital_period(a, μ) = 2π * √(upreferred(a^3 / μ))
 orbital_period(orbit::Orbit) = orbital_period(orbit.a, orbit.body.μ)
 
 """

@@ -32,7 +32,12 @@ struct ThreeBodySystem{F<:AbstractFloat} <: OrbitalSystem
             TT <: Time{<:AbstractFloat}
         }
 
-        T = typeof(promote(a, μ₁, μ₂, r, v, t)[1]).val
+        T = promote_type(typeof(a.val), 
+                         typeof(μ₁.val), 
+                         typeof(μ₂.val), 
+                         map(x->typeof(x.val), r)...,
+                         map(x->typeof(x.val), v)...,
+                         typeof(t.val))
 
         if length(r) ≢ length(v) ≢ 3
         throw(ArgumentError(string("Both `r` and `v` provided to `ThreeBodySystem` ",
