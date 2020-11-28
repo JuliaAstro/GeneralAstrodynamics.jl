@@ -31,16 +31,17 @@ function Orbit(rᵢ, vᵢ, body)
 
     e, a, i, Ω, ω, ν = keplerian(rᵢ, vᵢ, body)
     rₚ, vₚ = perifocal(a, e, ν, body.μ)
+    T = promote_type([typeof(rᵢ[i].val) for i ∈ 1:length(rᵢ)]..., 
+                     [typeof(vᵢ[i].val) for i ∈ 1:length(vᵢ)]...,
+                      typeof(body.R.val))
 
-    return Orbit{
-            conic(eccentricity(rᵢ, vᵢ, body.μ)),
-            Float64
-        }(SVector{3}(Float64.(rᵢ)), 
-          SVector{3}(Float64.(vᵢ)), 
-          SVector{3}(Float64.(rₚ)),
-          SVector{3}(Float64.(vₚ)),
-          map(Float64, [e,a,i,Ω,ω,ν])...,
-          body)
+    return Orbit{T}(
+            SVector{3}(T.(rᵢ)), 
+            SVector{3}(T.(vᵢ)), 
+            SVector{3}(T.(rₚ)),
+            SVector{3}(T.(vₚ)),
+            map(T, [e,a,i,Ω,ω,ν])...,
+            convert(T, body))
 
 end
 
@@ -51,16 +52,17 @@ function Orbit(e, a, i, Ω, ω, ν, body)
 
     rᵢ, vᵢ = cartesian(e, a, i, Ω, ω, ν, body)
     rₚ, vₚ = perifocal(a, e, ν, body.μ)
-    
-    return Orbit{
-            conic(e),
-            Float64
-        }(SVector{3}(Float64.(rᵢ)), 
-          SVector{3}(Float64.(vᵢ)), 
-          SVector{3}(Float64.(rₚ)),
-          SVector{3}(Float64.(vₚ)),
-          map(Float64, [e,a,i,Ω,ω,ν])...,
-          body)
+    T = promote_type(typeof(e), typeof(a.val), typeof(i.val), 
+                     typeof(Ω.val), typeof(ω.val), typeof(ν.val),
+                     typeof(body.R.val))
+
+    return Orbit{T}(
+            SVector{3}(T.(rᵢ)), 
+            SVector{3}(T.(vᵢ)), 
+            SVector{3}(T.(rₚ)),
+            SVector{3}(T.(vₚ)),
+            map(T, [e,a,i,Ω,ω,ν])...,
+            convert(T, body))
 
 end
 
@@ -197,6 +199,12 @@ specific_energy(r, v, μ) = (v^2 / 2) - (μ / r)
 specific_energy(orbit::Orbit) = specific_energy(orbit.a, orbit.body.μ)
 
 """
+Returns potential energy for an orbit about a `CelestialBody`.
+"""
+specific_potential_energy(r, μ, R) = (μ/r)
+specific_potential_energy(r, μ, R, J₂, ϕ) = (μ/r) * (1 - J₂ * (R/r)^2 * ((3/2) * (sin(ϕ))^2 - (1/2)))
+
+"""
 Returns orbital eccentricity vector e̅.
 """
 function eccentricity_vector(rᵢ, vᵢ, μ)
@@ -310,21 +318,13 @@ end
 Returns eccentric anomoly, E, parabolic anomoly, B, or hyperbolic 
 anomoly, H. 
 """
-function conic_anomoly(orbit::Orbit{Elliptical})
+function eccentric_anomoly(orbit::Orbit)
 
     e = eccentricity(orbit)
     ν = true_anomoly(orbit)
 
     return acos(u"rad", (e + cos(ν) / (1 + e * cos(ν))))
 
-end
-function conic_anomoly(orbit::Orbit{Hyperbolic})
-
-    e = eccentricity(orbit)
-    ν = true_anomoly(orbit)
-
-    return acosh(u"rad", (e + cos(ν) / (1 + e * cos(ν))))
-    
 end
 
 """
