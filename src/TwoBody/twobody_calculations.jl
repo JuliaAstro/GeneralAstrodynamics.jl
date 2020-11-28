@@ -201,7 +201,7 @@ specific_energy(orbit::Orbit) = specific_energy(orbit.a, orbit.body.μ)
 """
 Returns potential energy for an orbit about a `CelestialBody`.
 """
-specific_potential_energy(r, μ, R) = (μ/r)
+specific_potential_energy(r, μ) = (μ/r)
 specific_potential_energy(r, μ, R, J₂, ϕ) = (μ/r) * (1 - J₂ * (R/r)^2 * ((3/2) * (sin(ϕ))^2 - (1/2)))
 
 """
