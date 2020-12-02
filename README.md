@@ -1,5 +1,3 @@
-[![version](https://juliahub.com/docs/UnitfulAstrodynamics/version.svg)](https://juliahub.com/ui/Packages/UnitfulAstrodynamics/uJGLZ)
-
 [![Tests](https://github.com/cadojo/UnitfulAstrodynamics.jl/workflows/Tests/badge.svg)](https://github.com/cadojo/UnitfulAstrodynamics.jl/actions?query=workflow%3ATests)
 [![Docs](https://github.com/cadojo/UnitfulAstrodynamics.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/UnitfulAstrodynamics.jl/stable)
 
