@@ -32,8 +32,8 @@ export  semimajor_axis, semi_parameter, eccentricity,
         apoapsis_velocity, radius, velocity, orbital_period, 
         mass, mass_parameter, perifocal,
         time_since_periapsis, mean_motion, mean_motion_vector, 
-        conic_anomoly, specific_angular_momentum_vector, 
-        specific_angular_momentum, specific_energy,  
+        eccentric_anomoly, specific_angular_momentum_vector, 
+        specific_angular_momentum, specific_energy, specific_potential_energy,
         isapprox, isequal, TwobodyPropagationResult, kepler, lambert,
         conic, keplerian, cartesian, isinvalid, promote, convert
 

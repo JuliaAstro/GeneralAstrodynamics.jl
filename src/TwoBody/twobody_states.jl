@@ -13,7 +13,7 @@ abstract type AbstractConic end
 """
 Abstract type for all two-body orbital representations.
 """
-abstract type TwoBodySystem{C<:AbstractConic} <: OrbitalSystem end
+abstract type TwoBodySystem{F<:AbstractFloat} <: OrbitalSystem end
 
 
 """
@@ -81,10 +81,7 @@ end
 """
 Struct for storing TwoBody orbital states for all conics.
 """
-struct Orbit{
-            C  <: AbstractConic,
-            F  <: AbstractFloat
-        } <: TwoBodySystem{C}
+struct Orbit{F<:AbstractFloat} <: TwoBodySystem{F}
 
     # Cartesian representation
     rᵢ::SVector{3, Length{F}}
@@ -107,9 +104,9 @@ struct Orbit{
 
 end
 Base.convert(::Type{T}, o::Orbit) where {
-        T<:AbstractFloat} = Orbit(T.(o.rᵢ), T.(o.vᵢ), T(o.body))
-Base.promote(::Type{Orbit{E,A}}, ::Type{Orbit{E,B}}) where {
-        E, A<:AbstractFloat, B<:AbstractFloat} = Orbit{E, promote_type(A,B)}
+        T<:AbstractFloat} = Orbit(T.(o.rᵢ), T.(o.vᵢ), convert(T, o.body))
+Base.promote(::Type{Orbit{A}}, ::Type{Orbit{B}}) where {
+        A<:AbstractFloat, B<:AbstractFloat} = Orbit{promote_type(A,B)}
 
 """
 Custom display for Orbit instances.

@@ -17,6 +17,7 @@ using ..ThreeBody
 using OrdinaryDiffEq
 using LinearAlgebra: norm, normalize, cross, ×, dot, ⋅
 using ComponentArrays
+using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
 
 export  TwobodyPropagationResult, 
         ThreeBodyPropagationResult,

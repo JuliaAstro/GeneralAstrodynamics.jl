@@ -8,16 +8,16 @@
 """
 Struct to hold two-body propagation results.
 """
-struct TwobodyPropagationResult{
-        T<:Unitful.Time,
-        O<:TwoBodySystem,
-        VT<:AbstractVector{T},
-        VO<:AbstractVector{O}
-} <: PropagationResult 
+struct TwobodyPropagationResult{F<:AbstractFloat} <: PropagationResult 
 
-    t::VT
-    step::VO
-    ode_solution::ODESolution
+    t::Vector{<:Unitful.Time{F}}
+    step::Vector{<:TwoBodySystem{F}}
+    propagation_status::Symbol
+
+    function TwobodyPropagationResult(t, step, status)
+        T = promote_type(typeof(t[1].val), typeof(step[1].e))
+        return new{T}(T.(t), [convert(T, step[i]) for i ∈ 1:length(step)], status)
+    end
 
 end
 
@@ -27,9 +27,6 @@ Show `TwobodyPropagationResult` in REPL.
 function Base.show(io::IO, result::TwobodyPropagationResult)
 
     println(io, typeof(result), " with ", length(result.t), " timesteps")
-    println(io, "  ", "t::", string(typeof(result.t)))
-    println(io, "  ", "step::", string(typeof(result.step)))
-    println(io, "  ", "ode_solution::", string(typeof(result.ode_solution)))
 
 end
 
@@ -80,9 +77,9 @@ function propagate(orbit::Orbit,
 
     # Return PropagationResult structure
     return TwobodyPropagationResult(
-        u"s" .* sols.t,
-        map(x -> Orbit(u"m" * x.rᵢ, u"m/s" * x.vᵢ, orbit.body), sols.u),
-        sols
+            u"s" .* sols.t,
+            map(x -> Orbit(u"m" * x.rᵢ, u"m/s" * x.vᵢ, orbit.body), sols.u),
+            sols.retcode
     )
 
 end
