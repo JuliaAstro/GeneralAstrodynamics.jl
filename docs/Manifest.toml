@@ -852,7 +852,7 @@ version = "1.0.1"
 deps = ["ComponentArrays", "Contour", "Crayons", "DocStringExtensions", "LinearAlgebra", "Logging", "OrdinaryDiffEq", "PhysicalConstants", "Plots", "Reexport", "Roots", "StaticArrays", "Unitful", "UnitfulAngles", "UnitfulAstro"]
 path = ".."
 uuid = "673e7d9c-15b0-48d3-bce0-fab551f3a174"
-version = "0.6.4"
+version = "0.6.5"
 
 [[VectorizationBase]]
 deps = ["CpuId", "Libdl", "LinearAlgebra"]
