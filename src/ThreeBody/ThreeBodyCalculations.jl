@@ -22,7 +22,7 @@ nondimensionalize_velocity(vᵢ, a, Tₛ) = @. upreferred(vᵢ / (a / Tₛ))
 """
 Returns nondimensional time unit, `DT`.
 """
-nondimensionalize_time(t, a, μ₁, μ₂) = t ÷ time_scale_factor(a, μ₁, μ₂)
+nondimensionalize_time(t, a, μ₁, μ₂) = t / time_scale_factor(a, μ₁, μ₂)
 
 """
 Returns nondimensional mass parameter, `μ`.
@@ -69,7 +69,7 @@ Returns nondimensional form of (`Unitful`) time duration.
 """
 nondimensionalize(t::T1, Tₛ::T2) where {
         T1<:Time, T2<:Time
-    } = t ÷ Tₛ
+    } = t / Tₛ
 
 """
 Returns nondimensional form of (`Unitful`) time duration.
@@ -111,7 +111,7 @@ redimensionalize_length(rᵢ, a) = upreferred(rᵢ .* a)
 """
 Returns dimensional velocity units.
 """
-redimensionalize_velocity(vᵢ, a, Tₛ) = vᵢ .* (a ÷ Tₛ)
+redimensionalize_velocity(vᵢ, a, Tₛ) = vᵢ .* (a / Tₛ)
 
 """
 Returns dimensional time unit.
@@ -160,7 +160,7 @@ Returns dimensional (inertial) form of (`Unitful`) time duration.
 """
 redimensionalize(t::T1, Tₛ::T2) where {
         T1<:Time, T2<:Time
-    } = t ÷ Tₛ
+    } = t / Tₛ
 
 """
 Returns dimensional (inertial) form of (`Unitful`) time duration.
@@ -187,7 +187,7 @@ jacobi_constant(r, v, μ, x₁, x₂) = 2*potential_energy(r, μ, x₁, x₂) - 
 """
 Given the Synodic frame vector, returns the vector in the inertial reference frame.
 """
-function inertial(vecₛ, t, ω=1.0u"rad"÷unit(t))
+function inertial(vecₛ, t, ω=1.0u"rad"/unit(t))
 
     θ = ω*t
     ᴵTₛ = @SMatrix [
