@@ -8,28 +8,25 @@
 """
 Struct to hold three-body propagation results.
 """
-struct ThreebodyPropagationResult{
-        T<:Unitful.Time,
-        O<:ThreeBodySystem,
-        VT<:AbstractVector{T},
-        VO<:AbstractVector{O}
-} <: PropagationResult 
+struct ThreeBodyPropagationResult{F<:AbstractFloat} <: PropagationResult 
 
-    t::VT
-    step::VO
-    ode_solution::ODESolution
+    t::Vector{<:Unitful.Time{F}}
+    step::Vector{<:ThreeBodySystem{F}}
+    propagation_status::Symbol
+
+    function ThreeBodyPropagationResult(t, step, status)
+        T = promote_type(typeof(t[1].val), typeof(step[1].e))
+        return new{T}(T.(t), [convert(T, step[i]) for i ∈ 1:length(step)], status)
+    end
 
 end
 
 """
 Show `ThreebodyPropagationResult` in REPL.
 """
-function Base.show(io::IO, result::ThreebodyPropagationResult)
+function Base.show(io::IO, result::ThreeBodyPropagationResult)
 
     println(io, typeof(result), " with ", length(result.t), " timesteps")
-    println(io, "  ", "t::", string(typeof(result.t)))
-    println(io, "  ", "step::", string(typeof(result.step)))
-    println(io, "  ", "ode_solution::", string(typeof(result.ode_solution)))
 
 end
 
@@ -42,10 +39,10 @@ function threebody_tic!(∂u, u, p, t)
 
     ∂u.rₛ    =  u.vₛ
     ∂u.vₛ[1] =  2u.vₛ[2] + u.rₛ[1] - 
-                     (1-p.μ)*(u.rₛ[1] - p.x₁) / ThreeBody.position(u.rₛ, p.x₁)^3 - 
-                      p.μ*(u.rₛ[1] - p.x₂)    / ThreeBody.position(u.rₛ, p.x₂)^3
-    ∂u.vₛ[2] = -2u.vₛ[1] + u.rₛ[2] - ( (1-p.μ)/ThreeBody.position(u.rₛ, p.x₁)^3 + (p.μ/ThreeBody.position(u.rₛ, p.x₂)^3)) * u.rₛ[2]
-    ∂u.vₛ[3] = -( (1-p.μ) / ThreeBody.position(u.rₛ, p.x₁)^3 + (p.μ / ThreeBody.position(u.rₛ, p.x₂)^3)) * u.rₛ[3]
+                     (1-p.μ)*(u.rₛ[1] - p.x₁) / nondimensional_radius(u.rₛ, p.x₁)^3 - 
+                      p.μ*(u.rₛ[1] - p.x₂)    / nondimensional_radius(u.rₛ, p.x₂)^3
+    ∂u.vₛ[2] = -2u.vₛ[1] + u.rₛ[2] - ( (1-p.μ)/nondimensional_radius(u.rₛ, p.x₁)^3 + (p.μ/nondimensional_radius(u.rₛ, p.x₂)^3)) * u.rₛ[2]
+    ∂u.vₛ[3] = -( (1-p.μ) / nondimensional_radius(u.rₛ, p.x₁)^3 + (p.μ / nondimensional_radius(u.rₛ, p.x₂)^3)) * u.rₛ[3]
 
 end
 
@@ -71,7 +68,7 @@ function propagate(sys::ThreeBodySystem,
     problem = ODEProblem(threebody_tic!, 
                          ComponentArray((rₛ=sys.rₛ, vₛ=sys.vₛ)), 
                          (0.0, Δt), 
-                         ComponentArray((μ=sys.μ, x₁=sys.x₁, x₂=sys.x₂)))
+                         ComponentArray((μ=sys.μ, x₁=-sys.μ, x₂=1-sys.μ)))
 
     # Solve the problem! 
     sols = solve(problem, ode_alg; options...)

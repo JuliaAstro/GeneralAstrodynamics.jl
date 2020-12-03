@@ -9,10 +9,10 @@ using UnitfulAstrodynamics
     vᵢ = [5.134, 4.226, 2.787] * u"km/s"
     orbit = Orbit(rᵢ, vᵢ, Earth)
 
-    @test orbit.a ≈ 24509.272364065997 * u"km"
-    @test orbit.e ≈ 0.7234527725236475
-    @test orbit.i ≈ 2.6442542356744734 * u"rad"
-    @test orbit.ν ≈ 1.5707355666179315 * u"rad"
+    @test orbit.a == 24509.265399338536 * u"km"
+    @test orbit.e == 0.723452708202361
+    @test orbit.i == 151.50460766373865 * u"°"
+    @test orbit.ν == 89.99652573907436  * u"°"
 
     @test Orbit(map(x->getfield(orbit, x), [:e, :a, :i, :Ω, :ω, :ν])..., orbit.body) ≈ orbit
 
