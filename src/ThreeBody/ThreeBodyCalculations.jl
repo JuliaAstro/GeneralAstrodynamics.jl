@@ -46,9 +46,9 @@ nondimensionalize(rᵢ::R, a::A) where {
 """
 Returns nondimensional form of (`Unitful`) scalar velocity.
 """
-nondimensionalize(vᵢ::V, a::A) where {
-        V<:Velocity, A<:Length
-    } = nondimensionalize_length(vᵢ, a)
+nondimensionalize(vᵢ::V, a::A, Tₛ::T) where {
+        V<:Velocity, A<:Length, T<:Time
+    } = nondimensionalize_velocity(vᵢ, a, Tₛ)
 
 """
 Returns nondimensional form of (`Unitful`) velocity vector.
@@ -95,7 +95,7 @@ function nondimensionalize(r₃::R, v₃::V, Δt::T, μ₁::U1, μ₂::U2, a::A)
         A<:Length
     }
 
-    Tₛ = time_scale_factor(a, μ₁, μ₁)
+    Tₛ = time_scale_factor(a, μ₁, μ₂)
     return nondimensionalize(r₃, a), 
            nondimensionalize(v₃, a, Tₛ),
            nondimensionalize(Δt, Tₛ),
