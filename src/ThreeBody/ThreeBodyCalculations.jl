@@ -12,12 +12,12 @@ time_scale_factor(a, μ₁, μ₂) = orbital_period(a, μ₁+μ₂)
 """
 Returns nondimensional length unit, `DU`.
 """
-nondimensionalize_length(rᵢ, a) = @. upreferred(rᵢ / a)
+nondimensionalize_length(rᵢ, a) = upreferred.(rᵢ ./ a)
 
 """
 Returns nondimensional velocity unit, `DU/DT`.
 """
-nondimensionalize_velocity(vᵢ, a, Tₛ) = @. upreferred(vᵢ / (a / Tₛ))
+nondimensionalize_velocity(vᵢ, a, Tₛ) = upreferred.(vᵢ ./ (a / Tₛ))
 
 """
 Returns nondimensional time unit, `DT`.
