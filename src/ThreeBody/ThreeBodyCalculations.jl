@@ -83,7 +83,7 @@ Returns nondimensional form of (`Unitful`) graviational parameters.
 """
 nondimensionalize(μ₁::U1, μ₂::U2) where {
         U1<:MassParameter, U2<:MassParameter
-    } = min(μ₁, μ₂) ÷ (μ₁+μ₂)
+    } = min(μ₁, μ₂) / (μ₁+μ₂)
 
 """
 Returns nondimensional Circular Restricted Three-body State.
