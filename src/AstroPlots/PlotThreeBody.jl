@@ -22,7 +22,10 @@ function lagrangeplot(μ, L=1:5; kwargs...)
     end
 
     scatter!(fig; options...)
-
+    for i ∈ min(length(fig.series_list), length(options.labels))
+        fig.series_list[i].d[:label] = options.labels[i]
+    end
+    
     fig
 
 end
