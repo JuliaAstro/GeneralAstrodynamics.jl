@@ -11,8 +11,8 @@ function lagrangeplot(μ, L=1:5; kwargs...)
 
     lagrange_points = lagrange(μ)
 
-    fig = scatter([-μ], [0]; markersize=10, markercolor=:lightblue)
-    scatter!(fig, [1-μ], [0]; markersize=6, markercolor=:gray)
+    fig = scatter([-μ], [0]; markersize=10, markercolor=:lightblue, label="Body 1")
+    scatter!(fig, [1-μ], [0]; markersize=6, markercolor=:gray, label="Body 2")
 
     colors = (:red, :orange, :tan, :cyan, :indigo)
     for point ∈ zip(lagrange_points, 1:length(lagrange_points))
@@ -22,10 +22,10 @@ function lagrangeplot(μ, L=1:5; kwargs...)
     end
 
     scatter!(fig; options...)
-    for i ∈ min(length(fig.series_list), length(options.labels))
-        fig.series_list[i].d[:label] = options.labels[i]
+    for i ∈ 1:min(length(fig.series_list), length(options.labels))
+        fig.series_list[i].plotattributes[:label] = options.labels[i]
     end
-    
+
     fig
 
 end
