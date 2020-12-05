@@ -14,6 +14,7 @@ include("../Misc/UnitfulAliases.jl")
 
 using LinearAlgebra: norm, cross, ×, dot, ⋅
 using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
+using Roots
 
 export ThreeBodySystem
 export time_scale_factor,
