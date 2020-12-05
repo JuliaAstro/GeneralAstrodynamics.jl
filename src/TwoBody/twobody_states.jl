@@ -178,27 +178,27 @@ isinvalid(orbit::Orbit) = all(map(x->!isnan(getfield(orbit, x)), [:rᵢ, :vᵢ, 
 """
 Constant `CelestialBody` for our sun!
 """
-const Sun = CelestialBody(1.98840987e30u"kg", 696342.0u"km")
+const Sun = CelestialBody(696000.0u"km", 1.327124400419393e11u"km^3/s^2")
 
 """
 Constant `CelestialBody` for Mercury.
 """
-const Mercury = CelestialBody(330.1e21u"kg", 2439.7u"km")
+const Mercury = CelestialBody(2439.7u"km", 22031.78000000002u"km^3/s^2")
 
 """
 Constant `CelestialBody` for Venus.
 """
-const Venus = CelestialBody(4867.5e21u"kg", 6051.8u"km")
+const Venus = CelestialBody(6051.8u"km", 324858.592u"km^3/s^2")
 
 """
 Constant `CelestialBody` for your home planet!
 """
-const Earth = CelestialBody(5.97216787e24u"kg", 6371.0u"km")
+const Earth = CelestialBody(6371.008366666666u"km", 398600.4354360959u"km^3/s^2")
 
 """
 Constant `CelestialBody` for our moon.
 """
-const Moon = CelestialBody(73.42e21u"kg", 1737.4u"km")
+const Moon = CelestialBody(1737.4000000000003u"km", 4902.800066163796u"km^3/s^2")
 
 """
 Constant `CelestialBody` (alias for our mooon).
@@ -208,30 +208,30 @@ const Luna = Moon
 """
 Constant `CelestialBody` for Mars.
 """
-const Mars = CelestialBody(641.7e21u"kg", 3389.5u"km")
+const Mars = CelestialBody(3389.5266666666666u"km", 42828.37362069909u"km^3/s^2")
 
 """
 Constant `CelestialBody` for Jupiter.
 """
-const Jupiter = CelestialBody(1.8981246e27u"kg", 69911.0u"km")
+const Jupiter = CelestialBody(69946.0u"km", 1.2668653492180079e8u"km^3/s^2")
 
 """
 Constant `CelestialBody` for Saturn.
 """
-const Saturn = CelestialBody(568340e21u"kg", 58232.0u"km")
+const Saturn = CelestialBody(58300.0u"km", 3.793120749865224e7u"km^3/s^2")
 
 """
 Constant `CelestialBody` for Uranus.
 """
-const Uranus = CelestialBody(86813e21u"kg", 25362.0u"km")
+const Uranus = CelestialBody(25363.666666666668u"km", 5.793951322279009e6u"km^3/s^2")
 
 """
 Constant `CelestialBody` for Neptune.
 """
-const Neptune = CelestialBody(102413e21u"kg", 24622.0u"km")
+const Neptune = CelestialBody(24623.0u"km", 6.835099502439672e6u"km^3/s^2")
 
 """
 Constant `CelestialBody` for Pluto. We couldn't leave you out again!
 """
-const Pluto = CelestialBody(13.03e21u"kg", 1188.3u"km")
+const Pluto = CelestialBody(1195.0u"km", 869.6138177608749u"km^3/s^2")
     

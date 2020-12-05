@@ -12,9 +12,9 @@ struct Body{F<:AbstractFloat} <: AbstractBody
     m::Unitful.Mass{F}
 
     function Body(r::VR, v::VV, m::M) where {
-            T1  <: AbstractFloat, 
-            T2  <: AbstractFloat, 
-            T3  <: AbstractFloat, 
+            T1  <: Real, 
+            T2  <: Real, 
+            T3  <: Real, 
             R   <: Unitful.Length{T1},
             V   <: Unitful.Velocity{T2},
             VR  <: AbstractVector{R}, 
@@ -25,11 +25,14 @@ struct Body{F<:AbstractFloat} <: AbstractBody
             error("The `Body` constructor requires 3 element vectors for position `r` and velocity `v`")
         else
             T = promote_type(T1, T2, T3)
+            if !(T <: AbstractFloat)
+                @warn "Non-float types provided to `Body` constructor: using `Float64`."
+                T = Float64
+            end
             return new{T}(SVector{3}(T.(r)), SVector{3}(T.(v)), T(m))
         end
 
     end
-    Body(r, v, m) = Body(Float64.(r), Float64.(v), Float64(m))
 
 end
 Base.convert(::Type{T}, b::Body) where {

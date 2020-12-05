@@ -57,12 +57,10 @@ All keyword arguments are passed directly to OrdinaryDiffEq solvers.
 """
 function propagate(sys::MultibodySystem, Δt::Unitful.Quantity, ode_alg::OrdinaryDiffEqAlgorithm = Tsit5(); kwargs...)
    
-    # Referencing:
-    # [1] https://diffeq.sciml.ai/v4.0/tutorials/ode_example.html
-    # [2] https://github.com/SciML/DifferentialEquations.jl/issues/393#issuecomment-658210231
-    # [3] https://discourse.julialang.org/t/smart-kwargs-dispatch/14571/15
-
-    # Set default kwargs (modified from [3])
+    if !all(map(body->body.m ≥ 0u"kg", sys.body))
+        @warn "One or more bodies have a mass that is not ≥ 0: this is not supported, and the propagation result will not be correct."
+    end
+    
     defaults = (;  reltol=1e-14, abstol=1e-14)
     options = merge(defaults, kwargs)
 
@@ -71,7 +69,6 @@ function propagate(sys::MultibodySystem, Δt::Unitful.Quantity, ode_alg::Ordinar
     params = ComponentArray((G=6.6743e-11, m=map(b->ustrip(u"kg",b.m), sys.body)))
 
     problem = ODEProblem(nbody_tic, u₀, tspan, params)
-
     sols = solve(problem, ode_alg; options...)
 
     bodies = map(x->MultibodySystem(
