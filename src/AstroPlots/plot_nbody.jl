@@ -14,14 +14,6 @@ function Plots.plot(sols::MultibodyPropagationResult; bodies=1:length(sols.step[
     # Set default kwargs (modified from [1])
     defaults = (;   formatter=:scientific,
                     legend=:topleft,
-                    top_margin=5px,
-                    left_margin=[5mm 0mm],
-                    right_margin=[5mm 0mm],
-                    bottom_margin=5px,
-                    size=(900, 600),
-                    zrotation=90,
-                    yrotation=17,
-                    xrotation=-4,
                     xlabel="X Position (km)", 
                     ylabel="Y Position (km)",
                     zlabel="Z Position (km)",
@@ -38,8 +30,6 @@ function Plots.plot(sols::MultibodyPropagationResult; bodies=1:length(sols.step[
 
     end
     Plots.plot!(fig; options...)
-
-    display(fig)
 
     return fig
     

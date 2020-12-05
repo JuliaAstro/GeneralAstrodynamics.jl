@@ -177,12 +177,12 @@ nondimensional_radius(r, xᵢ=0) = √( (r[1]-xᵢ)^2 + r[2]^2 + r[3]^2 )
 """
 Returns the potential energy `U`.
 """
-potential_energy(r, μ, x₁, x₂) = (r[1]^2 + r[2]^2) + (2(1-μ)/nondimensional_radius(r,x₁)) + (2μ/nondimensional_radius(r,x₂))
+potential_energy(r, μ) = (r[1]^2 + r[2]^2)/2 + ((1-μ)/nondimensional_radius(r,-μ)) + (μ/nondimensional_radius(r,1-μ))
 
 """
 Returns the Jacobi Constant `C`.
 """
-jacobi_constant(r, v, μ, x₁, x₂) = 2*potential_energy(r, μ, x₁, x₂) - (v⋅v)
+jacobi_constant(r, v, μ) = 2*potential_energy(r, μ) - (v⋅v)
 
 """
 Given the Synodic frame vector, returns the vector in the inertial reference frame.
@@ -204,3 +204,34 @@ end
 Returns the position and velocity vectors in the synodic (rotating) reference frame.
 """
 synodic(rᵢ, vᵢ, a, Tₛ) =  nondimensionalize(rᵢ, a), nondimensionalize(vᵢ, a, Tₛ)
+
+"""
+Returns the lagrange points for a CR3BP system.
+
+__Arguments:__ 
+- `μ`: Non-dimensional mass parameter for the CR3BP system.
+- `L`: Langrange points requested, must be in range [1,5]
+
+__Outputs:__
+- Tuple of Lagrange points
+- Throws `ArgumentError` if L is out of range [1,5]
+
+__References:__
+- [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/)
+"""
+function lagrange(μ, L=1:5)
+    
+    if !all(L[i] ∈ (1,2,3,4,5) for i ∈ 1:length(L))
+        throw(ArgumentError("Requested lagrange points must be in range [1,5]"))
+    end
+
+	expressions = @SVector [
+		x -> x - (1-μ)/(x+μ)^2 + μ/(x+μ-1)^2,
+		x -> x - (1-μ)/(x+μ)^2 - μ/(x+μ-1)^2,
+		x -> x + (1-μ)/(x+μ)^2 + μ/(x+μ+1)^2
+	]
+	
+	return  (map(f->[find_zero(f, (-3,3)), 0, 0], expressions)..., 
+			[(1/2) - μ, √(3)/2, 0], [(1/2) - μ, -√(3)/2, 0])[L]
+	
+end;
