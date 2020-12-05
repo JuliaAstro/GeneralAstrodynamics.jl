@@ -21,5 +21,6 @@ export plot
 
 include("plot_twobody.jl")
 include("plot_nbody.jl")
+include("PlotThreeBody.jl")
 
 end
