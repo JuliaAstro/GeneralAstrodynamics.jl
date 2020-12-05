@@ -21,7 +21,7 @@ function lagrangeplot(μ, L=1:5; kwargs...)
                 markershape=:x, markercolor=colors[i], label=string("L", i))
     end
 
-    scatter!(; options...)
+    scatter!(fig; options...)
 
     fig
 
