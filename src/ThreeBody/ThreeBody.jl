@@ -12,9 +12,11 @@ using ..TwoBody
 include("../Misc/DocStringExtensions.jl")
 include("../Misc/UnitfulAliases.jl")
 
-using LinearAlgebra: norm, cross, ×, dot, ⋅
+using LinearAlgebra: norm, cross, ×, dot, ⋅, I
 using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
+using ComponentArrays
 using Roots
+using OrdinaryDiffEq
 
 export ThreeBodySystem
 export time_scale_factor,
@@ -30,6 +32,12 @@ export time_scale_factor,
        potential_energy, 
        jacobi_constant,
        lagrange,
+       halo_analytic,
+       halo,
+       Jᵤ, 
+       halo_numerical_tic!,
+       reset_halo!,
+       state_transition_dynamics,
        nondimensional_radius,  
        inertial, 
        synodic,
