@@ -14,7 +14,7 @@ using ..NBody
 using ..TwoBody
 using ..ThreeBody 
 
-using OrdinaryDiffEq
+using DifferentialEquations 
 using LinearAlgebra: norm, normalize, cross, ×, dot, ⋅
 using ComponentArrays
 using StaticArrays: SVector, @SVector, SMatrix, @SMatrix

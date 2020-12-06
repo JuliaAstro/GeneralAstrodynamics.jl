@@ -10,12 +10,12 @@ Struct to hold three-body propagation results.
 """
 struct ThreeBodyPropagationResult{F<:AbstractFloat} <: PropagationResult 
 
-    t::Vector{<:Unitful.Time{F}}
-    step::Vector{<:ThreeBodySystem{F}}
+    t::Vector{F}
+    step::Vector{<:NondimensionalThreeBodyState{F}}
     propagation_status::Symbol
 
     function ThreeBodyPropagationResult(t, step, status)
-        T = promote_type(typeof(t[1].val), typeof(step[1].e))
+        T = promote_type(eltype(t), eltype(step[1].rₛ))
         return new{T}(T.(t), [convert(T, step[i]) for i ∈ 1:length(step)], status)
     end
 
@@ -50,7 +50,7 @@ end
 Uses OrdinaryDiffEq solvers to propagate `orbit` Δt into the future.
 All keyword arguments are passed directly to OrdinaryDiffEq solvers.
 """
-function propagate(sys::ThreeBodySystem, 
+function propagate(sys::NondimensionalThreeBodyState, 
                    Δt, 
                    ode_alg::OrdinaryDiffEqAlgorithm=Tsit5();
                    kwargs...)
@@ -68,13 +68,17 @@ function propagate(sys::ThreeBodySystem,
     problem = ODEProblem(threebody_tic!, 
                          ComponentArray((rₛ=sys.rₛ, vₛ=sys.vₛ)), 
                          (0.0, Δt), 
-                         ComponentArray((μ=sys.μ, x₁=-sys.μ, x₂=1-sys.μ)))
+                         ComponentArray((μ=sys.μ, x₁=sys.r₁[1], x₂=sys.r₂[1])))
 
     # Solve the problem! 
     sols = solve(problem, ode_alg; options...)
 
     # Return PropagationResult structure
-    return sols
+    return ThreeBodyPropagationResult(
+        sols.t,
+        map(step->NondimensionalThreeBodyState(step.rₛ, step.vₛ, sys.μ, sys.DU, sys.DT), sols.u),
+        sols.retcode
+    )
 
 end
 

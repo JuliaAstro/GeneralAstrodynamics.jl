@@ -16,9 +16,9 @@ using LinearAlgebra: norm, cross, ×, dot, ⋅, I
 using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
 using ComponentArrays
 using Roots
-using OrdinaryDiffEq
+using DifferentialEquations
 
-export ThreeBodySystem
+export ThreeBodyState, NondimensionalThreeBodyState, ThreeBodySystem
 export time_scale_factor,
        nondimensionalize_length,
        nondimensionalize_velocity,

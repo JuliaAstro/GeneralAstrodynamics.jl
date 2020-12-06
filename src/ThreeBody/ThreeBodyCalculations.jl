@@ -443,26 +443,28 @@ function halo(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0u"rad",
                        r₀  = r₀,
                        v₀  = v₀,
                        δẋ  = 1,
-                       δż  = 1)
+                       δż  = 1,
+                       Τ   = Τ)
     )
     
-    reset = DiscreteCallback(
+    reset = ContinuousCallback(
         (u,t,integrator)->(
             t > 0 && 
             abs(integrator.p.δẋ) ≥ integrator.p.tol &&  
             abs(integrator.p.δż) ≥ integrator.p.tol && 
-            u.vₛ[2] == 0.0
+            u.rₛ[2] == 0.0
         ),
         reset_halo!;
         save_positions=(false, false)
     )
     
-    sols = solve(problem, callback=reset, reltol=1e-14, abstol=1e-14)
+    sols = solve(problem, callback=reset, reltol=1e-14, abstol=1e-14, saveat=[0.0])
     if sols.retcode != :Success
         @warn string("Numerical integrator returned code ", string(sols.retcode), ": halo orbit may be invalid.")
     end
 
-    return sols.u[1].rₛ, sols.u[1].vₛ, Τ
+    # return sols.u[1].rₛ, sols.u[1].vₛ, sols.params.Τ
+    return sols
 
 end
 
@@ -517,6 +519,8 @@ __References:__
 """
 function reset_halo!(integrator)
 
+    println("Iterating initial Halo guess!")
+
     δẋ = integrator.p.tol - integrator.u.vₛ[1]
     δż = integrator.p.tol - integrator.u.vₛ[3]
 
@@ -526,6 +530,8 @@ function reset_halo!(integrator)
     ] - ((1/integrator.u.vₛ[2]) * [integrator.∂u.vₛ[1]; integrator.∂u.vₛ[3]] * 
         [integrator.u.Φ[2,1] integrator.u.Φ[2,5]])
     δx₀, δẏ₀ = inv(F) * [δẋ; δż] 
+
+    integrator.p.Τ = integrator.t * 2
 
     integrator.t = 0
     integrator.u.rₛ = integrator.p.r₀ .+ [δx₀, 0, 0]
