@@ -6,6 +6,7 @@ module ThreeBody
 
 using Reexport
 
+using ..CommonTypes: @dowhile
 @reexport using ..CommonTypes
 using ..TwoBody
 
@@ -35,6 +36,7 @@ export time_scale_factor,
        halo_analytic,
        halo,
        Jᵤ, 
+       accel,
        halo_numerical_tic!,
        reset_halo!,
        state_transition_dynamics,

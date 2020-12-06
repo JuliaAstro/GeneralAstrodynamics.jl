@@ -264,7 +264,7 @@ function Jᵤ(μ, r)
     Uxz = (3z * (1-μ)  * (x+μ) / r₁^5)  + (μ * (x - 1 + μ) / r₂^5)
     Uyz = (3y*z*(1-μ) / r₁^5) + μ / r₂^5
 
-    return @SMatrix [
+    return [
         Uxx Uxy Uxz;
         Uxy Uyy Uyz;
         Uxz Uyz Uzz
@@ -287,10 +287,10 @@ __References:__
 """
 function state_transition_dynamics(μ, r)
 
-    return vcat(
+    return Array(vcat(
         hcat(zeros((3,3)), I(3)),
         hcat(Jᵤ(μ, r), [0 2 0; -2 0 0; 0 0 0])
-    )
+    ))
 
 end
 
@@ -417,54 +417,61 @@ __References:__
 """
 function halo(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0u"rad",
               L::Symbol=:L1, hemisphere::Symbol=:northern,
-              tolerance::T4=1e-12) where {
+              tolerance::T4=1e-12, max_iter::T5=100,
+              reltol=1e-14, abstol=1e-14) where {
         T1 <: AbstractFloat, 
         T2 <: AbstractFloat, 
-        T3 <: Unitful.DimensionlessQuantity{<:AbstractFloat},
-        T4 <: AbstractFloat}
+        T3 <: Number,
+        T4 <: AbstractFloat,
+        T5 <: Integer
+    }
 
-    r₀, v₀, Τ = halo_analytic(μ; Zₐ=Zₐ, ϕ=ϕ, L=L, hemisphere=hemisphere)
-    
-    problem = ODEProblem(
-        halo_numerical_tic!,
-        ComponentArray(rₛ  = [r₀[1], 0, r₀[3]],
-                       vₛ  = [0, v₀[2], 0],
-                       Φ₁  = copy(I(6)[1,:]),
-                       Φ₂  = copy(I(6)[2,:]),
-                       Φ₃  = copy(I(6)[3,:]),
-                       Φ₄  = copy(I(6)[4,:]),
-                       Φ₅  = copy(I(6)[5,:]),
-                       Φ₆  = copy(I(6)[6,:])),
-        (0.0, Τ),
-        ComponentArray(μ   =  μ, 
-                       x₁  = -μ, 
-                       x₂  =  1 - μ,
-                       tol = tolerance,
-                       r₀  = r₀,
-                       v₀  = v₀,
-                       δẋ  = 1,
-                       δż  = 1,
-                       Τ   = Τ)
-    )
-    
-    reset = ContinuousCallback(
-        (u,t,integrator)->(
-            t > 0 && 
-            abs(integrator.p.δẋ) ≥ integrator.p.tol &&  
-            abs(integrator.p.δż) ≥ integrator.p.tol && 
-            u.rₛ[2] == 0.0
-        ),
-        reset_halo!;
-        save_positions=(false, false)
-    )
-    
-    sols = solve(problem, callback=reset, reltol=1e-14, abstol=1e-14, saveat=[0.0])
-    if sols.retcode != :Success
-        @warn string("Numerical integrator returned code ", string(sols.retcode), ": halo orbit may be invalid.")
+    r₀, v₀, Τ₀ = halo_analytic(μ; Zₐ=Zₐ, ϕ=ϕ, L=L, hemisphere=hemisphere)
+    r₀ = [r₀[1], 0, r₀[3]]
+    v₀ = [0, v₀[2], 0]
+    iter = 0
+    Τ = Τ₀
+
+    @dowhile ((abs(δẋ) ≥ tolerance || abs(δż) ≥ tolerance) && iter < max_iter) begin
+        
+        problem = ODEProblem(
+            halo_numerical_tic!,
+            ComponentArray(rₛ  = r₀,
+                           vₛ  = v₀,
+                           Φ₁  = [1.0, 0, 0, 0, 0, 0],
+                           Φ₂  = [0, 1.0, 0, 0, 0, 0],
+                           Φ₃  = [0, 0, 1.0, 0, 0, 0],
+                           Φ₄  = [0, 0, 0, 1.0, 0, 0],
+                           Φ₅  = [0, 0, 0, 0, 1.0, 0],
+                           Φ₆  = [0, 0, 0, 0, 0, 1.0]),
+            (0.0, Τ₀/2),
+            ComponentArray(μ   =  μ)
+        )
+
+        condition(u,t,integrator) = u[2]
+        function affect!(integrator)
+            println("Terminating!")
+            terminate!(integrator)
+        end
+        halt = ContinuousCallback(condition, affect!, nothing; save_positions=(true, true))
+        sols = solve(problem; callback=halt, reltol=reltol, abstol=abstol)
+
+        δẋ, δż, r₀, v₀, Τ = reset_halo(
+            r₀, v₀, 
+            transpose(hcat(sols.u[end].Φ₁, sols.u[end].Φ₂, sols.u[end].Φ₃, sols.u[end].Φ₄, sols.u[end].Φ₅, sols.u[end].Φ₆)), 
+            sols.u[end].rₛ, sols.u[end].vₛ, sols.t[end], μ, Τ, sols.retcode; 
+            tol=tolerance
+        )
+
+        iter += 1
+
     end
 
-    # return sols.u[1].rₛ, sols.u[1].vₛ, sols.params.Τ
-    return sols
+    if iter == max_iter
+        @warn "Maximum iterations reached: Halo orbit may have not converged to desired tolerance."
+    end
+
+    return r₀, v₀, Τ
 
 end
 
@@ -486,66 +493,62 @@ __References:__
 function halo_numerical_tic!(∂u, u, p, t)
 
     # Cartesian state
-    ∂u.rₛ    =  u.vₛ
-    ∂u.vₛ[1] =  2u.vₛ[2] + u.rₛ[1] - 
-                     (1-p.μ)*(u.rₛ[1] - p.x₁) / nondimensional_radius(u.rₛ, p.x₁)^3 - 
-                      p.μ*(u.rₛ[1] - p.x₂)    / nondimensional_radius(u.rₛ, p.x₂)^3
-    ∂u.vₛ[2] = -2u.vₛ[1] + u.rₛ[2] - ( (1-p.μ)/nondimensional_radius(u.rₛ, p.x₁)^3 + (p.μ/nondimensional_radius(u.rₛ, p.x₂)^3)) * u.rₛ[2]
-    ∂u.vₛ[3] = -( (1-p.μ) / nondimensional_radius(u.rₛ, p.x₁)^3 + (p.μ / nondimensional_radius(u.rₛ, p.x₂)^3)) * u.rₛ[3]
-    
+    ∂u.rₛ   =  u.vₛ
+    ∂u.vₛ   =  accel(u.rₛ, u.vₛ, p.μ)
+
     # State transition matrix
-    Φ  = state_transition_dynamics(p.μ, u.rₛ) * transpose(hcat(u.Φ₁, u.Φ₂, u.Φ₃, u.Φ₄, u.Φ₅, u.Φ₆))
-    ∂u.Φ₁ = copy(Φ[1,:])[:]
-    ∂u.Φ₂ = copy(Φ[2,:])[:]
-    ∂u.Φ₃ = copy(Φ[3,:])[:]
-    ∂u.Φ₄ = copy(Φ[4,:])[:]
-    ∂u.Φ₅ = copy(Φ[5,:])[:]
-    ∂u.Φ₆ = copy(Φ[6,:])[:]
+    ∂Φ  = state_transition_dynamics(p.μ, u.rₛ) 
+    ∂u.Φ₁ = copy(∂Φ[1,:])[:]
+    ∂u.Φ₂ = copy(∂Φ[2,:])[:]
+    ∂u.Φ₃ = copy(∂Φ[3,:])[:]
+    ∂u.Φ₄ = copy(∂Φ[4,:])[:]
+    ∂u.Φ₅ = copy(∂Φ[5,:])[:]
+    ∂u.Φ₆ = copy(∂Φ[6,:])[:]
+    
+end
+
+"""
+Returns non-dimensional acceleration for CR3BP state.
+"""
+function accel(rₛ, vₛ, μ)
+
+    x₁ = -μ
+    x₂ = 1-μ
+
+    return [
+         2vₛ[2] + rₛ[1] - (1-μ)*(rₛ[1] - x₁) / nondimensional_radius(rₛ, x₁)^3 - μ*(rₛ[1] - x₂) / nondimensional_radius(rₛ, x₂)^3,
+        -2vₛ[1] + rₛ[2] - ((1-μ)/nondimensional_radius(rₛ, x₁)^3 + (μ/nondimensional_radius(rₛ, x₂)^3)) * rₛ[2],
+        -((1-μ) / nondimensional_radius(rₛ, x₁)^3 + (μ / nondimensional_radius(rₛ, x₂)^3)) * rₛ[3]
+    ]
     
 end
 
 """
 Resets the initial conditions for iterative numerical Halo orbit solver.
 
-__Arguments:__ 
-- `integrator`: `OrdinaryDiffEq` integrator struct.
-
-__Outputs:__
-- None (mutates `integrator` state.
-
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 - [SciML Documentation](https://diffeq.sciml.ai/stable/features/callback_functions/#callbacks)
 """
-function reset_halo!(integrator)
+function reset_halo(r₀, v₀, Φ, rₛ, vₛ, t, μ, Τ₀, retcode; tol=1e-12)
 
-    println("Iterating initial Halo guess!")
+    δẋ = -vₛ[1]
+    δż = -vₛ[3]
 
-    δẋ = integrator.p.tol - integrator.u.vₛ[1]
-    δż = integrator.p.tol - integrator.u.vₛ[3]
+    ∂vₛ = accel(rₛ, vₛ, μ)
 
-    F = [
-        integrator.u.Φ[4,1] integrator.u.Φ[4,5];
-        integrator.u.Φ[6,1] integrator.u.Φ[6,5]
-    ] - ((1/integrator.u.vₛ[2]) * [integrator.∂u.vₛ[1]; integrator.∂u.vₛ[3]] * 
-        [integrator.u.Φ[2,1] integrator.u.Φ[2,5]])
+    F = [Φ[4,1] Φ[4,5]; Φ[6,1] Φ[6,5]] - ((1/vₛ[2]) * [∂vₛ[1]; ∂vₛ[3]] * [Φ[2,1] Φ[2,5]])
     δx₀, δẏ₀ = inv(F) * [δẋ; δż] 
 
-    integrator.p.Τ = integrator.t * 2
+    if retcode == :Terminated
+        Τₙ = t * 2
+    else 
+        Τₙ = Τ₀
+    end
 
-    integrator.t = 0
-    integrator.u.rₛ = integrator.p.r₀ .+ [δx₀, 0, 0]
-    integrator.u.vₛ = integrator.p.v₀ .+ [0, δẏ₀, 0]
-    integrator.u.Φ₁  = copy(I(6)[1,:])[:]
-    integrator.u.Φ₂  = copy(I(6)[2,:])[:]
-    integrator.u.Φ₃  = copy(I(6)[3,:])[:]
-    integrator.u.Φ₄  = copy(I(6)[4,:])[:]
-    integrator.u.Φ₅  = copy(I(6)[5,:])[:]
-    integrator.u.Φ₆  = copy(I(6)[6,:])[:]
-
-    integrator.p.r₀ = integrator.u.rₛ
-    integrator.p.v₀ = integrator.u.vₛ
-    integrator.p.δẋ = δẋ
-    integrator.p.δż = δż
+    r₀ₙ = r₀ .+ [δx₀, 0, 0]
+    v₀ₙ = v₀ .+ [0, δẏ₀, 0]
+    
+    return δẋ, δż, r₀ₙ, v₀ₙ, Τₙ
 
 end

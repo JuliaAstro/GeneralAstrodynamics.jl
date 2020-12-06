@@ -37,12 +37,8 @@ Currently not exported. Used for two-body numerical integration.
 """
 function threebody_tic!(∂u, u, p, t)
 
-    ∂u.rₛ    =  u.vₛ
-    ∂u.vₛ[1] =  2u.vₛ[2] + u.rₛ[1] - 
-                     (1-p.μ)*(u.rₛ[1] - p.x₁) / nondimensional_radius(u.rₛ, p.x₁)^3 - 
-                      p.μ*(u.rₛ[1] - p.x₂)    / nondimensional_radius(u.rₛ, p.x₂)^3
-    ∂u.vₛ[2] = -2u.vₛ[1] + u.rₛ[2] - ( (1-p.μ)/nondimensional_radius(u.rₛ, p.x₁)^3 + (p.μ/nondimensional_radius(u.rₛ, p.x₂)^3)) * u.rₛ[2]
-    ∂u.vₛ[3] = -( (1-p.μ) / nondimensional_radius(u.rₛ, p.x₁)^3 + (p.μ / nondimensional_radius(u.rₛ, p.x₂)^3)) * u.rₛ[3]
+    ∂u.rₛ =  u.vₛ
+    ∂u.vₛ =  accel(u.rₛ, u.vₛ, p.μ)
 
 end
 

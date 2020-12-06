@@ -31,9 +31,9 @@ abstract type PropagationResult end
 macro dowhile(condition, block) 
     return quote
         while true
-            $block
+            $(esc(block))
 
-            $condition || break
+            $(esc(condition)) || break
         end
     end
 end
