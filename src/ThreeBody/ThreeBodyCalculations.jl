@@ -330,7 +330,7 @@ function halo_analytic(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0u"rad", steps::T4=1,
         point = first(lagrange(μ, 2))
         γ = abs(point - 1 + μ)
         n = collect(1:4)
-        c = @. (-1^n * μ + (-1)^n * (1-μ)γ^(n+1)) / (γ^3 * (1 + γ^(n+1)))
+        c = @. ((-1)^n * μ + (-1)^n * (1-μ)γ^(n+1)) / (γ^3 * (1 + γ^(n+1)))
     else
         throw(ArgumentError("Only Halo orbits about L1 or L2 are supported."))
     end
@@ -417,7 +417,7 @@ __References:__
 """
 function halo(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0u"rad",
               L::Symbol=:L1, hemisphere::Symbol=:northern,
-              tolerance::T4=1e-14) where {
+              tolerance::T4=1e-12) where {
         T1 <: AbstractFloat, 
         T2 <: AbstractFloat, 
         T3 <: Unitful.DimensionlessQuantity{<:AbstractFloat},
@@ -429,7 +429,12 @@ function halo(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0u"rad",
         halo_numerical_tic!,
         ComponentArray(rₛ  = [r₀[1], 0, r₀[3]],
                        vₛ  = [0, v₀[2], 0],
-                       Φ   = I(6)),
+                       Φ₁  = copy(I(6)[1,:]),
+                       Φ₂  = copy(I(6)[2,:]),
+                       Φ₃  = copy(I(6)[3,:]),
+                       Φ₄  = copy(I(6)[4,:]),
+                       Φ₅  = copy(I(6)[5,:]),
+                       Φ₆  = copy(I(6)[6,:])),
         (0.0, Τ),
         ComponentArray(μ   =  μ, 
                        x₁  = -μ, 
@@ -437,28 +442,27 @@ function halo(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0u"rad",
                        tol = tolerance,
                        r₀  = r₀,
                        v₀  = v₀,
-                       δẋ  = 1,
-                       δż  = 1)
+                       δẋ  = 1,
+                       δż  = 1)
     )
-
+    
     reset = DiscreteCallback(
         (u,t,integrator)->(
             t > 0 && 
-            abs(integrator.p.δẋ) ≤ integrator.p.tol &&  
-            abs(integrator.p.δż) ≤ integrator.p.tol && 
+            abs(integrator.p.δẋ) ≥ integrator.p.tol &&  
+            abs(integrator.p.δż) ≥ integrator.p.tol && 
             u.vₛ[2] == 0.0
         ),
         reset_halo!;
         save_positions=(false, false)
     )
-
+    
     sols = solve(problem, callback=reset, reltol=1e-14, abstol=1e-14)
-
-    if sols.retcode != :success
+    if sols.retcode != :Success
         @warn string("Numerical integrator returned code ", string(sols.retcode), ": halo orbit may be invalid.")
     end
 
-    return sols.u[1].r₀, sols.u[1].v₀, Τ
+    return sols.u[1].rₛ, sols.u[1].vₛ, Τ
 
 end
 
@@ -488,8 +492,14 @@ function halo_numerical_tic!(∂u, u, p, t)
     ∂u.vₛ[3] = -( (1-p.μ) / nondimensional_radius(u.rₛ, p.x₁)^3 + (p.μ / nondimensional_radius(u.rₛ, p.x₂)^3)) * u.rₛ[3]
     
     # State transition matrix
-    ∂u.Φ  = state_transition_dynamics(p.μ, u.rₛ) * u.Φ
-
+    Φ  = state_transition_dynamics(p.μ, u.rₛ) * transpose(hcat(u.Φ₁, u.Φ₂, u.Φ₃, u.Φ₄, u.Φ₅, u.Φ₆))
+    ∂u.Φ₁ = copy(Φ[1,:])[:]
+    ∂u.Φ₂ = copy(Φ[2,:])[:]
+    ∂u.Φ₃ = copy(Φ[3,:])[:]
+    ∂u.Φ₄ = copy(Φ[4,:])[:]
+    ∂u.Φ₅ = copy(Φ[5,:])[:]
+    ∂u.Φ₆ = copy(Φ[6,:])[:]
+    
 end
 
 """
@@ -520,7 +530,12 @@ function reset_halo!(integrator)
     integrator.t = 0
     integrator.u.rₛ = integrator.p.r₀ .+ [δx₀, 0, 0]
     integrator.u.vₛ = integrator.p.v₀ .+ [0, δẏ₀, 0]
-    integrator.u.Φ = I(6)
+    integrator.u.Φ₁  = copy(I(6)[1,:])[:]
+    integrator.u.Φ₂  = copy(I(6)[2,:])[:]
+    integrator.u.Φ₃  = copy(I(6)[3,:])[:]
+    integrator.u.Φ₄  = copy(I(6)[4,:])[:]
+    integrator.u.Φ₅  = copy(I(6)[5,:])[:]
+    integrator.u.Φ₆  = copy(I(6)[6,:])[:]
 
     integrator.p.r₀ = integrator.u.rₛ
     integrator.p.v₀ = integrator.u.vₛ
