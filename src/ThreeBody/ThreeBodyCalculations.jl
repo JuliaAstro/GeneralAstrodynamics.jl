@@ -252,7 +252,7 @@ __References:__
 function Jᵤ(μ, r)
 
     r₁ = nondimensional_radius(r, -μ)
-    r₁ = nondimensional_radius(r, 1-μ)
+    r₂ = nondimensional_radius(r, 1-μ)
     x  = @views r[1]
     y  = @views r[2]
     z  = @views r[3]
@@ -288,7 +288,7 @@ __References:__
 function state_transition_dynamics(μ, r)
 
     return vcat(
-        hcat(zeros((3,3), I(3))),
+        hcat(zeros((3,3)), I(3)),
         hcat(Jᵤ(μ, r), [0 2 0; -2 0 0; 0 0 0])
     )
 
@@ -448,15 +448,14 @@ function halo(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0u"rad",
             abs(integrator.p.δż) ≤ integrator.p.tol && 
             u.vₛ[2] == 0.0
         ),
-        reset_halo!,
-        initialize = INITIALIZE_DEFAULT,
+        reset_halo!;
         save_positions=(false, false)
     )
 
-    sols = solve(problem, callback=reset, reltol=1e-14, abstol=1e-14, saveat=0.0)
+    sols = solve(problem, callback=reset, reltol=1e-14, abstol=1e-14)
 
-    if sols.retcode != success
-        @warn string("Numerical integrator returned code ", string(sols.retcode), ": halo orbit may be invalid")
+    if sols.retcode != :success
+        @warn string("Numerical integrator returned code ", string(sols.retcode), ": halo orbit may be invalid.")
     end
 
     return sols.u[1].r₀, sols.u[1].v₀, Τ
