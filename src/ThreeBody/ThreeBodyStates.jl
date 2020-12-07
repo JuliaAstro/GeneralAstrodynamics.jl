@@ -62,18 +62,18 @@ struct NondimensionalThreeBodyState{F<:AbstractFloat} <: OrbitalSystem
     rₛ::SVector{3, F}
     vₛ::SVector{3, F}
     μ::F
-    DU::F
-    DT::F
+    DU::Length{F}
+    DT::Time{F}
 
     function NondimensionalThreeBodyState(rₛ::R, vₛ::V, μ::F1, DU::F2, DT::F3) where {
             R  <: AbstractArray{<:AbstractFloat}, 
             V  <: AbstractArray{<:AbstractFloat},
             F1 <: AbstractFloat,
-            F2 <: AbstractFloat,
-            F3 <: AbstractFloat
+            F2 <: Length{<:AbstractFloat},
+            F3 <: Time{<:AbstractFloat}
         }
 
-        T = promote_type(eltype(rₛ), eltype(vₛ), typeof(μ), typeof(DU), typeof(DT))
+        T = promote_type(eltype(rₛ), eltype(vₛ), typeof(μ), typeof(DU.val), typeof(DT.val))
         return new{T}(
             SVector{3,T}(T.([-μ,  0, 0])),
             SVector{3,T}(T.([1-μ, 0, 0])),

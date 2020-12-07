@@ -314,11 +314,11 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
-function halo_analytic(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0u"rad", steps::T4=1,
+function halo_analytic(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0, steps::T4=1,
                        L::Symbol=:L1, hemisphere::Symbol=:northern) where {
         T1 <: AbstractFloat, 
         T2 <: AbstractFloat, 
-        T3 <: Unitful.DimensionlessQuantity{<:AbstractFloat},
+        T3 <: Number,
         T4 <: Integer}
 
     if L == :L1
@@ -347,9 +347,9 @@ function halo_analytic(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0u"rad", steps::T4=1,
     b₂₁ = (-3c[3]ωₚ / (2d₁)) * (3k*ωₚ - 4)
     b₂₂ = -3c[3]*ωₚ / d₁
     d₂₁ = -c[3] / (2ωₚ^2)
-    Zₐ₁ = (-9ωₚ / (4d₂)) * (4c[3] * (k*a₂₃-b₂₁) + k*c[4]*(4+k^2)) + 
+    a₃₁ = (-9ωₚ / (4d₂)) * (4c[3] * (k*a₂₃-b₂₁) + k*c[4]*(4+k^2)) + 
           ((9ωₚ^2 + 1 - c[2]) / (2d₂)) * (3c[3]*(2a₂₃-k*b₂₁) + c[4]*(2+3k^2))
-    Zₐ₂ = (-9ωₚ / (4d₂)) * (4c[3] * (3k*a₂₄-b₂₂) + k*c[4]) -
+    a₃₂ = (-9ωₚ / (4d₂)) * (4c[3] * (3k*a₂₄-b₂₂) + k*c[4]) -
           (3 / (2d₂)) * (9ωₚ^2 + 1 - c[2]) * (c[3]*(k*b₂₂+d₂₁-2a₂₄) - c[4])
     b₃₁ = (3 / (8d₂)) * 8ωₚ * (3c[3] * (k*b₂₁ - 2a₂₃) - c[4]*(2+3k^2)) + 
           (3/(8d₂)) * (9ωₚ^2 + 1 + 2c[2]) * (4c[3]*(k*a₂₃-b₂₁) + k*c[4]*(4+k^2))
@@ -386,11 +386,11 @@ function halo_analytic(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0u"rad", steps::T4=1,
     δₘ = 2 - m
     τ₁ = @. ωₚ*τ + ϕ
 
-    x = @. γ * (a₂₁*Aₓ^2 + a₂₂*Aᵧ^2 - Aₓ*cos(τ₁) + (a₂₃*Aₓ^2 - a₂₄*Aᵧ^2)*cos(2τ₁) + (Zₐ₁*Aₓ^3 - Zₐ₂*Aₓ*Aᵧ^2)*cos(3τ₁)) + point
+    x = @. γ * (a₂₁*Aₓ^2 + a₂₂*Aᵧ^2 - Aₓ*cos(τ₁) + (a₂₃*Aₓ^2 - a₂₄*Aᵧ^2)*cos(2τ₁) + (a₃₁*Aₓ^3 - a₃₂*Aₓ*Aᵧ^2)*cos(3τ₁)) + point
     y = @. γ * (k*Aₓ*sin(τ₁) + (b₂₁*Aₓ^2 - b₂₂*Aᵧ^2)*sin(2τ₁) + (b₃₁*Aₓ^3 - b₃₂*Aₓ*Aᵧ^2)*sin(3τ₁))
     z = @. γ * (δₘ*Aᵧ*cos(τ₁) + δₘ*d₂₁*Aₓ*Aᵧ*(cos(2τ₁)-3) + δₘ*(d₃₂*Aᵧ*Aₓ^2 - d₃₁*Aᵧ^3)*cos(3τ₁))
 
-    ẋ = @. γ * (ωₚ*ν*Aₓ*sin(τ₁) - 2ωₚ*ν*(a₂₃*Aₓ^2 - a₂₄*Aᵧ^2)*sin(2τ₁) - 3ωₚ*ν*(Zₐ₁*Aₓ^3 - Zₐ₂*Aₓ*Aᵧ^2)*sin(3τ₁))
+    ẋ = @. γ * (ωₚ*ν*Aₓ*sin(τ₁) - 2ωₚ*ν*(a₂₃*Aₓ^2 - a₂₄*Aᵧ^2)*sin(2τ₁) - 3ωₚ*ν*(a₃₁*Aₓ^3 - a₃₂*Aₓ*Aᵧ^2)*sin(3τ₁))
     ẏ = @. γ * (ωₚ*ν*k*Aₓ*cos(τ₁) + 2ωₚ*ν*(b₂₁*Aₓ^2 - b₂₂*Aᵧ^2)*cos(2τ₁) + 3ωₚ*ν*(b₃₁*Aₓ^3 - b₃₂*Aₓ*Aᵧ^2)*cos(3τ₁))
     ż = @. γ * (-ωₚ*ν*δₘ*Aᵧ*sin(τ₁) - 2ωₚ*ν*δₘ*d₂₁*Aₓ*Aᵧ*sin(2τ₁) - 3ωₚ*ν*δₘ*(d₃₂*Aᵧ*Aₓ^2 - d₃₁*Aᵧ^2)*sin(3τ₁))
 
@@ -417,7 +417,7 @@ __References:__
 """
 function halo(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0u"rad",
               L::Symbol=:L1, hemisphere::Symbol=:northern,
-              tolerance::T4=1e-12, max_iter::T5=100,
+              tolerance::T4=1e-12, max_iter::T5=500,
               reltol=1e-14, abstol=1e-14) where {
         T1 <: AbstractFloat, 
         T2 <: AbstractFloat, 
@@ -433,7 +433,7 @@ function halo(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0u"rad",
     Τ = Τ₀
 
     @dowhile ((abs(δẋ) ≥ tolerance || abs(δż) ≥ tolerance) && iter < max_iter) begin
-        
+
         problem = ODEProblem(
             halo_numerical_tic!,
             ComponentArray(rₛ  = r₀,
@@ -444,22 +444,21 @@ function halo(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0u"rad",
                            Φ₄  = [0, 0, 0, 1.0, 0, 0],
                            Φ₅  = [0, 0, 0, 0, 1.0, 0],
                            Φ₆  = [0, 0, 0, 0, 0, 1.0]),
-            (0.0, Τ₀/2),
+            (0.0, Inf),
             ComponentArray(μ   =  μ)
-        )
+        )    
 
-        condition(u,t,integrator) = u[2]
-        function affect!(integrator)
-            println("Terminating!")
-            terminate!(integrator)
-        end
-        halt = ContinuousCallback(condition, affect!, nothing; save_positions=(true, true))
-        sols = solve(problem; callback=halt, reltol=reltol, abstol=abstol)
+        condition(u, t, integrator) = u.rₛ[2]
+        affect!(integrator) = terminate!(integrator)
+        halt = ContinuousCallback(condition, affect!)
+        integrator = init(problem, Vern9(); callback=halt, reltol=reltol, abstol=abstol)
+
+        solve!(integrator)
 
         δẋ, δż, r₀, v₀, Τ = reset_halo(
             r₀, v₀, 
-            transpose(hcat(sols.u[end].Φ₁, sols.u[end].Φ₂, sols.u[end].Φ₃, sols.u[end].Φ₄, sols.u[end].Φ₅, sols.u[end].Φ₆)), 
-            sols.u[end].rₛ, sols.u[end].vₛ, sols.t[end], μ, Τ, sols.retcode; 
+            transpose(hcat(integrator.u.Φ₁, integrator.u.Φ₂, integrator.u.Φ₃, integrator.u.Φ₄, integrator.u.Φ₅, integrator.u.Φ₆)), 
+            integrator.u.rₛ, integrator.u.vₛ, integrator.t, μ; 
             tol=tolerance
         )
 
@@ -514,11 +513,13 @@ function accel(rₛ, vₛ, μ)
 
     x₁ = -μ
     x₂ = 1-μ
+    r₁ = nondimensional_radius(rₛ, x₁)
+    r₂ = nondimensional_radius(rₛ, x₂)
 
     return [
-         2vₛ[2] + rₛ[1] - (1-μ)*(rₛ[1] - x₁) / nondimensional_radius(rₛ, x₁)^3 - μ*(rₛ[1] - x₂) / nondimensional_radius(rₛ, x₂)^3,
-        -2vₛ[1] + rₛ[2] - ((1-μ)/nondimensional_radius(rₛ, x₁)^3 + (μ/nondimensional_radius(rₛ, x₂)^3)) * rₛ[2],
-        -((1-μ) / nondimensional_radius(rₛ, x₁)^3 + (μ / nondimensional_radius(rₛ, x₂)^3)) * rₛ[3]
+         2vₛ[2] + rₛ[1] - (1-μ)*(rₛ[1] - x₁) / r₁^3 - μ*(rₛ[1] - x₂) / r₂^3,
+        -2vₛ[1] + rₛ[2] - ((1-μ) / r₁^3 + (μ / r₂^3)) * rₛ[2],
+        -((1-μ) / r₁^3 + (μ / r₂^3)) * rₛ[3]
     ]
     
 end
@@ -530,7 +531,7 @@ __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 - [SciML Documentation](https://diffeq.sciml.ai/stable/features/callback_functions/#callbacks)
 """
-function reset_halo(r₀, v₀, Φ, rₛ, vₛ, t, μ, Τ₀, retcode; tol=1e-12)
+function reset_halo(r₀, v₀, Φ, rₛ, vₛ, t, μ; tol=1e-12)
 
     δẋ = -vₛ[1]
     δż = -vₛ[3]
@@ -540,15 +541,11 @@ function reset_halo(r₀, v₀, Φ, rₛ, vₛ, t, μ, Τ₀, retcode; tol=1e-12
     F = [Φ[4,1] Φ[4,5]; Φ[6,1] Φ[6,5]] - ((1/vₛ[2]) * [∂vₛ[1]; ∂vₛ[3]] * [Φ[2,1] Φ[2,5]])
     δx₀, δẏ₀ = inv(F) * [δẋ; δż] 
 
-    if retcode == :Terminated
-        Τₙ = t * 2
-    else 
-        Τₙ = Τ₀
-    end
+    Τₙ = t * 2
 
-    r₀ₙ = r₀ .+ [δx₀, 0, 0]
-    v₀ₙ = v₀ .+ [0, δẏ₀, 0]
-    
+    r₀ₙ = r₀ .- [δx₀, 0, 0]
+    v₀ₙ = v₀ .- [0, δẏ₀, 0]
+
     return δẋ, δż, r₀ₙ, v₀ₙ, Τₙ
 
 end
