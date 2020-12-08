@@ -249,13 +249,28 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/)
 """
-function Jᵤ(μ, r)
+function Jᵤ(μ, r, x₀=0.0, y₀=0.0, z₀=0.0)
 
-    r₁ = nondimensional_radius(r, -μ)
-    r₂ = nondimensional_radius(r, 1-μ)
+    x₁ = -μ
+    x₂ = 1-μ
+    r₁ = nondimensional_radius(r, x₁)
+    r₂ = nondimensional_radius(r, x₂)
     x  = @views r[1]
     y  = @views r[2]
     z  = @views r[3]
+
+    #=
+    A = (1-μ)/r₁^3 + μ/r₂^3
+    B = 3( (1-μ)/r₁^5 + μ/r₂^5 )
+    C = 3( (1-μ)/r₁^5 * (x₀ - x₁) + μ/r₂^5 * (x₀ - x₂) )
+    
+    Uxx = 1 - A + 3(1-μ)*( (x₀-x₁)^2 / r₁^5 ) + 3μ * (x₀ - x₂)^2 / r₂^5
+    Uyy = 1 - A + B*y₀^2
+    Uzz = -A + B*z₀^2
+    Uxy = C*y₀
+    Uxz = C * z₀
+    Uyz = B * y₀ * z₀
+    =#
 
     Uxx = (1 + (1-μ)*(-r₁^2 + 3(x+μ)^2)) / r₁^5 + (μ * (-r₂^2 + 3(x - 1 + μ)^2)) / r₂^5
     Uyy = 1 + ((1-μ)*(-r₁^2 + 3y^2) / r₁^5) + (μ * (-r₂^2 + 3y^2) / r₂^5)
@@ -285,11 +300,11 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/)
 """
-function state_transition_dynamics(μ, r)
+function state_transition_dynamics(μ, r, L)
 
-    return Array(vcat(
+    return Matrix(vcat(
         hcat(zeros((3,3)), I(3)),
-        hcat(Jᵤ(μ, r), [0 2 0; -2 0 0; 0 0 0])
+        hcat(Jᵤ(μ, r, L...), [0 2 0; -2 0 0; 0 0 0])
     ))
 
 end
@@ -373,7 +388,7 @@ function halo_analytic(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0, steps::T4=1,
 
     ν   = 1 + s₁*Aₓ^2 + s₂*Aᵧ^2
     Τ   = 2π / (ωₚ*ν)
-    τ   = ν .* (steps > 1 ? range(0, stop=Τ, length=steps) : 1)
+    τ   = ν .* (steps > 1 ? range(0, stop=Τ, length=steps) : range(0, stop=Τ, length=1000))
 
     if hemisphere == :northern
         m = 1.0
@@ -386,15 +401,21 @@ function halo_analytic(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0, steps::T4=1,
     δₘ = 2 - m
     τ₁ = @. ωₚ*τ + ϕ
 
-    x = @. γ * (a₂₁*Aₓ^2 + a₂₂*Aᵧ^2 - Aₓ*cos(τ₁) + (a₂₃*Aₓ^2 - a₂₄*Aᵧ^2)*cos(2τ₁) + (a₃₁*Aₓ^3 - a₃₂*Aₓ*Aᵧ^2)*cos(3τ₁)) + point
-    y = @. γ * (k*Aₓ*sin(τ₁) + (b₂₁*Aₓ^2 - b₂₂*Aᵧ^2)*sin(2τ₁) + (b₃₁*Aₓ^3 - b₃₂*Aₓ*Aᵧ^2)*sin(3τ₁))
-    z = @. γ * (δₘ*Aᵧ*cos(τ₁) + δₘ*d₂₁*Aₓ*Aᵧ*(cos(2τ₁)-3) + δₘ*(d₃₂*Aᵧ*Aₓ^2 - d₃₁*Aᵧ^3)*cos(3τ₁))
+    x = @. γ * (a₂₁*Aₓ^2 + a₂₂*Aᵧ^2 - Aₓ*cos(τ₁) + (a₂₃*Aₓ^2 - 
+                    a₂₄*Aᵧ^2)*cos(2τ₁) + (a₃₁*Aₓ^3 - a₃₂*Aₓ*Aᵧ^2)*cos(3τ₁)) + point
+    y = @. γ * (k*Aₓ*sin(τ₁) + (b₂₁*Aₓ^2 - b₂₂*Aᵧ^2)*sin(2τ₁) + 
+                    (b₃₁*Aₓ^3 - b₃₂*Aₓ*Aᵧ^2)*sin(3τ₁))
+    z = @. γ * (δₘ*Aᵧ*cos(τ₁) + δₘ*d₂₁*Aₓ*Aᵧ*(cos(2τ₁)-3) + 
+                    δₘ*(d₃₂*Aᵧ*Aₓ^2 - d₃₁*Aᵧ^3)*cos(3τ₁))
 
-    ẋ = @. γ * (ωₚ*ν*Aₓ*sin(τ₁) - 2ωₚ*ν*(a₂₃*Aₓ^2 - a₂₄*Aᵧ^2)*sin(2τ₁) - 3ωₚ*ν*(a₃₁*Aₓ^3 - a₃₂*Aₓ*Aᵧ^2)*sin(3τ₁))
-    ẏ = @. γ * (ωₚ*ν*k*Aₓ*cos(τ₁) + 2ωₚ*ν*(b₂₁*Aₓ^2 - b₂₂*Aᵧ^2)*cos(2τ₁) + 3ωₚ*ν*(b₃₁*Aₓ^3 - b₃₂*Aₓ*Aᵧ^2)*cos(3τ₁))
-    ż = @. γ * (-ωₚ*ν*δₘ*Aᵧ*sin(τ₁) - 2ωₚ*ν*δₘ*d₂₁*Aₓ*Aᵧ*sin(2τ₁) - 3ωₚ*ν*δₘ*(d₃₂*Aᵧ*Aₓ^2 - d₃₁*Aᵧ^2)*sin(3τ₁))
+    ẋ = @. γ * (ωₚ*ν*Aₓ*sin(τ₁) - 2ωₚ*ν*(a₂₃*Aₓ^2 - a₂₄*Aᵧ^2)*sin(2τ₁) - 
+                    3ωₚ*ν*(a₃₁*Aₓ^3 - a₃₂*Aₓ*Aᵧ^2)*sin(3τ₁))
+    ẏ = @. γ * (ωₚ*ν*k*Aₓ*cos(τ₁) + 2ωₚ*ν*(b₂₁*Aₓ^2 - b₂₂*Aᵧ^2)*cos(2τ₁) + 
+                    3ωₚ*ν*(b₃₁*Aₓ^3 - b₃₂*Aₓ*Aᵧ^2)*cos(3τ₁))
+    ż = @. γ * (-ωₚ*ν*δₘ*Aᵧ*sin(τ₁) - 2ωₚ*ν*δₘ*d₂₁*Aₓ*Aᵧ*sin(2τ₁) - 
+                    3ωₚ*ν*δₘ*(d₃₂*Aᵧ*Aₓ^2 - d₃₁*Aᵧ^2)*sin(3τ₁))
 
-    return hcat(x, y, z), hcat(ẋ, ẏ, ż), Τ
+    return hcat(x, y, z)[1:steps, :], hcat(ẋ, ẏ, ż)[1:steps, :], Τ
 
 end
 
@@ -415,9 +436,9 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
-function halo(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0u"rad",
+function halo(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0,
               L::Symbol=:L1, hemisphere::Symbol=:northern,
-              tolerance::T4=1e-12, max_iter::T5=500,
+              tolerance::T4=1e-8, max_iter::T5=10,
               reltol=1e-14, abstol=1e-14) where {
         T1 <: AbstractFloat, 
         T2 <: AbstractFloat, 
@@ -426,11 +447,18 @@ function halo(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0u"rad",
         T5 <: Integer
     }
 
-    r₀, v₀, Τ₀ = halo_analytic(μ; Zₐ=Zₐ, ϕ=ϕ, L=L, hemisphere=hemisphere)
-    r₀ = [r₀[1], 0, r₀[3]]
-    v₀ = [0, v₀[2], 0]
+    μ = promote_type(typeof(μ), typeof(BigFloat(μ)))(μ)
+    r₀, v₀, Τ₀ = halo_analytic(μ; Zₐ=Zₐ, ϕ=ϕ, L=L, hemisphere=hemisphere, steps=1000)
+    r₀ = r₀[1,:]
+    v₀ = v₀[1,:]
     iter = 0
     Τ = Τ₀
+    
+    if  L == :L1
+        point = lagrange(μ, 1)
+    else
+        point = lagrange(μ, 2)
+    end
 
     @dowhile ((abs(δẋ) ≥ tolerance || abs(δż) ≥ tolerance) && iter < max_iter) begin
 
@@ -445,7 +473,7 @@ function halo(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0u"rad",
                            Φ₅  = [0, 0, 0, 0, 1.0, 0],
                            Φ₆  = [0, 0, 0, 0, 0, 1.0]),
             (0.0, Inf),
-            ComponentArray(μ   =  μ)
+            ComponentArray(μ   =  μ, L = point)
         )    
 
         condition(u, t, integrator) = u.rₛ[2]
@@ -467,7 +495,11 @@ function halo(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0u"rad",
     end
 
     if iter == max_iter
-        @warn "Maximum iterations reached: Halo orbit may have not converged to desired tolerance."
+        @warn string(
+            "Maximum iterations reached: ",
+            "Halo orbit may have not converged to desired tolerance of ",
+            tolerance
+        )
     end
 
     return r₀, v₀, Τ
@@ -496,7 +528,7 @@ function halo_numerical_tic!(∂u, u, p, t)
     ∂u.vₛ   =  accel(u.rₛ, u.vₛ, p.μ)
 
     # State transition matrix
-    ∂Φ  = state_transition_dynamics(p.μ, u.rₛ) 
+    ∂Φ  = state_transition_dynamics(p.μ, u.rₛ, p.L) * Matrix(transpose(hcat(u.Φ₁, u.Φ₂, u.Φ₃, u.Φ₄, u.Φ₅, u.Φ₆)))
     ∂u.Φ₁ = copy(∂Φ[1,:])[:]
     ∂u.Φ₂ = copy(∂Φ[2,:])[:]
     ∂u.Φ₃ = copy(∂Φ[3,:])[:]
@@ -539,10 +571,12 @@ function reset_halo(r₀, v₀, Φ, rₛ, vₛ, t, μ; tol=1e-12)
     ∂vₛ = accel(rₛ, vₛ, μ)
 
     F = [Φ[4,1] Φ[4,5]; Φ[6,1] Φ[6,5]] - ((1/vₛ[2]) * [∂vₛ[1]; ∂vₛ[3]] * [Φ[2,1] Φ[2,5]])
+
     δx₀, δẏ₀ = inv(F) * [δẋ; δż] 
 
     Τₙ = t * 2
 
+    @show [δẋ δż rₛ[2] δx₀ δẏ₀]
     r₀ₙ = r₀ .- [δx₀, 0, 0]
     v₀ₙ = v₀ .- [0, δẏ₀, 0]
 
