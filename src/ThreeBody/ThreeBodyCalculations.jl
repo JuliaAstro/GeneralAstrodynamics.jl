@@ -249,7 +249,7 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/)
 """
-function Jᵤ(μ, r, x₀=0.0, y₀=0.0, z₀=0.0)
+function Jᵤ(μ, r)
 
     x₁ = -μ
     x₂ = 1-μ
@@ -259,27 +259,14 @@ function Jᵤ(μ, r, x₀=0.0, y₀=0.0, z₀=0.0)
     y  = @views r[2]
     z  = @views r[3]
 
-    #=
-    A = (1-μ)/r₁^3 + μ/r₂^3
-    B = 3( (1-μ)/r₁^5 + μ/r₂^5 )
-    C = 3( (1-μ)/r₁^5 * (x₀ - x₁) + μ/r₂^5 * (x₀ - x₂) )
-    
-    Uxx = 1 - A + 3(1-μ)*( (x₀-x₁)^2 / r₁^5 ) + 3μ * (x₀ - x₂)^2 / r₂^5
-    Uyy = 1 - A + B*y₀^2
-    Uzz = -A + B*z₀^2
-    Uxy = C*y₀
-    Uxz = C * z₀
-    Uyz = B * y₀ * z₀
-    =#
-
-    Uxx = (1 + (1-μ)*(-r₁^2 + 3(x+μ)^2)) / r₁^5 + (μ * (-r₂^2 + 3(x - 1 + μ)^2)) / r₂^5
+    Uxx = 1 + ((1-μ)*(-r₁^2 + 3(x+μ)^2)) / r₁^5 + (μ * (-r₂^2 + 3(x - 1 + μ)^2)) / r₂^5
     Uyy = 1 + ((1-μ)*(-r₁^2 + 3y^2) / r₁^5) + (μ * (-r₂^2 + 3y^2) / r₂^5)
     Uzz = ((1-μ) * (-r₁^2 + 3z^2) / r₁^5) + (μ * (-r₂^2 + 3z^2) / r₂^5)
     Uxy = (3y  * (1-μ) * (x+μ) / r₁^5) + (μ * (x - 1 + μ) / r₂^5)
     Uxz = (3z * (1-μ)  * (x+μ) / r₁^5)  + (μ * (x - 1 + μ) / r₂^5)
     Uyz = (3y*z*(1-μ) / r₁^5) + μ / r₂^5
 
-    return [
+    return @SMatrix [
         Uxx Uxy Uxz;
         Uxy Uyy Uyz;
         Uxz Uyz Uzz
@@ -300,11 +287,11 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/)
 """
-function state_transition_dynamics(μ, r, L)
+function state_transition_dynamics(μ, r)
 
-    return Matrix(vcat(
+    return SMatrix{6,6}(vcat(
         hcat(zeros((3,3)), I(3)),
-        hcat(Jᵤ(μ, r, L...), [0 2 0; -2 0 0; 0 0 0])
+        hcat(Jᵤ(μ, r), [0 2 0; -2 0 0; 0 0 0])
     ))
 
 end
@@ -330,18 +317,19 @@ __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
 function halo_analytic(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0, steps::T4=1,
-                       L::Symbol=:L1, hemisphere::Symbol=:northern) where {
+                       L::I=2, hemisphere::Symbol=:northern) where {
+        I <:  Integer,
         T1 <: AbstractFloat, 
         T2 <: AbstractFloat, 
         T3 <: Number,
         T4 <: Integer}
 
-    if L == :L1
+    if L == 1
         point = first(lagrange(μ, 1))
         γ = abs(1 - μ - point)
         n = collect(1:4)
         c = @. (μ + (-1)^n * (1-μ)γ^(n+1)) / (γ^3 * (1 - γ^(n+1)))
-    elseif L == :L2
+    elseif L == 2
         point = first(lagrange(μ, 2))
         γ = abs(point - 1 + μ)
         n = collect(1:4)
@@ -350,11 +338,11 @@ function halo_analytic(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0, steps::T4=1,
         throw(ArgumentError("Only Halo orbits about L1 or L2 are supported."))
     end
 
-    ωₚ  = √(2 - c[2] + √((9c[2]^2 - 8c[2])/(2)))
+    ωₚ  = √((2 - c[2] + √((9c[2]^2 - 8c[2])))/2)
     k   = (ωₚ^2 + 1 + 2c[2]) / (2ωₚ)
 
     d₁  = (3ωₚ^2 / k) * (k*(6ωₚ^2 - 1) - 2ωₚ)
-    d₂  = (8ωₚ^2 / k) * (k*((11ωₚ^2 - 1) - 2ωₚ))
+    d₂  = (8ωₚ^2 / k) * (k*(11ωₚ^2 - 1) - 2ωₚ)
     a₂₁ = (3c[3] * (k^2 - 2)) / (4(1 + 2c[2]))
     a₂₂ = (3c[3]) / (4(1 + 2c[2]))
     a₂₃ = (-3c[3]ωₚ / (4k*d₁)) * (3k^3 * ωₚ - 6k*(k-ωₚ) + 4)
@@ -383,7 +371,7 @@ function halo_analytic(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0, steps::T4=1,
     l₂  = (3c[3]/2) * (a₂₄ - 2a₂₂) + (9c[4]/8) + 2ωₚ^2 * s₂
     Δ   = ωₚ^2 - c[2]
 
-    Aᵧ  = Zₐ * γ
+    Aᵧ  = Zₐ # * γ
     Aₓ  = √((-l₂*Aᵧ^2 - Δ) / l₁)
 
     ν   = 1 + s₁*Aₓ^2 + s₂*Aᵧ^2
@@ -436,10 +424,11 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
-function halo(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0,
-              L::Symbol=:L1, hemisphere::Symbol=:northern,
+function halo(μ::T1, r₀=[NaN, NaN, NaN], v₀=[NaN, NaN, NaN]; Zₐ::T2=0.0, ϕ::T3=0.0,
+              L::I=2, hemisphere::Symbol=:northern,
               tolerance::T4=1e-8, max_iter::T5=10,
               reltol=1e-14, abstol=1e-14) where {
+        I  <: Integer,
         T1 <: AbstractFloat, 
         T2 <: AbstractFloat, 
         T3 <: Number,
@@ -447,20 +436,26 @@ function halo(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0,
         T5 <: Integer
     }
 
-    μ = promote_type(typeof(μ), typeof(BigFloat(μ)))(μ)
-    r₀, v₀, Τ₀ = halo_analytic(μ; Zₐ=Zₐ, ϕ=ϕ, L=L, hemisphere=hemisphere, steps=1000)
-    r₀ = r₀[1,:]
-    v₀ = v₀[1,:]
-    iter = 0
-    Τ = Τ₀
-    
-    if  L == :L1
-        point = lagrange(μ, 1)
-    else
-        point = lagrange(μ, 2)
-    end
+    μ = promote_type(typeof(μ), typeof(Float64(μ)))(μ)
 
-    @dowhile ((abs(δẋ) ≥ tolerance || abs(δż) ≥ tolerance) && iter < max_iter) begin
+    if any(isnan, r₀) || any(isnan, v₀)
+        r₀, v₀, Τ₀ = halo_analytic(μ; Zₐ=Zₐ, ϕ=ϕ, L=L, hemisphere=hemisphere, steps=1000)
+        r₀ = r₀[1,:]
+        v₀ = v₀[1,:]
+    else
+        r₀ = r₀[:]
+        v₀ = v₀[:]
+        Τ₀ = NaN
+    end
+    
+    Τ = Τ₀
+    iter = 0
+
+    δẋ = NaN
+    δż = NaN
+
+    @dowhile ((abs(δẋ) ≥ tolerance || abs(δż) ≥ tolerance) && 
+               iter < max_iter && integrator.retcode == :Terminated) begin
 
         problem = ODEProblem(
             halo_numerical_tic!,
@@ -473,7 +468,7 @@ function halo(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0,
                            Φ₅  = [0, 0, 0, 0, 1.0, 0],
                            Φ₆  = [0, 0, 0, 0, 0, 1.0]),
             (0.0, Inf),
-            ComponentArray(μ   =  μ, L = point)
+            ComponentArray(μ   =  μ)
         )    
 
         condition(u, t, integrator) = u.rₛ[2]
@@ -498,8 +493,13 @@ function halo(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0,
         @warn string(
             "Maximum iterations reached: ",
             "Halo orbit may have not converged to desired tolerance of ",
-            tolerance
+            tolerance, ". Final δẋ and δż were: \n", [δẋ δż] 
         )
+    end
+
+    if integrator.retcode != :Terminated
+        @warn string("Numerical integratio returned code: ", 
+                    string(integrator.retcode))
     end
 
     return r₀, v₀, Τ
@@ -528,7 +528,7 @@ function halo_numerical_tic!(∂u, u, p, t)
     ∂u.vₛ   =  accel(u.rₛ, u.vₛ, p.μ)
 
     # State transition matrix
-    ∂Φ  = state_transition_dynamics(p.μ, u.rₛ, p.L) * Matrix(transpose(hcat(u.Φ₁, u.Φ₂, u.Φ₃, u.Φ₄, u.Φ₅, u.Φ₆)))
+    ∂Φ  = state_transition_dynamics(p.μ, u.rₛ) * SMatrix{6,6}(transpose(hcat(u.Φ₁, u.Φ₂, u.Φ₃, u.Φ₄, u.Φ₅, u.Φ₆)))
     ∂u.Φ₁ = copy(∂Φ[1,:])[:]
     ∂u.Φ₂ = copy(∂Φ[2,:])[:]
     ∂u.Φ₃ = copy(∂Φ[3,:])[:]
@@ -570,15 +570,14 @@ function reset_halo(r₀, v₀, Φ, rₛ, vₛ, t, μ; tol=1e-12)
 
     ∂vₛ = accel(rₛ, vₛ, μ)
 
-    F = [Φ[4,1] Φ[4,5]; Φ[6,1] Φ[6,5]] - ((1/vₛ[2]) * [∂vₛ[1]; ∂vₛ[3]] * [Φ[2,1] Φ[2,5]])
+    F = [Φ[4,3] Φ[4,5]; Φ[6,3] Φ[6,5]] - ((1/vₛ[2]) * [∂vₛ[1]; ∂vₛ[3]] * [Φ[2,3] Φ[2,5]])
 
-    δx₀, δẏ₀ = inv(F) * [δẋ; δż] 
+    δz₀, δẏ₀ = inv(F) * [δẋ; δż] 
 
     Τₙ = t * 2
 
-    @show [δẋ δż rₛ[2] δx₀ δẏ₀]
-    r₀ₙ = r₀ .- [δx₀, 0, 0]
-    v₀ₙ = v₀ .- [0, δẏ₀, 0]
+    r₀ₙ = r₀ .+ [0, 0, δz₀]
+    v₀ₙ = v₀ .+ [0, δẏ₀, 0]
 
     return δẋ, δż, r₀ₙ, v₀ₙ, Τₙ
 
