@@ -48,5 +48,6 @@ export time_scale_factor,
        
 include("ThreeBodyStates.jl")
 include("ThreeBodyCalculations.jl")
+include("Halo.jl")
 
 end
