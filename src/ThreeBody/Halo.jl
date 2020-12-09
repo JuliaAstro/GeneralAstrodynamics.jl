@@ -82,7 +82,7 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
-function halo_analytic(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0, steps::T4=1,
+function halo_analytic(μ::T1; Zₐ::T2=0.05, ϕ::T3=0.0, steps::T4=1,
                        L::I=2, hemisphere::Symbol=:northern) where {
         I <:  Integer,
         T1 <: AbstractFloat, 
@@ -137,7 +137,7 @@ function halo_analytic(μ::T1; Zₐ::T2=0.0, ϕ::T3=0.0, steps::T4=1,
     l₂  = (3c[3]/2) * (a₂₄ - 2a₂₂) + (9c[4]/8) + 2ωₚ^2 * s₂
     Δ   = ωₚ^2 - c[2]
 
-    Aᵧ  = Zₐ # * γ
+    Aᵧ  = Zₐ * γ
     Aₓ  = √((-l₂*Aᵧ^2 - Δ) / l₁)
 
     ν   = 1 + s₁*Aₓ^2 + s₂*Aᵧ^2
@@ -190,7 +190,7 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
-function halo(μ::T1, r₀=[NaN, NaN, NaN], v₀=[NaN, NaN, NaN]; Zₐ::T2=0.0, ϕ::T3=0.0,
+function halo(μ::T1, r₀=[NaN, NaN, NaN], v₀=[NaN, NaN, NaN]; Zₐ::T2=0.05, ϕ::T3=0.0,
               L::I=2, hemisphere::Symbol=:northern,
               tolerance::T4=1e-8, max_iter::T5=10,
               reltol=1e-14, abstol=1e-14) where {
@@ -211,7 +211,7 @@ function halo(μ::T1, r₀=[NaN, NaN, NaN], v₀=[NaN, NaN, NaN]; Zₐ::T2=0.0, 
     else
         r₀ = r₀[:]
         v₀ = v₀[:]
-        Τ₀ = NaN
+        Τ₀ = 3.0
     end
     
     Τ = Τ₀
@@ -220,8 +220,7 @@ function halo(μ::T1, r₀=[NaN, NaN, NaN], v₀=[NaN, NaN, NaN]; Zₐ::T2=0.0, 
     δẋ = NaN
     δż = NaN
 
-    @dowhile ((abs(δẋ) ≥ tolerance || abs(δż) ≥ tolerance) && 
-               iter < max_iter && integrator.retcode == :Terminated) begin
+    @dowhile ((abs(δẋ) ≥ tolerance || abs(δż) ≥ tolerance) && iter < max_iter) begin
 
         problem = ODEProblem(
             halo_numerical_tic!,
@@ -233,16 +232,21 @@ function halo(μ::T1, r₀=[NaN, NaN, NaN], v₀=[NaN, NaN, NaN]; Zₐ::T2=0.0, 
                            Φ₄  = [0, 0, 0, 1.0, 0, 0],
                            Φ₅  = [0, 0, 0, 0, 1.0, 0],
                            Φ₆  = [0, 0, 0, 0, 0, 1.0]),
-            (0.0, Inf),
+            (0.0, 3Τ₀),
             ComponentArray(μ   =  μ)
         )    
 
         condition(u, t, integrator) = u.rₛ[2]
         affect!(integrator) = terminate!(integrator)
         halt = ContinuousCallback(condition, affect!)
-        integrator = init(problem, Vern9(); callback=halt, reltol=reltol, abstol=abstol)
+        integrator = init(problem, Tsit5(); callback=halt, reltol=reltol, abstol=abstol)
 
         solve!(integrator)
+
+        if integrator.t == 3Τ₀
+            @error "Maximum integration time reached; orbit never intersected XZ plane."
+            break
+        end
 
         δẋ, δż, r₀, v₀, Τ = reset_halo(
             r₀, v₀, 
@@ -261,11 +265,6 @@ function halo(μ::T1, r₀=[NaN, NaN, NaN], v₀=[NaN, NaN, NaN]; Zₐ::T2=0.0, 
             "Halo orbit may have not converged to desired tolerance of ",
             tolerance, ". Final δẋ and δż were: \n", [δẋ δż] 
         )
-    end
-
-    if integrator.retcode != :Terminated
-        @warn string("Numerical integratio returned code: ", 
-                    string(integrator.retcode))
     end
 
     return r₀, v₀, Τ
@@ -318,13 +317,12 @@ function reset_halo(r₀, v₀, Φ, rₛ, vₛ, t, μ; tol=1e-12)
 
     ∂vₛ = accel(rₛ, vₛ, μ)
 
-    F = [Φ[4,3] Φ[4,5]; Φ[6,3] Φ[6,5]] - ((1/vₛ[2]) * [∂vₛ[1]; ∂vₛ[3]] * [Φ[2,3] Φ[2,5]])
-
-    δz₀, δẏ₀ = inv(F) * [δẋ; δż] 
+    F = [Φ[4,1] Φ[4,5]; Φ[6,1] Φ[6,5]] - ((1/vₛ[2]) * [∂vₛ[1]; ∂vₛ[3]] * [Φ[2,1] Φ[2,5]])
+    δx₀, δẏ₀ = inv(F) * [δẋ; δż] 
 
     Τₙ = t * 2
 
-    r₀ₙ = r₀ .+ [0, 0, δz₀]
+    r₀ₙ = r₀ .+ [δx₀, 0, 0]
     v₀ₙ = v₀ .+ [0, δẏ₀, 0]
 
     return δẋ, δż, r₀ₙ, v₀ₙ, Τₙ
