@@ -30,7 +30,7 @@ Construct `Orbit` from Cartesian elements (in the inertial frame).
 function Orbit(rᵢ, vᵢ, body)
 
     e, a, i, Ω, ω, ν = keplerian(rᵢ, vᵢ, body)
-    rₚ, vₚ = perifocal(Ω, ω, ν, rᵢ, vᵢ)
+    rₚ, vₚ = perifocal(i, Ω, ω, rᵢ, vᵢ)
     T = promote_type([typeof(rᵢ[i].val) for i ∈ 1:length(rᵢ)]..., 
                      [typeof(vᵢ[i].val) for i ∈ 1:length(vᵢ)]...,
                       typeof(body.R.val))
@@ -51,7 +51,7 @@ Construct `Orbit` from Keplerian elements.
 function Orbit(e, a, i, Ω, ω, ν, body)
 
     rᵢ, vᵢ = cartesian(e, a, i, Ω, ω, ν, body)
-    rₚ, vₚ = perifocal(Ω, ω, ν, rᵢ, vᵢ)
+    rₚ, vₚ = perifocal(i, Ω, ω, rᵢ, vᵢ)
     T = promote_type(typeof(e), typeof(a.val), typeof(i.val), 
                      typeof(Ω.val), typeof(ω.val), typeof(ν.val),
                      typeof(body.R.val))
@@ -162,7 +162,7 @@ function perifocal(a, e, ν, μ)
         return rₚ, vₚ
 
 end
-function perifocal(Ω, ω, ν, rᵢ, vᵢ)
+function perifocal(i, Ω, ω, rᵢ, vᵢ)
 
     # Set up Cartesian ⟶ Perifocal conversion
     R_3Ω =  SMatrix{3,3,Float64}(
