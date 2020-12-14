@@ -15,28 +15,20 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/)
 """
-function Jᵤ(μ, r)
+const Hᵤ = let
 
-    x₁ = -μ
-    x₂ = 1-μ
-    r₁ = nondimensional_radius(r, x₁)
-    r₂ = nondimensional_radius(r, x₂)
-    x  = @views r[1]
-    y  = @views r[2]
-    z  = @views r[3]
+    @variables x y z ΔUx ΔUy ΔUz
+    @parameters μ
+    @derivatives Dx'~x Dy'~y Dz'~z
 
-    Uxx = 1 + ((1-μ)*(-r₁^2 + 3(x+μ)^2)) / r₁^5 + (μ * (-r₂^2 + 3(x - 1 + μ)^2)) / r₂^5
-    Uyy = 1 + ((1-μ)*(-r₁^2 + 3y^2) / r₁^5) + (μ * (-r₂^2 + 3y^2) / r₂^5)
-    Uzz = ((1-μ) * (-r₁^2 + 3z^2) / r₁^5) + (μ * (-r₂^2 + 3z^2) / r₂^5)
-    Uxy = (3y  * (1-μ) * (x+μ) / r₁^5) + (μ * (x - 1 + μ) / r₂^5)
-    Uxz = (3z * (1-μ)  * (x+μ) / r₁^5)  + (μ * (x - 1 + μ) / r₂^5)
-    Uyz = (3y*z*(1-μ) / r₁^5) + μ / r₂^5
-
-    return @SMatrix [
-        Uxx Uxy Uxz;
-        Uxy Uyy Uyz;
-        Uxz Uyz Uzz
+    eqs = [
+        ΔUx ~ Dx(potential_energy([x,y,z],μ)), 
+        ΔUy ~ Dy(potential_energy([x,y,z],μ)), 
+        ΔUz ~ Dz(potential_energy([x,y,z],μ))
     ]
+    sys = NonlinearSystem(eqs, [x,y,z], [μ])
+    func = eval(generate_jacobian(sys)[1])
+    H = (r,μ) -> func(r, (μ))
 
 end
 
@@ -57,7 +49,7 @@ function state_transition_dynamics(μ, r)
 
     return SMatrix{6,6}(vcat(
         hcat(zeros((3,3)), I(3)),
-        hcat(Jᵤ(μ, r), [0 2 0; -2 0 0; 0 0 0])
+        hcat(Hᵤ(μ, r), [0 2 0; -2 0 0; 0 0 0])
     ))
 
 end
@@ -317,12 +309,12 @@ function reset_halo(r₀, v₀, Φ, rₛ, vₛ, t, μ; tol=1e-12)
 
     ∂vₛ = accel(rₛ, vₛ, μ)
 
-    F = [Φ[4,1] Φ[4,5]; Φ[6,1] Φ[6,5]] - ((1/vₛ[2]) * [∂vₛ[1]; ∂vₛ[3]] * [Φ[2,1] Φ[2,5]])
-    δx₀, δẏ₀ = inv(F) * [δẋ; δż] 
+    F = [Φ[4,3] Φ[4,5]; Φ[6,3] Φ[6,5]] - ((1/vₛ[2]) * [∂vₛ[1]; ∂vₛ[3]] * [Φ[2,3] Φ[2,5]])
+    δz₀, δẏ₀ = inv(F) * [δẋ; δż] 
 
     Τₙ = t * 2
 
-    r₀ₙ = r₀ .+ [δx₀, 0, 0]
+    r₀ₙ = r₀ .+ [0, 0, δz₀]
     v₀ₙ = v₀ .+ [0, δẏ₀, 0]
 
     return δẋ, δż, r₀ₙ, v₀ₙ, Τₙ
