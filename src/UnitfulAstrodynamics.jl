@@ -34,4 +34,6 @@ include("AstroPlots/AstroPlots.jl")
 include("Misc/DocStringExtensions.jl")
 include("Misc/UnitfulAliases.jl")
 
+include("precompile_includer.jl")
+
 end # module
