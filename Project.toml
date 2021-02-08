@@ -1,7 +1,7 @@
 name = "UnitfulAstrodynamics"
 uuid = "673e7d9c-15b0-48d3-bce0-fab551f3a174"
 authors = ["Joe Carpinelli <jdcarpinelli@gmail.com>"]
-version = "0.6.5"
+version = "0.6.6"
 
 [deps]
 CompileBot = "877fb49a-56b0-480a-9049-319c0c353852"
