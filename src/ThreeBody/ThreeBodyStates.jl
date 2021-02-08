@@ -29,7 +29,7 @@ struct ThreeBodyState{F<:AbstractFloat} <: OrbitalSystem
 
         T = promote_type(
             typeof(μ₁.val), typeof(μ₂.val), typeof(a.val),
-            map(x->x.val, r₃)..., map(x->x.val, v₃)...,
+            map(x->typeof(x.val), r₃)..., map(x->typeof(x.val), v₃)...,
             typeof(Δt.val)
         )
 
