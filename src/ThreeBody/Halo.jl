@@ -19,16 +19,20 @@ const Hᵤ = let
 
     @variables x y z ΔUx ΔUy ΔUz
     @parameters μ
-    @derivatives Dx'~x Dy'~y Dz'~z
 
     eqs = [
-        ΔUx ~ Dx(potential_energy([x,y,z],μ)), 
-        ΔUy ~ Dy(potential_energy([x,y,z],μ)), 
-        ΔUz ~ Dz(potential_energy([x,y,z],μ))
+        ΔUx ~ Differential(x)(potential_energy([x,y,z],μ)), 
+        ΔUy ~ Differential(y)(potential_energy([x,y,z],μ)), 
+        ΔUz ~ Differential(z)(potential_energy([x,y,z],μ))
     ]
     sys = NonlinearSystem(eqs, [x,y,z], [μ])
     func = eval(generate_jacobian(sys)[1])
-    H = (r,μ) -> func(r, (μ))
+
+    function H(r::R, μ::U) where {R<:AbstractVector, U<:Real}
+        return func(r, (μ))
+    end
+
+    H
 
 end
 
@@ -49,7 +53,7 @@ function state_transition_dynamics(μ, r)
 
     return SMatrix{6,6}(vcat(
         hcat(zeros((3,3)), I(3)),
-        hcat(Hᵤ(μ, r), [0 2 0; -2 0 0; 0 0 0])
+        hcat(Hᵤ(r, μ), [0 2 0; -2 0 0; 0 0 0])
     ))
 
 end
@@ -182,10 +186,10 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
-function halo(μ::T1, r₀=[NaN, NaN, NaN], v₀=[NaN, NaN, NaN]; Zₐ::T2=0.05, ϕ::T3=0.0,
+function halo(μ::T1; Zₐ::T2=0.05, ϕ::T3=0.0,
               L::I=2, hemisphere::Symbol=:northern,
               tolerance::T4=1e-8, max_iter::T5=10,
-              reltol=1e-14, abstol=1e-14) where {
+              reltol=1e-14, abstol=1e-22) where {
         I  <: Integer,
         T1 <: AbstractFloat, 
         T2 <: AbstractFloat, 
@@ -194,25 +198,14 @@ function halo(μ::T1, r₀=[NaN, NaN, NaN], v₀=[NaN, NaN, NaN]; Zₐ::T2=0.05,
         T5 <: Integer
     }
 
-    μ = promote_type(typeof(μ), typeof(Float64(μ)))(μ)
-
-    if any(isnan, r₀) || any(isnan, v₀)
-        r₀, v₀, Τ₀ = halo_analytic(μ; Zₐ=Zₐ, ϕ=ϕ, L=L, hemisphere=hemisphere, steps=1000)
-        r₀ = r₀[1,:]
-        v₀ = v₀[1,:]
-    else
-        r₀ = r₀[:]
-        v₀ = v₀[:]
-        Τ₀ = 3.0
-    end
-    
+    r₀, v₀, Τ₀ = halo_analytic(μ; Zₐ=Zₐ, ϕ=ϕ, L=L, hemisphere=hemisphere, steps=1000)
+    r₀ = r₀[1,:]
+    v₀ = v₀[1,:]
     Τ = Τ₀
+
     iter = 0
 
-    δẋ = NaN
-    δż = NaN
-
-    @dowhile ((abs(δẋ) ≥ tolerance || abs(δż) ≥ tolerance) && iter < max_iter) begin
+    @dowhile ((abs(integrator.u.vₛ[1]) ≥ tolerance || abs(integrator.u.vₛ[3]) ≥ tolerance) && iter < max_iter) begin
 
         problem = ODEProblem(
             halo_numerical_tic!,
@@ -224,29 +217,21 @@ function halo(μ::T1, r₀=[NaN, NaN, NaN], v₀=[NaN, NaN, NaN]; Zₐ::T2=0.05,
                            Φ₄  = [0, 0, 0, 1.0, 0, 0],
                            Φ₅  = [0, 0, 0, 0, 1.0, 0],
                            Φ₆  = [0, 0, 0, 0, 0, 1.0]),
-            (0.0, 3Τ₀),
+            (0.0, Τ/2),
             ComponentArray(μ   =  μ)
         )    
 
-        condition(u, t, integrator) = u.rₛ[2]
-        affect!(integrator) = terminate!(integrator)
-        halt = ContinuousCallback(condition, affect!)
-        integrator = init(problem, Tsit5(); callback=halt, reltol=reltol, abstol=abstol)
-
+        integrator = init(problem, Vern8(); reltol=reltol, abstol=abstol)
         solve!(integrator)
 
-        if integrator.t == 3Τ₀
-            @error "Maximum integration time reached; orbit never intersected XZ plane."
-            break
-        end
-
-        δẋ, δż, r₀, v₀, Τ = reset_halo(
-            r₀, v₀, 
+        r₀, v₀, T = iterate_halo!(
+            r₀, v₀, Τ, 
+            integrator.u.rₛ, integrator.u.vₛ,
             transpose(hcat(integrator.u.Φ₁, integrator.u.Φ₂, integrator.u.Φ₃, integrator.u.Φ₄, integrator.u.Φ₅, integrator.u.Φ₆)), 
-            integrator.u.rₛ, integrator.u.vₛ, integrator.t, μ; 
-            tol=tolerance
+            μ; tol=tolerance
         )
 
+        @show [integrator.u.vₛ[1] integrator.u.vₛ[3] Τ]
         iter += 1
 
     end
@@ -255,7 +240,7 @@ function halo(μ::T1, r₀=[NaN, NaN, NaN], v₀=[NaN, NaN, NaN]; Zₐ::T2=0.05,
         @warn string(
             "Maximum iterations reached: ",
             "Halo orbit may have not converged to desired tolerance of ",
-            tolerance, ". Final δẋ and δż were: \n", [δẋ δż] 
+            tolerance 
         )
     end
 
@@ -302,21 +287,22 @@ __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 - [SciML Documentation](https://diffeq.sciml.ai/stable/features/callback_functions/#callbacks)
 """
-function reset_halo(r₀, v₀, Φ, rₛ, vₛ, t, μ; tol=1e-12)
-
-    δẋ = -vₛ[1]
-    δż = -vₛ[3]
+function iterate_halo!(r₀, v₀, Τ₀, rₛ, vₛ, Φ, μ; tol=1e-12)
 
     ∂vₛ = accel(rₛ, vₛ, μ)
 
-    F = [Φ[4,3] Φ[4,5]; Φ[6,3] Φ[6,5]] - ((1/vₛ[2]) * [∂vₛ[1]; ∂vₛ[3]] * [Φ[2,3] Φ[2,5]])
-    δz₀, δẏ₀ = inv(F) * [δẋ; δż] 
+    F = @SMatrix [
+        Φ[4,3] Φ[4,5] ∂vₛ[1];
+        Φ[6,3] Φ[6,5] ∂vₛ[3];
+        Φ[2,3] Φ[2,5]  vₛ[2]
+    ]
 
-    Τₙ = t * 2
+    xᵪ = [r₀[3]; v₀[2]; Τ₀] - inv(F) * [vₛ[1]; vₛ[3]; rₛ[2]] 
 
-    r₀ₙ = r₀ .+ [0, 0, δz₀]
-    v₀ₙ = v₀ .+ [0, δẏ₀, 0]
+    r₀[3] = xᵪ[1]
+    v₀[2] = xᵪ[2]
+    Τ₀    = xᵪ[3]
 
-    return δẋ, δż, r₀ₙ, v₀ₙ, Τₙ
+    return r₀, v₀, Τ₀
 
 end
