@@ -234,4 +234,22 @@ function lagrange(μ, L=1:5)
 	return  (map(f->[find_zero(f, (-3,3)), 0, 0], expressions)..., 
 			[(1/2) - μ, √(3)/2, 0], [(1/2) - μ, -√(3)/2, 0])[L]
 	
-end;
+end
+
+"""
+Returns non-dimensional acceleration for CR3BP state.
+"""
+function accel(rₛ, vₛ, μ)
+
+    x₁ = -μ
+    x₂ = 1-μ
+    r₁ = nondimensional_radius(rₛ, x₁)
+    r₂ = nondimensional_radius(rₛ, x₂)
+
+    return [
+         2vₛ[2] + rₛ[1] - (1-μ)*(rₛ[1] - x₁) / r₁^3 - μ*(rₛ[1] - x₂) / r₂^3,
+        -2vₛ[1] + rₛ[2] - ((1-μ) / r₁^3 + (μ / r₂^3)) * rₛ[2],
+        -((1-μ) / r₁^3 + (μ / r₂^3)) * rₛ[3]
+    ]
+    
+end

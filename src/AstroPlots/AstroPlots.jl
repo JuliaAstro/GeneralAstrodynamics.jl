@@ -11,15 +11,17 @@ include("../Misc/DocStringExtensions.jl")
 include("../Misc/UnitfulAliases.jl")
 
 using ..TwoBody
+using ..ThreeBody
 using ..NBody
 using ..Propagators
 
 using Plots
 using Plots.PlotMeasures
 
-export plot
+export plot, lagrangeplot
 
 include("plot_twobody.jl")
 include("plot_nbody.jl")
+include("PlotThreeBody.jl")
 
 end

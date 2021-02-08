@@ -34,4 +34,13 @@ include("AstroPlots/AstroPlots.jl")
 include("Misc/DocStringExtensions.jl")
 include("Misc/UnitfulAliases.jl")
 
+# For some reason, this ~adds~ a LOT
+# to the precompilation time, and 
+# there doesn't seem to be a lot of 
+# difference between package load 
+# times with or without the 
+# precompilation_includer call
+# - Joe 02/03/2021
+# include("precompile_includer.jl")
+
 end # module

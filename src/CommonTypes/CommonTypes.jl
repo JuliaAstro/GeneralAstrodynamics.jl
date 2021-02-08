@@ -28,4 +28,14 @@ Abstract type describing a collection of states resulting from
 """
 abstract type PropagationResult end
 
+macro dowhile(condition, block) 
+    return quote
+        while true
+            $(esc(block))
+
+            $(esc(condition)) || break
+        end
+    end
+end
+
 end

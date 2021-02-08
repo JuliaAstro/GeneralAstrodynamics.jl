@@ -6,16 +6,20 @@ module ThreeBody
 
 using Reexport
 
+using ..CommonTypes: @dowhile
 @reexport using ..CommonTypes
 using ..TwoBody
 
 include("../Misc/DocStringExtensions.jl")
 include("../Misc/UnitfulAliases.jl")
 
-using LinearAlgebra: norm, cross, ×, dot, ⋅
+using LinearAlgebra: norm, cross, ×, dot, ⋅, I
 using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
+using DifferentialEquations, ModelingToolkit
+using ComponentArrays
+using Roots
 
-export ThreeBodySystem
+export ThreeBodyState, NondimensionalThreeBodyState, ThreeBodySystem
 export time_scale_factor,
        nondimensionalize_length,
        nondimensionalize_velocity,
@@ -29,6 +33,13 @@ export time_scale_factor,
        potential_energy, 
        jacobi_constant,
        lagrange,
+       halo_analytic,
+       halo,
+       Hᵤ, 
+       accel,
+       halo_numerical_tic!,
+       reset_halo!,
+       state_transition_dynamics,
        nondimensional_radius,  
        inertial, 
        synodic,
@@ -37,5 +48,6 @@ export time_scale_factor,
        
 include("ThreeBodyStates.jl")
 include("ThreeBodyCalculations.jl")
+include("Halo.jl")
 
 end

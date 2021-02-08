@@ -30,7 +30,7 @@ Construct `Orbit` from Cartesian elements (in the inertial frame).
 function Orbit(rᵢ, vᵢ, body)
 
     e, a, i, Ω, ω, ν = keplerian(rᵢ, vᵢ, body)
-    rₚ, vₚ = perifocal(a, e, ν, body.μ)
+    rₚ, vₚ = perifocal(i, Ω, ω, rᵢ, vᵢ)
     T = promote_type([typeof(rᵢ[i].val) for i ∈ 1:length(rᵢ)]..., 
                      [typeof(vᵢ[i].val) for i ∈ 1:length(vᵢ)]...,
                       typeof(body.R.val))
@@ -51,7 +51,7 @@ Construct `Orbit` from Keplerian elements.
 function Orbit(e, a, i, Ω, ω, ν, body)
 
     rᵢ, vᵢ = cartesian(e, a, i, Ω, ω, ν, body)
-    rₚ, vₚ = perifocal(a, e, ν, body.μ)
+    rₚ, vₚ = perifocal(i, Ω, ω, rᵢ, vᵢ)
     T = promote_type(typeof(e), typeof(a.val), typeof(i.val), 
                      typeof(Ω.val), typeof(ω.val), typeof(ν.val),
                      typeof(body.R.val))
@@ -125,20 +125,20 @@ Returns a Cartesian (inertial) representation of the provied Perifocal state.
 function cartesian(i, Ω, ω, rₚ, vₚ)
 
     # Set up Perifocal ⟶ Cartesian conversion
-    R_3Ω =  SMatrix{3,3,Float64}(
-            [cos(Ω)           sin(Ω)            0.;
-            -sin(Ω)           cos(Ω)            0.;
+    R_3Ω =  SMatrix{3,3}(
+            [cos(Ω)          -sin(Ω)            0.;
+             sin(Ω)           cos(Ω)            0.;
              0.               0.                1.])
-    R_1i = SMatrix{3,3,Float64}(
+    R_1i = SMatrix{3,3}(
             [1.               0.                0.;
-             0.               cos(i)            sin(i);
-             0.              -sin(i)            cos(i)])
-    R_3ω = SMatrix{3,3,Float64}(
-            [cos(ω)           sin(ω)            0.
-            -sin(ω)           cos(ω)            0.
+             0.               cos(i)           -sin(i);
+             0.               sin(i)            cos(i)])
+    R_3ω = SMatrix{3,3}(
+            [cos(ω)          -sin(ω)            0.
+             sin(ω)           cos(ω)            0.
              0.               0.                1.])
 
-    ᴵTₚ = transpose(R_3ω * R_1i * R_3Ω)
+    ᴵTₚ = R_3Ω * R_1i * R_3ω
 
     return ᴵTₚ * rₚ, ᴵTₚ * vₚ
 
@@ -160,6 +160,27 @@ function perifocal(a, e, ν, μ)
         vₚ = √(μ/p) * ((-sin(ν) * P̂) .+ ((e + cos(ν)) .* Q̂))
         
         return rₚ, vₚ
+
+end
+function perifocal(i, Ω, ω, rᵢ, vᵢ)
+
+    # Set up Cartesian ⟶ Perifocal conversion
+    R_3Ω =  SMatrix{3,3}(
+            [cos(Ω)          -sin(Ω)            0.;
+             sin(Ω)           cos(Ω)            0.;
+             0.               0.                1.])
+    R_1i = SMatrix{3,3}(
+            [1.               0.                0.;
+             0.               cos(i)           -sin(i);
+             0.               sin(i)            cos(i)])
+    R_3ω = SMatrix{3,3}(
+            [cos(ω)          -sin(ω)            0.
+             sin(ω)           cos(ω)            0.
+             0.               0.                1.])
+
+    ᵖTᵢ = inv(R_3Ω * R_1i * R_3ω)
+
+    return ᵖTᵢ*rᵢ, ᵖTᵢ*vᵢ
 
 end
 perifocal(orbit::Orbit) = orbit.rₚ, orbit.vₚ
