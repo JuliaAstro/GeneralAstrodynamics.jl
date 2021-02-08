@@ -109,7 +109,7 @@ Returns the nondimensional (synodic / rotating) representation of a CR3BP state.
 function nondimensionalize(state::D) where D <: ThreeBodyState
     return NondimensionalThreeBodyState(
         nondimensionalize(state.r₃, state.a),
-        nondimensionalize(state.vₛ, state.a, state.Δt),
+        nondimensionalize(state.v₃, state.a, state.Δt),
         nondimensionalize(state.μ₁, state.μ₂),
         state.a, state.Δt
     )
