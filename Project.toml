@@ -23,6 +23,8 @@ UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 [compat]
 ComponentArrays = "0.8"
 Crayons = "4.0"
+DifferentialEquations = "6"
+ModelingToolkit = "5"
 DocStringExtensions = "0.8"
 PhysicalConstants = "0.2"
 Plots = "1.6"
