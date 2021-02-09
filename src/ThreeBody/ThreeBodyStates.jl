@@ -57,8 +57,6 @@ the Synodic frame.
 """
 struct NondimensionalThreeBodyState{F<:AbstractFloat} <: OrbitalSystem
     
-    r₁::SVector{3, F}
-    r₂::SVector{3, F}
     rₛ::SVector{3, F}
     vₛ::SVector{3, F}
     μ::F
@@ -75,8 +73,6 @@ struct NondimensionalThreeBodyState{F<:AbstractFloat} <: OrbitalSystem
 
         T = promote_type(eltype(rₛ), eltype(vₛ), typeof(μ), typeof(DU.val), typeof(DT.val))
         return new{T}(
-            SVector{3,T}(T.([-μ,  0, 0])),
-            SVector{3,T}(T.([1-μ, 0, 0])),
             SVector{3,T}(T.(rₛ[:])), 
             SVector{3,T}(T.(vₛ[:])), 
             T(μ), T(DU), T(DT)
