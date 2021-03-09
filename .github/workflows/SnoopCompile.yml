@@ -20,7 +20,7 @@ jobs:
         # NOTE: only keep the versions you want to support
         # NOTE: if not using `yml_path`, these should match the version in `BotConfig`
         version:
-          - '^1.6.0-0'
+          - '1'
         os:        # NOTE: if not using `yml_path`, these should match the os in `BotConfig`
           - ubuntu-latest
           - windows-latest
