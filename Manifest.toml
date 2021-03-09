@@ -28,9 +28,9 @@ version = "0.1.0"
 
 [[ArrayInterface]]
 deps = ["IfElse", "LinearAlgebra", "Requires", "SparseArrays", "Static"]
-git-tree-sha1 = "269243951f9724d9f67cd654deb0d610e7d7ee76"
+git-tree-sha1 = "da557609446152beb6ee134683d7b79ece129eae"
 uuid = "4fba245c-0d91-5ea0-9b3e-6abc04ee57a9"
-version = "3.1.4"
+version = "3.1.5"
 
 [[ArrayLayouts]]
 deps = ["FillArrays", "LinearAlgebra", "SparseArrays"]
@@ -131,9 +131,9 @@ uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
 
 [[ComponentArrays]]
 deps = ["ArrayInterface", "LinearAlgebra", "Requires"]
-git-tree-sha1 = "28db112a8755c9751d600e1fdde730c9b93cd3e5"
+git-tree-sha1 = "14c4503bbfaae65f467ed5eef9e06e713a947aa0"
 uuid = "b0b7db55-cfe3-40fc-9ded-d10e2dbeff66"
-version = "0.8.21"
+version = "0.8.22"
 
 [[ConstructionBase]]
 deps = ["LinearAlgebra"]
@@ -895,9 +895,9 @@ version = "1.0.0"
 
 [[Requires]]
 deps = ["UUIDs"]
-git-tree-sha1 = "cfbac6c1ed70c002ec6361e7fd334f02820d6419"
+git-tree-sha1 = "4036a3bd08ac7e968e27c203d45f5fff15020621"
 uuid = "ae029012-a4dd-5104-9daa-d747884805df"
-version = "1.1.2"
+version = "1.1.3"
 
 [[ResettableStacks]]
 deps = ["StaticArrays"]
@@ -1008,9 +1008,9 @@ version = "1.3.0"
 
 [[Static]]
 deps = ["IfElse"]
-git-tree-sha1 = "1b0fdbbc15c5b13dcf52343ac681a3060ddb8ee4"
+git-tree-sha1 = "718958214486a81557e87f09762352239042d948"
 uuid = "aedffcd0-7271-4cad-89d0-dc628f76c6d3"
-version = "0.2.1"
+version = "0.2.2"
 
 [[StaticArrays]]
 deps = ["LinearAlgebra", "Random", "Statistics"]
