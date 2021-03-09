@@ -17,8 +17,7 @@ __References:__
 """
 const Hᵤ = let
 
-    @variables x y z ΔUx ΔUy ΔUz
-    @parameters μ
+    @variables x y z ΔUx ΔUy ΔUz μ
 
     eqs = [
         ΔUx ~ Differential(x)(potential_energy([x,y,z],μ)), 

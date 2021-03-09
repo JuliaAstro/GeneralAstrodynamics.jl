@@ -15,8 +15,9 @@ include("../Misc/UnitfulAliases.jl")
 
 using LinearAlgebra: norm, cross, ×, dot, ⋅, I
 using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
-using DifferentialEquations, ModelingToolkit
+using DifferentialEquations
 using ComponentArrays
+using Symbolics
 using Roots
 
 export ThreeBodyState, NondimensionalThreeBodyState, ThreeBodySystem
