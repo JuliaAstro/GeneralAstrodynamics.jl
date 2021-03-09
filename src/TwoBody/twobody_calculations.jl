@@ -72,6 +72,8 @@ Algorithm taught in ENAE601.
 """
 function keplerian(rᵢ, vᵢ, μ)
 
+    safe_acos(unit, num) = isapprox(num, 1) ? acos(one(num)) * unit : acos(num) * unit
+
     î = SVector{3, Float64}([1, 0, 0]) 
     ĵ = SVector{3, Float64}([0, 1, 0]) 
     k̂ = SVector{3, Float64}([0, 0, 1])
@@ -81,19 +83,19 @@ function keplerian(rᵢ, vᵢ, μ)
     n̅ = k̂ × specific_angular_momentum_vector(rᵢ, vᵢ)
     e̅ = eccentricity_vector(rᵢ, vᵢ, μ)
     e = norm(e̅)
-    i = acos(u"rad", (h̅ ⋅ k̂) / norm(h̅))
+    i = safe_acos(u"rad", (h̅ ⋅ k̂) / norm(h̅))
 
     Ω = ustrip(n̅ ⋅ ĵ) > 0 ? 
-            acos(u"rad", (n̅ ⋅ î) / norm(n̅)) :
-            2π * u"rad" - acos(u"rad", (n̅ ⋅ î) / norm(n̅))
+            safe_acos(u"rad", (n̅ ⋅ î) / norm(n̅)) :
+            2π * u"rad" - safe_acos(u"rad", (n̅ ⋅ î) / norm(n̅))
 
     ω = ustrip(e̅ ⋅ k̂) > 0 ?
-            acos(u"rad", (n̅ ⋅ e̅) / (norm(n̅) * e)) :
-            2π * u"rad" - acos(u"rad", (n̅ ⋅ e̅) / (norm(n̅) * e))
+            safe_acos(u"rad", (n̅ ⋅ e̅) / (norm(n̅) * e)) :
+            2π * u"rad" - safe_acos(u"rad", (n̅ ⋅ e̅) / (norm(n̅) * e))
 
     ν = ustrip(rᵢ ⋅  vᵢ) > 0 ? 
-            acos(u"rad", (e̅ ⋅ rᵢ) / (e * norm(rᵢ))) :
-            2π * u"rad" - acos(u"rad", (e̅ ⋅ rᵢ) / (e * norm(rᵢ)))
+            safe_acos(u"rad", (e̅ ⋅ rᵢ) / (e * norm(rᵢ))) :
+            2π * u"rad" - safe_acos(u"rad", (e̅ ⋅ rᵢ) / (e * norm(rᵢ)))
 
     return e, uconvert(u"km", a), uconvert(u"°", i), 
            uconvert(u"°", Ω), uconvert(u"°", ω), 

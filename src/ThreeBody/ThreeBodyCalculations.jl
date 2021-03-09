@@ -104,6 +104,18 @@ function nondimensionalize(r₃::R, v₃::V, Δt::T, μ₁::U1, μ₂::U2, a::A)
 end
 
 """
+Returns the nondimensional (synodic / rotating) representation of a CR3BP state.
+"""
+function nondimensionalize(state::D) where D <: ThreeBodyState
+    return NondimensionalThreeBodyState(
+        nondimensionalize(state.r₃, state.a),
+        nondimensionalize(state.v₃, state.a, state.Δt),
+        nondimensionalize(state.μ₁, state.μ₂),
+        state.a, state.Δt
+    )
+end
+
+"""
 Returns dimensional length units.
 """
 redimensionalize_length(rᵢ, a) = upreferred(rᵢ .* a)
@@ -168,6 +180,22 @@ Returns dimensional (inertial) form of (`Unitful`) time duration.
 redimensionalize(t::T1, a::A, μ₁::U1, μ₂::U2) where {
         T1<:Time, A<:Length, U1<:MassParameter, U2<:MassParameter
     } = redimensionalize(t, time_scale_factor(a, μ₁, μ₂))
+
+"""
+Returns the dimensional (inertial) representation of a CR3BP state.
+"""
+function redimensionalize(state::N, μ₁::U1, μ₂::U2) where {
+        N  <: NondimensionalThreeBodyState, 
+        U1 <: MassParameter, U2 <: MassParameter
+    }
+    return ThreeBodyState(
+            μ₁, μ₂, 
+            state.DU, 
+            redimensionalize(state.rₛ, state.DU), 
+            redimensionalize(state.vₛ, state.DU, state.DT), 
+            state.DT
+        )
+end
 
 """
 Returns the spacecraft's nondimensional position w.r.t. body 1 (or 2).
