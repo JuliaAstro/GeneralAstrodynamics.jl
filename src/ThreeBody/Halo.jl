@@ -15,24 +15,9 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/)
 """
-const Hᵤ = let
-
-    @variables x y z ΔUx ΔUy ΔUz μ
-
-    eqs = [
-        ΔUx ~ Differential(x)(potential_energy([x,y,z],μ)), 
-        ΔUy ~ Differential(y)(potential_energy([x,y,z],μ)), 
-        ΔUz ~ Differential(z)(potential_energy([x,y,z],μ))
-    ]
-    sys = NonlinearSystem(eqs, [x,y,z], [μ])
-    func = eval(generate_jacobian(sys)[1])
-
-    function H(r::R, μ::U) where {R<:AbstractVector, U<:Real}
-        return func(r, (μ))
-    end
-
-    H
-
+potential_energy_hessian = let
+    func = include("PotentialEnergyHessian.jl")
+    (r,μ) -> func(r..., μ)
 end
 
 """
@@ -52,7 +37,7 @@ function state_transition_dynamics(μ, r)
 
     return SMatrix{6,6}(vcat(
         hcat(zeros((3,3)), I(3)),
-        hcat(Hᵤ(r, μ), [0 2 0; -2 0 0; 0 0 0])
+        hcat(potential_energy_hessian(r, μ), [0 2 0; -2 0 0; 0 0 0])
     ))
 
 end
@@ -62,7 +47,7 @@ Returns an analytical solution for a Halo orbit about `L`.
 
 __Arguments:__ 
 - `μ`: Non-dimensional mass parameter for the CR3BP system.
-- `Zₐ`: Desired non-dimensional Z-amplitude for Halo orbit.
+- `Az`: Desired non-dimensional Z-amplitude for Halo orbit.
 - `ϕ`: Desired Halo orbit phase.
 - `steps`: Number of non-dimensional timepoints in returned state.
 - `L`: Lagrange point to orbit (L1 or L2).
@@ -72,18 +57,13 @@ __Outputs:__
 - Synodic position vector `r::Array{<:AbstractFloat}`
 - Synodic velocity vector `v::Array{<:Abstractfloat}`.
 - Halo orbit period `Τ`.
-- Throws `ArgumentError` if L is not `:L1` or `:L2`.
+- Throws `ArgumentError` if L is not `1` or `2`.
 
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
-function halo_analytic(μ::T1; Zₐ::T2=0.05, ϕ::T3=0.0, steps::T4=1,
-                       L::I=2, hemisphere::Symbol=:northern) where {
-        I <:  Integer,
-        T1 <: AbstractFloat, 
-        T2 <: AbstractFloat, 
-        T3 <: Number,
-        T4 <: Integer}
+function halo_analytic(μ; Az=0.00, ϕ=0.0, steps=1,
+                       L=1, hemisphere=:northern)
 
     if L == 1
         point = first(lagrange(μ, 1))
@@ -132,7 +112,7 @@ function halo_analytic(μ::T1; Zₐ::T2=0.05, ϕ::T3=0.0, steps::T4=1,
     l₂  = (3c[3]/2) * (a₂₄ - 2a₂₂) + (9c[4]/8) + 2ωₚ^2 * s₂
     Δ   = ωₚ^2 - c[2]
 
-    Aᵧ  = Zₐ * γ
+    Aᵧ  = Az * γ
     Aₓ  = √((-l₂*Aᵧ^2 - Δ) / l₁)
 
     ν   = 1 + s₁*Aₓ^2 + s₂*Aᵧ^2
@@ -151,7 +131,7 @@ function halo_analytic(μ::T1; Zₐ::T2=0.05, ϕ::T3=0.0, steps::T4=1,
     τ₁ = @. ωₚ*τ + ϕ
 
     x = @. γ * (a₂₁*Aₓ^2 + a₂₂*Aᵧ^2 - Aₓ*cos(τ₁) + (a₂₃*Aₓ^2 - 
-                    a₂₄*Aᵧ^2)*cos(2τ₁) + (a₃₁*Aₓ^3 - a₃₂*Aₓ*Aᵧ^2)*cos(3τ₁)) + point
+                    a₂₄*Aᵧ^2)*cos(2τ₁) + (a₃₁*Aₓ^3 - a₃₂*Aₓ*Aᵧ^2)*cos(3τ₁)) + 1 - μ - (L == 1 ? γ : -γ)
     y = @. γ * (k*Aₓ*sin(τ₁) + (b₂₁*Aₓ^2 - b₂₂*Aᵧ^2)*sin(2τ₁) + 
                     (b₃₁*Aₓ^3 - b₃₂*Aₓ*Aᵧ^2)*sin(3τ₁))
     z = @. γ * (δₘ*Aᵧ*cos(τ₁) + δₘ*d₂₁*Aₓ*Aᵧ*(cos(2τ₁)-3) + 
@@ -173,7 +153,7 @@ Returns a numerical solution for a Halo orbit about `L`.
 
 __Arguments:__ 
 - `μ`: Non-dimensional mass parameter for the CR3BP system.
-- `Zₐ`: Desired non-dimensional Z-amplitude for Halo orbit.
+- `Az`: Desired non-dimensional Z-amplitude for Halo orbit.
 - `ϕ`: Desired Halo orbit phase.
 - `L`: Lagrange point to orbit (L1 or L2).
 - `hemisphere`: Specifies northern or southern Halo orbit.
@@ -185,27 +165,19 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
-function halo(μ::T1; Zₐ::T2=0.05, ϕ::T3=0.0,
-              L::I=2, hemisphere::Symbol=:northern,
-              tolerance::T4=1e-8, max_iter::T5=10,
-              reltol=1e-14, abstol=1e-22) where {
-        I  <: Integer,
-        T1 <: AbstractFloat, 
-        T2 <: AbstractFloat, 
-        T3 <: Number,
-        T4 <: AbstractFloat,
-        T5 <: Integer
-    }
+function halo(μ; Az=0.0, L=1, hemisphere=:northern,
+              tolerance=1e-8, max_iter=20,
+              reltol=1e-14, abstol=1e-14)
 
-    r₀, v₀, Τ₀ = halo_analytic(μ; Zₐ=Zₐ, ϕ=ϕ, L=L, hemisphere=hemisphere, steps=1000)
+    r₀, v₀, Τ = halo_analytic(μ; Az=Az, ϕ=0.0, L=L, hemisphere=hemisphere)
     r₀ = r₀[1,:]
     v₀ = v₀[1,:]
-    Τ = Τ₀
-
-    iter = 0
-
-    @dowhile ((abs(integrator.u.vₛ[1]) ≥ tolerance || abs(integrator.u.vₛ[3]) ≥ tolerance) && iter < max_iter) begin
-
+    τ  = Τ/2
+    
+    Φ  = Matrix{promote_type(eltype(r₀), eltype(v₀), typeof(τ))}(undef, 6, 6)
+    
+    for i ∈ 1:max_iter
+    
         problem = ODEProblem(
             halo_numerical_tic!,
             ComponentArray(rₛ  = r₀,
@@ -216,34 +188,43 @@ function halo(μ::T1; Zₐ::T2=0.05, ϕ::T3=0.0,
                            Φ₄  = [0, 0, 0, 1.0, 0, 0],
                            Φ₅  = [0, 0, 0, 0, 1.0, 0],
                            Φ₆  = [0, 0, 0, 0, 0, 1.0]),
-            (0.0, Τ/2),
+            (0.0, τ),
             ComponentArray(μ   =  μ)
         )    
-
+    
         integrator = init(problem, Vern8(); reltol=reltol, abstol=abstol)
         solve!(integrator)
+    
+        rₛ = integrator.u.rₛ
+        vₛ = integrator.u.vₛ
+    
+        Φ = hcat(integrator.u.Φ₁, integrator.u.Φ₂, integrator.u.Φ₃, integrator.u.Φ₄, integrator.u.Φ₅, integrator.u.Φ₆) |> transpose
+    
+        ∂vₛ = accel(rₛ, vₛ, μ)
+    
+        F = @SMatrix [
+            Φ[4,3] Φ[4,5] ∂vₛ[1];
+            Φ[6,3] Φ[6,5] ∂vₛ[3];
+            Φ[2,3] Φ[2,5]  vₛ[2]
+        ]
+    
+        TERM1 = @SMatrix [r₀[3]; v₀[2]; τ] 
+        TERM2 = - inv(F) * @SMatrix [vₛ[1]; vₛ[3]; rₛ[2]] 
+        xᵪ = TERM1 + TERM2
+    
+        r₀[3] = xᵪ[1]
+        v₀[2] = xᵪ[2]
+        τ     = xᵪ[3]
 
-        r₀, v₀, T = iterate_halo!(
-            r₀, v₀, Τ, 
-            integrator.u.rₛ, integrator.u.vₛ,
-            transpose(hcat(integrator.u.Φ₁, integrator.u.Φ₂, integrator.u.Φ₃, integrator.u.Φ₄, integrator.u.Φ₅, integrator.u.Φ₆)), 
-            μ; tol=tolerance
-        )
-
-        @show [integrator.u.vₛ[1] integrator.u.vₛ[3] Τ]
-        iter += 1
-
+        if abs(integrator.u.vₛ[1]) ≤ tolerance && abs(integrator.u.vₛ[3]) ≤ tolerance
+            @info "Desired tolerance reached! Iterated $i times."
+            break;
+        elseif i == max_iter
+            @warn "Desired tolerance was not reached, and iterations have hit the maximum number of iterations: $max_iter."
+        end
     end
 
-    if iter == max_iter
-        @warn string(
-            "Maximum iterations reached: ",
-            "Halo orbit may have not converged to desired tolerance of ",
-            tolerance 
-        )
-    end
-
-    return r₀, v₀, Τ
+    return r₀, v₀, 2τ
 
 end
 
@@ -265,8 +246,8 @@ __References:__
 function halo_numerical_tic!(∂u, u, p, t)
 
     # Cartesian state
-    ∂u.rₛ   =  u.vₛ
-    ∂u.vₛ   =  accel(u.rₛ, u.vₛ, p.μ)
+    ∂u.rₛ =  u.vₛ
+    ∂u.vₛ =  accel(u.rₛ, u.vₛ, p.μ)
 
     # State transition matrix
     ∂Φ  = state_transition_dynamics(p.μ, u.rₛ) * SMatrix{6,6}(transpose(hcat(u.Φ₁, u.Φ₂, u.Φ₃, u.Φ₄, u.Φ₅, u.Φ₆)))
@@ -286,22 +267,22 @@ __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 - [SciML Documentation](https://diffeq.sciml.ai/stable/features/callback_functions/#callbacks)
 """
-function iterate_halo!(r₀, v₀, Τ₀, rₛ, vₛ, Φ, μ; tol=1e-12)
+function iterate_halo(r₀, v₀, rₙ, vₙ, τ, Φ, μ)
 
-    ∂vₛ = accel(rₛ, vₛ, μ)
+    ∂vₙ = accel(rₙ, vₙ, μ)
 
     F = @SMatrix [
-        Φ[4,3] Φ[4,5] ∂vₛ[1];
-        Φ[6,3] Φ[6,5] ∂vₛ[3];
-        Φ[2,3] Φ[2,5]  vₛ[2]
+        Φ[4,3] Φ[4,5] ∂vₙ[1];
+        Φ[6,3] Φ[6,5] ∂vₙ[3];
+        Φ[2,3] Φ[2,5]  vₙ[2]
     ]
 
-    xᵪ = [r₀[3]; v₀[2]; Τ₀] - inv(F) * [vₛ[1]; vₛ[3]; rₛ[2]] 
+    xᵪ = [r₀[3]; v₀[2]; τ] - inv(F) * [vₙ[1]; vₙ[3]; rₙ[2]] 
 
-    r₀[3] = xᵪ[1]
-    v₀[2] = xᵪ[2]
-    Τ₀    = xᵪ[3]
+    Y = promote_type(eltype(rₙ), eltype(vₙ), eltype(τ))
+    r₀ = zeros(Y, 3)
+    v₀ = zeros(Y, 3)
 
-    return r₀, v₀, Τ₀
+    return [r₀[1], 0, xᵪ[1]], [0, xᵪ[2], 0], xᵪ[3]
 
 end
