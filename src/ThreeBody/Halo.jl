@@ -203,16 +203,16 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
         ∂vₛ = accel(rₛ, vₛ, μ)
     
         F = @SMatrix [
-            Φ[4,3] Φ[4,5] ∂vₛ[1];
-            Φ[6,3] Φ[6,5] ∂vₛ[3];
-            Φ[2,3] Φ[2,5]  vₛ[2]
+            Φ[4,1] Φ[4,5] ∂vₛ[1];
+            Φ[6,1] Φ[6,5] ∂vₛ[3];
+            Φ[2,1] Φ[2,5]  vₛ[2]
         ]
     
-        TERM1 = @SMatrix [r₀[3]; v₀[2]; τ] 
+        TERM1 = @SMatrix [r₀[1]; v₀[2]; τ] 
         TERM2 = - inv(F) * @SMatrix [vₛ[1]; vₛ[3]; rₛ[2]] 
         xᵪ = TERM1 + TERM2
     
-        r₀[3] = xᵪ[1]
+        r₀[1] = xᵪ[1]
         v₀[2] = xᵪ[2]
         τ     = xᵪ[3]
 
@@ -258,31 +258,4 @@ function halo_numerical_tic!(∂u, u, p, t)
     ∂u.Φ₅ = copy(∂Φ[5,:])[:]
     ∂u.Φ₆ = copy(∂Φ[6,:])[:]
     
-end
-
-"""
-Resets the initial conditions for iterative numerical Halo orbit solver.
-
-__References:__
-- [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
-- [SciML Documentation](https://diffeq.sciml.ai/stable/features/callback_functions/#callbacks)
-"""
-function iterate_halo(r₀, v₀, rₙ, vₙ, τ, Φ, μ)
-
-    ∂vₙ = accel(rₙ, vₙ, μ)
-
-    F = @SMatrix [
-        Φ[4,3] Φ[4,5] ∂vₙ[1];
-        Φ[6,3] Φ[6,5] ∂vₙ[3];
-        Φ[2,3] Φ[2,5]  vₙ[2]
-    ]
-
-    xᵪ = [r₀[3]; v₀[2]; τ] - inv(F) * [vₙ[1]; vₙ[3]; rₙ[2]] 
-
-    Y = promote_type(eltype(rₙ), eltype(vₙ), eltype(τ))
-    r₀ = zeros(Y, 3)
-    v₀ = zeros(Y, 3)
-
-    return [r₀[1], 0, xᵪ[1]], [0, xᵪ[2], 0], xᵪ[3]
-
 end
