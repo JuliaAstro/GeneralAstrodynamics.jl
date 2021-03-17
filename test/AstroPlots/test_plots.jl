@@ -11,7 +11,7 @@ using UnitfulAstrodynamics
     orbit = Orbit(r̅, v̅, Earth)
 
     # Does plot run?
-    fig = plot(propagate(orbit, 1u"s"))
+    fig = orbitplot(propagate(orbit, 1u"s"))
 
     @test true
 
