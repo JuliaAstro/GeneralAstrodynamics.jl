@@ -1,7 +1,7 @@
 name = "UnitfulAstrodynamics"
 uuid = "673e7d9c-15b0-48d3-bce0-fab551f3a174"
 authors = ["Joe Carpinelli <jdcarpinelli@gmail.com>"]
-version = "0.6.7"
+version = "0.7.0"
 
 [deps]
 ComponentArrays = "b0b7db55-cfe3-40fc-9ded-d10e2dbeff66"
