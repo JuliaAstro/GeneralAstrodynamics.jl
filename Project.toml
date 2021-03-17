@@ -1,7 +1,7 @@
 name = "UnitfulAstrodynamics"
 uuid = "673e7d9c-15b0-48d3-bce0-fab551f3a174"
 authors = ["Joe Carpinelli <jdcarpinelli@gmail.com>"]
-version = "0.6.7"
+version = "0.7.0"
 
 [deps]
 ComponentArrays = "b0b7db55-cfe3-40fc-9ded-d10e2dbeff66"
@@ -32,8 +32,8 @@ Plots = "1.6"
 Reexport = "0.2, 1.0"
 Roots = "1.0"
 StaticArrays = "0.12, 1.0"
+Symbolics = "0.1"
 Unitful = "1.4"
 UnitfulAngles = "0.6"
 UnitfulAstro = "1.0"
-Symbolics = "0.1"
 julia = "1"

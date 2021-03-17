@@ -93,10 +93,15 @@ v = [0.001, 0.08, 0.02]u"km/s"
 t = 500u"d"
 
 # Construct nondimensional state
-sys = ThreeBodySystem(1.0u"AU", μₛ, μₑ, r, v, t);
+sys = ThreeBodySystem(1.0u"AU", μₛ, μₑ, r, v, t) |> nondimensionalize;
 
 # Propagate!
 sols = propagate(sys)
+
+# Halo solvers
+μⁿ = nondimensionalize(μₛ, μₑ)
+r, v, T = halo_analytic(μⁿ; L = 1, steps = 1000)
+r, v, T = halo(μⁿ; Az = 0.5, L = 2)
 ```
 
 

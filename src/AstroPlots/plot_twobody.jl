@@ -8,7 +8,7 @@
 Plots every timestep in `sols` in `3D` space. All keyward 
 arguments are passed directly to `Plots.jl`.
 """
-function Plots.plot(sols::TwobodyPropagationResult, frame=:Perifocal; kwargs...)
+function orbitplot(sols::TwobodyPropagationResult, frame=:Cartesian; kwargs...)
    
     # Provided frame can be :Cartesian, or :Perifocal
     if frame == :Perifocal

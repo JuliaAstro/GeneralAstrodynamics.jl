@@ -18,7 +18,7 @@ using ..Propagators
 using Plots
 using Plots.PlotMeasures
 
-export plot, lagrangeplot
+export orbitplot, lagrangeplot
 
 include("plot_twobody.jl")
 include("plot_nbody.jl")
