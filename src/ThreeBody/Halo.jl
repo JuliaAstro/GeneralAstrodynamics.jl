@@ -245,6 +245,15 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
 end
 
 """
+Iterative halo solver, returns a `NondimensionalThreeBodyState` in-place.
+"""
+function halo!(state, μ; kwargs...) 
+    r,v,T = halo(μ; kwargs...)
+    state = NondimensionalThreeBodyState(r, v, μ, T)
+    return nothing
+end
+
+"""
 Returns dynamics tic for combined Halo iterative solver state vector.
 
 __Arguments:__ 

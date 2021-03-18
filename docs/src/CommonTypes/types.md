@@ -5,5 +5,5 @@ The following abstract types are defined, which are common parent types for all 
 ```@docs
 AbstractBody
 OrbitalSystem
-PropagationResult
+AbstractTrajectory
 ```

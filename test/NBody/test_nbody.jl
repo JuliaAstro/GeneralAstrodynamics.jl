@@ -15,7 +15,7 @@ using UnitfulAstrodynamics
     m₂ = 150.0u"kg"
     mySatellite = Body(r̅₂, v̅₂, m₂)
 
-    sys1 = MultibodySystem([myEarth, mySatellite])
+    sys1 = NBodySystem([myEarth, mySatellite])
 
     # No errors!
     @test true

@@ -19,15 +19,15 @@ using LinearAlgebra: norm, normalize, cross, ×, dot, ⋅
 using ComponentArrays
 using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
 
-export  TwobodyPropagationResult, 
-        ThreeBodyPropagationResult,
-        MultibodyPropagationResult, 
+export  Trajectory,
         propagate,
-        twobody_tic!,
-        threebody_tic!,
-        nbody_tic,
+        RestrictedTwoBodyTic!,
+        RestrictedBiasedTwoBodyTic!,
+        RestrictedThreeBodyTic!,
+        NBodyTic!,
         show
 
+include("Trajectory.jl")
 include("PropagateTwoBody.jl")
 include("PropagateThreeBody.jl")
 include("PropagateNBody.jl")

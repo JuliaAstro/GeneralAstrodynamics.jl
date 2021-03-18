@@ -7,31 +7,31 @@
 """
 Solves Kepler's Problem for `orbit` and `Δtᵢ`.
 """
-function kepler(orbit::Orbit, Δtᵢ::T = orbital_period(orbit); tol=1e-6, max_iter=100) where T<:Unitful.Time
+function kepler(orbit::O, Δtᵢ::T = period(orbit); tol=1e-6, max_iter=100) where O <: RestrictedTwoBodySystem where T<:Unitful.Time
 
     conic_section = conic(orbit)
 
     # Guess χ₀
     if conic_section == Circular || conic_section == Elliptical
 
-        Δt = mod(Δtᵢ, orbital_period(orbit))
-        χ₀ = √(orbit.body.μ) * Δt / orbit.a
+        Δt = mod(Δtᵢ, period(orbit))
+        χ₀ = √(orbit.body.μ) * Δt / semimajor_axis(orbit)
 
     elseif conic_section == Hyperbolic
         
         Δt = Δtᵢ
-        χ₀ = sign(Δt) * √(-orbit.a) * log(ℯ, (-2 * orbit.body.μ / orbit.a * Δt) / 
-                (orbit.rᵢ ⋅ orbit.vᵢ + (sign(Δt) * √(-orbit.body.μ * orbit.a) * (1 - norm(orbit.rᵢ) / orbit.a))))
+        χ₀ = sign(Δt) * √(-semimajor_axis(orbit)) * log(ℯ, (-2 * orbit.body.μ / semimajor_axis(orbit) * Δt) / 
+                (radius_vector(orbit) ⋅ velocity_vector(orbit) + (sign(Δt) * √(-orbit.body.μ * semimajor_axis(orbit)) * (1 - norm(radius_vector(orbit)) / semimajor_axis(orbit)))))
 
     elseif conic_section == Parabolic
 
         Δt = Δtᵢ
-        χ₀ = √(semi_parameter(orbit)) * tan(orbit.ν / 2)
+        χ₀ = √(semi_parameter(orbit)) * tan(true_anomoly(orbit) / 2)
 
     else
 
         @warn "Kepler's problem failed to converge."
-        return InvalidOrbit(orbit.body)
+        return Orbit([NaN, NaN, NaN] * u"km", [NaN, NaN, NaN] * u"km/s", orbit.body)
 
     end
 
@@ -39,15 +39,15 @@ function kepler(orbit::Orbit, Δtᵢ::T = orbital_period(orbit); tol=1e-6, max_i
     # TODO: Compare loop vs. recursion performance here.
     # There shouldn't be too large of a difference, since this tends
     # to converge with only a few iterations.
-    χₙ, r, ψ, C₂, C₃ = χₖ(χ₀, Δt, orbit.rᵢ, orbit.vᵢ, orbit.a, orbit.body.μ, tol=tol, max_iter=max_iter)
+    χₙ, r, ψ, C₂, C₃ = χₖ(χ₀, Δt, radius_vector(orbit), velocity_vector(orbit), semimajor_axis(orbit), orbit.body.μ, tol=tol, max_iter=max_iter)
 
     # Convert to a Orbit
-    f = 1 - χₙ^2 / norm(orbit.rᵢ) * C₂
-    ḟ = √(orbit.body.μ) / (norm(orbit.rᵢ) * r) * χₙ * (ψ * C₃ - 1)
+    f = 1 - χₙ^2 / norm(radius_vector(orbit)) * C₂
+    ḟ = √(orbit.body.μ) / (norm(radius_vector(orbit)) * r) * χₙ * (ψ * C₃ - 1)
     g = Δt - (χₙ^3 / √(orbit.body.μ)) * C₃
     ġ = 1 - (χₙ^2 / r) * C₂
 
-    return Orbit(f * orbit.rᵢ + g * orbit.vᵢ, ḟ * orbit.rᵢ + ġ * orbit.vᵢ, orbit.body)
+    return Orbit(f * radius_vector(orbit) + g * velocity_vector(orbit), ḟ * radius_vector(orbit) + ġ * velocity_vector(orbit), orbit.body)
 
 end
 

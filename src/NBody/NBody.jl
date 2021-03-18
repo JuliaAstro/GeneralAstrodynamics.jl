@@ -12,11 +12,13 @@ include("../Misc/UnitfulAliases.jl")
 
 using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
 
-export Body, MultibodySystem, system_energy, 
-       system_angular_momentum, promote, convert
+export Body, NBodySystem, system_energy, 
+       system_angular_momentum, promote, convert,
+       Float16, Float32, Float64, BigFloat,
+       length, getindex
 
-include("multibody_states.jl")
-include("multibody_calculations.jl")
+include("NBodyStates.jl")
+include("NBodyCalculations.jl")
 
 
 end

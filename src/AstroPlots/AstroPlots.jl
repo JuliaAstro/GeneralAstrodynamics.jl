@@ -20,8 +20,8 @@ using Plots.PlotMeasures
 
 export orbitplot, lagrangeplot
 
-include("plot_twobody.jl")
-include("plot_nbody.jl")
+include("PlotTwoBody.jl")
+include("PlotNBody.jl")
 include("PlotThreeBody.jl")
 
 end

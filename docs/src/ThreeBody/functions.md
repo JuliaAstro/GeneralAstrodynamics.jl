@@ -34,6 +34,7 @@ redimensionalize
 ```@docs
 halo_analytic,
 halo
+halo!
 ```
 
 ## Other Common Calculations
