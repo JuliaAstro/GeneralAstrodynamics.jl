@@ -37,7 +37,7 @@ function propagate(sys::NondimensionalThreeBodyState, Δt::T = sys.Δt; kwargs..
     p  = ComponentArray((μ=sys.μ, x₁=-sys.μ, x₂=1-sys.μ))
 
     # Numerically integrate!
-    sols = solve(ODEProblem(RestrictedThreeBodyTic!, u₀, ts, p), ode_alg; options...)
+    sols = solve(ODEProblem(RestrictedThreeBodyTic!, u₀, ts, p); options...)
 
     # Return PropagationResult structure
     return Trajectory(
