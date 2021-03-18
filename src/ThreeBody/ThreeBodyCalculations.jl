@@ -7,7 +7,7 @@
 """
 Returns time scale factor, `Tₛ`.
 """
-time_scale_factor(a, μ₁, μ₂) = orbital_period(a, μ₁+μ₂)
+time_scale_factor(a, μ₁, μ₂) = period(a, μ₁+μ₂)
 
 """
 Returns nondimensional length unit, `DU`.
@@ -111,6 +111,7 @@ function nondimensionalize(state::D) where D <: ThreeBodyState
         nondimensionalize(state.r₃, state.a),
         nondimensionalize(state.v₃, state.a, state.Δt),
         nondimensionalize(state.μ₁, state.μ₂),
+        nondimensionalize_time(state.Δt, state.a, state.μ₁, state.μ₂),
         state.a, state.Δt
     )
 end
@@ -193,7 +194,7 @@ function redimensionalize(state::N, μ₁::U1, μ₂::U2) where {
             state.DU, 
             redimensionalize(state.rₛ, state.DU), 
             redimensionalize(state.vₛ, state.DU, state.DT), 
-            state.DT
+            state.DT * state.Δt
         )
 end
 
@@ -267,17 +268,24 @@ end
 """
 Returns non-dimensional acceleration for CR3BP state.
 """
-function accel(rₛ, vₛ, μ)
+function accel!(aₛ, rₛ, vₛ, μ)
 
     x₁ = -μ
     x₂ = 1-μ
     r₁ = nondimensional_radius(rₛ, x₁)
     r₂ = nondimensional_radius(rₛ, x₂)
 
-    return [
-         2vₛ[2] + rₛ[1] - (1-μ)*(rₛ[1] - x₁) / r₁^3 - μ*(rₛ[1] - x₂) / r₂^3,
-        -2vₛ[1] + rₛ[2] - ((1-μ) / r₁^3 + (μ / r₂^3)) * rₛ[2],
-        -((1-μ) / r₁^3 + (μ / r₂^3)) * rₛ[3]
-    ]
-    
+    aₛ[1] =  2vₛ[2] + rₛ[1] - (1-μ)*(rₛ[1] - x₁) / r₁^3 - μ*(rₛ[1] - x₂) / r₂^3
+    aₛ[2] = -2vₛ[1] + rₛ[2] - ((1-μ) / r₁^3 + (μ / r₂^3)) * rₛ[2]
+    aₛ[3] = -((1-μ) / r₁^3 + (μ / r₂^3)) * rₛ[3]
+    return nothing
+end
+
+"""
+Returns non-dimensional acceleration for CR3BP state.
+"""
+function accel(rₛ, vₛ, μ)
+    aₛ = similar(vₛ)
+    accel!(aₛ, rₛ, vₛ, μ)
+    return aₛ
 end

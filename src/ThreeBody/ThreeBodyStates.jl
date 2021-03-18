@@ -3,11 +3,16 @@
 #
 
 """
+Abstract type for restricted three-body systems.
+"""
+abstract type RestrictedThreeBodySystem <: OrbitalSystem end
+
+"""
 Describes a dimensional state of a spacecraft
 within the Circular Restriested Three-body Problem in
 the Synodic frame.
 """
-struct ThreeBodyState{F<:AbstractFloat} <: OrbitalSystem
+struct ThreeBodyState{F<:AbstractFloat} <: RestrictedThreeBodySystem
 
     μ₁::MassParameter{F}
     μ₂::MassParameter{F}
@@ -17,14 +22,14 @@ struct ThreeBodyState{F<:AbstractFloat} <: OrbitalSystem
     Δt::Time{F}
 
     function ThreeBodyState(μ₁::MP1, μ₂::MP2, a::A, r₃::R, v₃::V, Δt::DT) where {
-            MP1 <: MassParameter{<:AbstractFloat},
-            MP2 <: MassParameter{<:AbstractFloat},
-            A   <: Length{<:AbstractFloat},
-            RT  <: Length{<:AbstractFloat},
-            VT  <: Velocity{<:AbstractFloat},
+            MP1 <: MassParameter{<:Real},
+            MP2 <: MassParameter{<:Real},
+            A   <: Length{<:Real},
+            RT  <: Length{<:Real},
+            VT  <: Velocity{<:Real},
             R   <: AbstractVector{RT},
             V   <: AbstractVector{VT},
-            DT  <: Time{<:AbstractFloat}
+            DT  <: Time{<:Real}
         }
 
         T = promote_type(
@@ -32,6 +37,10 @@ struct ThreeBodyState{F<:AbstractFloat} <: OrbitalSystem
             map(x->typeof(x.val), r₃)..., map(x->typeof(x.val), v₃)...,
             typeof(Δt.val)
         )
+        if !(T <: AbstractFloat)
+            @warn "Non-float parameters provided: defaulting to Float64."
+            T = Float64
+        end
 
         return new{T}(
             T(μ₁), T(μ₂), T(a), 
@@ -43,110 +52,68 @@ struct ThreeBodyState{F<:AbstractFloat} <: OrbitalSystem
     end
 
 end
+
 Base.convert(::Type{T}, t::ThreeBodyState) where {
         T<:AbstractFloat
     } = ThreeBodyState(map(f->T.(getfield(t,f), fieldnames(t)))...)
 Base.promote(::Type{ThreeBodyState{A}}, ::Type{ThreeBodyState{B}}) where {
         A<:AbstractFloat, B<:AbstractFloat
     } = ThreeBodyState{promote_type(A,B)}
+Core.Float16(o::ThreeBodyState) = convert(Float16, o)
+Core.Float32(o::ThreeBodyState) = convert(Float32, o)
+Core.Float64(o::ThreeBodyState) = convert(Float64, o)
+Base.MPFR.BigFloat(o::ThreeBodyState) = convert(BigFloat, o)
 
 """
 Describes the non-dimensional state of a spacecraft
 within the Circular Restricted Three-body Problem in
 the Synodic frame.
 """
-struct NondimensionalThreeBodyState{F<:AbstractFloat} <: OrbitalSystem
+struct NondimensionalThreeBodyState{F<:AbstractFloat} <: RestrictedThreeBodySystem
     
-    rₛ::SVector{3, F}
-    vₛ::SVector{3, F}
+    r::SVector{3, F}
+    v::SVector{3, F}
     μ::F
+    Δt::F
     DU::Length{F}
     DT::Time{F}
 
-    function NondimensionalThreeBodyState(rₛ::R, vₛ::V, μ::F1, DU::F2, DT::F3) where {
-            R  <: AbstractArray{<:AbstractFloat}, 
-            V  <: AbstractArray{<:AbstractFloat},
-            F1 <: AbstractFloat,
-            F2 <: Length{<:AbstractFloat},
-            F3 <: Time{<:AbstractFloat}
+    function NondimensionalThreeBodyState(rₛ::R, vₛ::V, μ::F1, Δt::F2 = one(F2), 
+                                          DU::Unitful.Length{F3} = convert(F3, NaN) * u"km", 
+                                          DT::Unitful.Time{4} = convert(F4, NaN) * u"km/s") where {
+            FR <: Real,
+            FV <: Real,
+            R  <: AbstractArray{FR}, 
+            V  <: AbstractArray{FV},
+            F1 <: Real,
+            F2 <: Real,
+            F3 <: Real,
+            F4 <: Real
         }
 
-        T = promote_type(eltype(rₛ), eltype(vₛ), typeof(μ), typeof(DU.val), typeof(DT.val))
+        T = promote_type(FR, FV, F1, F2, F3, F4)
+        if !(T <: AbstractFloat)
+            @warn "Non-float parameters provided. Defaulting to Float64."
+            T = Float64
+        end
+        
         return new{T}(
             SVector{3,T}(T.(rₛ[:])), 
             SVector{3,T}(T.(vₛ[:])), 
-            T(μ), T(DU), T(DT)
+            T(μ), T(Δt), T(DU), T(DT)
         )
 
     end
 
 end
+
 Base.convert(::Type{T}, t::NondimensionalThreeBodyState) where {
-        T<:AbstractFloat
-    } = NondimensionalThreeBodyState(T.(Array(t.rₛ)), T.(Array(t.vₛ)), T(t.μ), T(t.DU), T(t.DT))
+    T<:AbstractFloat
+} = NondimensionalThreeBodyState(T.(Array(t.rₛ)), T.(Array(t.vₛ)), T(t.μ), T(t.Δt), T(t.DU), T(t.DT))
 Base.promote(::Type{NondimensionalThreeBodyState{A}}, ::Type{NondimensionalThreeBodyState{B}}) where {
-        A<:AbstractFloat, B<:AbstractFloat
-    } = NondimensionalThreeBodyState{promote_type(A,B)}
-
-"""
-Describes a Circular Restricted Three-Body
-Problem system.
-"""
-struct ThreeBodySystem{F<:AbstractFloat} <: OrbitalSystem
-
-    # Dimensional Units
-    a::Length{F}
-    μ₁::MassParameter{F}
-    μ₂::MassParameter{F}
-    t::Time{F}
-
-    # Non-dimensional Units
-    rₛ::SVector{3, F}
-    vₛ::SVector{3, F}
-    tₛ::F
-    μ::F
-
-    function ThreeBodySystem(a::A, μ₁::U1, μ₂::U2, 
-                             r::VR, v::VV,  t::TT) where {
-            A  <: Length{<:AbstractFloat},
-            U1 <: MassParameter{<:AbstractFloat},
-            U2 <: MassParameter{<:AbstractFloat},
-            R  <: Length{<:AbstractFloat}, 
-            V  <: Velocity{<:AbstractFloat}, 
-            VR <: AbstractVector{R}, 
-            VV <: AbstractVector{V},
-            TT <: Time{<:AbstractFloat}
-        }
-
-        T = promote_type(typeof(a.val), 
-                         typeof(μ₁.val), 
-                         typeof(μ₂.val), 
-                         map(x->typeof(x.val), r)...,
-                         map(x->typeof(x.val), v)...,
-                         typeof(t.val))
-
-        if length(r) ≢ length(v) ≢ 3
-        throw(ArgumentError(string("Both `r` and `v` provided to `ThreeBodySystem` ",
-            "constructor must have length 3.")))
-        end
-
-        if μ₂ > μ₁
-        @warn string("The second mass parameter is larger than the first. ",
-                     "Did you mean to switch those two? Assuming the second ",
-                     "mass parameter is the primary body.")
-        end
-
-        return new{T}(a, μ₁, μ₂, t, nondimensionalize(r, v, t, μ₁, μ₂, a)...)
-
-    end
-    ThreeBodySystem(a, μ₁, μ₂, r, v, t) = ThreeBodySystem(
-        Float64(a), Float64(μ₁), Float64(μ₂),
-        Float64.(r), Float64.(v), Float64(t))
-
-end
-Base.convert(::Type{T}, t::ThreeBodySystem) where {
-        T<:AbstractFloat
-    } = ThreeBodySystem(map(f->T.(getfield(t,f), fieldnames(t)))...)
-Base.promote(::Type{ThreeBodySystem{A}}, ::Type{ThreeBodySystem{B}}) where {
-        A<:AbstractFloat, B<:AbstractFloat
-    } = ThreeBodySystem{promote_type(A,B)}
+    A<:AbstractFloat, B<:AbstractFloat
+} = NondimensionalThreeBodyState{promote_type(A,B)}
+Core.Float16(o::NondimensionalThreeBodyState) = convert(Float16, o)
+Core.Float32(o::NondimensionalThreeBodyState) = convert(Float32, o)
+Core.Float64(o::NondimensionalThreeBodyState) = convert(Float64, o)
+Base.MPFR.BigFloat(o::NondimensionalThreeBodyState) = convert(BigFloat, o)

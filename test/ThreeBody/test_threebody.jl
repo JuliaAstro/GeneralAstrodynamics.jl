@@ -14,9 +14,10 @@ using UnitfulAstrodynamics
     r = [2e9, 7000, 2000]u"km"
     v = [0.001, 0.08, 0.02]u"km/s"
     t = 500u"d"
+    a = 1.0u"AU"
 
     # Construct nondimensional state
-    sys = ThreeBodySystem(1.0u"AU", μₛ, μₑ, r, v, t);
+    sys = ThreeBodyState(μₛ, μₑ, a, r, v, t);
 
     @test true
     

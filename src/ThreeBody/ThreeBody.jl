@@ -6,7 +6,6 @@ module ThreeBody
 
 using Reexport
 
-using ..CommonTypes: @dowhile
 @reexport using ..CommonTypes
 using ..TwoBody
 
