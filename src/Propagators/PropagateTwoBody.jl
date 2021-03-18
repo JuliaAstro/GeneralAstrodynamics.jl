@@ -6,39 +6,64 @@
 #
 
 """
-Struct to hold two-body propagation results.
+Currently not exported. Used for ideal two-body numerical integration.
 """
-struct TwobodyPropagationResult{F<:AbstractFloat} <: PropagationResult 
-
-    t::Vector{<:Unitful.Time{F}}
-    step::Vector{<:TwoBodySystem{F}}
-    propagation_status::Symbol
-
-    function TwobodyPropagationResult(t, step, status)
-        T = promote_type(typeof(t[1].val), typeof(step[1].e))
-        return new{T}(T.(t), [convert(T, step[i]) for i ∈ 1:length(step)], status)
-    end
-
+function RestrictedTwoBodyTic!(∂u, u, p, t)
+    ∂u.rᵢ =  u.vᵢ
+    ∂u.vᵢ = -p.μ .* (u.rᵢ ./ norm(u.rᵢ,2)^3)
+    return nothing
 end
 
 """
-Show `TwobodyPropagationResult` in REPL.
+Currently not exported. Used for ideal two-body numerical integration.
 """
-function Base.show(io::IO, result::TwobodyPropagationResult)
-
-    println(io, typeof(result), " with ", length(result.t), " timesteps")
-
-end
-
-"""
-    twobody_tic
-
-Currently not exported. Used for two-body numerical integration.
-"""
-function twobody_tic!(∂u, u, p, t)
-
+function RestrictedBiasedTwoBodyTic!(∂u, u, p, t)
     ∂u.rᵢ =  u.vᵢ
     ∂u.vᵢ = (-p.μ .* (u.rᵢ ./ norm(u.rᵢ,2)^3)) .+ (normalize(u.vᵢ) .* p.T)
+    return nothing
+end
+
+"""
+Uses OrdinaryDiffEq solvers to propagate `orbit` Δt into the future.
+All keyword arguments are passed directly to OrdinaryDiffEq solvers.
+
+References:
+* [1] https://diffeq.sciml.ai/v4.0/tutorials/ode_example.html
+* [2] https://github.com/SciML/DifferentialEquations.jl/issues/393#issuecomment-658210231
+* [3] https://discourse.julialang.org/t/smart-kwargs-dispatch/14571/15
+"""
+function propagate(orbit::TwoBodyState{C, T}, 
+                   Δt::Unitful.Time = period(orbit);
+                   thrust::Unitful.Acceleration = 0.0u"N/kg",
+                   kwargs...) where C where T
+
+    # Set default kwargs
+    defaults = (;  reltol=1e-14, abstol=1e-14)
+    options = merge(defaults, kwargs)
+
+    # Initial conditions
+    r₀ = Array(ustrip.(u"m",   radius_vector(orbit)))
+    v₀ = Array(ustrip.(u"m/s", velocity_vector(orbit)))
+    u₀ = ComponentArray((rᵢ=r₀, vᵢ=v₀))
+    ts = T.(ustrip.(u"s", (zero(Δt), Δt)))
+    f  = thrust == zero(thrust) ? RestrictedTwoBodyTic! : RestrictedBiasedTwoBodyTic!
+    p  = let
+        if thrust == zero(thrust)
+            ComponentArray((μ=ustrip(u"m^3/s^2", orbit.body.μ)))
+        else
+            ComponentArray((μ=ustrip(u"m^3/s^2", orbit.body.μ), T=ustrip(u"N/kg", thrust)))
+        end
+    end
+
+    # Integrate! 
+    sols = solve(ODEProblem(f, u₀, ts, p); options...)
+
+    # Return PropagationResult structure
+    return Trajectory(
+            map(x -> TwoBodyState(u"m" * x.rᵢ, u"m/s" * x.vᵢ, orbit.body), sols.u),
+            sols.t .* u"s",
+            sols.retcode
+    )
 
 end
 
@@ -46,40 +71,11 @@ end
 Uses OrdinaryDiffEq solvers to propagate `orbit` Δt into the future.
 All keyword arguments are passed directly to OrdinaryDiffEq solvers.
 """
-function propagate(orbit::Orbit, 
-                   Δt::Unitful.Time=orbital_period(orbit), 
+function propagate(orbit::KeplerianState, 
+                   Δt::Unitful.Time=period(orbit), 
                    ode_alg::OrdinaryDiffEqAlgorithm=Tsit5(),
                    thrust::Unitful.Acceleration=0.0u"N/kg";
                    kwargs...)
-
-    # Referencing:
-    # [1] https://diffeq.sciml.ai/v4.0/tutorials/ode_example.html
-    # [2] https://github.com/SciML/DifferentialEquations.jl/issues/393#issuecomment-658210231
-    # [3] https://discourse.julialang.org/t/smart-kwargs-dispatch/14571/15
-
-    # Set default kwargs (modified from [3])
-    defaults = (;  reltol=1e-14, abstol=1e-14)
-    options = merge(defaults, kwargs)
-
-    # Initial conditions
-    r₀ = Array(ustrip.(u"m",   orbit.rᵢ))
-    v₀ = Array(ustrip.(u"m/s", orbit.vᵢ))
-
-    # Define the problem (modified from [2])
-    problem = ODEProblem(twobody_tic!, 
-                         ComponentArray((rᵢ=r₀, vᵢ=v₀)), 
-                         ustrip.(u"s", (0.0u"s", Δt)), 
-                         ComponentArray((μ=ustrip(u"m^3 / s^2", orbit.body.μ), 
-                                         T=ustrip(u"N/kg", thrust))))
-
-    # Solve the problem! 
-    sols = solve(problem, ode_alg; options...)
-
-    # Return PropagationResult structure
-    return TwobodyPropagationResult(
-            u"s" .* sols.t,
-            map(x -> Orbit(u"m" * x.rᵢ, u"m/s" * x.vᵢ, orbit.body), sols.u),
-            sols.retcode
-    )
-
+    traj = propagate(TwoBodyState(orbit), Δt, ode_alg, thrust, kwargs...)
+    return Trajectory(KeplerianState.(traj.step), traj.t, traj.status)
 end

@@ -6,50 +6,21 @@
 #
 
 """
-Struct to hold three-body propagation results.
-"""
-struct ThreeBodyPropagationResult{F<:AbstractFloat} <: PropagationResult 
-
-    t::Vector{F}
-    step::Vector{<:NondimensionalThreeBodyState{F}}
-    propagation_status::Symbol
-
-    function ThreeBodyPropagationResult(t, step, status)
-        T = promote_type(eltype(t), eltype(step[1].rₛ))
-        return new{T}(T.(t), [convert(T, step[i]) for i ∈ 1:length(step)], status)
-    end
-
-end
-
-"""
-Show `ThreebodyPropagationResult` in REPL.
-"""
-function Base.show(io::IO, result::ThreeBodyPropagationResult)
-
-    println(io, typeof(result), " with ", length(result.t), " timesteps")
-
-end
-
-"""
     threebody_tic
 
 Currently not exported. Used for two-body numerical integration.
 """
-function threebody_tic!(∂u, u, p, t)
-
+function RestrictedThreeBodyTic!(∂u, u, p, t=0)
     ∂u.rₛ =  u.vₛ
-    ∂u.vₛ =  accel(u.rₛ, u.vₛ, p.μ)
-
+    accel!(∂u.vₛ, u.rₛ, u.vₛ, p.μ)
+    return nothing
 end
 
 """
 Uses OrdinaryDiffEq solvers to propagate `orbit` Δt into the future.
 All keyword arguments are passed directly to OrdinaryDiffEq solvers.
 """
-function propagate(sys::NondimensionalThreeBodyState, 
-                   Δt, 
-                   ode_alg::OrdinaryDiffEqAlgorithm=Tsit5();
-                   kwargs...)
+function propagate(sys::NondimensionalThreeBodyState, Δt::T = sys.Δt; kwargs...) where T<:Real
 
     # Referencing:
     # [1] https://diffeq.sciml.ai/v4.0/tutorials/ode_example.html
@@ -60,19 +31,18 @@ function propagate(sys::NondimensionalThreeBodyState,
     defaults = (;  reltol=1e-14, abstol=1e-14)
     options = merge(defaults, kwargs)
 
-    # Define the problem (modified from [2])
-    problem = ODEProblem(threebody_tic!, 
-                         ComponentArray((rₛ=sys.rₛ, vₛ=sys.vₛ)), 
-                         (0.0, Δt), 
-                         ComponentArray((μ=sys.μ, x₁=sys.r₁[1], x₂=sys.r₂[1])))
+    # Initial conditions
+    u₀ = ComponentArray((rₛ=sys.r, vₛ=sys.v))
+    ts = (zero(Δt), Δt)
+    p  = ComponentArray((μ=sys.μ, x₁=-sys.μ, x₂=1-sys.μ))
 
-    # Solve the problem! 
-    sols = solve(problem, ode_alg; options...)
+    # Numerically integrate!
+    sols = solve(ODEProblem(RestrictedThreeBodyTic!, u₀, ts, p), ode_alg; options...)
 
     # Return PropagationResult structure
-    return ThreeBodyPropagationResult(
+    return Trajectory(
+        map(step->NondimensionalThreeBodyState(step.rₛ, step.vₛ, sys.μ, sys.Δt, sys.DU, sys.DT), sols.u),
         sols.t,
-        map(step->NondimensionalThreeBodyState(step.rₛ, step.vₛ, sys.μ, sys.DU, sys.DT), sols.u),
         sols.retcode
     )
 

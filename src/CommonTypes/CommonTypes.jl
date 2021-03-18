@@ -10,7 +10,7 @@ using Reexport
 include("../Misc/DocStringExtensions.jl")
 include("../Misc/UnitfulAliases.jl")
 
-export AbstractBody, OrbitalSystem, PropagationResult
+export AbstractBody, OrbitalSystem, AbstractTrajectory
 
 """ 
 Abstract type for bodies in space: both `CelestialBody`s (in
@@ -24,18 +24,8 @@ Abstract type describing all states in select Astrodynamics problems.
 abstract type OrbitalSystem end
 
 """
-Abstract type describing a collection of states resulting from 
+Abstract type describing a collection of states resulting from numerical integration
 """
-abstract type PropagationResult end
-
-macro dowhile(condition, block) 
-    return quote
-        while true
-            $(esc(block))
-
-            $(esc(condition)) || break
-        end
-    end
-end
+abstract type AbstractTrajectory end
 
 end
