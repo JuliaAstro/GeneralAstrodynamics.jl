@@ -13,7 +13,7 @@ import Pkg
 Pkg.add("UnitfulAstrodynamics")
 ```
 
-## Units are Required!
+## Units are Provided!
 
 `UnitfulAstrodynamics.jl` uses `Reexport.jl` to expose `Unitful`, `UnitfulAstro`, and `UnitfulAngles`. Units are required for all `TwoBody`, `ThreeBody`, and `NBody` data structures. Functions often have non-unit equivalents -- 
 check the docstrings!
@@ -26,7 +26,7 @@ The `TwoBody` module handles Astrodynamics scenarios within the two-body problem
 # Cartesian state to Orbit
 r      = [0.0, 11681.0, 0.0]u"km"
 v      = [5.134, 4.226, 2.787]u"km/s"
-orbit1 = Orbit(r, v, Earth)
+orbit1 = TwoBodyState(r, v, Earth)
 
 # Keplerian state to Orbit
 e      =  0.3
@@ -35,7 +35,7 @@ i      =  10       * u"°"
 Ω      =  0        * u"°"
 ω      =  10       * u"°"
 ν      =  0        * u"°"
-orbit2 =  Orbit(e, a, i, Ω, ω, ν, Earth)
+orbit2 =  KeplerianState(e, a, i, Ω, ω, ν, Earth)
 
 # This is a true fact!
 orbit1 ≈ orbit2
@@ -48,13 +48,13 @@ Now you can solve __Kepler's Prediction Problem__,  __propagate__ the satellite'
 
 ```Julia
 # Kepler's Prediction problem
-orbit_later = kepler(orbit, orbital_period(orbit))
+orbit_later = kepler(orbit, period(orbit))
 
 # Lambert's Proplem
-v₁, v₂ = lambert(orbit.rᵢ, orbit_later.rᵢ, Earth.μ, orbital_period(orbit), :short)
+v₁, v₂ = lambert(orbit.r, orbit_later.r, Earth.μ, period(orbit), :short)
 
 # Orbit propagation
-sols = propagate(orbit, orbital_period(orbit))
+sols = propagate(orbit, period(orbit))
 
 # Plotting (with Plots.jl kwargs)
 plot(sols; title="Plots.jl keywords work!", xlabel="Woo")
@@ -72,7 +72,8 @@ help?> eccentricity
 search: eccentricity eccentricity_vector
 
   eccentricity(r̅, v̅, μ)
-  eccentricity(orbit::Orbit)
+  eccentricity(orbit::TwoBodyState)
+  eccentricity(orbit::KeplerianState)
 
   Returns orbital eccentricity, e.
 ```
@@ -91,9 +92,10 @@ The `ThreeBody` module helps to solve the Circular Restricted `ThreeBody` proble
 r = [2e9, 7000, 2000]u"km"
 v = [0.001, 0.08, 0.02]u"km/s"
 t = 500u"d"
+a = 1u"AU"
 
 # Construct nondimensional state
-sys = ThreeBodySystem(1.0u"AU", μₛ, μₑ, r, v, t) |> nondimensionalize;
+sys = ThreeBodySystem(μₛ, μₑ, a, r, v, t) |> nondimensionalize
 
 # Propagate!
 sols = propagate(sys)
@@ -125,11 +127,11 @@ m₂ = 1000.0u"kg"
 mySatellite = Body(r₂, v₂, m₂)
 ```
 
-A `MultibodySystem` contains an array of `Bodies`.
+A `NBodySystem` contains an array of `Bodies`.
 
 ```Julia
 # Construct a MultibodySystem
-sys = MultibodySystem([myEarth, mySatellite])
+sys = NBodySystem(myEarth, mySatellite)
 ```
 
 And you can __propagate__ a `MultibodySystem` through time to numerically find the final states for each `Body`. The package `DifferentialEquations.jl` is used for the numerical integration. For all __propagation__ functions in `Astrodynamics.jl`, you can specify `kwargs` as you would for a `DifferentialEquations.jl` `solve` call.
