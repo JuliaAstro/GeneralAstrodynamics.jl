@@ -78,9 +78,9 @@ struct NondimensionalThreeBodyState{F<:AbstractFloat} <: RestrictedThreeBodySyst
     DU::Length{F}
     DT::Time{F}
 
-    function NondimensionalThreeBodyState(rₛ::R, vₛ::V, μ::F1, Δt::F2 = one(F2), 
-                                          DU::Unitful.Length{F3} = convert(F3, NaN) * u"km", 
-                                          DT::Unitful.Time{4} = convert(F4, NaN) * u"km/s") where {
+    function NondimensionalThreeBodyState(rₛ::R, vₛ::V, μ::F1, Δt::F2 = 1.0, 
+                                          DU::Unitful.Length{F3} = NaN * u"km", 
+                                          DT::Unitful.Time{F4} = NaN * u"km/s") where {
             FR <: Real,
             FV <: Real,
             R  <: AbstractArray{FR}, 
