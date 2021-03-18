@@ -8,6 +8,8 @@ The central body within `Orbit` is of type `CelestialBody`. Common bodies in our
 
 
 ```@docs
+TwoBodyState
+KeplerianState
 Orbit
 CelestialBody
 ```
@@ -17,14 +19,13 @@ CelestialBody
 The first section in `TwoBody` documentation described the core [`TwoBody` Data Structures](@ref). Each data structure has an abstract parent type. All `Orbit` structures extend `TwoBodySystem`. In addition, all `Orbit` structures are paremeterized by their conic section, which is of type `AbstractConic`. All conic sections are pre-defined structures: `Circular`, `Elliptical`, `Parabolic`, `Hyperbolic`, and the `Invalid` conic is used to describe invalid orbital states (such as providing a `NaN` value to an `Orbit` constructor).
 
 ```@docs
-TwoBodySystem
+RestrictedTwoBodySystem
 AbstractConic
 Circular
 Elliptical
 Parabolic
 Hyperbolic
 Invalid
-InvalidOrbit
 ```
 
 ## Default `CelestialBodies`

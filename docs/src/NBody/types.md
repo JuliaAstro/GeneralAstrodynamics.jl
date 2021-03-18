@@ -4,5 +4,5 @@ As with [`TwoBody` Data Structures](@ref), the `NBody` submodule includes data s
 
 ```@docs
 Body
-MultibodySystem
+NBodySystem
 ```

@@ -42,10 +42,12 @@ apoapsis_radius
 periapsis_velocity
 apoapsis_velocity
 radius
+radius_vector
 velocity
+velocity_vector
 mass
 mass_parameter
-orbital_period
+period
 time_since_periapsis
 mean_motion
 mean_motion_vector
@@ -55,5 +57,4 @@ specific_angular_momentum
 specific_angular_momentum_vector
 specific_energy
 conic
-isinvalid
 ```

@@ -4,5 +4,7 @@ The `ThreeBody` module contains one key structure: `ThreeBodySystem`. A `ThreeBo
 nondimensional state of the spacecraft within the Circular Restricted Three-body Problem.
 
 ```@docs
-ThreeBodySystem
+RestrictedThreeBodySystem
+ThreeBodyState
+NondimensionalThreeBodyState
 ```
