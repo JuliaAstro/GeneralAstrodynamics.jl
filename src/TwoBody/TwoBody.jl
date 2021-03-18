@@ -20,7 +20,7 @@ import PhysicalConstants.CODATA2018
 G = 1.0 * CODATA2018.G
 
 # Export data structures, constants, and constructors
-export TwoBodySystem, TwoBodyState, KeplerianState, AbstractConic, Circular,
+export RestrictedTwoBodySystem, TwoBodyState, KeplerianState, AbstractConic, Circular,
        Elliptical, Parabolic, Hyperbolic, Invalid, Body, CelestialBody,
        Sun, Mercury, Venus, Earth, Moon, Luna, Mars, Jupiter, 
        Saturn, Uranus, Neptune, Pluto, G

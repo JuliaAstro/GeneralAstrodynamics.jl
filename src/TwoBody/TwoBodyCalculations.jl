@@ -21,7 +21,7 @@ function conic(e::T) where T<:Number
     end
 
 end
-conic(orbit::T) where T<:TwoBodySystem = conic(eccentricity(orbit))
+conic(orbit::T) where T<:RestrictedTwoBodySystem = conic(eccentricity(orbit))
 
 """
 Returns a Keplarian representation of a Cartesian orbital state.
@@ -144,7 +144,7 @@ function perifocal(i, Ω, ω, rᵢ, vᵢ)
 
 end
 
-function perifocal(orbit::T) where T <: TwoBodySystem
+function perifocal(orbit::T) where T <: RestrictedTwoBodySystem
     return perifocal(
         inclination(orbit),
         RAAN(orbit),
@@ -247,24 +247,24 @@ velocity_vector(orbit::KeplerianState) = velocity_vector(TwoBodyState(orbit))
 Returns periapsis radius, rₚ.
 """
 periapsis_radius(a, e) = a * (1 - e)
-periapsis_radius(orbit::T) where T<:TwoBodySystem = periapsis_radius(semimajor_axis(orbit), eccentricity(orbit))
+periapsis_radius(orbit::T) where T<:RestrictedTwoBodySystem = periapsis_radius(semimajor_axis(orbit), eccentricity(orbit))
 
 """
 Returns apoapsis radius, rₐ.
 """
 apoapsis_radius(a, e) = a * (1 + e)
-apoapsis_radius(orbit::T) where T<:TwoBodySystem = apoapsis_radius(semimajor_axis(orbit), eccentricity(orbit))
+apoapsis_radius(orbit::T) where T<:RestrictedTwoBodySystem = apoapsis_radius(semimajor_axis(orbit), eccentricity(orbit))
 
 """
 Returns periapsis velocity, vₚ, for any orbital representation.
 """
-periapsis_velocity(orbit::T) where T<:TwoBodySystem = velocity(periapsis_radius(orbit), semimajor_axis(orbit), orbit.body.μ)
+periapsis_velocity(orbit::T) where T<:RestrictedTwoBodySystem = velocity(periapsis_radius(orbit), semimajor_axis(orbit), orbit.body.μ)
 
 
 """
 Returns apoapsis velocity, v_a, for any orbital representation.
 """
-apoapsis_velocity(orbit::T) where T<:TwoBodySystem = velocity(apoapsis_radius(orbit), semimajor_axis(orbit), orbit.body.μ)
+apoapsis_velocity(orbit::T) where T<:RestrictedTwoBodySystem = velocity(apoapsis_radius(orbit), semimajor_axis(orbit), orbit.body.μ)
 
 """
 Returns mass `m`.
@@ -280,7 +280,7 @@ mass_parameter(body::CelestialBody) = body.μ
 Returns the orbital period.
 """
 period(a, μ) = 2π * √(upreferred(a^3 / μ))
-period(orbit::T) where T<:TwoBodySystem = period(semimajor_axis(orbit), orbit.body.μ)
+period(orbit::T) where T<:RestrictedTwoBodySystem = period(semimajor_axis(orbit), orbit.body.μ)
 
 """
 Returns true anomoly, ν.
@@ -296,12 +296,12 @@ true_anomoly(orbit::TwoBodyState) = true_anomoly(radius(orbit), specific_angular
 Returns mean motion, n.
 """
 mean_motion(a, μ) = √(μ / a^3)
-mean_motion(orbit::T) where T<:TwoBodySystem = mean_motion(semimajor_axis(orbit), orbit.μ)
+mean_motion(orbit::T) where T<:RestrictedTwoBodySystem = mean_motion(semimajor_axis(orbit), orbit.μ)
 
 """
 Returns mean motion vector, n̄.
 """
-function mean_motion_vector(orbit::T) where T<:TwoBodySystem
+function mean_motion_vector(orbit::T) where T<:RestrictedTwoBodySystem
 #   î = SVector{3, Float64}([1, 0, 0]) 
 #   ĵ = SVector{3, Float64}([0, 1, 0]) 
     k̂ = SVector{3, Float64}([0, 0, 1])
@@ -312,7 +312,7 @@ end
 Returns eccentric anomoly, E, parabolic anomoly, B, or hyperbolic 
 anomoly, H. 
 """
-function eccentric_anomoly(orbit::T) where T <: TwoBodySystem
+function eccentric_anomoly(orbit::T) where T <: RestrictedTwoBodySystem
     e = eccentricity(orbit)
     ν = true_anomoly(orbit)
     return acos(u"rad", (e + cos(ν) / (1 + e * cos(ν))))
@@ -322,7 +322,7 @@ end
 Returns time since periapsis, t.
 """
 time_since_periapsis(n, e, E) = (E - e * sin(E)) / (n)
-time_since_periapsis(orbit::T) where T <: TwoBodySystem = time_since_periapsis(mean_motion(orbit), eccentricity(orbit), eccentric_anomoly(orbit))
+time_since_periapsis(orbit::T) where T <: RestrictedTwoBodySystem = time_since_periapsis(mean_motion(orbit), eccentricity(orbit), eccentric_anomoly(orbit))
 
 """
 Returns orbital inclination, i.
@@ -345,7 +345,7 @@ argument_of_periapsis(orbit::TwoBodyState) = argument_of_periapsis(KeplerianStat
 """
 Returns true if all elements in each system are within `atol` of the other.
 """
-function Base.isapprox(c1::TwoBodySystem, c2::TwoBodySystem; atol=1e-6)
+function Base.isapprox(c1::RestrictedTwoBodySystem, c2::RestrictedTwoBodySystem; atol=1e-6)
 
     return all(ustrip.(abs.(radius_vector(c1) - radius_vector(c2))) .< atol) &&
            all(ustrip.(abs.(velocity_vector(c1) - velocity_vector(c2))) .< atol) &&
@@ -362,7 +362,7 @@ end
 """
 Returns true if all elements of each system are identically equal.
 """
-function Base.isequal(c1::TwoBodySystem, c2::TwoBodySystem)
+function Base.isequal(c1::RestrictedTwoBodySystem, c2::RestrictedTwoBodySystem)
 
     return all(radius_vector(c1) .== radius_vector(c2)) &&
            all(velocity_vector(c1) .== velocity_vector(c2)) &&

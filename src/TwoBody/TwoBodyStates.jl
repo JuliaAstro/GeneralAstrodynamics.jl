@@ -38,7 +38,7 @@ struct Invalid <: AbstractConic end
 """
 Abstract type for all two-body orbital representations.
 """
-abstract type TwoBodySystem{C<:AbstractConic, F<:AbstractFloat} <: OrbitalSystem end
+abstract type RestrictedTwoBodySystem{C<:AbstractConic, F<:AbstractFloat} <: OrbitalSystem end
 
 
 """
@@ -109,7 +109,7 @@ end
 """
 Struct for storing `TwoBody` Cartesian states for all conics.
 """
-struct TwoBodyState{C<:AbstractConic, F<:AbstractFloat} <: TwoBodySystem{C,F}
+struct TwoBodyState{C<:AbstractConic, F<:AbstractFloat} <: RestrictedTwoBodySystem{C,F}
     r::SVector{3, Length{F}}
     v::SVector{3, Velocity{F}}
     body::CelestialBody{F}
@@ -117,16 +117,24 @@ struct TwoBodyState{C<:AbstractConic, F<:AbstractFloat} <: TwoBodySystem{C,F}
     function TwoBodyState(r::R, v::V, body::CelestialBody) where {R <: AbstractVector{<:Length}, V <: AbstractVector{<:Velocity}}
         C = conic(eccentricity(r, v, body.μ))
         T = promote_type(typeof(ustrip(r[1])), typeof(ustrip(v[1])), typeof(ustrip(body.μ)))
+        if !(T <: AbstractFloat)
+            @warn "Non-float parameters provided. Defaulting to Float64."
+            T = Float64
+        end
         return new{C,T}(SVector{3,Length{T}}(r...), SVector{3, Velocity{T}}(v...), T(body))
     end
 
-    function TwoBodyState(r::R, v::V, body::CelestialBody) where {R <: AbstractVector{<:AbstractFloat}, V <: AbstractVector{<:AbstractFloat}}
+    function TwoBodyState(r::R, v::V, body::CelestialBody) where {R <: AbstractVector{<:Real}, V <: AbstractVector{<:Real}}
         C = conic(eccentricity(r, v, body.μ))
         T = promote_type(typeof(ustrip(r[1])), typeof(ustrip(v[1])), typeof(ustrip(body.μ)))
-        @warn "Units not provided! Assuming km and km/s."
+        if !(T <: AbstractFloat)
+            @warn "Non-float parameters provided. Defaulting to Float64."
+            T = Float64
+        end
         return new{C,T}(SVector{3,Length{T}}((r * u"km")...), SVector{3, Velocity{T}}((v * u"km/s")...), T(body))
     end
 
+    TwoBodyState(r, v, μ::T) where T <: Real = TwoBodyState(r, v, CelestialBody(μ))
     TwoBodyState(orbit::TwoBodyState) = TwoBodyState(orbit.r, orbit.v, orbit.body)
 end
 
@@ -145,7 +153,7 @@ const Orbit{C<:AbstractConic, F<:AbstractFloat} = TwoBodyState{C,F}
 """
 Struct for storing `Keplerian` states for all conics.
 """
-struct KeplerianState{C<:AbstractConic, F<:AbstractFloat} <: TwoBodySystem{C,F}
+struct KeplerianState{C<:AbstractConic, F<:AbstractFloat} <: RestrictedTwoBodySystem{C,F}
     e::F
     a::Length{F}
     i::DimensionlessQuantity{F}
@@ -157,39 +165,41 @@ struct KeplerianState{C<:AbstractConic, F<:AbstractFloat} <: TwoBodySystem{C,F}
     function KeplerianState(e::E, a::Length{A}, i::DimensionlessQuantity{I}, 
                             Ω::DimensionlessQuantity{O}, ω::DimensionlessQuantity{W}, 
                             ν::DimensionlessQuantity{V}, body::CelestialBody{B}) where {
-            E <: AbstractFloat,
-            A <: AbstractFloat,
-            I <: AbstractFloat,
-            O <: AbstractFloat,
-            W <: AbstractFloat,
-            V <: AbstractFloat,
-            B <: AbstractFloat
+            E <: Real,
+            A <: Real,
+            I <: Real,
+            O <: Real,
+            W <: Real,
+            V <: Real,
+            B <: Real
         }
         C = conic(e)
         T = promote_type(typeof(e), typeof(ustrip(a)), typeof(ustrip(i)), typeof(ustrip(Ω)), 
                          typeof(ustrip(ω)), typeof(ustrip(ν)), typeof(ustrip(body.μ)))
+        if !(T <: AbstractFloat)
+            @warn "Non-float parameters provided. Defaulting to Float64."
+            T = Float64
+        end
         return new{C,T}(T(e), T(a), T(i), T(Ω), T(ω), T(ν), T(body))
     end
 
     function KeplerianState(e::E, a::A, i::I, 
                             Ω::O, ω::W, ν::V,
                             body::CelestialBody{B}) where {
-            E <: AbstractFloat,
-            A <: AbstractFloat,
-            I <: AbstractFloat,
-            O <: AbstractFloat,
-            W <: AbstractFloat,
-            V <: AbstractFloat,
-            B <: AbstractFloat
+            E <: Real,
+            A <: Real,
+            I <: Real,
+            O <: Real,
+            W <: Real,
+            V <: Real,
+            B <: Real
         }
-        C = conic(e)
-        T = promote_type(typeof(e), typeof(a), typeof(i), typeof(Ω), 
-            typeof(ω), typeof(ν), typeof(ustrip(body.μ)))
         @warn "No units provided! Assuming km and rad."
-        return new{C,T}(T(e), T(a) * u"km", T(i % 2π) * u"rad", T(Ω % 2π) * u"rad", 
-                        T(ω % 2π) * u"rad", T(ν % 2π) * u"rad", T(body))
+        return KeplerianState(e, a * u"km", (i % 2π) * u"rad", (Ω % 2π) * u"rad", 
+                              (ω % 2π) * u"rad", (ν % 2π) * u"rad", body)
     end
 
+    KeplerianState(e, a, i, Ω, ω, ν, μ::T) where T <: Real = KeplerianState(e, a, i, Ω, ω, ν, CelestialBody(μ))
     KeplerianState(orbit::KeplerianState) = KeplerianState(orbit.e, orbit.a, orbit.i, orbit.Ω, orbit.ω, orbit.ν, orbit.body)
 end
 

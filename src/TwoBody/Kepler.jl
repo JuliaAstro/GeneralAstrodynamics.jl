@@ -7,7 +7,7 @@
 """
 Solves Kepler's Problem for `orbit` and `Δtᵢ`.
 """
-function kepler(orbit::Orbit, Δtᵢ::T = period(orbit); tol=1e-6, max_iter=100) where T<:Unitful.Time
+function kepler(orbit::O, Δtᵢ::T = period(orbit); tol=1e-6, max_iter=100) where O <: RestrictedTwoBodySystem where T<:Unitful.Time
 
     conic_section = conic(orbit)
 
