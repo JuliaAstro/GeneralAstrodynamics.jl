@@ -2,7 +2,19 @@
 [![Docs](https://github.com/cadojo/UnitfulAstrodynamics.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/UnitfulAstrodynamics.jl/stable)
 
 # UnitfulAstrodynamics.jl
-Common astrodynamics calculations with units!
+Common astrodynamics calculations, with units!
+
+## Features
+* Restricted two-body problem equations, states, propagation, and plotting
+* Restricted three-body problem equations, states, propagation, and iterative Halo orbit solvers
+* N-body problem equations, states, propagation, and plotting
+* A collection of fairly accurate planetary constants from our solar system (pulled from [SPICE](https://naif.jpl.nasa.gov/pub/naif/generic_kernels/) kernals)
+
+More to come! In the near term, additional features will include...
+* Manifold-based transfer equations and states within the circular restricted three-body problem
+* Hohmann-based transfer equations and states within the restricted two-body problem
+* Zero-velocity curve plots for circular restricted three-body problem trajectories
+* Stability analysis for circular restricted three-body problem states
 
 ## Motivation 
 
@@ -17,94 +29,4 @@ This package aims to provide a simple interface for common astrodynamics problem
 
 ## Usage
 
-Check out the [Getting Started](https://cadojo.github.io/UnitfulAstrodynamics.jl/stable/Overview/getting-started/#Getting-Started) documentation for code examples, and more detail about using this package. Some quick examples are shown below!
-
-#### Two-Body Problem
-
-The `TwoBody` module handles Astrodynamics scenarios within the two-body problem. 
-
-```Julia
-# Cartesian state to Orbit
-rᵢ = [0.0, 11681.0, 0.0] * u"km"
-vᵢ = [5.134, 4.226, 2.787] * u"km/s"
-orbit1 = Orbit(rᵢ, vᵢ, Earth)
-
-# Keplerian state to Orbit
-e      =  0.3      
-a      =  15000    * u"km" + Earth.R
-i      =  10       * u"°"
-Ω      =  0        * u"°"
-ω      =  10       * u"°"
-ν      =  0        * u"°"
-orbit2 =  Orbit(e, a, i, Ω, ω, ν, Earth)
-
-# This is a true fact!
-orbit1 ≈ orbit2
-
-# For the rest of this section...
-orbit = orbit1
-
-# Kepler's Prediction problem
-orbit_later = kepler(orbit, orbital_period(orbit))
-
-# Lambert's Proplem
-v₁, v₂ = lambert(orbit.rᵢ, orbit_later.rᵢ, Earth.μ, orbital_period(orbit), :short)
-
-# Orbit propagation
-sols = propagate(orbit, orbital_period(orbit))
-
-# Plotting (with Plots.jl kwargs)
-plot(sols; title="Plots.jl keywords work!", xlabel="Woo")
-
-# Another true fact!
-sols.step[end] ≈ orbit_later
-```
-
-#### Three-Body Problem
-
-The `ThreeBody` module helps to solve the Circular Restricted `ThreeBody` problem.
-
-```julia
-# Hardcode Gravity parameters for the Sun, 
-# and the Earth-Moon System
-μₛ = 1.32712440018e20u"m^3/s^2"
-μₑ = 4.035032351966808e14u"m^3/s^2"
-
-# Dimensional initial conditions for spacecraft
-r = [2e9, 7000, 2000]u"km"
-v = [0.001, 0.08, 0.02]u"km/s"
-t = 500u"d"
-
-# Construct nondimensional state
-sys = ThreeBodySystem(1.0u"AU", μₛ, μₑ, r, v, t);
-
-# Propagate!
-sols = propagate(sys)
-```
-
-#### N-Body Problem
-
-The `NBody` module helps to solve the classical gravitational `NBody` problem. 
-
-```Julia
-# It's MY Earth, and I want it now
-r₁ = [0.0, 0.0, 0.0]u"km"
-v₁ = [0.0, 0.0, 0.0]u"km/s"
-m₁ = Earth.m
-myEarth = Body(r₁, v₁, m₁)
-
-# And we'll need a satellite...
-r₂ = [0.0, 11681.0, 0.0]u"km"
-v₂ = [5.134, 4.226, 2.787]u"km/s"
-m₂ = 1000.0u"kg"
-mySatellite = Body(r₂, v₂, m₂)
-
-# Construct a MultibodySystem
-sys = MultibodySystem([myEarth, mySatellite])
-
-# Propagate n-body system
-sols = propagate(sys, 10000u"s"; abstol=1e-14, reltol=1e-14)
-
-# Plot n-body propagation results
-plot(sols; title="Plots.jl keywords work!", xlabel="Woo")
-```
+Check out the [Getting Started](https://cadojo.github.io/UnitfulAstrodynamics.jl/stable/Overview/getting-started/#Getting-Started) documentation for code examples, and more detail about using this package. 
