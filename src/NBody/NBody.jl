@@ -14,7 +14,8 @@ using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
 
 export Body, NBodySystem, system_energy, 
        system_angular_momentum, promote, convert,
-       Float16, Float32, Float64, BigFloat
+       Float16, Float32, Float64, BigFloat,
+       length, getindex
 
 include("NBodyStates.jl")
 include("NBodyCalculations.jl")

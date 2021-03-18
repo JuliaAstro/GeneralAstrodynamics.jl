@@ -27,7 +27,7 @@ struct Body{F<:AbstractFloat} <: AbstractBody
         else
             T = promote_type(T1, T2, T3)
             if !(T <: AbstractFloat)
-                @warn "Non-float types provided to `Body` constructor: using `Float64`."
+                @warn "Non-float parameters provided. Defaulting to Float64."
                 T = Float64
             end
             return new{T}(SVector{3}(T.(r)), SVector{3}(T.(v)), T(m), name)
@@ -70,6 +70,8 @@ struct NBodySystem{N, T<:AbstractFloat} <: OrbitalSystem
 
 end
 
+Base.@pure Base.length(sys::NBodySystem{N,T}) where N where T = N
+Base.getindex(sys::NBodySystem, i) = sys.bodies[i]
 Base.convert(::Type{T}, sys::NBodySystem) where {T<:AbstractFloat} = NBodySystem(convert.(T, sys.bodies)...)
 Base.promote(::Type{NBodySystem{N, A}}, ::Type{NBodySystem{N, B}}) where {A<:AbstractFloat, B<:AbstractFloat,N} = NBodySystem{promote_type(A,B)}
 Core.Float16(o::NBodySystem) = convert(Float16, o)
