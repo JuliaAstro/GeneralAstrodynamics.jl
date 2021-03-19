@@ -64,13 +64,22 @@ Core.Float32(o::ThreeBodyState) = convert(Float32, o)
 Core.Float64(o::ThreeBodyState) = convert(Float64, o)
 Base.MPFR.BigFloat(o::ThreeBodyState) = convert(BigFloat, o)
 
+function Base.show(io::IO, sys::ThreeBodyState)
+    println(io, "Dimensioned Circular Restricted Three-body State")
+    println(io, "  μ₁:        ", sys.μ₁)
+    println(io, "  μ₂:        ", sys.μ₂)
+    println(io, "   a:        ", sys.a)
+    println(io, "  r₃:        ", transpose(ustrip.(sys.r₃)), " ", unit(first(sys.r₃)))
+    println(io, "  v₃:        ", transpose(ustrip.(sys.v₃)), " ", unit(first(sys.v₃)))
+    println(io, "  Δt:        ", sys.Δt)
+end
+
 """
 Describes the non-dimensional state of a spacecraft
 within the Circular Restricted Three-body Problem in
 the Synodic frame.
 """
 struct NondimensionalThreeBodyState{F<:AbstractFloat} <: RestrictedThreeBodySystem
-    
     r::SVector{3, F}
     v::SVector{3, F}
     μ::F
@@ -78,33 +87,22 @@ struct NondimensionalThreeBodyState{F<:AbstractFloat} <: RestrictedThreeBodySyst
     DU::Length{F}
     DT::Time{F}
 
-    function NondimensionalThreeBodyState(rₛ::R, vₛ::V, μ::F1, Δt::F2 = 1.0, 
-                                          DU::Unitful.Length{F3} = NaN * u"km", 
-                                          DT::Unitful.Time{F4} = NaN * u"km/s") where {
-            FR <: Real,
-            FV <: Real,
-            R  <: AbstractArray{FR}, 
-            V  <: AbstractArray{FV},
-            F1 <: Real,
-            F2 <: Real,
-            F3 <: Real,
-            F4 <: Real
-        }
-
-        T = promote_type(FR, FV, F1, F2, F3, F4)
+    function NondimensionalThreeBodyState(rₛ::AbstractVecOrMat{R}, vₛ::AbstractVecOrMat{V}, μ::U, Δt::D = 1.0, 
+                                          DU::Unitful.Length{L} = NaN * u"km", 
+                                          DT::Unitful.Time{C} = NaN * u"s") where {
+                                          R <: Real, V <: Real, L <: Real, C <: Real, U <: Real, D <: Real}
+        T = promote_type(R, V, L, C, U, D)
         if !(T <: AbstractFloat)
             @warn "Non-float parameters provided. Defaulting to Float64."
             T = Float64
         end
         
         return new{T}(
-            SVector{3,T}(T.(rₛ[:])), 
-            SVector{3,T}(T.(vₛ[:])), 
+            SVector{3,T}(rₛ...), 
+            SVector{3,T}(vₛ...), 
             T(μ), T(Δt), T(DU), T(DT)
         )
-
     end
-
 end
 
 Base.convert(::Type{T}, t::NondimensionalThreeBodyState) where {
@@ -117,3 +115,13 @@ Core.Float16(o::NondimensionalThreeBodyState) = convert(Float16, o)
 Core.Float32(o::NondimensionalThreeBodyState) = convert(Float32, o)
 Core.Float64(o::NondimensionalThreeBodyState) = convert(Float64, o)
 Base.MPFR.BigFloat(o::NondimensionalThreeBodyState) = convert(BigFloat, o)
+
+function Base.show(io::IO, sys::NondimensionalThreeBodyState)
+    println(io, "Nondimensional Circular Restricted Three-body State")
+    println(io, "   μ:        ", sys.μ)
+    println(io, "   r:        ", transpose(sys.r))
+    println(io, "   v:        ", transpose(sys.v))
+    println(io, "  Δt:        ", sys.Δt)
+    println(io, "  DU:        ", sys.DU)
+    println(io, "  DT:        ", sys.DT)
+end

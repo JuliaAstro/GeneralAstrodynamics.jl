@@ -69,7 +69,7 @@ Returns nondimensional form of (`Unitful`) time duration.
 """
 nondimensionalize(t::T1, Tₛ::T2) where {
         T1<:Time, T2<:Time
-    } = t / Tₛ
+    } = upreferred(t / Tₛ)
 
 """
 Returns nondimensional form of (`Unitful`) time duration.
@@ -109,10 +109,10 @@ Returns the nondimensional (synodic / rotating) representation of a CR3BP state.
 function nondimensionalize(state::D) where D <: ThreeBodyState
     return NondimensionalThreeBodyState(
         nondimensionalize(state.r₃, state.a),
-        nondimensionalize(state.v₃, state.a, state.Δt),
+        nondimensionalize(state.v₃, state.a, time_scale_factor(state.a, state.μ₁, state.μ₂)),
         nondimensionalize(state.μ₁, state.μ₂),
-        nondimensionalize_time(state.Δt, state.a, state.μ₁, state.μ₂),
-        state.a, state.Δt
+        nondimensionalize(state.Δt, state.a, state.μ₁, state.μ₂),
+        state.a, time_scale_factor(state.a, state.μ₁, state.μ₂)
     )
 end
 
@@ -124,62 +124,44 @@ redimensionalize_length(rᵢ, a) = upreferred(rᵢ .* a)
 """
 Returns dimensional velocity units.
 """
-redimensionalize_velocity(vᵢ, a, Tₛ) = vᵢ .* (a / Tₛ)
+redimensionalize_velocity(vᵢ, a, Tₛ) = upreferred(vᵢ .* (a / Tₛ))
 
 """
 Returns dimensional time unit.
 """
-redimensionalize_time(t, a, μ₁, μ₂) = t * time_scale_factor(a, μ₁, μ₂)
+redimensionalize_time(t, a, μ₁, μ₂) = redimensionalize_time(t, time_scale_factor(a, μ₁, μ₂))
+
+"""
+Returns dimensional time unit.
+"""
+redimensionalize_time(t, Tₛ) = t * Tₛ
 
 """
 Returns dimensional (inertial) form of (`Unitful`) scalar posiion.
 """
 redimensionalize(rᵢ::R, a::A) where {
-        R<:Length, A<:Length
+        R<:Real, A<:Length
     } = redimensionalize_length(rᵢ, a)
-
-"""
-Returns dimensional (inertial) form of (`Unitful`) position vector.
-"""
-redimensionalize(rᵢ::R, a::A) where {
-        U<:Length, R<:AbstractVector{U}, A<:Length
-    } = redimensionalize_length(rᵢ, a)
-
-
-"""
-Returns dimensional (inertial) form of (`Unitful`) scalar velocity.
-"""
-redimensionalize(vᵢ::V, a::A) where {
-        V<:Velocity, A<:Length
-    } = redimensionalize_length(vᵢ, a)
-
 
 """
 Returns dimensional (inertial) form of (`Unitful`) velocity vector.
 """
-redimensionalize(vᵢ::V, a::A, Tₛ::T) where {
-        U<:Velocity, V<:AbstractVector{U}, A<:Length, T<:Time
+redimensionalize(vᵢ::U, a::A, Tₛ::T) where {
+        U<:Real, A<:Length, T<:Time
     } = redimensionalize_velocity(vᵢ, a, Tₛ)
-
-"""
-Returns dimensional (inertial) form of (`Unitful`) velocity vector.
-"""
-redimensionalize(vᵢ::V, a::A, μ₁::U1, μ₂::U2) where {
-        U<:Velocity, V<:AbstractVector{U}, A<:Length, U1<:MassParameter, U2<:MassParameter
-    } = redimensionalize_velocity(vᵢ, a, time_scale_factor(a, μ₁, μ₂))
 
 """
 Returns dimensional (inertial) form of (`Unitful`) time duration.
 """
 redimensionalize(t::T1, Tₛ::T2) where {
-        T1<:Time, T2<:Time
-    } = t / Tₛ
+        T1<:Real, T2<:Time
+    } = redimensionalize_time(t, Tₛ)
 
 """
 Returns dimensional (inertial) form of (`Unitful`) time duration.
 """
 redimensionalize(t::T1, a::A, μ₁::U1, μ₂::U2) where {
-        T1<:Time, A<:Length, U1<:MassParameter, U2<:MassParameter
+        T1<:Real, A<:Length, U1<:MassParameter, U2<:MassParameter
     } = redimensionalize(t, time_scale_factor(a, μ₁, μ₂))
 
 """
@@ -192,9 +174,9 @@ function redimensionalize(state::N, μ₁::U1, μ₂::U2) where {
     return ThreeBodyState(
             μ₁, μ₂, 
             state.DU, 
-            redimensionalize(state.rₛ, state.DU), 
-            redimensionalize(state.vₛ, state.DU, state.DT), 
-            state.DT * state.Δt
+            redimensionalize.(state.r, state.DU), 
+            redimensionalize.(state.v, state.DU, time_scale_factor(state.DU, μ₁, μ₂)), 
+            redimensionalize(state.Δt, state.DT)
         )
 end
 

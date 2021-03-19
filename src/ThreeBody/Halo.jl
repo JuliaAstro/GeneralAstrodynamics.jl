@@ -233,7 +233,6 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
         end
 
         if abs(integrator.u.vₛ[1]) ≤ tolerance && abs(integrator.u.vₛ[3]) ≤ tolerance
-            @info "Desired tolerance reached! Iterated $i times."
             break;
         elseif i == max_iter
             @warn "Desired tolerance was not reached, and iterations have hit the maximum number of iterations: $max_iter."
