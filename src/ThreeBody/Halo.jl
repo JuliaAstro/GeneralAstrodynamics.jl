@@ -246,8 +246,10 @@ end
 """
 Returns a `NondimensionalThreeBodyState` type, instead of tuple `r,v,T`.
 """
-halo(μ, DU::L, DT::T; kwargs...) where L <: Length where T <: Time = (r,v,T = halo(μ; kwargs); NondimensionalThreeBodyState(r, v, μ, T, DU, DT))
-
+function halo(μ, DU::L, DT::T; kwargs...) where L <: Length where T <: Time
+    r, v, T = halo(μ; kwargs)
+    return NondimensionalThreeBodyState(r, v, μ, T, DU, DT)
+end
 
 """
 Iterative halo solver, returns a `NondimensionalThreeBodyState` in-place.
