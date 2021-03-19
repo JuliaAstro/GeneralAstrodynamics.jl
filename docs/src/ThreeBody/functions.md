@@ -35,6 +35,7 @@ redimensionalize
 halo_analytic,
 halo
 halo!
+monodromy
 ```
 
 ## Other Common Calculations
@@ -45,7 +46,7 @@ jacobi_constant,
 lagrange,
 potential_energy_hessian, 
 accel,
-halo_numerical_tic!,
+RestrictedThreeBodySTMTic!,
 state_transition_dynamics,
 nondimensional_radius,  
 inertial, 

@@ -63,6 +63,6 @@ include_sourcecode(b::Bool) = include_source_in_docstring = b
 
 @template (FUNCTIONS, METHODS, MACROS) =
 """
-$(TERSEMETHODS)
+$(METHODLIST)
 $(DOCSTRING)
 """
