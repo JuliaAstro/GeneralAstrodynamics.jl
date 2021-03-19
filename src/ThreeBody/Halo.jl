@@ -246,8 +246,8 @@ end
 """
 Returns a `NondimensionalThreeBodyState` type, instead of tuple `r,v,T`.
 """
-function halo(μ, DU::L, DT::T; kwargs...) where L <: Length where T <: Time
-    r, v, T = halo(μ; kwargs)
+function halo(μ, DU::T1, DT::T2; kwargs...) where T1 <: Length where T2 <: Time
+    r, v, T = halo(μ; kwargs...)
     return NondimensionalThreeBodyState(r, v, μ, T, DU, DT)
 end
 
@@ -290,4 +290,28 @@ function RestrictedThreeBodySTMTic!(∂u, u, p, t)
     ∂u.Φ₅ = copy(∂Φ[5,:])[:]
     ∂u.Φ₆ = copy(∂Φ[6,:])[:]
     
+end
+
+"""
+Returns the Monodromy Matrix for a Halo orbit.
+"""
+function monodromy(orbit::NondimensionalThreeBodyState; reltol = 1e-14, abstol = 1e-14)
+    problem = ODEProblem(
+        RestrictedThreeBodySTMTic!,
+        ComponentArray(rₛ  = orbit.r,
+                       vₛ  = orbit.v,
+                       Φ₁  = [1.0, 0, 0, 0, 0, 0],
+                       Φ₂  = [0, 1.0, 0, 0, 0, 0],
+                       Φ₃  = [0, 0, 1.0, 0, 0, 0],
+                       Φ₄  = [0, 0, 0, 1.0, 0, 0],
+                       Φ₅  = [0, 0, 0, 0, 1.0, 0],
+                       Φ₆  = [0, 0, 0, 0, 0, 1.0]),
+        (0.0, orbit.Δt),
+        ComponentArray(μ   =  orbit.μ)
+    )
+
+    u = solve(problem; reltol = reltol, abstol = abstol).u[end]
+    
+    @warn "Currently this function doesn't check for periodicity. Beware!"
+    Matrix(transpose(hcat(u.Φ₁, u.Φ₂, u.Φ₃, u.Φ₄, u.Φ₅, u.Φ₆)))
 end
