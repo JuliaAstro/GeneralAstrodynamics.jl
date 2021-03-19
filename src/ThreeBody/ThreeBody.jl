@@ -19,7 +19,7 @@ using ComponentArrays
 using Symbolics
 using Roots
 
-export ThreeBodyState, NondimensionalThreeBodyState, ThreeBodySystem
+export ThreeBodyState, NondimensionalThreeBodyState, RestrictedThreeBodySystem
 export time_scale_factor,
        nondimensionalize_length,
        nondimensionalize_velocity,

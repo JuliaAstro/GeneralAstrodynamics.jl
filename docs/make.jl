@@ -2,19 +2,20 @@ using Documenter
 using DocStringExtensions
 using UnitfulAstrodynamics
 
-source = true
-UnitfulAstrodynamics.include_sourcecode(source)
-UnitfulAstrodynamics.AstroPlots.include_sourcecode(source)
-UnitfulAstrodynamics.CommonTypes.include_sourcecode(source)
-UnitfulAstrodynamics.Maneuvers.include_sourcecode(source)
-UnitfulAstrodynamics.NBody.include_sourcecode(source)
-UnitfulAstrodynamics.Propagators.include_sourcecode(source)
-UnitfulAstrodynamics.ThreeBody.include_sourcecode(source)
-UnitfulAstrodynamics.TwoBody.include_sourcecode(source)
 
-makedocs(modules=[UnitfulAstrodynamics],
+makedocs(
+    modules=[
+        UnitfulAstrodynamics,
+        UnitfulAstrodynamics.CommonTypes,
+        UnitfulAstrodynamics.TwoBody,
+        UnitfulAstrodynamics.NBody,
+        UnitfulAstrodynamics.ThreeBody,
+        UnitfulAstrodynamics.Propagators,
+        UnitfulAstrodynamics.AstroPlots
+    ],
     format=Documenter.HTML(),
     sitename="UnitfulAstrodynamics.jl",
+    authors = "Joey Carpinelli",
     pages=[
         "Guide" => "index.md",
         "Overview" => Any[

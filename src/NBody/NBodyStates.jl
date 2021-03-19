@@ -70,7 +70,14 @@ struct NBodySystem{N, T<:AbstractFloat} <: OrbitalSystem
 
 end
 
+"""
+The `length` of an `NBodySystem` is the number of bodies in the system.
+"""
 Base.@pure Base.length(sys::NBodySystem{N,T}) where N where T = N
+
+"""
+The n-th `index` of an `NBodySystem` is the n-th body in the system.
+"""
 Base.getindex(sys::NBodySystem, i) = sys.bodies[i]
 Base.convert(::Type{T}, sys::NBodySystem) where {T<:AbstractFloat} = NBodySystem(convert.(T, sys.bodies)...)
 Base.promote(::Type{NBodySystem{N, A}}, ::Type{NBodySystem{N, B}}) where {A<:AbstractFloat, B<:AbstractFloat,N} = NBodySystem{promote_type(A,B)}

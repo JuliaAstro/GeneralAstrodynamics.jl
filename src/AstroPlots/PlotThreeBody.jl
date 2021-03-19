@@ -2,6 +2,10 @@
 # CR3BP Plots
 #
 
+"""
+Plot specified lagrange points in the rotating
+reference frame of CR3BP system μ.
+"""
 function lagrangeplot(μ, L=1:5; kwargs...)
 
     defaults = (; title="Nondimensional Lagrange Points", 
