@@ -12,12 +12,12 @@ Currently not exported. Used for two-body numerical integration.
 """
 function RestrictedThreeBodyTic!(∂u, u, p, t=0)
     ∂u.rₛ =  u.vₛ
-    accel!(∂u.vₛ, u.rₛ, u.vₛ, p.μ)
+    ThreeBody.accel!(∂u.vₛ, u.rₛ, u.vₛ, p.μ)
     return nothing
 end
 
 """
-Uses OrdinaryDiffEq solvers to propagate `orbit` Δt into the future.
+Uses OrdinaryDiffEq solvers to propagate `sys` Δt into the future.
 All keyword arguments are passed directly to OrdinaryDiffEq solvers.
 """
 function propagate(sys::NondimensionalThreeBodyState, Δt::T = sys.Δt; kwargs...) where T<:Real
@@ -37,7 +37,7 @@ function propagate(sys::NondimensionalThreeBodyState, Δt::T = sys.Δt; kwargs..
     p  = ComponentArray((μ=sys.μ, x₁=-sys.μ, x₂=1-sys.μ))
 
     # Numerically integrate!
-    sols = solve(ODEProblem(RestrictedThreeBodyTic!, u₀, ts, p), ode_alg; options...)
+    sols = solve(ODEProblem(RestrictedThreeBodyTic!, u₀, ts, p); options...)
 
     # Return PropagationResult structure
     return Trajectory(
@@ -48,3 +48,15 @@ function propagate(sys::NondimensionalThreeBodyState, Δt::T = sys.Δt; kwargs..
 
 end
 
+"""
+Uses OrdinaryDiffEq solvers to propagate `sys` Δt into the future.
+All keyword arguments are passed directly to OrdinaryDiffEq solvers.
+"""
+function propagate(sys::ThreeBodyState, Δt::Unitful.Time{<:Real} = sys.Δt)
+    traj = propagate(nondimensionalize(sys), nondimensionalize(Δt, sys.a, sys.μ₁, sys.μ₂))
+    return Trajectory(
+        redimensionalize.(traj.t, sys.a, sys.μ₁, sys.μ₂),
+        redimensionalize.(traj.step),
+        traj.retcode
+    )
+end
