@@ -3,7 +3,7 @@
 #
 
 """
-Returns total energy for `NBody` system.
+Returns total energy for `NBodySystem`.
 """
 function system_energy(sys::NBodySystem)
 
@@ -26,7 +26,7 @@ function system_energy(sys::NBodySystem)
 end
 
 """
-Returns total angular momentum for `NBody` system.
+Returns total angular momentum for `NBodySystem`.
 """
 function system_angular_momentum(sys::NBodySystem)
 
