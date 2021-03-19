@@ -179,7 +179,7 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
     for i ∈ 1:max_iter
     
         problem = ODEProblem(
-            halo_numerical_tic!,
+            RestrictedThreeBodySTMTic!,
             ComponentArray(rₛ  = r₀,
                            vₛ  = v₀,
                            Φ₁  = [1.0, 0, 0, 0, 0, 0],
@@ -244,6 +244,14 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
 end
 
 """
+Returns a `NondimensionalThreeBodyState` type, instead of tuple `r,v,T`.
+"""
+function halo(μ, DU::T1, DT::T2; kwargs...) where T1 <: Length where T2 <: Time
+    r, v, T = halo(μ; kwargs...)
+    return NondimensionalThreeBodyState(r, v, μ, T, DU, DT)
+end
+
+"""
 Iterative halo solver, returns a `NondimensionalThreeBodyState` in-place.
 """
 function halo!(state, μ; kwargs...) 
@@ -267,11 +275,11 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
-function halo_numerical_tic!(∂u, u, p, t)
+function RestrictedThreeBodySTMTic!(∂u, u, p, t)
 
     # Cartesian state
     ∂u.rₛ =  u.vₛ
-    ∂u.vₛ =  accel(u.rₛ, u.vₛ, p.μ)
+    accel!(∂u.vₛ, u.rₛ, u.vₛ, p.μ)
 
     # State transition matrix
     ∂Φ  = state_transition_dynamics(p.μ, u.rₛ) * SMatrix{6,6}(transpose(hcat(u.Φ₁, u.Φ₂, u.Φ₃, u.Φ₄, u.Φ₅, u.Φ₆)))
@@ -282,4 +290,28 @@ function halo_numerical_tic!(∂u, u, p, t)
     ∂u.Φ₅ = copy(∂Φ[5,:])[:]
     ∂u.Φ₆ = copy(∂Φ[6,:])[:]
     
+end
+
+"""
+Returns the Monodromy Matrix for a Halo orbit.
+"""
+function monodromy(orbit::NondimensionalThreeBodyState; reltol = 1e-14, abstol = 1e-14)
+    problem = ODEProblem(
+        RestrictedThreeBodySTMTic!,
+        ComponentArray(rₛ  = orbit.r,
+                       vₛ  = orbit.v,
+                       Φ₁  = [1.0, 0, 0, 0, 0, 0],
+                       Φ₂  = [0, 1.0, 0, 0, 0, 0],
+                       Φ₃  = [0, 0, 1.0, 0, 0, 0],
+                       Φ₄  = [0, 0, 0, 1.0, 0, 0],
+                       Φ₅  = [0, 0, 0, 0, 1.0, 0],
+                       Φ₆  = [0, 0, 0, 0, 0, 1.0]),
+        (0.0, orbit.Δt),
+        ComponentArray(μ   =  orbit.μ)
+    )
+
+    u = solve(problem; reltol = reltol, abstol = abstol).u[end]
+    
+    @warn "Currently this function doesn't check for periodicity. Beware!"
+    Matrix(transpose(hcat(u.Φ₁, u.Φ₂, u.Φ₃, u.Φ₄, u.Φ₅, u.Φ₆)))
 end

@@ -148,7 +148,8 @@ Base.MPFR.BigFloat(o::TwoBodyState) = convert(BigFloat, o)
 """
 Alias for `TwoBodyState`.
 """
-const Orbit{C<:AbstractConic, F<:AbstractFloat} = TwoBodyState{C,F}
+Orbit(r, V, body) = TwoBodyState(r, v, body)
+Orbit(e, a, i, Ω, ω, ν, body) = KeplerianState(e, a, i, Ω, ω, ν, body)
 
 """
 Struct for storing `Keplerian` states for all conics.

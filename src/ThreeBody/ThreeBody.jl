@@ -38,13 +38,14 @@ export time_scale_factor,
        potential_energy_hessian, 
        accel,
        accel!,
-       halo_numerical_tic!,
+       RestrictedThreeBodySTMTic!,
        state_transition_dynamics,
        nondimensional_radius,  
        inertial, 
        synodic,
        convert,
-       promote
+       promote,
+       monodromy
        
 include("ThreeBodyStates.jl")
 include("ThreeBodyCalculations.jl")
