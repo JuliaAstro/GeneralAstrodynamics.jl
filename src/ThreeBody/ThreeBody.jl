@@ -45,7 +45,10 @@ export time_scale_factor,
        synodic,
        convert,
        promote,
-       monodromy
+       monodromy,
+       isapprox,
+       isequal,
+       isperiodic
        
 include("ThreeBodyStates.jl")
 include("ThreeBodyCalculations.jl")
