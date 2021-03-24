@@ -125,3 +125,59 @@ function Base.show(io::IO, sys::NondimensionalThreeBodyState)
     println(io, "  DU:        ", sys.DU)
     println(io, "  DT:        ", sys.DT)
 end
+
+"""
+Returns true if all elements in each system are within `atol` of the other.
+"""
+function Base.isapprox(c1::ThreeBodyState, c2::ThreeBodyState; atol = 1e-8)
+    ru(x) = ustrip(upreferred(x))
+    return isapprox(ru(c1.μ₁),  ru(c2.μ₁);  atol = atol) &&
+           isapprox(ru(c1.μ₂),  ru(c2.μ₂);  atol = atol) &&
+           isapprox(ru(c1.a),   ru(c2.a);   atol = atol) &&
+           isapprox(ru.(c1.r₃), ru.(c2.r₃); atol = atol) &&
+           isapprox(ru.(c1.v₃), ru.(c2.v₃); atol = atol) &&
+           isapprox(ru(c1.Δt),  ru(c2.Δt);  atol = atol)
+
+end
+
+"""
+Returns true if all elements in each system are equal to the other.
+"""
+function Base.isequal(c1::ThreeBodyState, c2::ThreeBodyState)
+    ru(x) = ustrip(upreferred(x))
+    return isequal(ru(c1.μ₁),  ru(c2.μ₁))  &&
+           isequal(ru(c1.μ₂),  ru(c2.μ₂))  &&
+           isequal(ru(c1.a),   ru(c2.a))   &&
+           isequal(ru.(c1.r₃), ru.(c2.r₃)) &&
+           isequal(ru.(c1.v₃), ru.(c2.v₃)) &&
+           isequal(ru(c1.Δt),  ru(c2.Δt))
+
+end
+
+"""
+Returns true if all elements in each system are within `atol` of the other.
+"""
+function Base.isapprox(c1::NondimensionalThreeBodyState, c2::NondimensionalThreeBodyState; atol = 1e-8)
+    ru(x) = ustrip(upreferred(x))
+    return isapprox(ru(c1.μ),   ru(c2.μ);   atol = atol) &&
+           isapprox(ru.(c1.r),  ru.(c2.r);  atol = atol) &&
+           isapprox(ru.(c1.v),  ru.(c2.v);  atol = atol) &&
+           isapprox(ru(c1.Δt),  ru(c2.Δt);  atol = atol) &&
+           isapprox(ru.(c1.DU), ru(c2.DU);  atol = atol) &&
+           isapprox(ru(c1.DT),  ru(c2.DT);  atol = atol)
+
+end
+
+"""
+Returns true if all elements in each system are equal to the other.
+"""
+function Base.isequal(c1::NondimensionalThreeBodyState, c2::NondimensionalThreeBodyState)
+    ru(x) = ustrip(upreferred(x))
+    return isequal(ru(c1.μ),  ru(c2.μ))  &&
+           isequal(ru.(c1.r), ru.(c2.r)) &&
+           isequal(ru.(c1.v), ru.(c2.v)) &&
+           isequal(ru(c1.Δt), ru(c2.Δt)) &&
+           isequal(ru(c1.DU), ru(c2.DU)) &&
+           isequal(ru(c1.DT),  ru(c2.DT))
+
+end

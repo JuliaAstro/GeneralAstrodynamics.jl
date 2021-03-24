@@ -33,7 +33,7 @@ export time_scale_factor,
        potential_energy, 
        jacobi_constant,
        lagrange,
-       halo_analytic,
+       analyticalhalo,
        halo,
        potential_energy_hessian, 
        accel,
@@ -45,7 +45,10 @@ export time_scale_factor,
        synodic,
        convert,
        promote,
-       monodromy
+       monodromy,
+       isapprox,
+       isequal,
+       isperiodic
        
 include("ThreeBodyStates.jl")
 include("ThreeBodyCalculations.jl")

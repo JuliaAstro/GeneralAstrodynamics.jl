@@ -62,7 +62,7 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
-function halo_analytic(μ; Az=0.00, ϕ=0.0, steps=1,
+function analyticalhalo(μ; Az=0.00, ϕ=0.0, steps=1,
                        L=1, hemisphere=:northern)
 
     if L == 1
@@ -112,7 +112,7 @@ function halo_analytic(μ; Az=0.00, ϕ=0.0, steps=1,
     l₂  = (3c[3]/2) * (a₂₄ - 2a₂₂) + (9c[4]/8) + 2ωₚ^2 * s₂
     Δ   = ωₚ^2 - c[2]
 
-    Aᵧ  = Az * γ
+    Aᵧ  = Az / γ
     Aₓ  = √((-l₂*Aᵧ^2 - Δ) / l₁)
 
     ν   = 1 + s₁*Aₓ^2 + s₂*Aᵧ^2
@@ -169,7 +169,7 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
               tolerance=1e-8, max_iter=20,
               reltol=1e-14, abstol=1e-14)
 
-    r₀, v₀, Τ = halo_analytic(μ; Az=Az, ϕ=0.0, L=L, hemisphere=hemisphere)
+    r₀, v₀, Τ = analyticalhalo(μ; Az=Az, ϕ=0.0, L=L, hemisphere=hemisphere)
     r₀ = r₀[1,:]
     v₀ = v₀[1,:]
     τ  = Τ/2
@@ -295,7 +295,7 @@ end
 """
 Returns the Monodromy Matrix for a Halo orbit.
 """
-function monodromy(orbit::NondimensionalThreeBodyState; reltol = 1e-14, abstol = 1e-14)
+function monodromy(orbit::NondimensionalThreeBodyState; check_periodicity = true, reltol = 1e-14, abstol = 1e-14, atol = 1e-8)
     problem = ODEProblem(
         RestrictedThreeBodySTMTic!,
         ComponentArray(rₛ  = orbit.r,
@@ -312,6 +312,34 @@ function monodromy(orbit::NondimensionalThreeBodyState; reltol = 1e-14, abstol =
 
     u = solve(problem; reltol = reltol, abstol = abstol).u[end]
     
-    @warn "Currently this function doesn't check for periodicity. Beware!"
+    if check_periodicity
+        if !isapprox(orbit, NondimensionalThreeBodyState(u.rₛ, u.vₛ, orbit.μ, orbit.Δt, orbit.DU, orbit.DT); atol = atol)
+            throw(ErrorException("Provided CR3BP system is NOT periodic!"))
+        end
+    end
+
     Matrix(transpose(hcat(u.Φ₁, u.Φ₂, u.Φ₃, u.Φ₄, u.Φ₅, u.Φ₆)))
+end
+
+"""
+Returns true if a `RestrictedThreeBodySystem` is numerically periodic.
+"""
+function isperiodic(orbit::NondimensionalThreeBodyState; reltol = 1e-14, abstol = 1e-14, atol = 1e-8)
+    problem = ODEProblem(
+        RestrictedThreeBodySTMTic!,
+        ComponentArray(rₛ  = orbit.r,
+                       vₛ  = orbit.v,
+                       Φ₁  = [1.0, 0, 0, 0, 0, 0],
+                       Φ₂  = [0, 1.0, 0, 0, 0, 0],
+                       Φ₃  = [0, 0, 1.0, 0, 0, 0],
+                       Φ₄  = [0, 0, 0, 1.0, 0, 0],
+                       Φ₅  = [0, 0, 0, 0, 1.0, 0],
+                       Φ₆  = [0, 0, 0, 0, 0, 1.0]),
+        (0.0, orbit.Δt),
+        ComponentArray(μ   =  orbit.μ)
+    )
+
+    u = solve(problem; reltol = reltol, abstol = abstol).u[end]
+    
+    return isapprox(orbit, NondimensionalThreeBodyState(u.rₛ, u.vₛ, orbit.μ, orbit.Δt, orbit.DU, orbit.DT); atol = 1e-8)
 end

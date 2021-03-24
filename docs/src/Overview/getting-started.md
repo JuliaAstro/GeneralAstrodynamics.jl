@@ -101,9 +101,9 @@ sys = ThreeBodySystem(μₛ, μₑ, a, r, v, t) |> nondimensionalize
 sols = propagate(sys)
 
 # Halo solvers
-μⁿ = nondimensionalize(μₛ, μₑ)
-r, v, T = halo_analytic(μⁿ; L = 1, steps = 1000)
-r, v, T = halo(μⁿ; Az = 0.5, L = 2)
+μ = nondimensionalize(Sun.μ, Earth.μ)
+r, v, T = analyticalhalo(μ; L = 1, steps = 1000)
+r, v, T = halo(μⁿ; Az = 0.02, L = 2)
 ```
 
 

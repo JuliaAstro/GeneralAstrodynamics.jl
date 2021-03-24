@@ -148,7 +148,7 @@ Base.MPFR.BigFloat(o::TwoBodyState) = convert(BigFloat, o)
 """
 Alias for `TwoBodyState`.
 """
-Orbit(r, V, body) = TwoBodyState(r, v, body)
+Orbit(r, v, body) = TwoBodyState(r, v, body)
 Orbit(e, a, i, Ω, ω, ν, body) = KeplerianState(e, a, i, Ω, ω, ν, body)
 
 """
