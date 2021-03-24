@@ -52,7 +52,7 @@ time_since_periapsis
 mean_motion
 mean_motion_vector
 semi_parameter
-conic_anomoly
+eccentric_anomoly
 specific_angular_momentum
 specific_angular_momentum_vector
 specific_energy

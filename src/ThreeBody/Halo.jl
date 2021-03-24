@@ -62,7 +62,7 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
-function halo_analytic(μ; Az=0.00, ϕ=0.0, steps=1,
+function analyticalhalo(μ; Az=0.00, ϕ=0.0, steps=1,
                        L=1, hemisphere=:northern)
 
     if L == 1
@@ -169,7 +169,7 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
               tolerance=1e-8, max_iter=20,
               reltol=1e-14, abstol=1e-14)
 
-    r₀, v₀, Τ = halo_analytic(μ; Az=Az, ϕ=0.0, L=L, hemisphere=hemisphere)
+    r₀, v₀, Τ = analyticalhalo(μ; Az=Az, ϕ=0.0, L=L, hemisphere=hemisphere)
     r₀ = r₀[1,:]
     v₀ = v₀[1,:]
     τ  = Τ/2
