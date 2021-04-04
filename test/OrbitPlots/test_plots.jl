@@ -3,7 +3,7 @@ module PlotsUnitTests
 using Test
 using UnitfulAstrodynamics
 
-@testset "AstroPlots" begin
+@testset "OrbitPlots" begin
     
     # Twobody Orbit
     r̅ = [0.0, 11681, 0.0] * u"km"
