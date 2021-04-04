@@ -23,7 +23,7 @@ using UnitfulAstrodynamics
     
     # This should run!
     μ = nondimensionalize(Sun.μ, Earth.μ) |> upreferred
-    r, v, T = halo(μ; Az = 1e-2, L = 2)
+    r, v, T = halo(μ; Az = 1e-3, L = 2)
     sys = NondimensionalThreeBodyState(r, v, μ, T, 1.0u"AU", 500u"d")
     sys = redimensionalize(sys, Sun.μ, Earth.μ)
     sys = nondimensionalize(sys)
