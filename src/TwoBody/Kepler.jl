@@ -12,27 +12,16 @@ function kepler(orbit::O, Δtᵢ::T = period(orbit); tol=1e-6, max_iter=100) whe
     conic_section = conic(orbit)
 
     # Guess χ₀
-    if conic_section == Circular || conic_section == Elliptical
-
-        Δt = mod(Δtᵢ, period(orbit))
-        χ₀ = √(orbit.body.μ) * Δt / semimajor_axis(orbit)
-
-    elseif conic_section == Hyperbolic
-        
+    if conic_section == Hyperbolic
         Δt = Δtᵢ
         χ₀ = sign(Δt) * √(-semimajor_axis(orbit)) * log(ℯ, (-2 * orbit.body.μ / semimajor_axis(orbit) * Δt) / 
                 (radius_vector(orbit) ⋅ velocity_vector(orbit) + (sign(Δt) * √(-orbit.body.μ * semimajor_axis(orbit)) * (1 - norm(radius_vector(orbit)) / semimajor_axis(orbit)))))
-
     elseif conic_section == Parabolic
-
         Δt = Δtᵢ
         χ₀ = √(semi_parameter(orbit)) * tan(true_anomoly(orbit) / 2)
-
     else
-
-        @warn "Kepler's problem failed to converge."
-        return Orbit([NaN, NaN, NaN] * u"km", [NaN, NaN, NaN] * u"km/s", orbit.body)
-
+        Δt = mod(Δtᵢ, period(orbit))
+        χ₀ = √(orbit.body.μ) * Δt / semimajor_axis(orbit)
     end
 
     # Iteratively solve for χ
@@ -48,7 +37,21 @@ function kepler(orbit::O, Δtᵢ::T = period(orbit); tol=1e-6, max_iter=100) whe
     ġ = 1 - (χₙ^2 / r) * C₂
 
     return Orbit(f * radius_vector(orbit) + g * velocity_vector(orbit), ḟ * radius_vector(orbit) + ġ * velocity_vector(orbit), orbit.body)
+end
 
+"""
+Implements Kepler's Prediction Problem for generic `r`, `v`.
+
+Arguments:
+* `r`: Initial spacecraft position. Any abstract vector with length 3 and type `<: Unitful.Length`
+* `v`: Initial spacecraft velocity. Any abstract vector with length 3 and type `<: Unitful.Velocity`
+* `μ`: Central body mass parameter. Any abstract vector with length 3 and type `<: Unitful.AbstractQuantity` with units compatabile with `km^3/s^2`
+* `Δtᵢ`: Propagation time. Any scalar with type `<: Unitful.Time`
+"""
+function kepler(r, v, μ, Δtᵢ; tol=1e-6, max_iter=100)
+    initial = TwoBodyState(r, v, μ)
+    final   = kepler(final, Δtᵢ; tol=tol, max_iter=max_iter)
+    return radius_vector(r), velocity_vector(v)
 end
 
 function χₖ(χₙ, Δt, rᵢ₀, vᵢ₀, a, μ; iter=1, tol=1e-14, max_iter=100)
@@ -72,7 +75,8 @@ function χₖ(χₙ, Δt, rᵢ₀, vᵢ₀, a, μ; iter=1, tol=1e-14, max_iter=
     χₙ₊₁ = χₙ + ((√(μ) * Δt - χₙ^3 * C₃ - (rᵢ₀ ⋅ vᵢ₀) / √(μ) * χₙ^2 * C₂ - r₀ * χₙ * (1 - ψ * C₃)) / r)
 
     if iter > max_iter
-        return NaN, NaN, NaN, NaN, NaN
+        @error "Failed to converge!"
+        return χₙ, r, ψ, C₂, C₃
     elseif abs(χₙ₊₁ - χₙ) < oneunit(χₙ) * tol
         return  χₙ, r, ψ, C₂, C₃
     else
