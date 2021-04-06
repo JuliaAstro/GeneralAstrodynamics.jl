@@ -9,7 +9,6 @@ Abstract type for all four conic sections.
 """
 abstract type AbstractConic end
 
-
 """
 Type for orbits in the circular conic section.
 """
@@ -38,7 +37,7 @@ struct Invalid <: AbstractConic end
 """
 Abstract type for all two-body orbital representations.
 """
-abstract type RestrictedTwoBodySystem{C<:AbstractConic, F<:AbstractFloat} <: OrbitalSystem end
+abstract type RestrictedTwoBodySystem{C<:AbstractConic, F<:AbstractFloat} <: AbstractOrbitalSystem end
 
 """
 Type representing large bodies in space. Currently, the following
