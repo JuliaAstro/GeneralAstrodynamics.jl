@@ -40,7 +40,6 @@ Abstract type for all two-body orbital representations.
 """
 abstract type RestrictedTwoBodySystem{C<:AbstractConic, F<:AbstractFloat} <: OrbitalSystem end
 
-
 """
 Type representing large bodies in space. Currently, the following
 solar system bodies are supported:

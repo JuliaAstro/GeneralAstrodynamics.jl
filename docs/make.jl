@@ -11,7 +11,7 @@ makedocs(
         UnitfulAstrodynamics.NBody,
         UnitfulAstrodynamics.ThreeBody,
         UnitfulAstrodynamics.Propagators,
-        UnitfulAstrodynamics.AstroPlots
+        UnitfulAstrodynamics.OrbitPlots
     ],
     format=Documenter.HTML(),
     sitename="UnitfulAstrodynamics.jl",
@@ -43,7 +43,7 @@ makedocs(
             "Functions" => "Maneuvers/functions.md"
         ],
         "Plotting" => Any[
-            "Functions" => "AstroPlots/functions.md"
+            "Functions" => "OrbitPlots/functions.md"
         ],
         "Common Types" => Any[
             "Types" => "CommonTypes/types.md"

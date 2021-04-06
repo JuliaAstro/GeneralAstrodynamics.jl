@@ -22,6 +22,7 @@ include("NBody/NBody.jl")
 include("Propagators/Propagators.jl")
 include("Maneuvers/Maneuvers.jl")
 include("OrbitPlots/OrbitPlots.jl")
+include("Ephemeris/Ephemeris.jl")
 
 @reexport using .CommonTypes
 @reexport using .TwoBody
@@ -30,6 +31,7 @@ include("OrbitPlots/OrbitPlots.jl")
 @reexport using .Propagators
 @reexport using .Maneuvers
 @reexport using .OrbitPlots
+@reexport using .Ephemeris
 
 include("Misc/DocStringExtensions.jl")
 include("Misc/UnitfulAliases.jl")
