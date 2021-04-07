@@ -6,11 +6,14 @@ module CommonTypes
 
 using Reexport
 @reexport using Unitful, UnitfulAngles, UnitfulAstro
+using StaticArrays: StaticVector, MVector
 
 include("../Misc/DocStringExtensions.jl")
 include("../Misc/UnitfulAliases.jl")
 
-export AbstractBody, AbstractOrbitalSystem, AbstractTrajectory, AbstractState
+export AbstractBody, AbstractOrbitalSystem, AbstractTrajectory, AbstractState, CartesianState
+export getindex, setindex!, lengthunit, timeunit, velocityunit
+export position_vector, velocity_vector, scalar_position, scalar_velocity
 
 """ 
 Abstract type for bodies in space: both `CelestialBody`s (in
@@ -19,7 +22,7 @@ Abstract type for bodies in space: both `CelestialBody`s (in
 abstract type AbstractBody end
 
 """
-Abstract type describing select Astrodynamics problems.
+Abstract type describing select astrodynamics problems.
 """
 abstract type AbstractOrbitalSystem end
 
@@ -28,35 +31,30 @@ Abstract type describing a collection of states resulting from numerical integra
 """
 abstract type AbstractTrajectory end
 
-using StaticArrays, Unitful, ComponentArrays
-
 """
 Abstract type describing an orbital state.
 """
-abstract type AbstractState end
+abstract type AbstractState{F<:AbstractFloat} <: StaticVector{6,F} end
 
 """
 Cartesian state which describes a spacecraft or body's position and velocity with respect to _something_.
 """
-struct CartesianState{F<:AbstractFloat, LU, TU} <: AbstractState where {LU<:Unitful.LengthUnits, TU<:Unitful.TimeUnits}
-    state::ComponentArray{F,1,Vector{F},Tuple{Axis{(r = 1:3, v = 4:6)}}}
-    
+mutable struct CartesianState{F<:AbstractFloat, LU, TU} <: AbstractState{F} where {LU<:Unitful.LengthUnits, TU<:Unitful.TimeUnits}
+    r::SubArray{F, 1, MVector{6, F}, Tuple{UnitRange{Int64}}, true}
+    v::SubArray{F, 1, MVector{6, F}, Tuple{UnitRange{Int64}}, true}
+    rv::MVector{6,F}
+
     function CartesianState(r::AbstractVector{R}, v::AbstractVector{V}; lengthunit=u"km", timeunit=u"s") where {R<:Real, V<:Real}
         F  = promote_type(R, V)
         if !(F <: AbstractFloat)
             @warn "Type provided ($(string(F))) is not a float: defaulting to Float64."
             F = Float64
         end
-        return new{F, lengthunit, timeunit}(ComponentVector{F}(r=r, v=v))
-    end
-
-    function CartesianState(state::ComponentArray{F,1,Vector{F},Tuple{Axis{(r = 1:3, v = 4:6)}}}; lengthunit=u"km", timeunit=u"s") where F<:Real
-        if !(F <: AbstractFloat)
-            @warn "Type provided ($(string(F))) is not a float: defaulting to Float64."
-            return new{Float64, lengthunit, timeunit}(Float64.(state))
-        else
-            return new{F, lengthunit, timeunit}(F.(state))
-        end
+        @assert length(r) == length(v) == 3 "Both arguments must have length equal to 3!"
+        rv = MVector{6, F}(r[1], r[2], r[3], v[1], v[2], v[3])
+        pos = @views rv[1:3]
+        vel = @views rv[4:6]
+        return new{F, lengthunit, timeunit}(pos, vel, rv)
     end
 
     function CartesianState(r::AbstractVector{R}, v::AbstractVector{V}) where {R<:Unitful.Length, V<:Unitful.Velocity}
@@ -77,4 +75,37 @@ struct CartesianState{F<:AbstractFloat, LU, TU} <: AbstractState where {LU<:Unit
     end
 end
 
-CartesianState(ones(3) * u"km", zeros(3) * u"km/s")
+Base.getindex(state::CartesianState, i::Int) = state.rv[i]
+Base.setindex!(state::CartesianState, value, i::Int) = (state.rv[i] = value)
+
+Base.@pure lengthunit(::C) where C <: CartesianState = C.parameters[2]
+Base.@pure timeunit(::C) where C <: CartesianState = C.parameters[3]
+velocityunit(state::CartesianState) = lengthunit(state) / timeunit(state)
+
+function Base.show(io::IO, ::MIME"text/plain", X::CartesianState{F, LU, TU}) where {F, LU, TU} 
+    println(io, "Cartesian State of type $(string(F)), and units $(string(LU)) and $(string(LU/TU))")
+    println(io, "  r = ", [state.r[1] state.r[2] state.r[3]], " ", string(LU))
+    println(io, "  v = ", [state.v[1] state.v[2] state.v[3]], " ", string(LU/TU))
+end
+
+"""
+Returns the `Unitful` position vector of the `Cartesianstate`.
+"""
+position_vector(state::CartesianState) = state.r * lengthunit(state)
+
+"""
+Returns the `Unitful` velocity vector of the `CartesianState`.
+"""
+velocity_vector(state::CartesianState) = state.v * velocityunit(state)
+
+"""
+Returns the `Unitful` scalar position of the `CartesianState`.
+"""
+scalar_position(state::CartesianState) = norm(position_vector(state))
+
+"""
+Returns the `Unitful` scalar velocity of the `CartesianState`.
+"""
+scalar_velocity(state::CartesianState) = norm(velocity_vector(state))
+
+end

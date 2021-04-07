@@ -1,19 +1,19 @@
 # 
-# Describes trajectories for all `OrbitalSystem`s.
+# Describes trajectories for all `AbstractOrbitalSystem`s.
 #
 
 """
 A structure for storing trajectories of `TwoBodySystem` orbits,
 `RestrictedThreeBodySystem` orbits, and `NBodySystem` orbits.
 """
-struct Trajectory{T<:OrbitalSystem} <: AbstractTrajectory
+struct Trajectory{T<:AbstractOrbitalSystem} <: AbstractTrajectory
     t::Vector{<:Number}
     step::Vector{T}
     status::Symbol
 
     function Trajectory(step::AbstractVector{T}, 
                         t::AbstractVector{<:Number} = [i for i ∈ 1:length(step)],
-                        status::Symbol = :notapplicable) where T <: OrbitalSystem
+                        status::Symbol = :notapplicable) where T <: AbstractOrbitalSystem
         @assert length(step) == length(t) "Time vector and state vectors must have the same length!"
         return new{T}(Vector(t), Vector(step), status)
     end

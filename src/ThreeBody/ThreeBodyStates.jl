@@ -5,7 +5,7 @@
 """
 Abstract type for restricted three-body systems.
 """
-abstract type RestrictedThreeBodySystem <: OrbitalSystem end
+abstract type RestrictedThreeBodySystem <: AbstractOrbitalSystem end
 
 """
 Describes a dimensional state of a spacecraft
