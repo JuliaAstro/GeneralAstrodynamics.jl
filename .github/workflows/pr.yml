@@ -1,6 +1,6 @@
-name: Tests 
+name: PRTests 
 on:
-  push:
+  pull_request:
     branches:
       - main
 jobs:
@@ -11,9 +11,12 @@ jobs:
       fail-fast: true 
       matrix:
         version:
+          - '1.5'
           - '1.6'
         os:
           - ubuntu-latest
+          - macOS-latest
+          - windows-latest
         arch:
           - x64
     steps:
