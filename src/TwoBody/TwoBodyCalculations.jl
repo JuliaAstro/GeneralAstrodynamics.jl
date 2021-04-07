@@ -6,7 +6,7 @@
 """
 Returns the conic section, as specified by eccentricity `e`.
 """
-function conic(e::T) where T<:Number
+function conic(e::T) where T<:Real
 
     if e ≈ zero(T)
         return Circular
