@@ -32,7 +32,7 @@ References:
 * [2] https://github.com/SciML/DifferentialEquations.jl/issues/393#issuecomment-658210231
 * [3] https://discourse.julialang.org/t/smart-kwargs-dispatch/14571/15
 """
-function propagate(orbit::TwoBodyState{C, T}, 
+function propagate(orbit::CartesianOrbit{C, T}, 
                    Δt::Unitful.Time = period(orbit);
                    thrust::Unitful.Acceleration = 0.0u"N/kg",
                    kwargs...) where C where T
@@ -42,7 +42,7 @@ function propagate(orbit::TwoBodyState{C, T},
     options = merge(defaults, kwargs)
 
     # Initial conditions
-    r₀ = Array(ustrip.(u"m",   radius_vector(orbit)))
+    r₀ = Array(ustrip.(u"m",   position_vector(orbit)))
     v₀ = Array(ustrip.(u"m/s", velocity_vector(orbit)))
     u₀ = ComponentArray((rᵢ=r₀, vᵢ=v₀))
     ts = T.(ustrip.(u"s", (zero(Δt), Δt)))
@@ -60,7 +60,7 @@ function propagate(orbit::TwoBodyState{C, T},
 
     # Return PropagationResult structure
     return Trajectory(
-            map(x -> TwoBodyState(u"m" * x.rᵢ, u"m/s" * x.vᵢ, orbit.body), sols.u),
+            map(x -> CartesianOrbit(u"m" * x.rᵢ, u"m/s" * x.vᵢ, orbit.body), sols.u),
             sols.t .* u"s",
             sols.retcode
     )
@@ -71,11 +71,11 @@ end
 Uses OrdinaryDiffEq solvers to propagate `orbit` Δt into the future.
 All keyword arguments are passed directly to OrdinaryDiffEq solvers.
 """
-function propagate(orbit::KeplerianState, 
+function propagate(orbit::KeplerianOrbit, 
                    Δt::Unitful.Time=period(orbit), 
                    ode_alg::OrdinaryDiffEqAlgorithm=Tsit5(),
                    thrust::Unitful.Acceleration=0.0u"N/kg";
                    kwargs...)
-    traj = propagate(TwoBodyState(orbit), Δt, ode_alg, thrust, kwargs...)
-    return Trajectory(KeplerianState.(traj.step), traj.t, traj.status)
+    traj = propagate(CartesianOrbit(orbit), Δt, ode_alg, thrust, kwargs...)
+    return Trajectory(KeplerianOrbit.(traj.step), traj.t, traj.status)
 end

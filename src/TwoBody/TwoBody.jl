@@ -13,7 +13,7 @@ include("../Misc/UnitfulAliases.jl")
 
 using Crayons
 using LinearAlgebra: norm, cross, ×, dot, ⋅
-using StaticArrays: SVector, @SVector, SMatrix, @SMatrix
+using StaticArrays: FieldVector
 
 # Newton's Gravitation Constant
 import PhysicalConstants.CODATA2018
@@ -29,15 +29,15 @@ export RestrictedTwoBodySystem, TwoBodyState, KeplerianState, AbstractConic, Cir
 export  semimajor_axis, semi_parameter, eccentricity, 
         eccentricity_vector, inclination, true_anomoly, 
         periapsis_radius, apoapsis_radius, periapsis_velocity, 
-        apoapsis_velocity, radius, velocity, period, 
-        radius_vector, velocity_vector, Orbit, perifocal_radius,
+        apoapsis_velocity, scalar_position, scalar_velocity, period, 
+        position_vector, velocity_vector, Orbit, perifocal_radius,
         mass, mass_parameter, perifocal, RAAN, argument_of_periapsis,
         time_since_periapsis, mean_motion, mean_motion_vector, 
         eccentric_anomoly, specific_angular_momentum_vector, 
         specific_angular_momentum, specific_energy, specific_potential_energy,
         isapprox, isequal, TwobodyPropagationResult, kepler, lambert,
         conic, keplerian, cartesian, promote, convert, Float16, Float32, Float64,
-        BigFloat
+        BigFloat, CartesianOrbit, KeplerianOrbit
 
 # Include all module source code
 include("TwoBodyStates.jl")

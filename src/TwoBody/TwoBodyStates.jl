@@ -1,5 +1,5 @@
 #
-#   TwoBodyStates.jl
+#   RestrictedTwoBodySystems.jl
 #
 #   Describes Two Body Orbits through Cartesian coordinates and Orbital Elements.
 # 
@@ -33,11 +33,6 @@ struct Hyperbolic <: AbstractConic end
 Type for invalid orbits (orbits with NaN fields)
 """
 struct Invalid <: AbstractConic end
-
-"""
-Abstract type for all two-body orbital representations.
-"""
-abstract type RestrictedTwoBodySystem{C<:AbstractConic, F<:AbstractFloat} <: AbstractOrbitalSystem end
 
 """
 Type representing large bodies in space. Currently, the following
@@ -105,139 +100,115 @@ function Base.show(io::IO, body::CelestialBody)
 end
 
 """
-Struct for storing `TwoBody` Cartesian states for all conics.
+Abstract type for Keplerian states.
 """
-struct TwoBodyState{C<:AbstractConic, F<:AbstractFloat} <: RestrictedTwoBodySystem{C,F}
-    r::SVector{3, Length{F}}
-    v::SVector{3, Velocity{F}}
-    body::CelestialBody{F}
-
-    function TwoBodyState(r::R, v::V, body::CelestialBody) where {R <: AbstractVector{<:Length}, V <: AbstractVector{<:Velocity}}
-        C = conic(eccentricity(r, v, body.μ))
-        T = promote_type(typeof(ustrip(r[1])), typeof(ustrip(v[1])), typeof(ustrip(body.μ)))
-        if !(T <: AbstractFloat)
-            @warn "Non-float parameters provided. Defaulting to Float64."
-            T = Float64
-        end
-        return new{C,T}(SVector{3,Length{T}}(r...), SVector{3, Velocity{T}}(v...), T(body))
-    end
-
-    function TwoBodyState(r::R, v::V, body::CelestialBody) where {R <: AbstractVector{<:Real}, V <: AbstractVector{<:Real}}
-        C = conic(eccentricity(r, v, body.μ))
-        T = promote_type(typeof(ustrip(r[1])), typeof(ustrip(v[1])), typeof(ustrip(body.μ)))
-        if !(T <: AbstractFloat)
-            @warn "Non-float parameters provided. Defaulting to Float64."
-            T = Float64
-        end
-        return new{C,T}(SVector{3,Length{T}}((r * u"km")...), SVector{3, Velocity{T}}((v * u"km/s")...), T(body))
-    end
-
-    TwoBodyState(r, v, μ::T) where T <: Real = TwoBodyState(r, v, CelestialBody(μ))
-    TwoBodyState(orbit::TwoBodyState) = TwoBodyState(orbit.r, orbit.v, orbit.body)
-end
-
-Base.convert(::Type{T}, o::TwoBodyState) where {T<:AbstractFloat} = TwoBodyState(T.(o.r), T.(o.v), convert(T, o.body))
-Base.promote(::Type{TwoBodyState{A}}, ::Type{TwoBodyState{B}}) where {A<:AbstractFloat, B<:AbstractFloat} = Orbit{promote_type(A,B)}
-Core.Float16(o::TwoBodyState) = convert(Float16, o)
-Core.Float32(o::TwoBodyState) = convert(Float32, o)
-Core.Float64(o::TwoBodyState) = convert(Float64, o)
-Base.MPFR.BigFloat(o::TwoBodyState) = convert(BigFloat, o)
+abstract type AbstractKeplerianState{F<:AbstractFloat} <: FieldVector{6,F} end
 
 """
-Alias for `TwoBodyState`.
+Struct for storing `Keplerian` states.
 """
-Orbit(r, v, body) = TwoBodyState(r, v, body)
-Orbit(e, a, i, Ω, ω, ν, body) = KeplerianState(e, a, i, Ω, ω, ν, body)
-
-"""
-Struct for storing `Keplerian` states for all conics.
-"""
-struct KeplerianState{C<:AbstractConic, F<:AbstractFloat} <: RestrictedTwoBodySystem{C,F}
+struct KeplerianState{F<:AbstractFloat, LU, AU} <: AbstractKeplerianState{F} where {U, LU <: Unitful.LengthUnits, AU <: Unitful.Units{U, NoDims, nothing}}
     e::F
-    a::Length{F}
-    i::DimensionlessQuantity{F}
-    Ω::DimensionlessQuantity{F}
-    ω::DimensionlessQuantity{F}
-    ν::DimensionlessQuantity{F}
-    body::CelestialBody{F}
-    
-    function KeplerianState(e::E, a::Length{A}, i::DimensionlessQuantity{I}, 
-                            Ω::DimensionlessQuantity{O}, ω::DimensionlessQuantity{W}, 
-                            ν::DimensionlessQuantity{V}, body::CelestialBody{B}) where {
-            E <: Real,
-            A <: Real,
-            I <: Real,
-            O <: Real,
-            W <: Real,
-            V <: Real,
-            B <: Real
-        }
-        C = conic(e)
-        T = promote_type(typeof(e), typeof(ustrip(a)), typeof(ustrip(i)), typeof(ustrip(Ω)), 
-                         typeof(ustrip(ω)), typeof(ustrip(ν)), typeof(ustrip(body.μ)))
-        if !(T <: AbstractFloat)
-            @warn "Non-float parameters provided. Defaulting to Float64."
-            T = Float64
+    a::F
+    i::F
+    Ω::F
+    ω::F
+    ν::F
+
+
+    function KeplerianState(e::E, a::A, i::I, Ω::O, ω::W, ν::V; lengthunit = u"km", angularunit = u"rad") where {
+        E <: Real, A <: Real, I <: Real, O <: Real, W <: Real, V <: Real
+    }
+        F = promote_type(E, A, I, O, W, V)
+        if !(F <: AbstractFloat)
+            @warn "Promoted type ($(string(F)) is not a float: defaulting to Float64."
+            F = Float64
         end
-        return new{C,T}(T(e), T(a), T(i), T(Ω), T(ω), T(ν), T(body))
+        return new{F, lengthunit, angularunit}(e, a, i, Ω, ω, ν)
     end
 
-    function KeplerianState(e::E, a::A, i::I, 
-                            Ω::O, ω::W, ν::V,
-                            body::CelestialBody{B}) where {
-            E <: Real,
-            A <: Real,
-            I <: Real,
-            O <: Real,
-            W <: Real,
-            V <: Real,
-            B <: Real
-        }
-        @warn "No units provided! Assuming km and rad."
-        return KeplerianState(e, a * u"km", (i % 2π) * u"rad", (Ω % 2π) * u"rad", 
-                              (ω % 2π) * u"rad", (ν % 2π) * u"rad", body)
+    function KeplerianState(e::Real, a::Length, i::DimensionlessQuantity, 
+                            Ω::DimensionlessQuantity, ω::DimensionlessQuantity, 
+                            ν::DimensionlessQuantity)
+
+        F = promote_type(typeof(e), ustrip(a), ustrip(i), ustrip(Ω), ustrip(ω), ustrip(ν))
+        if !(F <: AbstractFloat)
+            @warn "Non-float parameters provided. Defaulting to Float64."
+            F = Float64
+        end
+        lengthunit  = unit(a)
+        angularunit = u"rad" ∈ unit.(i, Ω, ω, ν) ? u"rad" : unit(i)
+        return KeplerianState(e, ustrip(lengthunit, a), ustrip(angularunit(i)), 
+                              ustrip(angularunit(Ω)), ustrip(angularunit(ω)), ustrip(angularunit(ν));
+                              lengthunit = lengthunit, angularunit = angularunit) 
     end
 
-    KeplerianState(e, a, i, Ω, ω, ν, μ::T) where T <: Real = KeplerianState(e, a, i, Ω, ω, ν, CelestialBody(μ))
-    KeplerianState(orbit::KeplerianState) = KeplerianState(orbit.e, orbit.a, orbit.i, orbit.Ω, orbit.ω, orbit.ν, orbit.body)
 end
 
-Base.convert(::Type{T}, o::KeplerianState) where {T<:AbstractFloat} = KeplerianState(T(o.e), T(o.a), T(o.i), T(o.Ω), T(o.ω), T(o.ν), convert(T, o.body))
+Base.convert(::Type{T}, o::KeplerianState) where {T<:AbstractFloat} = KeplerianState(T(o.e), T(o.a), T(o.i), T(o.Ω), T(o.ω), T(o.ν))
 Base.promote(::Type{KeplerianState{A}}, ::Type{KeplerianState{B}}) where {A<:AbstractFloat, B<:AbstractFloat} = KeplerianState{promote_type(A,B)}
 Core.Float16(o::KeplerianState) = convert(Float16, o)
 Core.Float32(o::KeplerianState) = convert(Float32, o)
 Core.Float64(o::KeplerianState) = convert(Float64, o)
 Base.MPFR.BigFloat(o::KeplerianState) = convert(BigFloat, o)
 
-TwoBodyState(orbit::KeplerianState) = TwoBodyState(cartesian(orbit)..., orbit.body)
-KeplerianState(orbit::TwoBodyState) = KeplerianState(keplerian(orbit)..., orbit.body)
+"""
+Returns the `Unitful.Length` unit associated with the Keplerian state.
+"""
+Base.@pure lengthunit(::K) where K <: KeplerianState = C.parameters[2]
 
 """
-Custom display for TwoBodyState instances.
+Returns the dimmensionless unit associated with the Keplerian state.
 """
-function Base.show(io::IO, orbit::TwoBodyState)
+Base.@pure angularunit(::K) where K <: KeplerianState = C.parameters[3]
 
-    println(io, conic(orbit), " Two-body State (Cartesian):")
-    println(io, "")
+"""
+An orbital state within the Restricted Two-body Problem.
+"""
+struct RestrictedTwoBodySystem{C<:AbstractConic, F<:AbstractFloat, T<:Union{CartesianState{F}, KeplerianState{F}}} <: AbstractOrbitalSystem
+    state::T
+    body::CelestialBody{F}
 
-    println(io, "    Position (inertial):    [", 
-                ustrip(u"km", orbit.r[1]), ", ", 
-                ustrip(u"km", orbit.r[2]), ", ", 
-                ustrip(u"km", orbit.r[3]), "] ", u"km")
-    println(io, "    Velocity (inertial):    [", 
-                ustrip(u"km/s", orbit.v[1]), ", ", 
-                ustrip(u"km/s", orbit.v[2]), ", ", 
-                ustrip(u"km/s", orbit.v[3]), "] ", u"km/s")
+    function RestrictedTwoBodySystem(r, v, μ) 
+        F = promote_type(eltype(r), eltype(v), typeof(μ))
+        if !(F <: AbstractFloat)
+            @warn "Promoted type $(string(F)) is not of type float. Defaulting to Float64."
+            F = Float64
+        end
+        return RestrictedTwoBodySystem{conic(eccentricity(r,v,μ)), F, CartesianState{F}}(CartesianState(F.(r), F.(v)), CelestialBody(F(μ)))
+    end
 
-    println(io, "")
-    println(io, "    $(orbit.body.name == "" ? "Body" : orbit.body.name) (μ):               ",
-                ustrip(u"km^3 / s^2", orbit.body.μ), " ", u"km^3/s^2")
+    function RestrictedTwoBodySystem(e, a, i, Ω, ω, ν, μ) 
+        F = promote_type(typeof(e), typeof(a), typeof(i), typeof(Ω), typeof(ω), typeof(ν), typeof(μ))
+        if !(F <: AbstractFloat)
+            @warn "Promoted type $(string(F)) is not of type float. Defaulting to Float64."
+            F = Float64
+        end
+        return RestrictedTwoBodySystem{conic(eccentricity(e)), F, KeplerianState{F}}(KeplerianState(F(e), F(a), F(i), F(Ω), F(ω), F(ν)), CelestialBody(F(μ)))
+    end
+
 end
+
+Base.convert(::Type{T}, o::RestrictedTwoBodySystem) where {T<:AbstractFloat} = RestrictedTwoBodySystem(convert(T, o.state), convert(T, o.body))
+Base.promote(::Type{RestrictedTwoBodySystem{A}}, ::Type{RestrictedTwoBodySystem{B}}) where {A<:AbstractFloat, B<:AbstractFloat} = Orbit{promote_type(A,B)}
+Core.Float16(o::RestrictedTwoBodySystem) = convert(Float16, o)
+Core.Float32(o::RestrictedTwoBodySystem) = convert(Float32, o)
+Core.Float64(o::RestrictedTwoBodySystem) = convert(Float64, o)
+Base.MPFR.BigFloat(o::RestrictedTwoBodySystem) = convert(BigFloat, o)
+
+"""
+Alias for `RestrictedTwoBodySystem`.
+"""
+Orbit(r, v, body) = RestrictedTwoBodySystem(r, v, body)
+Orbit(e, a, i, Ω, ω, ν, body) = KeplerianState(e, a, i, Ω, ω, ν, body)
 
 """
 Custom display for KeplerianState instances.
 """
 function Base.show(io::IO, orbit::KeplerianState)
+
+    L = lengthunit(orbit)
+    A = angularunit(orbit)
 
     println(io, conic(orbit), " Two-body State (Keplerian):")
     println(io, "")
@@ -246,22 +217,22 @@ function Base.show(io::IO, orbit::KeplerianState)
     println(io, "    Eccentricity:           ", 
                 orbit.e)    
     println(io, "    Semimajor Axis:         ", 
-                ustrip(u"km", orbit.a), " ", u"km")
+                orbit.a, " ", string(L))
     println(io, "    Inclination:            ", 
-                ustrip(u"°", orbit.i), u"°")
+                orbit.i, A == u"rad" ? " " : "", string(A))
     println(io, "    RAAN:                   ", 
-                ustrip(u"°", orbit.Ω), u"°")
+                orbit.Ω, A == u"rad" ? " " : "", string(A))
     println(io, "    Arg. Periapsis:         ", 
-                ustrip(u"°", orbit.ω), u"°")
+                orbit.ω, A == u"rad" ? " " : "", string(A))
     println(io, "    True Anomoly:           ", 
-                ustrip(u"°", orbit.ν), u"°")
+                orbit.ν, A == u"rad" ? " " : "", string(A))
 
-    println(io, "")
-    println(io, "    $(orbit.body.name == "" ? "Body" : orbit.body.name) (μ):               ",
-                ustrip(u"km^3 / s^2", orbit.body.μ), " ", u"km^3/s^2")
 end
 
 # Constants
+
+const KeplerianOrbit = RestrictedTwoBodySystem{C, F, KeplerianState{F}} where {C,F}
+const CartesianOrbit = RestrictedTwoBodySystem{C, F, CartesianState{F}} where {C,F}
 
 # All data pulled from the following references:
 # [1] https://en.wikipedia.org/wiki/List_of_Solar_System_objects_by_size

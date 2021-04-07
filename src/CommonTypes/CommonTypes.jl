@@ -11,9 +11,10 @@ using StaticArrays: StaticVector, MVector
 include("../Misc/DocStringExtensions.jl")
 include("../Misc/UnitfulAliases.jl")
 
-export AbstractBody, AbstractOrbitalSystem, AbstractTrajectory, AbstractState, CartesianState
+export AbstractBody, AbstractOrbitalSystem, AbstractTrajectory, AbstractCartesianState, CartesianState
 export getindex, setindex!, lengthunit, timeunit, velocityunit
 export position_vector, velocity_vector, scalar_position, scalar_velocity
+export convert, promote, Float16, Float32, Float64, BigFloat
 
 """ 
 Abstract type for bodies in space: both `CelestialBody`s (in
@@ -34,12 +35,12 @@ abstract type AbstractTrajectory end
 """
 Abstract type describing an orbital state.
 """
-abstract type AbstractState{F<:AbstractFloat} <: StaticVector{6,F} end
+abstract type AbstractCartesianState{F<:AbstractFloat} <: StaticVector{6,F} end
 
 """
 Cartesian state which describes a spacecraft or body's position and velocity with respect to _something_.
 """
-mutable struct CartesianState{F<:AbstractFloat, LU, TU} <: AbstractState{F} where {LU<:Unitful.LengthUnits, TU<:Unitful.TimeUnits}
+mutable struct CartesianState{F<:AbstractFloat, LU, TU} <: AbstractCartesianState{F} where {LU<:Unitful.LengthUnits, TU<:Unitful.TimeUnits}
     r::SubArray{F, 1, MVector{6, F}, Tuple{UnitRange{Int64}}, true}
     v::SubArray{F, 1, MVector{6, F}, Tuple{UnitRange{Int64}}, true}
     rv::MVector{6,F}
@@ -75,15 +76,33 @@ mutable struct CartesianState{F<:AbstractFloat, LU, TU} <: AbstractState{F} wher
     end
 end
 
+Base.convert(::Type{T}, o::CartesianState) where {T<:AbstractFloat} = CartesianState(T.(o.r), T.(o.v))
+Base.promote(::Type{CartesianState{A}}, ::Type{CartesianState{B}}) where {A<:AbstractFloat, B<:AbstractFloat} = CartesianState{promote_type(A,B)}
+Core.Float16(o::CartesianState) = convert(Float16, o)
+Core.Float32(o::CartesianState) = convert(Float32, o)
+Core.Float64(o::CartesianState) = convert(Float64, o)
+Base.MPFR.BigFloat(o::CartesianState) = convert(BigFloat, o)
+
 Base.getindex(state::CartesianState, i::Int) = state.rv[i]
 Base.setindex!(state::CartesianState, value, i::Int) = (state.rv[i] = value)
 
+"""
+Returns the `Unitful.Length` unit associated with the Cartesian state.
+"""
 Base.@pure lengthunit(::C) where C <: CartesianState = C.parameters[2]
+
+"""
+Returns the `Unitful.Time` unit associated with the Cartesian state.
+"""
 Base.@pure timeunit(::C) where C <: CartesianState = C.parameters[3]
+
+"""
+Returns the `Unitful.Velocity` unit associated with the Cartesian state.
+"""
 velocityunit(state::CartesianState) = lengthunit(state) / timeunit(state)
 
 function Base.show(io::IO, ::MIME"text/plain", X::CartesianState{F, LU, TU}) where {F, LU, TU} 
-    println(io, "Cartesian State of type $(string(F)), and units $(string(LU)) and $(string(LU/TU))")
+    println(io, "Cartesian State of type $(string(F)):")
     println(io, "  r = ", [state.r[1] state.r[2] state.r[3]], " ", string(LU))
     println(io, "  v = ", [state.v[1] state.v[2] state.v[3]], " ", string(LU/TU))
 end
