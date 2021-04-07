@@ -41,9 +41,9 @@ solar system bodies are supported:
 Sun, Mercury, Venus, Earth, Moon (Luna), Mars, Jupiter, 
 Saturn, Uranus, Neptune, Pluto.
 """
-struct CelestialBody{F<:AbstractFloat}
-    R::Length{F}
-    μ::MassParameter{F}
+struct CelestialBody{F<:AbstractFloat, LU, MU} <: AbstractBody where {LU <: Unitful.LengthUnits, MU <: MassParameterUnits}
+    R::F
+    μ::F
     name::String
 
     function CelestialBody(m::Mass{<:AbstractFloat}, R::Length{<:AbstractFloat}, name::String="")
@@ -79,21 +79,13 @@ struct CelestialBody{F<:AbstractFloat}
 
 end
 
-Base.convert(::Type{T}, b::CelestialBody) where {T<:AbstractFloat} = CelestialBody(T(b.μ), T(b.R), b.name)
-Base.promote(::Type{CelestialBody{A}}, ::Type{CelestialBody{B}}) where {A<:AbstractFloat, B<:AbstractFloat} = CelestialBody{promote_type(A,B)}
-Core.Float16(o::CelestialBody) = convert(Float16, o)
-Core.Float32(o::CelestialBody) = convert(Float32, o)
-Core.Float64(o::CelestialBody) = convert(Float64, o)
-Base.MPFR.BigFloat(o::CelestialBody) = convert(BigFloat, o)
-
 """
 Custom display for `CelestialBody` instances.
 """
 function Base.show(io::IO, body::CelestialBody)
 
-    println(io, crayon"blue", "CelestialBody:")
-    println(io, crayon"default", 
-                "    Mass:           ", ustrip(u"kg", body.μ / G), " ", u"kg")
+    println(io, "CelestialBody:")
+    println(io, "    Mass:           ", ustrip(u"kg", body.μ / G), " ", u"kg")
     println(io, "    Radius:         ", ustrip(u"km", body.R), " ", u"km")
     println(io, "    Mass Parameter: ", ustrip(u"km^3/s^2", body.μ), " ", u"km^3/s^2")
 
@@ -145,13 +137,6 @@ struct KeplerianState{F<:AbstractFloat, LU, AU} <: AbstractKeplerianState{F} whe
 
 end
 
-Base.convert(::Type{T}, o::KeplerianState) where {T<:AbstractFloat} = KeplerianState(T(o.e), T(o.a), T(o.i), T(o.Ω), T(o.ω), T(o.ν))
-Base.promote(::Type{KeplerianState{A}}, ::Type{KeplerianState{B}}) where {A<:AbstractFloat, B<:AbstractFloat} = KeplerianState{promote_type(A,B)}
-Core.Float16(o::KeplerianState) = convert(Float16, o)
-Core.Float32(o::KeplerianState) = convert(Float32, o)
-Core.Float64(o::KeplerianState) = convert(Float64, o)
-Base.MPFR.BigFloat(o::KeplerianState) = convert(BigFloat, o)
-
 """
 Returns the `Unitful.Length` unit associated with the Keplerian state.
 """
@@ -188,13 +173,6 @@ struct RestrictedTwoBodySystem{C<:AbstractConic, F<:AbstractFloat, T<:Union{Cart
     end
 
 end
-
-Base.convert(::Type{T}, o::RestrictedTwoBodySystem) where {T<:AbstractFloat} = RestrictedTwoBodySystem(convert(T, o.state), convert(T, o.body))
-Base.promote(::Type{RestrictedTwoBodySystem{A}}, ::Type{RestrictedTwoBodySystem{B}}) where {A<:AbstractFloat, B<:AbstractFloat} = Orbit{promote_type(A,B)}
-Core.Float16(o::RestrictedTwoBodySystem) = convert(Float16, o)
-Core.Float32(o::RestrictedTwoBodySystem) = convert(Float32, o)
-Core.Float64(o::RestrictedTwoBodySystem) = convert(Float64, o)
-Base.MPFR.BigFloat(o::RestrictedTwoBodySystem) = convert(BigFloat, o)
 
 """
 Alias for `RestrictedTwoBodySystem`.

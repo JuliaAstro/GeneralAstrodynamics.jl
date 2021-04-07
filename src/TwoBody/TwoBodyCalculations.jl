@@ -158,8 +158,8 @@ end
 Returns semimajor axis parameter, a.
 """
 semimajor_axis(r, v, μ) = inv( (2 / r) - (v^2 / μ) )
-semimajor_axis(orbit::CartesianOrbit) = semimajor_axis(scalar_position(orbit), scalar_velocity(orbit), orbit.body.μ)
-semimajor_axis(orbit::KeplerianOrbit) = orbit.state.a
+semimajor_axis(orbit::CartesianOrbit) = semimajor_axis(scalar_position(orbit), scalar_velocity(orbit), orbit.body.μ) 
+semimajor_axis(orbit::KeplerianOrbit) = orbit.state.a # TODO define these functions for `KeplerianState` and dispatch here!
 
 """
 Returns specific angular momentum vector, h̅.
