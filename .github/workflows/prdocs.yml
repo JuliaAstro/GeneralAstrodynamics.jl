@@ -1,4 +1,4 @@
-name: Documentation
+name: PRDocumentation
 
 on:
   pull_request:
