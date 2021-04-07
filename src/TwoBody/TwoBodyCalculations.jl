@@ -8,13 +8,13 @@ Returns the conic section, as specified by eccentricity `e`.
 """
 function conic(e::T) where T<:Number
 
-    if e ≈ 0
+    if e ≈ zero(T)
         return Circular
-    elseif e ≈ 1
+    elseif e ≈ one(T)
         return Parabolic
-    elseif 0 < e && e < 1
+    elseif zero(T) < e && e < one(T)
         return Elliptical
-    elseif e > 1
+    elseif e > one(T)
         return Hyperbolic
     else
         return Invalid
