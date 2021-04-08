@@ -61,13 +61,3 @@ end
 include_source_in_docstring = false
 include_sourcecode(b::Bool) = include_source_in_docstring = b
 
-@template (FUNCTIONS, METHODS, MACROS) =
-"""
-$(METHODLIST)
-$(DOCSTRING)
-"""
-
-@template (DEFAULT) = 
-"""
-$(DOCSTRING)
-"""
