@@ -49,4 +49,6 @@ include("Lambert.jl")
 
 include("TwoBodySystems.jl")
 
+@reexport using .Systems
+
 end 

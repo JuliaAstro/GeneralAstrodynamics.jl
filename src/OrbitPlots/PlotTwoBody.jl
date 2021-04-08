@@ -34,8 +34,8 @@ function plot2d(sols::Trajectory{<:RestrictedTwoBodyOrbit}; kwargs...)
 
     fig = Plots.plot()
 
-    Plots.plot!(fig, ustrip.(u"km", map(x->periapsis_radius(x)[1], sols.step)), 
-                     ustrip.(u"km", map(x->perifocal_radius(x)[2], sols.step)), 
+    Plots.plot!(fig, ustrip.(u"km", map(x->perifocal(x)[1], sols)), 
+                     ustrip.(u"km", map(x->perifocal(x)[2], sols)), 
                      label="Perifocal Position")
     Plots.plot!(fig; options...)
 
@@ -57,9 +57,9 @@ function plot3d(sols::Trajectory{<:RestrictedTwoBodyOrbit}; kwargs...)
 
     fig = Plots.plot()
 
-    Plots.plot!(fig, ustrip.(u"km", map(x->radius_vector(x)[1], sols.step)), 
-                     ustrip.(u"km", map(x->radius_vector(x)[2], sols.step)), 
-                     ustrip.(u"km", map(x->radius_vector(x)[3], sols.step)), 
+    Plots.plot!(fig, ustrip.(u"km", map(x->position_vector(x)[1], sols)), 
+                     ustrip.(u"km", map(x->position_vector(x)[2], sols)), 
+                     ustrip.(u"km", map(x->position_vector(x)[3], sols)), 
                      label="Cartesian Position")
     Plots.plot!(fig; options...)
 

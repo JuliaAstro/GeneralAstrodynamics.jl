@@ -8,7 +8,7 @@ using UnitfulAstrodynamics.TwoBody.Systems: Earth
     
     rᵢ = [0.0, 11681.0, 0.0] * u"km"
     vᵢ = [5.134, 4.226, 2.787] * u"km/s"
-    orbit = Orbit(rᵢ, vᵢ, Earth) |> KeplerianOrbit
+    orbit = CartesianOrbit(rᵢ, vᵢ, Earth, 0.0u"s") |> KeplerianOrbit
 
     @test semimajor_axis(orbit) == 24509.265399338536 * u"km"
     @test eccentricity(orbit) == 0.723452708202361
@@ -18,14 +18,14 @@ using UnitfulAstrodynamics.TwoBody.Systems: Earth
     @test orbit ≈ CartesianOrbit(orbit)
 
     e      =  0.3
-    a      =  15000.   * u"km" + 1.0u"Rearth"
+    a      =  semimajor_axis(orbit)
     i      =  10.      * u"°"
     Ω      =  0.       * u"°"
     ω      =  10.      * u"°"
     ν      =  0.       * u"°"
-    orbit  =  KeplerianOrbit(e, a, i, Ω, ω, ν, Earth)
+    orbit  =  KeplerianOrbit(e, a, i, Ω, ω, ν, Earth, 0.0u"s")
 
-    @test isapprox(orbit, CartesianOrbit(orbit), atol=1e-6)
+    @test isapprox(orbit, CartesianOrbit(orbit); atol=1e-6)
 
 end
 
@@ -33,9 +33,9 @@ end
     
     rᵢ = [0.0, 11681.0, 0.0]u"km"
     vᵢ = [5.134, 4.226, 2.787]u"km/s"
-    orbit = Orbit(rᵢ, vᵢ, Earth)
+    orbit = CartesianOrbit(rᵢ, vᵢ, Earth, 0.0u"s")
 
-    @test kepler(orbit, period(orbit)) ≈ orbit
+    @test kepler(orbit) ≈ orbit
 
 end
 
@@ -43,7 +43,7 @@ end
     
     rᵢ = [0.0, 11681.0, 0.0]u"km"
     vᵢ = [5.134, 4.226, 2.787]u"km/s"
-    initial = Orbit(rᵢ, vᵢ, Earth)
+    initial = CartesianOrbit(rᵢ, vᵢ, Earth, 0.0u"s")
 
     Δt = 1000u"s"
     final = kepler(initial, Δt; tol=1e-12)

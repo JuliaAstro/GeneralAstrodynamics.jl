@@ -146,7 +146,7 @@ struct RestrictedTwoBodyOrbit{C<:AbstractConic, F, LU, TU, T<:BodycentricState{F
     system::RestrictedTwoBodySystem{F,LU,TU}
     
     function RestrictedTwoBodyOrbit(r, v, body::RestrictedTwoBodySystem{T}, epoch=0) where {T}
-        F = promote_type(eltype(ustrip(r)), eltype(ustrip(v)), T, typeof(ustrip(epoch)))
+        F = promote_type(eltype(ustrip.(r)), eltype(ustrip.(v)), T, typeof(ustrip(epoch)))
         if !(F <: AbstractFloat)
             @warn "Promoted type $(string(F)) is not of type float. Defaulting to Float64."
             F = Float64
