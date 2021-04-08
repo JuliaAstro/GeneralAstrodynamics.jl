@@ -246,7 +246,7 @@ end
 """
 Returns a `NondimensionalThreeBodyState` type, instead of tuple `r,v,T`.
 """
-function halo(μ, DU::T1, DT::T2; kwargs...) where T1 <: Length where T2 <: Time
+function halo(μ, DU::T1, DT::T2; kwargs...) where T1 <: Unitful.Length where T2 <: Time
     r, v, T = halo(μ; kwargs...)
     return NondimensionalThreeBodyState(r, v, μ, T, DU, DT)
 end

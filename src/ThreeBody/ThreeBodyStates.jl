@@ -5,7 +5,7 @@
 """
 Abstract type for restricted three-body systems.
 """
-abstract type RestrictedThreeBodySystem <: OrbitalSystem end
+abstract type RestrictedThreeBodySystem <: AbstractOrbitalSystem end
 
 """
 Describes a dimensional state of a spacecraft
@@ -16,16 +16,16 @@ struct ThreeBodyState{F<:AbstractFloat} <: RestrictedThreeBodySystem
 
     μ₁::MassParameter{F}
     μ₂::MassParameter{F}
-    a::Length{F}
-    r₃::SVector{3, <:Length{F}}
+    a::Unitful.Length{F}
+    r₃::SVector{3, <:Unitful.Length{F}}
     v₃::SVector{3, <:Velocity{F}}
     Δt::Time{F}
 
     function ThreeBodyState(μ₁::MP1, μ₂::MP2, a::A, r₃::R, v₃::V, Δt::DT) where {
             MP1 <: MassParameter{<:Real},
             MP2 <: MassParameter{<:Real},
-            A   <: Length{<:Real},
-            RT  <: Length{<:Real},
+            A   <: Unitful.Length{<:Real},
+            RT  <: Unitful.Length{<:Real},
             VT  <: Velocity{<:Real},
             R   <: AbstractVector{RT},
             V   <: AbstractVector{VT},
@@ -84,11 +84,11 @@ struct NondimensionalThreeBodyState{F<:AbstractFloat} <: RestrictedThreeBodySyst
     v::SVector{3, F}
     μ::F
     Δt::F
-    DU::Length{F}
+    DU::Unitful.Length{F}
     DT::Time{F}
 
     function NondimensionalThreeBodyState(rₛ::AbstractVecOrMat{R}, vₛ::AbstractVecOrMat{V}, μ::U, Δt::D = 1.0, 
-                                          DU::Unitful.Length{L} = NaN * u"km", 
+                                          DU::Unitful.Unitful.Length{L} = NaN * u"km", 
                                           DT::Unitful.Time{C} = NaN * u"s") where {
                                           R <: Real, V <: Real, L <: Real, C <: Real, U <: Real, D <: Real}
         T = promote_type(R, V, L, C, U, D)

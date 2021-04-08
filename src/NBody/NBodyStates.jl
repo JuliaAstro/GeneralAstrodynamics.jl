@@ -56,7 +56,7 @@ Base.MPFR.BigFloat(o::Body) = convert(BigFloat, o)
 """
 Describes a system of `n` `NBodyStates`'s.
 """
-struct NBodySystem{N, T<:AbstractFloat} <: OrbitalSystem
+struct NBodySystem{N, T<:AbstractFloat} <: AbstractOrbitalSystem
 
     bodies::SVector{N, Body{T}}
 

@@ -5,7 +5,7 @@ and other celestial bodies.
 module NBody
 
 using Reexport
-@reexport using ..CommonTypes
+@reexport using ..AstrodynamicsCore
 
 include("../Misc/DocStringExtensions.jl")
 include("../Misc/UnitfulAliases.jl")

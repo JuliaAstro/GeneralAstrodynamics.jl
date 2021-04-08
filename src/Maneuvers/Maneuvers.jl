@@ -4,7 +4,7 @@ Provides calculations for orbit maneuvers.
 module Maneuvers
 
 using Reexport
-@reexport using ..CommonTypes
+@reexport using ..AstrodynamicsCore
 
 include("../Misc/DocStringExtensions.jl")
 include("../Misc/UnitfulAliases.jl")

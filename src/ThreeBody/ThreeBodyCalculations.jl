@@ -33,35 +33,35 @@ nondimensionalize_mass_parameter(μ₁, μ₂) = min(μ₁,μ₂) / (μ₁+μ₂
 Returns nondimensional form of (`Unitful`) scalar posiion.
 """
 nondimensionalize(rᵢ::R, a::A) where {
-        R<:Length, A<:Length
+        R<:Unitful.Length, A<:Unitful.Length
     } = nondimensionalize_length(rᵢ, a)
 
 """
 Returns nondimensional form of (`Unitful`) position vector.
 """
 nondimensionalize(rᵢ::R, a::A) where {
-        U<:Length, R<:AbstractVector{U}, A<:Length
+        U<:Unitful.Length, R<:AbstractVector{U}, A<:Unitful.Length
     } = nondimensionalize_length(rᵢ, a)
 
 """
 Returns nondimensional form of (`Unitful`) scalar velocity.
 """
 nondimensionalize(vᵢ::V, a::A, Tₛ::T) where {
-        V<:Velocity, A<:Length, T<:Time
+        V<:Velocity, A<:Unitful.Length, T<:Time
     } = nondimensionalize_velocity(vᵢ, a, Tₛ)
 
 """
 Returns nondimensional form of (`Unitful`) velocity vector.
 """
 nondimensionalize(vᵢ::V, a::A, Tₛ::T) where {
-        U<:Velocity, V<:AbstractVector{U}, A<:Length, T<:Time
+        U<:Velocity, V<:AbstractVector{U}, A<:Unitful.Length, T<:Time
     } = nondimensionalize_velocity(vᵢ, a, Tₛ)
 
 """
 Returns nondimensional form of (`Unitful`) velocity vector.
 """
 nondimensionalize(vᵢ::V, a::A, μ₁::U1, μ₂::U2) where {
-        U<:Velocity, V<:AbstractVector{U}, A<:Length, U1<:MassParameter, U2<:MassParameter
+        U<:Velocity, V<:AbstractVector{U}, A<:Unitful.Length, U1<:MassParameter, U2<:MassParameter
     } = nondimensionalize_velocity(vᵢ, a, time_scale_factor(a, μ₁, μ₂))
 
 """
@@ -75,7 +75,7 @@ nondimensionalize(t::T1, Tₛ::T2) where {
 Returns nondimensional form of (`Unitful`) time duration.
 """
 nondimensionalize(t::T1, a::A, μ₁::U1, μ₂::U2) where {
-        T1<:Time, A<:Length, U1<:MassParameter, U2<:MassParameter
+        T1<:Time, A<:Unitful.Length, U1<:MassParameter, U2<:MassParameter
     } = nondimensionalize(t, time_scale_factor(a, μ₁, μ₂))
 
 """
@@ -89,10 +89,10 @@ nondimensionalize(μ₁::U1, μ₂::U2) where {
 Returns nondimensional Circular Restricted Three-body State.
 """
 function nondimensionalize(r₃::R, v₃::V, Δt::T, μ₁::U1, μ₂::U2, a::A) where {
-        RT<:Length, R<:AbstractVector{RT},
+        RT<:Unitful.Length, R<:AbstractVector{RT},
         VT<:Velocity, V<:AbstractVector{VT},
         T<:Time, U1<:MassParameter, U2<:MassParameter,
-        A<:Length
+        A<:Unitful.Length
     }
 
     Tₛ = time_scale_factor(a, μ₁, μ₂)
@@ -140,14 +140,14 @@ redimensionalize_time(t, Tₛ) = t * Tₛ
 Returns dimensional (inertial) form of (`Unitful`) scalar posiion.
 """
 redimensionalize(rᵢ::R, a::A) where {
-        R<:Real, A<:Length
+        R<:Real, A<:Unitful.Length
     } = redimensionalize_length(rᵢ, a)
 
 """
 Returns dimensional (inertial) form of (`Unitful`) velocity vector.
 """
 redimensionalize(vᵢ::U, a::A, Tₛ::T) where {
-        U<:Real, A<:Length, T<:Time
+        U<:Real, A<:Unitful.Length, T<:Time
     } = redimensionalize_velocity(vᵢ, a, Tₛ)
 
 """
@@ -161,7 +161,7 @@ redimensionalize(t::T1, Tₛ::T2) where {
 Returns dimensional (inertial) form of (`Unitful`) time duration.
 """
 redimensionalize(t::T1, a::A, μ₁::U1, μ₂::U2) where {
-        T1<:Real, A<:Length, U1<:MassParameter, U2<:MassParameter
+        T1<:Real, A<:Unitful.Length, U1<:MassParameter, U2<:MassParameter
     } = redimensionalize(t, time_scale_factor(a, μ₁, μ₂))
 
 """

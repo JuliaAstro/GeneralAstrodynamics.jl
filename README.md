@@ -4,6 +4,14 @@
 # UnitfulAstrodynamics.jl
 Common astrodynamics calculations, with units!
 
+## ⚠️ Under Construction ⚠️
+This package is currently being __completely refactored__! This is good news, 
+since the new implementation will do some cool things with Julia's type system.
+The documentation and tests may frequently fail on the `main` branch on
+this repo as I work out the kinks. No unstable versions will be pushed 
+to the general registry. All `stable` documentation and release versions
+are still stable and work.
+
 ## Features
 * Restricted two-body problem equations, states, propagation, and plotting
 * Restricted three-body problem equations, states, propagation, and iterative Halo orbit solvers

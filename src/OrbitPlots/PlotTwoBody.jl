@@ -8,7 +8,7 @@
 Plots every timestep in `sols` in `3D` space. All keyward 
 arguments are passed directly to `Plots.jl`.
 """
-function orbitplot(sols::Trajectory{<:RestrictedTwoBodySystem}, frame=:Cartesian; kwargs...)
+function orbitplot(sols::Trajectory{<:RestrictedTwoBodyOrbit}, frame=:Cartesian; kwargs...)
    
     # Provided frame can be :Cartesian, or :Perifocal
     if frame == :Perifocal
@@ -21,7 +21,7 @@ function orbitplot(sols::Trajectory{<:RestrictedTwoBodySystem}, frame=:Cartesian
 
 end
 
-function plot2d(sols::Trajectory{<:RestrictedTwoBodySystem}; kwargs...)
+function plot2d(sols::Trajectory{<:RestrictedTwoBodyOrbit}; kwargs...)
 
     # Set default kwargs (modified from [1])
     defaults = (;   formatter=:scientific,
@@ -34,8 +34,8 @@ function plot2d(sols::Trajectory{<:RestrictedTwoBodySystem}; kwargs...)
 
     fig = Plots.plot()
 
-    Plots.plot!(fig, ustrip.(u"km", map(x->periapsis_radius(x)[1], sols.step)), 
-                     ustrip.(u"km", map(x->perifocal_radius(x)[2], sols.step)), 
+    Plots.plot!(fig, ustrip.(u"km", map(x->perifocal(x)[1], sols)), 
+                     ustrip.(u"km", map(x->perifocal(x)[2], sols)), 
                      label="Perifocal Position")
     Plots.plot!(fig; options...)
 
@@ -43,7 +43,7 @@ function plot2d(sols::Trajectory{<:RestrictedTwoBodySystem}; kwargs...)
 
 end
 
-function plot3d(sols::Trajectory{<:RestrictedTwoBodySystem}; kwargs...)
+function plot3d(sols::Trajectory{<:RestrictedTwoBodyOrbit}; kwargs...)
 
     # Set default kwargs (modified from [1])
     defaults = (;   formatter=:scientific,
@@ -57,9 +57,9 @@ function plot3d(sols::Trajectory{<:RestrictedTwoBodySystem}; kwargs...)
 
     fig = Plots.plot()
 
-    Plots.plot!(fig, ustrip.(u"km", map(x->radius_vector(x)[1], sols.step)), 
-                     ustrip.(u"km", map(x->radius_vector(x)[2], sols.step)), 
-                     ustrip.(u"km", map(x->radius_vector(x)[3], sols.step)), 
+    Plots.plot!(fig, ustrip.(u"km", map(x->position_vector(x)[1], sols)), 
+                     ustrip.(u"km", map(x->position_vector(x)[2], sols)), 
+                     ustrip.(u"km", map(x->position_vector(x)[3], sols)), 
                      label="Cartesian Position")
     Plots.plot!(fig; options...)
 

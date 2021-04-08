@@ -1,36 +1,12 @@
 # 
-# Describes trajectories for all `OrbitalSystem`s.
+# Describes trajectories for all `AbstractOrbit`s.
 #
 
 """
-A structure for storing trajectories of `TwoBodySystem` orbits,
-`RestrictedThreeBodySystem` orbits, and `NBodySystem` orbits.
+An alias for a `Vector` of `AbstractOrbits`.
 """
-struct Trajectory{T<:OrbitalSystem} <: AbstractTrajectory
-    t::Vector{<:Number}
-    step::Vector{T}
-    status::Symbol
+const Trajectory{T} = Vector{T} where T <: AbstractOrbit
 
-    function Trajectory(step::AbstractVector{T}, 
-                        t::AbstractVector{<:Number} = [i for i ∈ 1:length(step)],
-                        status::Symbol = :notapplicable) where T <: OrbitalSystem
-        @assert length(step) == length(t) "Time vector and state vectors must have the same length!"
-        return new{T}(Vector(t), Vector(step), status)
-    end
-end
-
-"""
-Copy constructor for `Trajectory` instances.
-"""
-Trajectory(traj::Trajectory) = Trajectory(traj.step, traj.t, traj.status)
-
-"""
-The `length` of a trajectory is the number of steps in the trajectory.
-"""
-Base.length(traj::Trajectory) = length(traj.t)
-
-"""
-The _n-th_ `index` of a trajectory is the _n-th_ step of the trajectory.
-"""
-Base.getindex(traj::Trajectory, i) = traj.step[i]
-Base.show(io::IO, traj::Trajectory) = println(io, typeof(traj), " with ", length(traj), " steps")
+Base.show(io::IO, traj::Trajectory{<:CartesianOrbit}) = println(io, "Cartesian Two-body trajectory with ", length(traj), " steps")
+Base.show(io::IO, traj::Trajectory{<:KeplerianOrbit}) = println(io, "Keplerian Two-body trajectory with ", length(traj), " steps")
+Base.show(io::IO, ::MIME"text/plain", traj::Trajectory) = show(io,traj)

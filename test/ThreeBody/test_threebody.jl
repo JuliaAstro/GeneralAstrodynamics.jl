@@ -2,6 +2,7 @@ module ThreeBodyUnitTests
 
 using Test
 using UnitfulAstrodynamics
+using UnitfulAstrodynamics.TwoBody.Systems: Earth, Sun
 
 @testset "ThreeBody" begin
     
@@ -22,10 +23,10 @@ using UnitfulAstrodynamics
     @test true
     
     # This should run!
-    μ = nondimensionalize(Sun.μ, Earth.μ) |> upreferred
-    r, v, T = halo(μ; Az = 1e-2, L = 2)
+    μ = nondimensionalize(mass_parameter(Sun), mass_parameter(Earth)) |> upreferred
+    r, v, T = halo(μ; Az = 1e-3, L = 2)
     sys = NondimensionalThreeBodyState(r, v, μ, T, 1.0u"AU", 500u"d")
-    sys = redimensionalize(sys, Sun.μ, Earth.μ)
+    sys = redimensionalize(sys, mass_parameter(Sun), mass_parameter(Earth))
     sys = nondimensionalize(sys)
 
     @test true

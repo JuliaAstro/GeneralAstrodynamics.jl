@@ -2,10 +2,10 @@
 Uses `Plots.jl` to plot propagation results for the n-body problem, 
 and the two-body problem. Uses `Plots.jl`
 """
-module AstroPlots
+module OrbitPlots
 
 using Reexport
-@reexport using ..CommonTypes
+@reexport using ..AstrodynamicsCore
 
 include("../Misc/DocStringExtensions.jl")
 include("../Misc/UnitfulAliases.jl")

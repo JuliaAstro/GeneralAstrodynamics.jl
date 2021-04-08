@@ -6,7 +6,7 @@ module ThreeBody
 
 using Reexport
 
-@reexport using ..CommonTypes
+@reexport using ..AstrodynamicsCore
 using ..TwoBody
 
 include("../Misc/DocStringExtensions.jl")
