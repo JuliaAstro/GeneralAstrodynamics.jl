@@ -5,13 +5,7 @@ using UnitfulAstrodynamics
 
 makedocs(
     modules=[
-        UnitfulAstrodynamics,
-        UnitfulAstrodynamics.CommonTypes,
-        UnitfulAstrodynamics.TwoBody,
-        UnitfulAstrodynamics.NBody,
-        UnitfulAstrodynamics.ThreeBody,
-        UnitfulAstrodynamics.Propagators,
-        UnitfulAstrodynamics.OrbitPlots
+        UnitfulAstrodynamics
     ],
     format=Documenter.HTML(),
     sitename="UnitfulAstrodynamics.jl",
