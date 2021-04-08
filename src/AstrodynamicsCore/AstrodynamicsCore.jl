@@ -5,8 +5,9 @@ Implementations are provided in TwoBody, and NBody.
 module AstrodynamicsCore
 
 export  AbstractBody, AbstractOrbitalState, AbstractUnitfulState, AbstractOrbitalSystem, AbstractTrajectory, AbstractUnitfulState, CartesianState,
-        getindex, setindex!, lengthunit, timeunit, velocityunit, massparameterunit,
-        position_vector, velocity_vector, scalar_position, scalar_velocity
+        getindex, setindex!, lengthunit, timeunit, velocityunit, massparameterunit, coordinateframe,
+        position_vector, velocity_vector, scalar_position, scalar_velocity,
+        AbstractFrame, Bodycentric, Synodic, Perifocal
 
 using Reexport
 @reexport using Unitful, UnitfulAngles, UnitfulAstro
@@ -42,15 +43,37 @@ Abstract type describing an orbital state.
 abstract type AbstractUnitfulState{F<:AbstractFloat, LU, TU} <: StaticVector{6,F} where {LU <: Unitful.LengthFreeUnits, TU <: Unitful.TimeFreeUnits} end
 
 """
+Absract type describing all frames.
+"""
+abstract type AbstractFrame end
+
+"""
+Body centered frame.
+"""
+struct Bodycentric <: AbstractFrame end
+
+"""
+Synodic frame.
+"""
+struct Synodic <: AbstractFrame end
+
+"""
+Perifocal frame.
+"""
+struct Perifocal <: AbstractFrame end
+
+"""
 Cartesian state which describes a spacecraft or body's position and velocity with respect to _something_.
 """
-mutable struct CartesianState{F, LU, TU} <: AbstractUnitfulState{F, LU, TU}
+mutable struct CartesianState{F, LU, TU, FR<:AbstractFrame} <: AbstractUnitfulState{F, LU, TU} 
+    epoch::F
     r::SubArray{F, 1, MVector{6, F}, Tuple{UnitRange{Int64}}, true}
     v::SubArray{F, 1, MVector{6, F}, Tuple{UnitRange{Int64}}, true}
     rv::MVector{6,F}
 
-    function CartesianState(r::AbstractVector{R}, v::AbstractVector{V}; lengthunit=u"km", timeunit=u"s") where {R<:Real, V<:Real}
-        F  = promote_type(R, V)
+
+    function CartesianState(r::AbstractVector{R}, v::AbstractVector{V}, epoch::E=0, frame=Bodycentric; lengthunit=u"km", timeunit=u"s") where {R<:Real, V<:Real, E<:Real}
+        F  = promote_type(R, V, typeof(epoch))
         if !(F <: AbstractFloat)
             @warn "Type provided ($(string(F))) is not a float: defaulting to Float64."
             F = Float64
@@ -59,10 +82,10 @@ mutable struct CartesianState{F, LU, TU} <: AbstractUnitfulState{F, LU, TU}
         rv = MVector{6, F}(r[1], r[2], r[3], v[1], v[2], v[3])
         pos = @views rv[1:3]
         vel = @views rv[4:6]
-        return new{F, lengthunit, timeunit}(pos, vel, rv)
+        return new{F, lengthunit, timeunit, frame}(F(epoch), pos, vel, rv)
     end
 
-    function CartesianState(r::AbstractVector{R}, v::AbstractVector{V}) where {R<:Unitful.Length, V<:Unitful.Velocity}
+    function CartesianState(r::AbstractVector{R}, v::AbstractVector{V}, epoch::Unitful.Time=0u"s", frame=Bodycentric) where {R<:Unitful.Length, V<:Unitful.Velocity}
 
         # Get ready to commit a crime... we need the Time unit provided in velocity quantity V
 
@@ -79,11 +102,11 @@ mutable struct CartesianState{F, LU, TU} <: AbstractUnitfulState{F, LU, TU}
         lengthunit = unit(R)
 
         # Phew!
-        return CartesianState(ustrip.(lengthunit, r), ustrip.(lengthunit/timeunit, v); lengthunit = lengthunit, timeunit = timeunit)
+        return CartesianState(ustrip.(lengthunit, r), ustrip.(lengthunit/timeunit, v), ustrip(timeunit, epoch), frame; lengthunit = lengthunit, timeunit = timeunit)
     end
 
-    function CartesianState(cart::AbstractUnitfulState{F}) where {F}
-        return CartesianState(cart.r,  cart.v; lengthunit = lengthunit(cart), timeunit = timeunit(cart))
+    function CartesianState(cart::CartesianState{F,LU,TU,FR}) where {F,LU,TU,FR}
+        return CartesianState(cart.r,  cart.v, cart.epoch, FR; lengthunit = LU, timeunit = TU)
     end
 
     function CartesianState(arr::StaticVector{6})
@@ -114,14 +137,22 @@ Returns the `MassParameter` unit associated with the state.
 """
 massparameterunit(state::S) where S <: AbstractUnitfulState = S.parameters[2]^3 / S.parameters[3]^2
 
-function Base.show(io::IO, state::CartesianState{F, LU, TU}) where {F<:AbstractFloat, LU, TU} 
-    println(io, "  Cartesian State:")
+"""
+Returns the coordinate frame.
+"""
+coordinateframe(state::CartesianState{F,LU,TU,FR}) where {F,LU,TU,FR} = FR
+
+function Base.show(io::IO, state::CartesianState{F,LU,TU,FR}) where {F,LU,TU,FR} 
+    println(io, "  ", string(FR), " Cartesian State:")
+    println("")
+    println(io, "    t:  ", state.epoch, " ", string(TU))
     println(io, "    r = ", [state.r[1] state.r[2] state.r[3]], " ", string(LU))
     println(io, "    v = ", [state.v[1] state.v[2] state.v[3]], " ", string(LU/TU))
 end
 
-function Base.show(io::IO, ::MIME"text/plain", state::CartesianState{F, LU, TU}) where {F<:AbstractFloat, LU, TU} 
-    println(io, "  Cartesian State:")
+function Base.show(io::IO, ::MIME"text/plain", state::CartesianState{F,LU,TU,FR}) where {F,LU,TU,FR} 
+    println(io, "  ", string(FR), " Cartesian State:")
+    println("")
     println(io, "    r = ", [state.r[1] state.r[2] state.r[3]], " ", string(LU))
     println(io, "    v = ", [state.v[1] state.v[2] state.v[3]], " ", string(LU/TU))
 end

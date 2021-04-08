@@ -76,9 +76,9 @@ end
 Custom display for `RestrictedTwoBodySystem` instances.
 """
 function Base.show(io::IO, body::RestrictedTwoBodySystem{F,LU,TU}) where {F,LU,TU}
-    println(io, "  Restricted Two-body System:")
-    println(io, "    Mass Parameter: ", body.μ, " ", string(LU^3 / TU^2))
-    body.name == "" || println(io, "    Name:           ", body.name)
+    println(io, "  Restricted Two-body System ", body.name == "" ? "" : string("(",body.name,")"), ":")
+    println(io, "")
+    println(io, "    μ:  ", body.μ, " ", string(LU^3 / TU^2))
 end
 
 """
@@ -124,13 +124,14 @@ end
 """
 Returns the dimmensionless unit associated with the Keplerian state.
 """
-angularunit(::K) where K <: KeplerianState = C.parameters[4]
+angularunit(::K) where K <: KeplerianState = K.parameters[4]
+
+AstrodynamicsCore.coordinateframe(::KeplerianState) = AstrodynamicsCore.Bodycentric
 
 """
 An orbital state within the Restricted Two-body Problem.
 """
-struct RestrictedTwoBodyState{C<:AbstractConic, F<:AbstractFloat, T<:Union{CartesianState{F,LU,TU} where {LU,TU}, KeplerianState{F,LU,TU,AU} where {LU,TU,AU}}} <: AbstractOrbitalState
-    epoch::F
+struct RestrictedTwoBodyState{C<:AbstractConic, F<:AbstractFloat, T<:Union{CartesianState{F,LU,TU,Bodycentric} where {LU,TU}, KeplerianState{F,LU,TU,AU} where {LU,TU,AU}}} <: AbstractOrbitalState
     state::T
     system::RestrictedTwoBodySystem{F}
     
@@ -140,25 +141,22 @@ struct RestrictedTwoBodyState{C<:AbstractConic, F<:AbstractFloat, T<:Union{Carte
             @warn "Promoted type $(string(F)) is not of type float. Defaulting to Float64."
             F = Float64
         end
-        state = CartesianState(F.(r), F.(v))
+        state = CartesianState(F.(r), F.(v), epoch, Bodycentric)
         lengthunit = typeof(state).parameters[2]
         timeunit   = typeof(state).parameters[3]
         newbody = RestrictedTwoBodySystem(F(ustrip(lengthunit^3 / timeunit^2, mass_parameter(body))), body.name; lengthunit = lengthunit, timeunit = timeunit)
-        return new{conic(eccentricity(state.r, state.v, newbody.μ)), F, typeof(state)}(F(epoch), state, newbody)
+        return new{conic(eccentricity(state.r, state.v, newbody.μ)), F, typeof(state)}(state, newbody)
     end
     RestrictedTwoBodyState(r, v, μ::Number, epoch=0) = RestrictedTwoBodyState(r, v, RestrictedTwoBodySystem(μ), epoch)
 
     function RestrictedTwoBodyState(e, a, i, Ω, ω, ν, body::RestrictedTwoBodySystem{T}, epoch=0) where T <: AbstractFloat
-        F = promote_type(typeof(e), typeof(a), typeof(i), typeof(Ω), typeof(ω), typeof(ν), T, typeof(epoch))
-        if !(F <: AbstractFloat)
-            @warn "Promoted type $(string(F)) is not of type float. Defaulting to Float64."
-            F = Float64
-        end
-        state = KeplerianState(F(e), F(a), F(i), F(Ω), F(ω), F(ν))
+        state = KeplerianState(e, a, i, Ω, ω, ν)
+
+        F = typeof(state).parameters[1]
         lengthunit = typeof(state).parameters[2]
         timeunit   = typeof(state).parameters[3]
         newbody = RestrictedTwoBodySystem(F(ustrip(lengthunit^3 / timeunit^2, mass_parameter(body))), body.name; lengthunit = lengthunit, timeunit = timeunit)
-        return new{conic(e), F, typeof(state)}(F(epoch), state, newbody)
+        return new{conic(e), F, typeof(state)}(state, newbody)
     end
     RestrictedTwoBodyState(e, a, i, Ω, ω, ν, μ::Number, epoch=0) = RestrictedTwoBodyState(e, a, i, Ω, ω, ν, RestrictedTwoBodySystem(μ), epoch)
 
@@ -173,23 +171,21 @@ Orbit(e, a, i, Ω, ω, ν, body) = RestrictedTwoBodyState(e, a, i, Ω, ω, ν, b
 """
 Custom display for KeplerianState instances.
 """
-function Base.show(io::IO, orbit::KeplerianState{F,LU,AU}) where {F,LU,AU}
+function Base.show(io::IO, orbit::KeplerianState{F,LU,TU,AU}) where {F,LU,TU,AU}
 
-    println(io, conic(orbit.e), " Keplerian State of type $(string(F)):")
+    println(io, "  Keplerian State:")
     println(io, "")
-    
-    println(io, "")
-    println(io, "    Eccentricity:           ", 
+    println(io, "    e:  ", 
                 orbit.e)    
-    println(io, "    Semimajor Axis:         ", 
+    println(io, "    a:  ", 
                 orbit.a, " ", string(LU))
-    println(io, "    Inclination:            ", 
+    println(io, "    i:  ", 
                 orbit.i, AU == u"rad" ? " " : "", string(AU))
-    println(io, "    RAAN:                   ", 
+    println(io, "    Ω:  ", 
                 orbit.Ω, AU == u"rad" ? " " : "", string(AU))
-    println(io, "    Arg. Periapsis:         ", 
+    println(io, "    ω:  ", 
                 orbit.ω, AU == u"rad" ? " " : "", string(AU))
-    println(io, "    True Anomoly:           ", 
+    println(io, "    ν:  ", 
                 orbit.ν, AU == u"rad" ? " " : "", string(AU))
 
 end
@@ -199,9 +195,10 @@ Custom display for `RestrictedTwoBodyState` instances.
 """
 function Base.show(io::IO, orbit::RestrictedTwoBodyState{C, F, T}) where {C, F, T}
     print(io, string(C), " Restricted Two-body Orbit")
-    println(", with element type ", string(F), ":")
-    println(io, "  Epoch: ", string(orbit.epoch), " ", string(timeunit(orbit.state)))
+    println(" (", string(F), "):")
+    println(io, "")
     show(io, orbit.state)
+    println(io, "")
     show(io, orbit.system)
 end
 
@@ -212,5 +209,5 @@ const CartesianOrbit = RestrictedTwoBodyState{C, F, R} where {C,F,R <: Cartesian
 
 KeplerianOrbit(e, a, i, Ω, ω, ν, system, epoch) = RestrictedTwoBodyState(e, a, i, Ω, ω, ν, system, epoch)
 CartesianOrbit(r, v, system, epoch) = RestrictedTwoBodyState(r, v, system, epoch)
-KeplerianOrbit(orbit::CartesianOrbit) = KeplerianOrbit(keplerian(position_vector(orbit), velocity_vector(orbit), mass_parameter(orbit.system))..., orbit.system, orbit.epoch)
+KeplerianOrbit(orbit::CartesianOrbit) = KeplerianOrbit(keplerian(position_vector(orbit), velocity_vector(orbit), mass_parameter(orbit.system))..., orbit.system, orbit.state.epoch)
 CartesianOrbit(orbit::KeplerianOrbit) = CartesianOrbit(cartesian(eccentricity(orbit), semimajor_axis(orbit), inclination(orbit), RAAN(orbit), argument_of_periapsis(orbit), true_anomoly(orbit), mass_parameter(orbit.system))..., orbit.system, orbit.epoch)

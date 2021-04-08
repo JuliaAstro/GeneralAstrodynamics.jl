@@ -30,10 +30,10 @@ Algorithm taught in ENAE601.
 function keplerian(rᵢ, vᵢ, μ)
 
     safe_acos(unit, num) = isapprox(num, one(num)) ? 
-                            acos(one(num)) * unit : 
+                            acos(unit, one(num)) : 
                                 isapprox(num, -one(num)) ? 
-                                    acos(-one(num)) * unit : 
-                                        acos(num) * unit
+                                    acos(unit, -one(num)) : 
+                                        acos(unit, num)
 
     î = SVector{3, Float64}([1, 0, 0]) 
     ĵ = SVector{3, Float64}([0, 1, 0]) 
@@ -282,7 +282,10 @@ mass_parameter(body::RestrictedTwoBodySystem) = body.μ * massparameterunit(body
 Returns the orbital period.
 """
 period(a, μ) = 2π * √(upreferred(a^3 / μ))
-period(orbit::T) where T<:RestrictedTwoBodyState = period(semimajor_axis(orbit), massparameterunit(orbit.system))
+period(orbit::RestrictedTwoBodyState{Parabolic}) = Inf * timeunit(orbit.state)
+period(orbit::RestrictedTwoBodyState{Hyperbolic}) = NaN * timeunit(orbit.state)
+period(orbit::RestrictedTwoBodyState{Invalid}) = NaN * timeunit(orbit.state)
+period(orbit::RestrictedTwoBodyState{C}) where C<:Union{Elliptical, Circular} = period(semimajor_axis(orbit), massparameterunit(orbit.system))
 
 """
 Returns true anomoly, ν.
