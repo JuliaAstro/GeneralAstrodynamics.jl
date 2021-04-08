@@ -1,19 +1,12 @@
 # 
-# Describes trajectories for all `AbstractOrbitalState`s.
+# Describes trajectories for all `AbstractOrbit`s.
 #
 
 """
-A structure for storing trajectories of `TwoBodySystem` orbits,
-`RestrictedThreeBodySystem` orbits, and `NBodySystem` orbits.
+An alias for a `Vector` of `AbstractOrbits`.
 """
-const Trajectory{T<:AbstractOrbitalState} = Vector{T}
+const Trajectory{T} = Vector{T} where T <: AbstractOrbit
 
-function Trajectory(step::AbstractVector{S}, 
-                    system::RestrictedTwoBodySystem,
-                    t::AbstractVector{<:Number} = [i for i ∈ 1:length(step)],
-                    status::Symbol = :notapplicable) where {S <: Union{CartesianState, KeplerianState}}
-    @assert length(step) == length(t) "Time vector and state vectors must have the same length!"
-    return RestrictedTwoBodyState.(t, step, (system,))
-end
-
-Base.show(io::IO, traj::Trajectory{T}) where {T<:AbstractOrbitalState} = println(io, string(T), " trajectory with ", length(traj), " steps")
+Base.show(io::IO, traj::Trajectory{<:CartesianOrbit}) = println(io, "Cartesian Two-body trajectory with ", length(traj), " steps")
+Base.show(io::IO, traj::Trajectory{<:KeplerianOrbit}) = println(io, "Keplerian Two-body trajectory with ", length(traj), " steps")
+Base.show(io::IO, ::MIME"text/plain", traj::Trajectory) = show(io,traj)

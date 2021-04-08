@@ -8,7 +8,7 @@
 Plots every timestep in `sols` in `3D` space. All keyward 
 arguments are passed directly to `Plots.jl`.
 """
-function orbitplot(sols::Trajectory{<:RestrictedTwoBodyState}, frame=:Cartesian; kwargs...)
+function orbitplot(sols::Trajectory{<:RestrictedTwoBodyOrbit}, frame=:Cartesian; kwargs...)
    
     # Provided frame can be :Cartesian, or :Perifocal
     if frame == :Perifocal
@@ -21,7 +21,7 @@ function orbitplot(sols::Trajectory{<:RestrictedTwoBodyState}, frame=:Cartesian;
 
 end
 
-function plot2d(sols::Trajectory{<:RestrictedTwoBodyState}; kwargs...)
+function plot2d(sols::Trajectory{<:RestrictedTwoBodyOrbit}; kwargs...)
 
     # Set default kwargs (modified from [1])
     defaults = (;   formatter=:scientific,
@@ -43,7 +43,7 @@ function plot2d(sols::Trajectory{<:RestrictedTwoBodyState}; kwargs...)
 
 end
 
-function plot3d(sols::Trajectory{<:RestrictedTwoBodyState}; kwargs...)
+function plot3d(sols::Trajectory{<:RestrictedTwoBodyOrbit}; kwargs...)
 
     # Set default kwargs (modified from [1])
     defaults = (;   formatter=:scientific,

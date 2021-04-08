@@ -9,8 +9,8 @@
 Currently not exported. Used for ideal two-body numerical integration.
 """
 function RestrictedTwoBodyTic!(∂u, u, p, t)
-    ∂u.r =  u.v
-    ∂u.v = -p.μ .* (u.r ./ norm(u.r,2)^3)
+    ∂u[1:3] .= u[4:6]
+    ∂u[4:6] .= -p.μ .* (u[1:3] ./ norm(u[1:3])^3)
     return nothing
 end
 
@@ -24,8 +24,8 @@ function RestrictedBiasedTwoBodyTic!(∂u, u, p, t)
 end
 
 function SciMLBase.ODEProblem(orbit::CartesianOrbit, Δt::Real = ustrip(timeunit(orbit.state), period(orbit))) 
-    u = CartesianState(orbit.r, orbit.v)
-    t = (orbit.epoch, Δt)
+    u = orbit.state.rv
+    t = (orbit.state.t, Δt)
     p = (μ = ustrip(lengthunit(orbit.state)^3 / timeunit(orbit.state)^2, mass_parameter(orbit.system)),)
     return ODEProblem(RestrictedTwoBodyTic!, u, t, p)
 end
@@ -56,9 +56,14 @@ function propagate(orbit::CartesianOrbit,
     sols = solve(problem; options...)
 
     # Return PropagationResult structure
-    if sols.retcode != :success
-        @warn "`DifferentialEquations` solvers returned code $(string(sols.retcode))."
+    if sols.retcode != :Success
+        @warn "DifferentialEquations solvers returned code $(string(sols.retcode))."
     end
-    return CartesianOrbit.(sols.t, CartesianState.(map(u->u.r, sols.u), map(u->u.v, sols.u); lengthunit = lengthunit(orbit), timeunit = timeunit(orbit)), (orbit.system,))
 
+    return [
+        CartesianOrbit(sols.u[i][1:3] * lengthunit(orbit.state), sols.u[i][4:6] * velocityunit(orbit.state), orbit.system, sols.t[i] * timeunit(orbit.state))
+        for i ∈ 1:length(sols.t)
+    ]
 end
+
+propagate(::KeplerianOrbit, args...; kwargs...) = throw(ArgumentError("Keplerian orbit propagation isn't supported at this time! Please convert your orbit to a `CartesianOrbit` for propagation."))

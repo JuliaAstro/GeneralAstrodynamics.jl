@@ -6,7 +6,7 @@ module TwoBody
 # Dependencies 
 
 using Reexport
-@reexport using ..AstrodynamicsCore
+using ..AstrodynamicsCore
 
 using Unitful, UnitfulAngles
 
@@ -22,7 +22,7 @@ import PhysicalConstants.CODATA2018
 G = 1.0 * CODATA2018.G
 
 # Export data structures, constants, and constructors
-export RestrictedTwoBodyState, RestrictedTwoBodySystem, KeplerianState, AbstractConic, Circular,
+export RestrictedTwoBodyOrbit, RestrictedTwoBodySystem, KeplerianState, AbstractConic, Circular,
        Elliptical, Parabolic, Hyperbolic, Invalid, Body, CelestialBody,
        Sun, Mercury, Venus, Earth, Moon, Luna, Mars, Jupiter, 
        Saturn, Uranus, Neptune, Pluto, G
@@ -39,7 +39,7 @@ export  semimajor_axis, semi_parameter, eccentricity,
         specific_angular_momentum, specific_energy, specific_potential_energy,
         isapprox, isequal, TwobodyPropagationResult, kepler, lambert,
         conic, keplerian, cartesian, promote, convert, Float16, Float32, Float64,
-        BigFloat, CartesianOrbit, KeplerianOrbit, lengthunit, timeunit, massparameterunit
+        BigFloat, CartesianOrbit, KeplerianOrbit
 
 # Include all module source code
 include("TwoBodyStates.jl")

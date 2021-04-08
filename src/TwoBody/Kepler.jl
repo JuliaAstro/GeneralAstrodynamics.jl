@@ -7,7 +7,7 @@
 """
 Solves Kepler's Problem for `orbit` and `Δtᵢ`.
 """
-function kepler(orbit::RestrictedTwoBodyState, Δtᵢ::Real = ustrip(timeunit(orbit.state), period(orbit)); tol=1e-6, max_iter=100) 
+function kepler(orbit::RestrictedTwoBodyOrbit, Δtᵢ::Real = ustrip(timeunit(orbit.state), period(orbit)); tol=1e-6, max_iter=100) 
 
     conic_section = conic(orbit)
 
@@ -49,12 +49,12 @@ Arguments:
 * `Δtᵢ`: Propagation time. Any scalar with type `<: Unitful.Time`
 """
 function kepler(r, v, μ, Δtᵢ; tol=1e-6, max_iter=100)
-    initial = RestrictedTwoBodyState(r, v, μ)
+    initial = RestrictedTwoBodyOrbit(r, v, μ)
     final   = kepler(final, Δtᵢ; tol=tol, max_iter=max_iter)
     return radius_vector(r), velocity_vector(v)
 end
 
-kepler(orbit::RestrictedTwoBodyState, Δtᵢ::Unitful.Time; kwargs...) = kepler(orbit, ustrip(timeunit(orbit.state); Δtᵢ), kwargs...)
+kepler(orbit::RestrictedTwoBodyOrbit, Δtᵢ::Unitful.Time; kwargs...) = kepler(orbit, ustrip(timeunit(orbit.state); Δtᵢ), kwargs...)
 
 function χₖ(χₙ, Δt, rᵢ₀, vᵢ₀, a, μ; iter=1, tol=1e-14, max_iter=100)
     
