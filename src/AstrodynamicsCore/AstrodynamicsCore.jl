@@ -12,6 +12,7 @@ export  AbstractBody, AbstractOrbitalState, AbstractUnitfulState, AbstractOrbita
 using Reexport
 @reexport using Unitful, UnitfulAngles, UnitfulAstro
 using StaticArrays: StaticVector, MVector
+using LinearAlgebra: norm
 
 include("../Misc/DocStringExtensions.jl")
 include("../Misc/UnitfulAliases.jl")
@@ -153,6 +154,7 @@ end
 function Base.show(io::IO, ::MIME"text/plain", state::CartesianState{F,LU,TU,FR}) where {F,LU,TU,FR} 
     println(io, "  ", string(FR), " Cartesian State:")
     println("")
+    println(io, "    t:  ", state.epoch, " ", string(TU))
     println(io, "    r = ", [state.r[1] state.r[2] state.r[3]], " ", string(LU))
     println(io, "    v = ", [state.v[1] state.v[2] state.v[3]], " ", string(LU/TU))
 end
