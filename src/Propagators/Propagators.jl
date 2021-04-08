@@ -5,7 +5,7 @@ and the n-body problem.
 module Propagators
 
 using Reexport 
-@reexport using ..CommonTypes
+@reexport using ..AstrodynamicsCore
 
 include("../Misc/DocStringExtensions.jl")
 include("../Misc/UnitfulAliases.jl")

@@ -8,7 +8,7 @@ module Ephemeris
 export loadascii, interpolator
 
 using Reexport
-@reexport using ..CommonTypes
+@reexport using ..AstrodynamicsCore
 
 using DelimitedFiles, Interpolations
 

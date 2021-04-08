@@ -15,7 +15,7 @@ module UnitfulAstrodynamics
 
 using Reexport
 
-include("CommonTypes/CommonTypes.jl")
+include("AstrodynamicsCore/AstrodynamicsCore.jl")
 include("TwoBody/TwoBody.jl")
 include("ThreeBody/ThreeBody.jl")
 include("NBody/NBody.jl")
@@ -24,7 +24,7 @@ include("Maneuvers/Maneuvers.jl")
 include("OrbitPlots/OrbitPlots.jl")
 include("Ephemeris/Ephemeris.jl")
 
-@reexport using .CommonTypes
+@reexport using .AstrodynamicsCore
 @reexport using .TwoBody
 @reexport using .ThreeBody
 @reexport using .NBody

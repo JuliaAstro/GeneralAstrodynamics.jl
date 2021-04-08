@@ -21,7 +21,7 @@ function conic(e::T) where T<:Real
     end
 
 end
-conic(orbit::T) where T<:RestrictedTwoBodySystem = conic(eccentricity(orbit))
+conic(orbit::T) where T<:RestrictedTwoBodyState = conic(eccentricity(orbit))
 
 """
 Returns a Keplarian representation of a Cartesian orbital state.
@@ -29,7 +29,11 @@ Algorithm taught in ENAE601.
 """
 function keplerian(rᵢ, vᵢ, μ)
 
-    safe_acos(unit, num) = isapprox(num, 1) ? acos(one(num)) * unit : acos(num) * unit
+    safe_acos(unit, num) = isapprox(num, one(num)) ? 
+                            acos(one(num)) * unit : 
+                                isapprox(num, -one(num)) ? 
+                                    acos(-one(num)) * unit : 
+                                        acos(num) * unit
 
     î = SVector{3, Float64}([1, 0, 0]) 
     ĵ = SVector{3, Float64}([0, 1, 0]) 
@@ -60,8 +64,8 @@ function keplerian(rᵢ, vᵢ, μ)
            uconvert(u"°", ν)
 
 end
-keplerian(rᵢ, vᵢ, body::CelestialBody) = keplerian(rᵢ, vᵢ, body.μ)
-keplerian(orbit::KeplerianOrbit) = orbit.state.e, orbit.state.a, orbit.state.i, orbit.state.Ω, orbit.state.ω, orbit.state.ν
+keplerian(rᵢ, vᵢ, body::RestrictedTwoBodySystem) = keplerian(rᵢ, vᵢ, mass_parameter(body))
+keplerian(orbit::KeplerianOrbit) = eccentricity(orbit.state), semimajor_axis(orbit.state), inclination(orbit.state), RAAN(orbit.state), argument_of_periapsis(orbit.state), true_anomoly(orbit.state)
 keplerian(orbit::CartesianOrbit) = keplerian(position_vector(orbit.state), velocity_vector(orbit.state), orbit.body)
 
 """
@@ -74,9 +78,9 @@ function cartesian(e, a, i, Ω, ω, ν, μ)
     return  uconvert.(u"km",    rᵢ), 
             uconvert.(u"km/s",  vᵢ)
 end
-cartesian(e, a, i, Ω, ω, ν, body::CelestialBody) = cartesian(e, a, i, Ω, ω, ν, body.μ)
+cartesian(e, a, i, Ω, ω, ν, body::RestrictedTwoBodySystem) = cartesian(e, a, i, Ω, ω, ν, mass_parameter(body))
 cartesian(orbit::CartesianOrbit) = position_vector(orbit.state), velocity_vector(orbit.state)
-cartesian(orbit::KeplerianOrbit) = cartesian(orbit.state.e, orbit.state.a, orbit.state.i, orbit.state.Ω, orbit.state.ω, orbit.state.ν, orbit.body)
+cartesian(orbit::KeplerianOrbit) = cartesian(eccentricity(orbit.state), semimajor_axis(orbit.state), inclination(orbit.state), RAAN(orbit.state), argument_of_periapsis(orbit.state), true_anomoly(orbit.state), orbit.body)
 
 """
 Returns a Cartesian (inertial) representation of the provied Perifocal state.
@@ -144,7 +148,7 @@ function perifocal(i, Ω, ω, rᵢ, vᵢ)
 
 end
 
-function perifocal(orbit::T) where T <: RestrictedTwoBodySystem
+function perifocal(orbit::T) where T <: RestrictedTwoBodyState
     return perifocal(
         inclination(orbit),
         RAAN(orbit),
@@ -158,7 +162,7 @@ end
 Returns semimajor axis parameter, a.
 """
 semimajor_axis(r, v, μ) = inv( (2 / r) - (v^2 / μ) )
-semimajor_axis(orbit::CartesianOrbit) = semimajor_axis(scalar_position(orbit), scalar_velocity(orbit), orbit.body.μ) 
+semimajor_axis(orbit::CartesianOrbit) = semimajor_axis(scalar_position(orbit), scalar_velocity(orbit), massparameterunit(orbit.system)) 
 semimajor_axis(orbit::KeplerianOrbit) = orbit.state.a # TODO define these functions for `KeplerianState` and dispatch here!
 
 """
@@ -180,15 +184,15 @@ Returns specific orbital energy, ϵ.
 """
 specific_energy(a, μ) = ( -μ / (2 * a) )
 specific_energy(r, v, μ) = (v^2 / 2) - (μ / r)
-specific_energy(orbit::CartesianOrbit) = specific_energy(position_vector(orbit.state), velocity_vector(orbit.state), orbit.body.μ)
-specific_energy(orbit::KeplerianOrbit) = specific_energy(orbit.state.a, orbit.body.μ)
+specific_energy(orbit::CartesianOrbit) = specific_energy(position_vector(orbit.state), velocity_vector(orbit.state), massparameterunit(orbit.system))
+specific_energy(orbit::KeplerianOrbit) = specific_energy(semimajor_axis(orbit.state), massparameterunit(orbit.system))
 
 """
-Returns potential energy for an orbit about a `CelestialBody`.
+Returns potential energy for an orbit about a `RestrictedTwoBodySystem`.
 """
 specific_potential_energy(r, μ) = (μ/r)
 specific_potential_energy(r, μ, R, J₂, ϕ) = (μ/r) * (1 - J₂ * (R/r)^2 * ((3/2) * (sin(ϕ))^2 - (1/2)))
-specific_potential_energy(orbit::CartesianOrbit) = specific_potential_energy(position_vector(orbit.state), orbit.body.μ)
+specific_potential_energy(orbit::CartesianOrbit) = specific_potential_energy(position_vector(orbit.state), massparameterunit(orbit.system))
 specific_potential_energy(orbit::KeplerianOrbit) = specific_potential_energy(CartesianOrbit(orbit))
 
 """
@@ -199,88 +203,86 @@ function eccentricity_vector(rᵢ, vᵢ, μ)
     return map(x-> abs(x) < eps(typeof(x)) ? zero(x) : x, (1 / μ) * ((vᵢ × specific_angular_momentum_vector(rᵢ, vᵢ)) - μ * rᵢ / norm(rᵢ)))
 
 end
-eccentricity_vector(orbit::CartesianOrbit) = eccentricity_vector(position_vector(orbit.state), velocity_vector(orbit.state), orbit.body.μ)
+eccentricity_vector(orbit::CartesianOrbit) = eccentricity_vector(position_vector(orbit.state), velocity_vector(orbit.state), massparameterunit(orbit.system))
 eccentricity_vector(orbit::KeplerianOrbit) = eccentricity_vector(CartesianOrbit(orbit))
 
 """
 Returns orbital eccentricity, e.
 """
 eccentricity(rᵢ, vᵢ, μ) = norm(eccentricity_vector(rᵢ, vᵢ, μ)) |> upreferred
-eccentricity(orbit::CartesianOrbit) = eccentricity(position_vector(orbit.state), velocity_vector(orbit.state), orbit.body.μ)
+eccentricity(orbit::CartesianOrbit) = eccentricity(position_vector(orbit.state), velocity_vector(orbit.state), massparameterunit(orbit.system))
 eccentricity(orbit::KeplerianOrbit) = orbit.state.e
 
 """
 Returns semilatus parameter, p.
 """
 semi_parameter(a, e) = a * (1 - e^2)
-semi_parameter(orbit::KeplerianOrbit) = semi_parameter(orbit.state.a, orbit.state.e)
-semi_parameter(orbit::CartesianOrbit) = semi_parameter(KeplerianOrbit(orbit))
+semi_parameter(orbit::RestrictedTwoBodyState) = semi_parameter(semimajor_axis(orbit), eccentricity(orbit))
 
 """
 Returns scalar_position, r.
 """
-scalar_position(p, e, ν) = upreferred(p / (1 + e * cos(ν)))
-scalar_position(orbit::KeplerianOrbit) = scalar_position(semi_parameter(orbit), orbit.state.e, orbit.state.ν)
-scalar_position(orbit::CartesianOrbit) = norm(position_vector(orbit.state))
-scalar_position(body::CelestialBody) = body.R
+AstrodynamicsCore.scalar_position(p, e, ν) = upreferred(p / (1 + e * cos(ν)))
+AstrodynamicsCore.scalar_position(orbit::KeplerianOrbit) = scalar_position(semi_parameter(orbit), eccentricity(orbit), true_anomoly(orbit))
+AstrodynamicsCore.scalar_position(orbit::CartesianOrbit) = norm(position_vector(orbit))
 
 """
-Returns scalar_position vector, rᵢ.
+Returns position vector, rᵢ.
 """
-position_vector(orbit::CartesianOrbit) = position_vector(orbit.state)
-position_vector(orbit::KeplerianOrbit) = position_vector(CartesianOrbit(orbit))
+AstrodynamicsCore.position_vector(orbit::CartesianOrbit) = position_vector(orbit.state)
+AstrodynamicsCore.position_vector(orbit::KeplerianOrbit) = position_vector(CartesianOrbit(orbit))
 
 """
 Returns instantaneous velocity, v, for any orbital representation.
 """
-scalar_velocity(r, a, μ) =  upreferred(√( (2 * μ / r) - (μ / a)))
-scalar_velocity(orbit::KeplerianOrbit) = scalar_velocity(scalar_position(orbit), orbit.state.a, orbit.body.μ)
-scalar_velocity(orbit::CartesianOrbit) = norm(velocity_vector(orbit.state))
+AstrodynamicsCore.scalar_velocity(r, a, μ) =  upreferred(√( (2 * μ / r) - (μ / a)))
+AstrodynamicsCore.scalar_velocity(orbit::KeplerianOrbit) = scalar_velocity(scalar_position(orbit), semimajor_axis(orbit), massparameterunit(orbit.system))
+AstrodynamicsCore.scalar_velocity(orbit::CartesianOrbit) = norm(velocity_vector(orbit))
 
 """
 Returns velocity vector, vᵢ.
 """
-velocity_vector(orbit::CartesianOrbit) = velocity_vector(orbit.state)
-velocity_vector(orbit::KeplerianOrbit) = velocity_vector(CartesianOrbit(orbit))
+AstrodynamicsCore.velocity_vector(orbit::CartesianOrbit) = velocity_vector(orbit.state)
+AstrodynamicsCore.velocity_vector(orbit::KeplerianOrbit) = velocity_vector(CartesianOrbit(orbit))
 
 """
 Returns periapsis scalar_position, rₚ.
 """
 periapsis_scalar_position(a, e) = a * (1 - e)
-periapsis_scalar_position(orbit::T) where T<:RestrictedTwoBodySystem = periapsis_scalar_position(semimajor_axis(orbit), eccentricity(orbit))
+periapsis_scalar_position(orbit::T) where T<:RestrictedTwoBodyState = periapsis_scalar_position(semimajor_axis(orbit), eccentricity(orbit))
 
 """
 Returns apoapsis scalar_position, rₐ.
 """
 apoapsis_scalar_position(a, e) = a * (1 + e)
-apoapsis_scalar_position(orbit::T) where T<:RestrictedTwoBodySystem = apoapsis_scalar_position(semimajor_axis(orbit), eccentricity(orbit))
+apoapsis_scalar_position(orbit::T) where T<:RestrictedTwoBodyState = apoapsis_scalar_position(semimajor_axis(orbit), eccentricity(orbit))
 
 """
 Returns periapsis velocity, vₚ, for any orbital representation.
 """
-periapsis_scalar_velocity(orbit::T) where T<:RestrictedTwoBodySystem = scalar_velocity(periapsis_scalar_position(orbit), semimajor_axis(orbit), orbit.body.μ)
+periapsis_scalar_velocity(orbit::T) where T<:RestrictedTwoBodyState = scalar_velocity(periapsis_scalar_position(orbit), semimajor_axis(orbit), massparameterunit(orbit.system))
 
 
 """
 Returns apoapsis velocity, v_a, for any orbital representation.
 """
-apoapsis_scalar_velocity(orbit::T) where T<:RestrictedTwoBodySystem = scalar_velocity(apoapsis_scalar_position(orbit), semimajor_axis(orbit), orbit.body.μ)
+apoapsis_scalar_velocity(orbit::T) where T<:RestrictedTwoBodyState = scalar_velocity(apoapsis_scalar_position(orbit), semimajor_axis(orbit), massparameterunit(orbit.system))
 
 """
 Returns mass `m`.
 """
-mass(body::CelestialBody) = body.μ / G
+mass(body::RestrictedTwoBodySystem) = mass_parameter(body) / G
 
 """
 Returns mass parameter `μ`.
 """
-mass_parameter(body::CelestialBody) = body.μ
+mass_parameter(body::RestrictedTwoBodySystem) = body.μ * massparameterunit(body)
 
 """
 Returns the orbital period.
 """
 period(a, μ) = 2π * √(upreferred(a^3 / μ))
-period(orbit::T) where T<:RestrictedTwoBodySystem = period(semimajor_axis(orbit), orbit.body.μ)
+period(orbit::T) where T<:RestrictedTwoBodyState = period(semimajor_axis(orbit), massparameterunit(orbit.system))
 
 """
 Returns true anomoly, ν.
@@ -289,19 +291,19 @@ function true_anomoly(r, h, e, μ)
     val = (h^2 - μ * r) / (μ * r * e)
     acos(u"rad", isapprox(val, one(val)) ? one(val) : val)
 end
-true_anomoly(orbit::KeplerianOrbit) = orbit.state.ν
-true_anomoly(orbit::CartesianOrbit) = true_anomoly(scalar_position(orbit), specific_angular_momentum(orbit), eccentricity(orbit), orbit.body.μ)
+true_anomoly(orbit::KeplerianOrbit) = orbit.state.ν * angularunit(orbit.state)
+true_anomoly(orbit::CartesianOrbit) = true_anomoly(scalar_position(orbit), specific_angular_momentum(orbit), eccentricity(orbit), massparameterunit(orbit.system))
 
 """
 Returns mean motion, n.
 """
 mean_motion(a, μ) = √(μ / a^3)
-mean_motion(orbit::T) where T<:RestrictedTwoBodySystem = mean_motion(semimajor_axis(orbit), orbit.μ)
+mean_motion(orbit::T) where T<:RestrictedTwoBodyState = mean_motion(semimajor_axis(orbit), massparameterunit(orbit.system))
 
 """
 Returns mean motion vector, n̄.
 """
-function mean_motion_vector(orbit::T) where T<:RestrictedTwoBodySystem
+function mean_motion_vector(orbit::T) where T<:RestrictedTwoBodyState
 #   î = SVector{3, Float64}([1, 0, 0]) 
 #   ĵ = SVector{3, Float64}([0, 1, 0]) 
     k̂ = SVector{3, Float64}([0, 0, 1])
@@ -312,7 +314,7 @@ end
 Returns eccentric anomoly, E, parabolic anomoly, B, or hyperbolic 
 anomoly, H. 
 """
-function eccentric_anomoly(orbit::T) where T <: RestrictedTwoBodySystem
+function eccentric_anomoly(orbit::T) where T <: RestrictedTwoBodyState
     e = eccentricity(orbit)
     ν = true_anomoly(orbit)
     return acos(u"rad", (e + cos(ν) / (1 + e * cos(ν))))
@@ -322,30 +324,30 @@ end
 Returns time since periapsis, t.
 """
 time_since_periapsis(n, e, E) = (E - e * sin(E)) / (n)
-time_since_periapsis(orbit::T) where T <: RestrictedTwoBodySystem = time_since_periapsis(mean_motion(orbit), eccentricity(orbit), eccentric_anomoly(orbit))
+time_since_periapsis(orbit::T) where T <: RestrictedTwoBodyState = time_since_periapsis(mean_motion(orbit), eccentricity(orbit), eccentric_anomoly(orbit))
 
 """
 Returns orbital inclination, i.
 """
-inclination(orbit::KeplerianOrbit) =  orbit.state.i
+inclination(orbit::KeplerianOrbit) =  orbit.state.i * angularunit(orbit.state)
 inclination(orbit::CartesianOrbit) = inclination(KeplerianOrbit(orbit))
 
 """
 Returns Right Ascension of the Ascending Node, Ω.
 """
-RAAN(orbit::KeplerianOrbit) = orbit.state.Ω
+RAAN(orbit::KeplerianOrbit) = orbit.state.Ω * angularunit(orbit.state)
 RAAN(orbit::CartesianOrbit) = RAAN(KeplerianOrbit(orbit))
 
 """
 Returns the Argument of Periapsis, ω.
 """
-argument_of_periapsis(orbit::KeplerianOrbit) = orbit.state.ω
+argument_of_periapsis(orbit::KeplerianOrbit) = orbit.state.ω * angularunit(orbit.state)
 argument_of_periapsis(orbit::CartesianOrbit) = argument_of_periapsis(KeplerianOrbit(orbit))
 
 """
 Returns true if all elements in each system are within `atol` of the other.
 """
-function Base.isapprox(c1::RestrictedTwoBodySystem, c2::RestrictedTwoBodySystem; atol=1e-6)
+function Base.isapprox(c1::RestrictedTwoBodyState, c2::RestrictedTwoBodyState; atol=1e-6)
 
     return all(ustrip.(abs.(position_vector(c1) - position_vector(c2))) .< atol) &&
            all(ustrip.(abs.(velocity_vector(c1) - velocity_vector(c2))) .< atol) &&
@@ -362,7 +364,7 @@ end
 """
 Returns true if all elements of each system are identically equal.
 """
-function Base.isequal(c1::RestrictedTwoBodySystem, c2::RestrictedTwoBodySystem)
+function Base.isequal(c1::RestrictedTwoBodyState, c2::RestrictedTwoBodyState)
 
     return all(position_vector(c1) .== position_vector(c2)) &&
            all(velocity_vector(c1) .== velocity_vector(c2)) &&
@@ -379,14 +381,13 @@ end
 """
 Returns true if all elements are within `atol` of the other.
 """
-function Base.isapprox(b1::CelestialBody, b2::CelestialBody; atol=1e-6)
-    return ustrip(upreferred(abs(b1.R - b2.R))) < atol &&
-           ustrip(upreferred(abs(b1.μ - b2.μ))) < atol
+function Base.isapprox(b1::RestrictedTwoBodySystem, b2::RestrictedTwoBodySystem; atol=1e-6)
+    return ustrip(upreferred(abs(mass_parameter(b1) - mass_parameter(b2)))) < atol
 end
 
 """
 Returns true if all elements are identically equal.
 """
-function Base.isequal(b1::CelestialBody, b2::CelestialBody)
-    return b1.R == b2.R && b1.μ == b2.μ
+function Base.isequal(b1::RestrictedTwoBodySystem, b2::RestrictedTwoBodySystem)
+    return b1.μ == b2.μ
 end

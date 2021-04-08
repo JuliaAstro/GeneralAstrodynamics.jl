@@ -7,33 +7,33 @@
 """
 Solves Kepler's Problem for `orbit` and `Δtᵢ`.
 """
-function kepler(orbit::O, Δtᵢ::T = period(orbit); tol=1e-6, max_iter=100) where O <: RestrictedTwoBodySystem where T<:Unitful.Time
+function kepler(orbit::RestrictedTwoBodyState, Δtᵢ::Real = ustrip(timeunit(orbit.state), period(orbit)); tol=1e-6, max_iter=100) 
 
     conic_section = conic(orbit)
 
     # Guess χ₀
     if conic_section == Hyperbolic
         Δt = Δtᵢ
-        χ₀ = sign(Δt) * √(-semimajor_axis(orbit)) * log(ℯ, (-2 * orbit.body.μ / semimajor_axis(orbit) * Δt) / 
-                (radius_vector(orbit) ⋅ velocity_vector(orbit) + (sign(Δt) * √(-orbit.body.μ * semimajor_axis(orbit)) * (1 - norm(radius_vector(orbit)) / semimajor_axis(orbit)))))
+        χ₀ = sign(Δt) * √(-semimajor_axis(orbit)) * log(ℯ, (-2 * mass_parameter(orbit.system) / semimajor_axis(orbit) * Δt) / 
+                (radius_vector(orbit) ⋅ velocity_vector(orbit) + (sign(Δt) * √(-mass_parameter(orbit.system) * semimajor_axis(orbit)) * (1 - norm(radius_vector(orbit)) / semimajor_axis(orbit)))))
     elseif conic_section == Parabolic
         Δt = Δtᵢ
         χ₀ = √(semi_parameter(orbit)) * tan(true_anomoly(orbit) / 2)
     else
         Δt = mod(Δtᵢ, period(orbit))
-        χ₀ = √(orbit.body.μ) * Δt / semimajor_axis(orbit)
+        χ₀ = √(mass_parameter(orbit.system)) * Δt / semimajor_axis(orbit)
     end
 
     # Iteratively solve for χ
     # TODO: Compare loop vs. recursion performance here.
     # There shouldn't be too large of a difference, since this tends
     # to converge with only a few iterations.
-    χₙ, r, ψ, C₂, C₃ = χₖ(χ₀, Δt, radius_vector(orbit), velocity_vector(orbit), semimajor_axis(orbit), orbit.body.μ, tol=tol, max_iter=max_iter)
+    χₙ, r, ψ, C₂, C₃ = χₖ(χ₀, Δt, radius_vector(orbit), velocity_vector(orbit), semimajor_axis(orbit), mass_parameter(orbit.system), tol=tol, max_iter=max_iter)
 
     # Convert to a Orbit
     f = 1 - χₙ^2 / norm(radius_vector(orbit)) * C₂
-    ḟ = √(orbit.body.μ) / (norm(radius_vector(orbit)) * r) * χₙ * (ψ * C₃ - 1)
-    g = Δt - (χₙ^3 / √(orbit.body.μ)) * C₃
+    ḟ = √(mass_parameter(orbit.system)) / (norm(radius_vector(orbit)) * r) * χₙ * (ψ * C₃ - 1)
+    g = Δt - (χₙ^3 / √(mass_parameter(orbit.system))) * C₃
     ġ = 1 - (χₙ^2 / r) * C₂
 
     return Orbit(f * radius_vector(orbit) + g * velocity_vector(orbit), ḟ * radius_vector(orbit) + ġ * velocity_vector(orbit), orbit.body)
@@ -49,10 +49,12 @@ Arguments:
 * `Δtᵢ`: Propagation time. Any scalar with type `<: Unitful.Time`
 """
 function kepler(r, v, μ, Δtᵢ; tol=1e-6, max_iter=100)
-    initial = TwoBodyState(r, v, μ)
+    initial = RestrictedTwoBodyState(r, v, μ)
     final   = kepler(final, Δtᵢ; tol=tol, max_iter=max_iter)
     return radius_vector(r), velocity_vector(v)
 end
+
+kepler(orbit::RestrictedTwoBodyState, Δtᵢ::Unitful.Time; kwargs...) = kepler(orbit, ustrip(timeunit(orbit.state); Δtᵢ), kwargs...)
 
 function χₖ(χₙ, Δt, rᵢ₀, vᵢ₀, a, μ; iter=1, tol=1e-14, max_iter=100)
     
