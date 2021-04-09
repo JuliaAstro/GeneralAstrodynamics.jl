@@ -50,6 +50,8 @@ export time_scale_factor,
        isequal,
        isperiodic
        
+export CircularRestrictedThreeBodySystem, CircularRestrictedThreeBodySystem
+
 include("ThreeBodyStates.jl")
 include("ThreeBodyCalculations.jl")
 include("Halo.jl")

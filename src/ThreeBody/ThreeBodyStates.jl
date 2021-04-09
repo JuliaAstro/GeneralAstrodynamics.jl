@@ -7,19 +7,16 @@ Abstract type for restricted three-body systems.
 """
 abstract type RestrictedThreeBodySystem <: AbstractOrbitalSystem end
 
-const NormalizedLengthUnit   = Unitful.FreeUnits{(), Unitful.𝐋, nothing}
-const NormalizedTimeUnit     = Unitful.FreeUnits{(), Unitful.𝐓, nothing}
-
-struct IncompleteCircularRestrictedThreeBodySystem{F} <: AbstractSystem{F, NormalizedLengthUnit, NormalizedTimeUnit}
+mutable struct IncompleteCircularRestrictedThreeBodySystem{F} <: AbstractSystem{F, NormalizedLengthUnit, NormalizedTimeUnit}
     μ::F
 
-    function IncompleteCircularRestrictedThreeBodySystem(μ::Real) <: AbstractSystem{F, NormalizedLengthUnit, NormalizedTimeUnit}
+    function IncompleteCircularRestrictedThreeBodySystem(μ::Real) 
         F = typeof(μ)
         return new{F}(F(μ))
     end
 end
 
-struct CircularRestrictedThreeBodySystem{F, LU, TU} <: AbstractSystem{F, LU, TU} 
+mutable struct CircularRestrictedThreeBodySystem{F, LU, TU} <: AbstractSystem{F, LU, TU} 
     DU::F
     DT::F
     μ::Tuple{F,F}
@@ -42,14 +39,51 @@ end
 
 const NormalizedCartesianState{F, FR<:Union{Synodic, Bodycentric}} = CartesianState{F, NormalizedLengthUnit, NormalizedTimeUnit, FR}
 
-struct CircularRestrictedThreeBodyOrbit{
-    F, LU, TU,
-    S<:Union{IncompleteCircularRestrictedThreeBodySystem{F}, CircularRestrictedThreeBodySystem{F,LU,TU}}, 
-    C<:Union{NormalizedCartesianState{F}, CartesianState{F, LU, TU}}} <: AbstractOrbit{F, LU, TU}
+mutable struct CircularRestrictedThreeBodyOrbit{
+        F, LU, TU,
+        S<:Union{IncompleteCircularRestrictedThreeBodySystem{F}, CircularRestrictedThreeBodySystem{F,LU,TU}}, 
+        C<:CartesianState{F, <:Unitful.LengthFreeUnits, <:Unitful.TimeFreeUnits, <:Union{Synodic, Bodycentric}}
+    } <: AbstractOrbit{F, LU, TU}
 
     state::C
     system::S
+
+    function CircularRestrictedThreeBodyOrbit(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, μ::Real, t::Real = zero(eltype(r)))
+        F = promote_type(eltype(r), eltype(v), typeof(μ), typeof(t))
+        if !(F <: AbstractFloat)
+            @warn "Non-float promoted type $(string(F)) provided. Defaulting to Float64."
+            F = Float64
+        end
+        state = CartesianState(F.(r),F.(v),F(t),Synodic)
+        system = IncompleteCircularRestrictedThreeBodySystem(F(μ))
+        return new{F, NormalizedLengthUnit, NormalizedTimeUnit, typeof(system), typeof(state)}(state, system)
+    end
+
+    function CircularRestrictedThreeBodyOrbit(r::AbstractVector{Unitful.Length}, v::AbstractVector{Unitful.Length}, μ::Tuple{MassParameter, MassParameter}, DU::Unitful.Length, DT::Unitful.Time, t::Unitful.Time = 0u"s"; frame = Synodic)        
+        F = promote_type(eltype(ustrip.(r)), eltype(ustrip.(v)), typeof(ustrip.(μ))..., typeof(ustrip(DU)), typeof(ustrip(DT)), typeof(ustrip(t)))
+        if !(F <: AbstractFloat)
+            @warn "Non-float promoted type $(string(F)) provided. Defaulting to Float64."
+            F = Float64
+        end
+        state = CartesianState(F.(r), F.(v), F(t), frame)
+        system = CircularRestrictedThreeBodySystem(F.(ustrip.(lengthunit(state)^3 / timeunit(state)^2, μ)), F(ustrip(lengthunit(state), DU)), F(ustrip(timeunit(state), DT)))
+        return new{F, typeof(lengthunit(state)), typeof(timeunit(state)), typeof(system), typeof(state)}(state, system)
+    end
+
+    function CircularRestrictedThreeBodyOrbit(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, μ::Tuple{<:Real, <:Real}, DU::Real, DT::Real, t::Real = 0; frame = Synodic, lengthunit = u"km", timeunit = u"s")        
+        F = promote_type(eltype(r), eltype(v), typeof(μ)..., typeof(DU), typeof(DT), typeof(t))
+        if !(F <: AbstractFloat)
+            @warn "Non-float promoted type $(string(F)) provided. Defaulting to Float64."
+            F = Float64
+        end
+        state = CartesianState(F.(r), F.(v), F(t), frame; lengthunit = lengthunit, timeunit = timeunit)
+        system = CircularRestrictedThreeBodySystem(F.(ustrip.(lengthunit(state)^3 / timeunit(state)^2, μ)), F(ustrip(lengthunit(state), DU)), F(ustrip(timeunit(state), DT)))
+        return new{F, typeof(lengthunit(state)), typeof(timeunit(state)), typeof(system), typeof(state)}(state, system)
+    end
+
 end
+
+
 
 """
 Describes a dimensional state of a spacecraft

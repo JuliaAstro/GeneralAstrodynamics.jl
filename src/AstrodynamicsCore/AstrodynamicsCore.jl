@@ -7,7 +7,9 @@ module AstrodynamicsCore
 export  AbstractBody, AbstractOrbitalSystem, AbstractUnitfulStructure, AbstractState, AbstractSystem, AbstractOrbit, AbstractTrajectory, CartesianState,
         getindex, setindex!, lengthunit, timeunit, velocityunit, massparameterunit, coordinateframe,
         position_vector, velocity_vector, scalar_position, scalar_velocity,
-        AbstractFrame, Bodycentric, Synodic, Perifocal, size, length, convert, epoch
+        AbstractFrame, Bodycentric, Synodic, Perifocal, size, length, convert, epoch, eltype
+
+export NormalizedLengthUnit, NormalizedTimeUnit
 
 using Reexport
 @reexport using Unitful, UnitfulAngles, UnitfulAstro
@@ -124,6 +126,12 @@ function Base.convert(::Type{CartesianState{F,LU,TU}}, cart::CartesianState) whe
 end
 
 epoch(cart::CartesianState) = cart.t * timeunit(cart)
+
+
+const NormalizedLengthUnit   = Unitful.FreeUnits{(), Unitful.𝐋, nothing}
+const NormalizedTimeUnit     = Unitful.FreeUnits{(), Unitful.𝐓, nothing}
+
+Base.eltype(::AbstractUnitfulStructure{F}) where F = F
 
 """
 Returns the `Unitful.Length` unit associated with the state.
