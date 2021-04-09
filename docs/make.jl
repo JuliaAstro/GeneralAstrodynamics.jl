@@ -1,5 +1,4 @@
 using Documenter
-using DocStringExtensions
 using UnitfulAstrodynamics
 
 
