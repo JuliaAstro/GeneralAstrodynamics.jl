@@ -7,6 +7,50 @@ Abstract type for restricted three-body systems.
 """
 abstract type RestrictedThreeBodySystem <: AbstractOrbitalSystem end
 
+const NormalizedLengthUnit   = Unitful.FreeUnits{(), Unitful.𝐋, nothing}
+const NormalizedTimeUnit     = Unitful.FreeUnits{(), Unitful.𝐓, nothing}
+
+struct IncompleteCircularRestrictedThreeBodySystem{F} <: AbstractSystem{F, NormalizedLengthUnit, NormalizedTimeUnit}
+    μ::F
+
+    function IncompleteCircularRestrictedThreeBodySystem(μ::Real) <: AbstractSystem{F, NormalizedLengthUnit, NormalizedTimeUnit}
+        F = typeof(μ)
+        return new{F}(F(μ))
+    end
+end
+
+struct CircularRestrictedThreeBodySystem{F, LU, TU} <: AbstractSystem{F, LU, TU} 
+    DU::F
+    DT::F
+    μ::Tuple{F,F}
+
+    function CircularRestrictedThreeBodySystem(μ::Tuple{Real, Real}, DU::Real, DT::Real; lengthunit = u"km", timeunit = u"s")
+        F = promote_type(typeof.(μ)..., typeof(DU), typeof(DT))
+        if !(F <: AbstractFloat)
+            @warn "Promoted type $(string(F)) is not a float. Defaulting to Float64."
+            F = Float64
+        end
+        return new{F, typeof(lengthunit), typeof(timeunit)}(F(DU), F(DT), F.(μ))
+    end
+
+    function CircularRestrictedThreeBodySystem(μ::Tuple{MassParameter,MassParameter}, DU::Unitful.Length, DT::Unitful.Time)
+        lengthunit = unit(DU)
+        timeunit = unit(DT)
+        return CircularRestrictedThreeBodySystem(ustrip.(lengthunit^3 / timeunit^2, μ)..., ustrip(lengthunit, DU), ustrip(timeunit, DT); lengthunit = lengthunit, timeunit = timeunit)
+    end
+end
+
+const NormalizedCartesianState{F, FR<:Union{Synodic, Bodycentric}} = CartesianState{F, NormalizedLengthUnit, NormalizedTimeUnit, FR}
+
+struct CircularRestrictedThreeBodyOrbit{
+    F, LU, TU,
+    S<:Union{IncompleteCircularRestrictedThreeBodySystem{F}, CircularRestrictedThreeBodySystem{F,LU,TU}}, 
+    C<:Union{NormalizedCartesianState{F}, CartesianState{F, LU, TU}}} <: AbstractOrbit{F, LU, TU}
+
+    state::C
+    system::S
+end
+
 """
 Describes a dimensional state of a spacecraft
 within the Circular Restriested Three-body Problem in
