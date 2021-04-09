@@ -12,6 +12,12 @@ this repo as I work out the kinks. No unstable versions will be pushed
 to the general registry. All `stable` documentation and release versions
 are still stable and work.
 
+Here's a sneak peak at some features to come! The plot below shows a family of Halo orbits about Earth-Moon L1. Upcoming
+package features will take advantage of manifolds about Halo orbits like these to find low-cost transfer designs
+for interplanetary missions! 🚀
+
+<img width="713" alt="A plot of Halo orbits about Earth-Moon L1" src="https://user-images.githubusercontent.com/12131808/114203607-517ebf00-9926-11eb-8d77-16c7fc2b303a.png">
+
 ## Features
 * Restricted two-body problem equations, states, propagation, and plotting
 * Restricted three-body problem equations, states, propagation, and iterative Halo orbit solvers
