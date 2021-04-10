@@ -242,6 +242,13 @@ function Base.convert(::Type{KeplerianState{F,LU,TU,AU}}, kep::KeplerianState) w
     return KeplerianState(e, a, i, Ω, ω, ν, t; lengthunit = LU(), timeunit = TU(), angularunit = AU())
 end
 
+# Overrides `Unitful` unit conversions for `AbstractUnitfulStructure` instances.
+(u::Unitful.LengthFreeUnits)(state::KeplerianState{F,LU,TU}) where {F,LU,TU} = convert(KeplerianState{F, typeof(u), TU}, state)
+
+# Overrides `Unitful` unit conversions for `AbstractUnitfulStructure` instances.
+(u::Unitful.TimeFreeUnits)(state::KeplerianState{F,LU,TU}) where {F,LU,TU} = convert(KeplerianState{F, LU, typeof(u)}, state)
+
+
 """
 `RestrictedTwoBodyOrbit` instanes are likely the most commonly used feature
 of this package. To accomadate this, `Orbit` is an alias for common 

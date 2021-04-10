@@ -12,12 +12,12 @@ time_scale_factor(a, μ₁, μ₂) = period(a, μ₁+μ₂)
 """
 Returns nondimensional length unit, `DU`.
 """
-nondimensionalize_length(rᵢ, a) = upreferred.(rᵢ ./ a)
+nondimensionalize_length(rᵢ, a) = rᵢ ./ a
 
 """
 Returns nondimensional velocity unit, `DU/DT`.
 """
-nondimensionalize_velocity(vᵢ, a, Tₛ) = upreferred.(vᵢ ./ (a / Tₛ))
+nondimensionalize_velocity(vᵢ, a, Tₛ) = vᵢ ./ (a / Tₛ)
 
 """
 Returns nondimensional time unit, `DT`.
@@ -69,7 +69,7 @@ Returns nondimensional form of (`Unitful`) time duration.
 """
 nondimensionalize(t::T1, Tₛ::T2) where {
         T1<:Unitful.Time, T2<:Unitful.Time
-    } = upreferred(t / Tₛ)
+    } = t / Tₛ
 
 """
 Returns nondimensional form of (`Unitful`) time duration.
@@ -106,12 +106,12 @@ end
 """
 Returns dimensional length units.
 """
-redimensionalize_length(rᵢ, a) = upreferred(rᵢ .* a)
+redimensionalize_length(rᵢ, a) = rᵢ .* a
 
 """
 Returns dimensional velocity units.
 """
-redimensionalize_velocity(vᵢ, a, Tₛ) = upreferred(vᵢ .* (a / Tₛ))
+redimensionalize_velocity(vᵢ, a, Tₛ) = vᵢ .* (a / Tₛ)
 
 """
 Returns dimensional time unit.
@@ -183,9 +183,113 @@ function inertial(vecₛ, t, ω=1.0u"rad"/unit(t))
 end
 
 """
+Given an `InertialCartesianState`, returns the state in the synodic (rotating) reference frame.
+"""
+function synodic(state::InertialCartesianState, ω=1.0u"rad"/timeunit(state))
+
+    t = epoch(state)
+    θ = ω*t
+    ˢTᵢ = inv(SMatrix{3,3}([
+        cos(θ) sin(θ) 0
+       -sin(θ) cos(θ) 0
+        0      0      1
+    ]))
+
+    return CartesianState(ˢTᵢ * state.r, ˢTᵢ * state.v, state.t, Synodic; lengthunit = lengthunit(state), timeunit = timeunit(state))
+end
+
+"""
+Given a `SynodicCartesianState`, returns the state in the inertial reference frame.
+"""
+function inertial(state::SynodicCartesianState, ω=1.0u"rad"/timeunit(state))
+
+    t = epoch(state)
+    θ = ω*t
+    ⁱTₛ = @SMatrix [
+        cos(θ) sin(θ) 0
+       -sin(θ) cos(θ) 0
+        0      0      1
+    ]
+
+    return CartesianState(ⁱTₛ * state.r, ⁱTₛ * state.v, state.t, Inertial; lengthunit = lengthunit(state), timeunit = timeunit(state))
+end
+
+"""
 Returns the position and velocity vectors in the synodic (rotating) reference frame.
 """
-normalize(rᵢ, vᵢ, a, Tₛ) =  nondimensionalize(rᵢ, a), nondimensionalize(vᵢ, a, Tₛ)
+LinearAlgebra.normalize(rᵢ, vᵢ, a, Tₛ) =  nondimensionalize(rᵢ, a), nondimensionalize(vᵢ, a, Tₛ)
+
+"""
+Normalize a `CartesianState`, given a `CircularRestrictedThreeBodySystem`.
+"""
+function LinearAlgebra.normalize(cart::CartesianState{F, LU, TU}, sys::CircularRestrictedThreeBodySystem) where {F, LU, TU}
+    if LU == NormalizedLengthUnit && TU == NormalizedTimeUnit
+        return cart 
+    else
+       r = nondimensionalize(position_vector(cart), normalized_length_unit(sys))
+       v = nondimensionalize(velocity_vector(cart), normalized_length_unit(sys),  normalized_time_unit(sys))
+       t = nondimensionalize(epoch(cart), normalized_time_unit(sys))
+       return CartesianState(r, v, t, Synodic; lengthunit = NormalizedLengthUnit(), timeunit = NormalizedTimeUnit())
+    end
+end
+
+"""
+Normalize a `CartesianState`, given a `CircularRestrictedThreeBodySystem`.
+"""
+function LinearAlgebra.normalize(orbit::CircularRestrictedThreeBodyOrbit)
+    cart = orbit.state
+    sys  = orbit.system
+    LU = typeof(lengthunit(cart))
+    TU = typeof(timeunit(cart))
+    if LU == NormalizedLengthUnit && TU == NormalizedTimeUnit
+        return orbit 
+    else
+        r = nondimensionalize(position_vector(cart), normalized_length_unit(sys))
+        v = nondimensionalize(velocity_vector(cart), normalized_length_unit(sys),  normalized_time_unit(sys))
+        t = nondimensionalize(epoch(cart), normalized_time_unit(sys))
+       return CircularRestrictedThreeBodyOrbit(
+           CartesianState(r, v,t, Synodic; 
+                          lengthunit = NormalizedLengthUnit(), 
+                          timeunit = NormalizedTimeUnit()), 
+           sys
+        )
+    end
+end
+
+"""
+Un-normalizes (or re-dimensionalizes) a `NormalizedCartesianState` back into a `CartesianState`.
+"""
+function redimensionalize(cart::CartesianState{F, LU, TU}, sys::CircularRestrictedThreeBodySystem) where {F, LU, TU}
+    if LU != NormalizedLengthUnit && TU != NormalizedTimeUnit
+        return cart
+    else
+        r = redimensionalize_length(position_vector(cart), normalized_length_unit(sys))
+        v = redimensionalize_velocity(velocity_vector(cart), normalized_length_unit(sys),  normalized_time_unit(sys))
+        t = redimensionalize_time(epoch(cart), normalized_time_unit(sys))
+       return CartesianState(r, v,t, Synodic)
+    end
+end
+
+"""
+Un-normalizes (or re-dimensionalizes) a `NormalizedCartesianState` back into a `CartesianState`.
+"""
+function redimensionalize(orb::CircularRestrictedThreeBodyOrbit)
+    cart = orb.state
+    sys  = orb.system
+    LU = typeof(lengthunit(cart))
+    TU = typeof(timeunit(cart))
+    if LU != NormalizedLengthUnit() && TU != NormalizedTimeUnit()
+        return orb
+    else
+        r = redimensionalize_length(position_vector(cart), normalized_length_unit(sys))
+        v = redimensionalize_velocity(velocity_vector(cart), normalized_length_unit(sys),  normalized_time_unit(sys))
+        t = redimensionalize_time(epoch(cart), normalized_time_unit(sys))
+       return CircularRestrictedThreeBodyOrbit(
+           CartesianState(r, v,t, Synodic),
+           sys
+       )
+    end
+end
 
 """
 Returns the lagrange points for a CR3BP system.

@@ -35,6 +35,84 @@ Print `NormalizedCartesianState` instances to `io`.
 Base.show(io::IO, ::MIME"text/plain", state::NormalizedCartesianState{F,FR}) where {F,FR} = show(io, state)
 
 """
+A structure which contains the linearization of CR3BP dynamics at timepoint `t`.
+"""
+mutable struct SynodicCartesianSTMState{F, LU, TU} <: AbstractState{F, LU, TU, Synodic}
+    state::CartesianState{F, LU, TU, Synodic}
+    stm::MMatrix{6,6,F}
+
+    function SynodicCartesianSTMState(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, t::Real = 0, stm::AbstractMatrix{<:Real} = I(6); 
+                                      lengthunit = NormalizedLengthUnit(), timeunit = NormalizedTimeUnit())
+        state = CartesianState(r, v, t, Synodic; lengthunit = lengthunit, timeunit = timeunit)
+        F = eltype(state)
+        LU = typeof(Orbits.lengthunit(state))
+        TU = typeof(Orbits.timeunit(state))
+
+        return new{F, LU, TU}(state, SMatrix{6,6,eltype(state)}(stm))
+    end
+
+    function SynodicCartesianSTMState(r::AbstractVector{Unitful.Length}, v::AbstractVector{Unitful.Time}, t::Unitful.Time = 0u"s", stm::AbstractMatrix{<:Real} = I(6))
+        state = CartesianState(r, v, t, Synodic)
+        return new{eltype(state), typeof(lengthunit(state)), typeof(timeunit(state))}(state, SMatrix{6,6,eltype(state)}(stm))
+    end
+
+end
+
+
+# Overrides `Unitful` unit conversions for `AbstractUnitfulStructure` instances.
+(u::Unitful.LengthFreeUnits)(state::SynodicCartesianSTMState{F,LU,TU}) where {F,LU,TU} = convert(SynodicCartesianSTMState{F, typeof(u), TU}, state)
+
+
+# Overrides `Unitful` unit conversions for `AbstractUnitfulStructure` instances.
+(u::Unitful.TimeFreeUnits)(state::SynodicCartesianSTMState{F,LU,TU}) where {F,LU,TU} = convert(SynodicCartesianSTMState{F, LU, typeof(u)}, state)
+
+"""
+Print `SynodicCartesianSTMState` instances to `io`.
+"""
+function Base.show(io::IO, state::SynodicCartesianSTMState{F,LU, TU}) where {F,LU,TU} 
+    println(io, state.state,"\n")
+    println(io, "  Local Linearization (Φ):\n")
+    for row ∈ eachrow(state.stm)
+        print(io, "    ")
+        for el ∈ row
+            print(io, el, " ")
+        end
+        println(io,"")
+    end
+end
+
+"""
+Print `SynodicCartesianSTMState` instances to `io`.
+"""
+Base.show(io::IO, ::MIME"text/plain", state::SynodicCartesianSTMState{F,LU,TU}) where {F,LU,TU} = show(io, state)
+
+
+"""
+Returns the timepoint associated with a `CartesianState`.
+"""
+epoch(cart::SynodicCartesianSTMState) = epoch(cart.state)
+
+"""
+Returns the `Unitful` position vector of the `Cartesianstate`.
+"""
+position_vector(cart::SynodicCartesianSTMState) = position_vector(cart.state)
+
+"""
+Returns the `Unitful` velocity vector of the `CartesianState`.
+"""
+velocity_vector(cart::SynodicCartesianSTMState) = velocity_vector(cart.state)
+
+"""
+Returns the `Unitful` scalar position of the `CartesianState`.
+"""
+scalar_position(cart::SynodicCartesianSTMState) = scalar_position(cart.state)
+
+"""
+Returns the `Unitful` scalar velocity of the `CartesianState`.
+"""
+scalar_velocity(cart::SynodicCartesianSTMState) = scalar_velocity(cart.state)
+
+"""
     `NormalizedCartesianState(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, frame::FR = Synodic, epoch::Real = 0) where FR <: CR3BPFrames = CartesianState(r, v, frame, epoch)`
 
 Constructor for a `NormalizedCartesianState`. No `Unitful` arguments allowed!
@@ -171,11 +249,26 @@ Returns the secondary body's mass parameter within a CR3BP system.
 secondary_mass_parameter(sys::CircularRestrictedThreeBodySystem) = min(sys.μ...) * massparameterunit(sys)
 
 """
+An alias for `CartesianState` instances with `Synodic` coordinate frames.
+"""
+const SynodicCartesianState{F, LU, TU} = CartesianState{F, LU, TU, Synodic}
+
+"""
+An alias for `CarteisianState` instances with `Inertial` coordinate frames.
+"""
+const InertialCartesianState{F, LU, TU} = CartesianState{F, LU, TU, Inertial}
+
+"""
+A `Union` of all valid `CR3BP` state types.
+"""
+const CR3BPState{F, LU, TU, FR<:CR3BPFrames} = Union{SynodicCartesianSTMState{F, LU, TU}, CartesianState{F, LU, TU, FR}}
+
+"""
 Contains __all__ relevant state and system information within the CR3BP.
 """
 mutable struct CircularRestrictedThreeBodyOrbit{
-        F, LU, TU,
-        C<:CartesianState{F, <:Unitful.LengthFreeUnits, <:Unitful.TimeFreeUnits, <:CR3BPFrames},
+        F, LU, TU, 
+        C<:CR3BPState{F, <:Unitful.LengthFreeUnits, <:Unitful.TimeFreeUnits, <:CR3BPFrames},
         S<:Union{MinimalCircularRestrictedThreeBodySystem{F}, CircularRestrictedThreeBodySystem{F,LU,TU}}
     } <: AbstractOrbit{F, LU, TU}
 
@@ -238,7 +331,7 @@ mutable struct CircularRestrictedThreeBodyOrbit{
     end
 
     function CircularRestrictedThreeBodyOrbit(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, system::CircularRestrictedThreeBodySystem, t::Real = 0; frame = Synodic)  
-        state = CartesianState(r, v, frame, t; lengthunit = lengthunit(system), timeunit = timeunit(system))   
+        state = CartesianState(r, v, t, frame; lengthunit = Orbits.lengthunit(system), timeunit = Orbits.timeunit(system))   
         F = promote_type(eltype(state), eltype(system))
         L = lengthunit(system) |> typeof
         T = timeunit(system)   |> typeof
@@ -268,6 +361,17 @@ mutable struct CircularRestrictedThreeBodyOrbit{
         return new{F, typeof(NormalizedLengthUnit), typeof(NormalizedTimeUnit), typeof(state), typeof(system)}(state, system)
     end
 
+    function CircularRestrictedThreeBodyOrbit(state::CartesianState, sys::CircularRestrictedThreeBodySystem)
+        F = promote_type(eltype(state), eltype(sys))
+        state = convert(CartesianState{F, typeof(lengthunit(state)), typeof(timeunit(state))}, state)
+        return new{F, typeof(lengthunit(sys)), typeof(timeunit(sys)), typeof(state), typeof(sys)}(state, sys)
+    end
+
+    function CircularRestrictedThreeBodyOrbit(state::SynodicCartesianSTMState, sys::CircularRestrictedThreeBodySystem)
+        F = promote_type(eltype(state), eltype(sys))
+        state = convert(SynodicCartesianSTMState{F, typeof(lengthunit(state)), typeof(timeunit(state))}, state)
+        return new{F, typeof(lengthunit(sys)), typeof(timeunit(sys)), typeof(state), typeof(sys)}(state, sys)
+    end
 end
 
 """
@@ -282,6 +386,11 @@ function Base.convert(::Type{CircularRestrictedThreeBodyOrbit{F, LU, TU}}, orb::
         frame = coordinateframe(orb.state)
     )
 end
+
+"""
+An alias for `CircularRestrictedThreeBodyOrbit` instances with `NormalizedCartesianState` states.
+"""
+const NormalizedCR3BPOrbit{F,FR} = CircularRestrictedThreeBodyOrbit{F, NormalizedLengthUnit, NormalizedTimeUnit, FR}
 
 """
 An alias for `CircularRestrictedThreeBodyOrbit`.
