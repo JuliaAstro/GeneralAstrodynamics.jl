@@ -4,7 +4,7 @@ for core astrodynamics problems, including the
 Restricted Two-body Problem, the Circular Restricted
 Three-body Problem, and the N-body problem.
 """
-module Foundation
+module Orbits
 
 #= Common stuctures and functions =#
 export AbstractUnitfulStructure, AbstractState, AbstractFrame, AbstractSystem, AbstractOrbit, CartesianState
