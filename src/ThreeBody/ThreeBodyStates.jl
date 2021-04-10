@@ -7,6 +7,36 @@ Abstract type for restricted three-body systems.
 """
 abstract type RestrictedThreeBodySystem <: AbstractOrbitalSystem end
 
+
+"""
+    `const CR3BPFrames = Union{Synodic, Bodycentric}`
+
+Coordinate frames that are valid within the Circular Restricted Three-body Problem.
+"""
+const CR3BPFrames = Union{Synodic, Bodycentric}
+
+"""
+    `const NormalizedCartesianState{F, FR<:CR3BPFrames} = CartesianState{F, NormalizedLengthUnit, NormalizedTimeUnit, FR}`
+
+CR3BP systems often use normalized units for calculations.
+This `NormalizedCartesianState` represents a Cartesian 
+state with no dimensioned units.
+"""
+const NormalizedCartesianState{F, FR<:CR3BPFrames} = CartesianState{F, NormalizedLengthUnit, NormalizedTimeUnit, FR}
+
+"""
+    `NormalizedCartesianState(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, frame::FR = Synodic, epoch::Real = 0) where FR <: CR3BPFrames = CartesianState(r, v, frame, epoch)`
+
+Constructor for a `NormalizedCartesianState`. No `Unitful` arguments allowed!
+"""
+NormalizedCartesianState(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, frame::FR = Synodic, epoch::Real = 0) where FR <: CR3BPFrames = CartesianState(r, v, frame, epoch)
+
+"""
+    `IncompleteCircularRestrictedThreeBodySystem(μ::Real) <: AbstractSystem{F, NormalizedLengthUnit, NormalizedTimeUnit}`
+
+Sometimes you want to do CR3BP calculations with only one system parameter,
+the nondimensional mass parameter `μ`. That's what this structure is for!
+""" 
 mutable struct IncompleteCircularRestrictedThreeBodySystem{F} <: AbstractSystem{F, NormalizedLengthUnit, NormalizedTimeUnit}
     μ::F
 
@@ -16,6 +46,13 @@ mutable struct IncompleteCircularRestrictedThreeBodySystem{F} <: AbstractSystem{
     end
 end
 
+"""
+    `mutable struct CircularRestrictedThreeBodySystem{F, LU, TU} <: AbstractSystem{F, LU, TU}`
+
+This structure represents _all_ required parameters that are used to describe 
+a Circular Restricted Three-body System: normalized length unit `DU`, 
+normalized time unit `DT`, and a `Tuple` of two mass parameters, `μ`.
+"""
 mutable struct CircularRestrictedThreeBodySystem{F, LU, TU} <: AbstractSystem{F, LU, TU} 
     DU::F
     DT::F
@@ -33,16 +70,16 @@ mutable struct CircularRestrictedThreeBodySystem{F, LU, TU} <: AbstractSystem{F,
     function CircularRestrictedThreeBodySystem(μ::Tuple{MassParameter,MassParameter}, DU::Unitful.Length, DT::Unitful.Time)
         lengthunit = unit(DU)
         timeunit = unit(DT)
-        return CircularRestrictedThreeBodySystem(ustrip.(lengthunit^3 / timeunit^2, μ)..., ustrip(lengthunit, DU), ustrip(timeunit, DT); lengthunit = lengthunit, timeunit = timeunit)
+        return CircularRestrictedThreeBodySystem(ustrip.(lengthunit^3 / timeunit^2, μ)..., 
+                                                 ustrip(lengthunit, DU), ustrip(timeunit, DT); 
+                                                 lengthunit = lengthunit, timeunit = timeunit)
     end
 end
-
-const NormalizedCartesianState{F, FR<:Union{Synodic, Bodycentric}} = CartesianState{F, NormalizedLengthUnit, NormalizedTimeUnit, FR}
 
 mutable struct CircularRestrictedThreeBodyOrbit{
         F, LU, TU,
         S<:Union{IncompleteCircularRestrictedThreeBodySystem{F}, CircularRestrictedThreeBodySystem{F,LU,TU}}, 
-        C<:CartesianState{F, <:Unitful.LengthFreeUnits, <:Unitful.TimeFreeUnits, <:Union{Synodic, Bodycentric}}
+        C<:CartesianState{F, <:Unitful.LengthFreeUnits, <:Unitful.TimeFreeUnits, <:CR3BPFrames}
     } <: AbstractOrbit{F, LU, TU}
 
     state::C
@@ -81,9 +118,18 @@ mutable struct CircularRestrictedThreeBodyOrbit{
         return new{F, typeof(lengthunit(state)), typeof(timeunit(state)), typeof(system), typeof(state)}(state, system)
     end
 
+    function CircularRestrictedThreeBodyOrbit(r, v, system::CircularRestrictedThreeBodySystem, t = 0; frame = Synodic)        
+        return CircularRestrictedThreeBodyOrbit(r, v, mass_parameters(system), normalized_distance(system), normalized_duration(system), t; frame = frame)
+    end
+
+    function CircularRestrictedThreeBodyOrbit(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, system::IncompleteCircularRestrictedThreeBodySystem, t::Real = 0; frame = Synodic)        
+        F = promote_type(eltype(r), eltype(v), eltype(system), typeof(t))
+        state = NormalizedCartesianState(F.(r), F.(v), F(t), frame)
+        system = IncompleteCircularRestrictedThreeBodySystem(F(normalized_mass_parameter(system)))
+        return new{F, typeof(NormalizedLengthUnit), typeof(NormalizedTimeUnit), typeof(system), typeof(state)}(state, system)
+    end
+
 end
-
-
 
 """
 Describes a dimensional state of a spacecraft

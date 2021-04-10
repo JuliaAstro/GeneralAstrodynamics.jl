@@ -73,6 +73,13 @@ struct RestrictedTwoBodySystem{F, LU, TU} <: AbstractSystem{F, LU, TU}
 end
 
 """
+Conversions between `RestrictedTwoBodySystem` instances.
+"""
+function Base.convert(::Type{RestrictedTwoBodySystem{F, LU, TU}}, sys::RestrictedTwoBodySystem) where {F, LU, TU}
+    return RestrictedTwoBodySystem(ustrip(LU()^3 / TU()^2, mass_parameter(sys)), sys.name; lengthunit = LU(), timeunit = TU())
+end
+
+"""
 Custom display for `RestrictedTwoBodySystem` instances.
 """
 function Base.show(io::IO, body::RestrictedTwoBodySystem{F,LU,TU}) where {F,LU,TU}
@@ -130,6 +137,7 @@ RAAN(kep::KeplerianState) = kep.Ω * angularunit(kep)
 argument_of_periapsis(kep::KeplerianState) = kep.ω * angularunit(kep)
 true_anomoly(kep::KeplerianState) = kep.ν * angularunit(kep)
 
+
 AstrodynamicsCore.epoch(kep::KeplerianState) = kep.t * timeunit(kep)
 
 """
@@ -140,7 +148,7 @@ angularunit(::KeplerianState{F, LU, TU, AU}) where {F, LU, TU, AU} = AU()
 """
 An orbital state within the Restricted Two-body Problem.
 """
-const BodycentricState = Union{CartesianState{F, LU, TU, Bodycentric}, KeplerianState{F, LU, TU, <:Unitful.DimensionlessUnits}} where {F,LU,TU}
+const BodycentricState{F,LU,TU} = Union{CartesianState{F, LU, TU, Bodycentric}, KeplerianState{F, LU, TU, <:Unitful.DimensionlessUnits}} where {F,LU,TU}
 struct RestrictedTwoBodyOrbit{C<:AbstractConic, F, LU, TU, T<:BodycentricState{F,LU,TU}} <: AbstractOrbit{F, LU, TU} 
     state::T
     system::RestrictedTwoBodySystem{F,LU,TU}
@@ -168,6 +176,27 @@ struct RestrictedTwoBodyOrbit{C<:AbstractConic, F, LU, TU, T<:BodycentricState{F
         return new{conic(state.e), F, typeof(LU), typeof(TU), typeof(state)}(state, newbody)
     end
     RestrictedTwoBodyOrbit(e, a, i, Ω, ω, ν, μ::Number, epoch=0) = RestrictedTwoBodyOrbit(e, a, i, Ω, ω, ν, RestrictedTwoBodySystem(μ), epoch)
+
+    function RestrictedTwoBodyOrbit(state::CartesianState, sys::RestrictedTwoBodySystem) 
+        F = promote_type(eltype(state), eltype(sys))
+        LU = lengthunit(state)
+        TU = timeunit(state)
+        e = eccentricity(position_vector(state), velocity_vector(state), mass_parameter(sys))
+        newstate = convert(CartesianState{F, typeof(LU), typeof(TU)}, state)
+        newsys   = convert(RestrictedTwoBodySystem{F, typeof(LU), typeof(TU)}, sys)
+        return new{conic(e), F, typeof(LU), typeof(TU), typeof(newstate)}(newstate, newsys)
+    end
+
+    function RestrictedTwoBodyOrbit(state::KeplerianState, sys::RestrictedTwoBodySystem) 
+        F = promote_type(eltype(state), eltype(sys))
+        LU = lengthunit(state)
+        TU = timeunit(state)
+        AU = angularunit(state)
+        e = eccentricity(state)
+        newstate = convert(KeplerianState{F, LU, TU, AU}, state)
+        newsys   = convert(RestrictedTwoBodySystem{F, LU, TU}, sys)
+        return new{conic(e), F, typeof(LU), typeof(TU), typeof(newstate)}(newstate, newsys)
+    end
 
 end
 
@@ -231,3 +260,5 @@ KeplerianOrbit(e, a, i, Ω, ω, ν, system, epoch) = RestrictedTwoBodyOrbit(e, a
 CartesianOrbit(r, v, system, epoch) = RestrictedTwoBodyOrbit(r, v, system, epoch)
 KeplerianOrbit(orbit::CartesianOrbit) = KeplerianOrbit(keplerian(position_vector(orbit), velocity_vector(orbit), orbit.system)..., orbit.system, epoch(orbit.state))
 CartesianOrbit(orbit::KeplerianOrbit) = CartesianOrbit(cartesian(eccentricity(orbit), semimajor_axis(orbit), inclination(orbit), RAAN(orbit), argument_of_periapsis(orbit), true_anomoly(orbit), mass_parameter(orbit.system))..., orbit.system, epoch(orbit.state))
+KeplerianOrbit(state::KeplerianState, system) = RestrictedTwoBodyOrbit(state, system)
+CartesianOrbit(state::CartesianOrbit, system) = RestrictedTwoBodyOrbit(state, system)
