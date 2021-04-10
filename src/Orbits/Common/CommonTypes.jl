@@ -14,7 +14,7 @@ abstract type AbstractFrame end
 """
 Abstract type for structures parameterized (in part) by `Unitful.Unit` types.
 """
-abstract type AbstractUnitfulStructure{F <: AbstractFloat, LU <: Unitful.LengthUnits, TU <: Unitful.TimeUnits} end
+abstract type AbstractUnitfulStructure{F <: AbstractFloat, LU <: Unitful.LengthFreeUnits, TU <: Unitful.TimeFreeUnits} end
 
 """
 Abstract type for all structures describing orbital states (typically Cartesian or Keplerian).
@@ -112,6 +112,19 @@ function Base.convert(::Type{CartesianState{F,LU,TU}}, cart::CartesianState) whe
 end
 
 """
+Convert `CartesianState` values between the same `eltype` and `lengthunit` and `timeunit` types.
+"""
+function Base.convert(::Type{CartesianState{F,LU,TU}}, cart::CartesianState{F,LU,TU}) where {F,LU,TU}
+    return cart
+end
+
+# Overrides `Unitful` unit conversions for `AbstractUnitfulStructure` instances.
+(u::Unitful.LengthFreeUnits)(state::CartesianState{F,LU,TU}) where {F,LU,TU} = convert(CartesianState{F, typeof(u), TU}, state)
+
+# Overrides `Unitful` unit conversions for `AbstractUnitfulStructure` instances.
+(u::Unitful.TimeFreeUnits)(state::CartesianState{F,LU,TU}) where {F,LU,TU} = convert(CartesianState{F, LU, typeof(u)}, state)
+
+"""
 Print a `CartesianState` to `io`.
 """
 function Base.show(io::IO, state::CartesianState{F,LU,TU,FR}) where {F,LU,TU,FR} 
@@ -191,3 +204,13 @@ scalar_position(state::CartesianState{F,LU,TU}) where {F, LU, TU} = norm(positio
 Returns the `Unitful` scalar velocity of the `CartesianState`.
 """
 scalar_velocity(state::CartesianState{F,LU,TU}) where {F, LU, TU} = norm(velocity_vector(state))
+
+"""
+A `Trajectory` is just a vector of `Orbit` instances!
+"""
+const Trajectory{T<:AbstractOrbit} = Vector{T}
+
+"""
+Prints a `Trajectory` instance to `io`.
+"""
+Base.show(io::IO, ::MIME"text/plain", traj::Trajectory) = show(io,traj)

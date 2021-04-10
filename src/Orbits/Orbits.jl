@@ -6,15 +6,15 @@ Three-body Problem, and the N-body problem.
 """
 module Orbits
 
-#= Common stuctures and functions =#
+# Common stuctures and functions
 export AbstractUnitfulStructure, AbstractState, AbstractFrame, AbstractSystem, AbstractOrbit, CartesianState
 export MassParameter, lengthunit, timeunit, velocityunit, massparameterunit, coordinateframe
 export position_vector, velocity_vector, scalar_position, scalar_velocity, epoch
 export AbstractFrame, Inertial, Synodic, Perifocal, convert, epoch
-export NormalizedLengthUnit, NormalizedTimeUnit
+export NormalizedLengthUnit, NormalizedTimeUnit, Trajectory
 export convert, show, eltype, isapprox, isequal
 
-#= Core data structures and functions for R2BP calculations =#
+# Core data structures and functions for R2BP calculations 
 export AbstractConic, Circular, Elliptical, Parabolic, Hyperbolic, Invalid
 export KeplerianState, RestrictedTwoBodySystem, RestrictedTwoBodyOrbit
 export R2BPState, R2BPSystem, R2BPOrbit, Orbit, CartesianOrbit, KeplerianOrbit
@@ -27,8 +27,10 @@ export eccentric_anomoly, time_since_periapsis, period
 export kepler, lambert
 export Sun, Mercury, Venus, Earth, Moon, Luna, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto
 
-#= Core data structures and functions for CR3BP calculations =#
-export CR3BPFrames, CR3BPSystem, CR3BPOrbit
+# Core data structures and functions for CR3BP calculations 
+export CR3BPFrames, CR3BPSystem, CR3BPOrbit, CR3BPState
+export SynodicCR3BPOrbit, NormalizedSynodicCR3BPOrbit
+export SynodicCartesianState, InertialCartesianState, SynodicCartesianSTMState
 export NormalizedCartesianState, MinimalCircularRestrictedThreeBodySystem
 export CircularRestrictedThreeBodySystem, CircularRestrictedThreeBodyOrbit
 export normalized_length_unit, normalized_time_unit, normalized_mass_parameter
@@ -36,17 +38,17 @@ export mass_parameters, primary_mass_parameter, secondary_mass_parameter
 export time_scale_factor, nondimensionalize, redimensionalize
 export nondimensionalize_length, nondimensionalize_time, nondimensionalize_velocity
 export redimensionalize_length, redimensionalize_time, redimensionalize_velocity
-export normalize, lagrange, inertial, accel!
+export normalize, lagrange, inertial, synodic, accel!, analyticalhalo
 export SunEarth
 
-#= Module Dependencies =#
+# Module Dependencies
 using Reexport
 using StaticArrays
 using LinearAlgebra
 
 @reexport using Unitful, UnitfulAstro, UnitfulAngles
 
-#= Source Code =#
+# Source Code 
 include("Common/CommonTypes.jl")
 
 include("R2BP/R2BPStates.jl")

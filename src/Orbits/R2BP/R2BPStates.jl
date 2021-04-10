@@ -242,6 +242,12 @@ function Base.convert(::Type{KeplerianState{F,LU,TU,AU}}, kep::KeplerianState) w
     return KeplerianState(e, a, i, Ω, ω, ν, t; lengthunit = LU(), timeunit = TU(), angularunit = AU())
 end
 
+# Overrides `Unitful` unit conversions for `AbstractUnitfulStructure` instances.
+(u::Unitful.LengthFreeUnits)(state::KeplerianState{F,LU,TU}) where {F,LU,TU} = convert(KeplerianState{F, typeof(u), TU}, state)
+
+# Overrides `Unitful` unit conversions for `AbstractUnitfulStructure` instances.
+(u::Unitful.TimeFreeUnits)(state::KeplerianState{F,LU,TU}) where {F,LU,TU} = convert(KeplerianState{F, LU, typeof(u)}, state)
+
 """
 `RestrictedTwoBodyOrbit` instanes are likely the most commonly used feature
 of this package. To accomadate this, `Orbit` is an alias for common 
@@ -339,3 +345,14 @@ KeplerianOrbit(state::KeplerianState, system) = RestrictedTwoBodyOrbit(state, sy
 Alias for a `RestrictedTwoBodyOrbit` constructor with `CartesianState` values.
 """
 CartesianOrbit(state::CartesianOrbit, system) = RestrictedTwoBodyOrbit(state, system)
+
+"""
+Prints a `Trajectory` instance to `io`.
+"""
+Base.show(io::IO, traj::Trajectory{<:CartesianOrbit}) = println(io, "Cartesian Two-body trajectory with ", length(traj), " steps")
+
+
+"""
+Prints a `Trajectory` instance to `io`.
+"""
+Base.show(io::IO, traj::Trajectory{<:KeplerianOrbit}) = println(io, "Keplerian Two-body trajectory with ", length(traj), " steps")
