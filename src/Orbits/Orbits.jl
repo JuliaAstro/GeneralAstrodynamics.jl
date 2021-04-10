@@ -11,7 +11,7 @@ export AbstractUnitfulStructure, AbstractState, AbstractFrame, AbstractSystem, A
 export MassParameter, lengthunit, timeunit, velocityunit, massparameterunit, coordinateframe
 export position_vector, velocity_vector, scalar_position, scalar_velocity, epoch
 export AbstractFrame, Inertial, Synodic, Perifocal, convert, epoch
-export NormalizedLengthUnit, NormalizedTimeUnit
+export NormalizedLengthUnit, NormalizedTimeUnit, Trajectory
 export convert, show, eltype, isapprox, isequal
 
 # Core data structures and functions for R2BP calculations 
@@ -28,7 +28,8 @@ export kepler, lambert
 export Sun, Mercury, Venus, Earth, Moon, Luna, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto
 
 # Core data structures and functions for CR3BP calculations 
-export CR3BPFrames, CR3BPSystem, CR3BPOrbit
+export CR3BPFrames, CR3BPSystem, CR3BPOrbit, CR3BPState
+export SynodicCR3BPOrbit, NormalizedSynodicCR3BPOrbit
 export SynodicCartesianState, InertialCartesianState, SynodicCartesianSTMState
 export NormalizedCartesianState, MinimalCircularRestrictedThreeBodySystem
 export CircularRestrictedThreeBodySystem, CircularRestrictedThreeBodyOrbit
@@ -37,7 +38,7 @@ export mass_parameters, primary_mass_parameter, secondary_mass_parameter
 export time_scale_factor, nondimensionalize, redimensionalize
 export nondimensionalize_length, nondimensionalize_time, nondimensionalize_velocity
 export redimensionalize_length, redimensionalize_time, redimensionalize_velocity
-export normalize, lagrange, inertial, synodic, accel!
+export normalize, lagrange, inertial, synodic, accel!, analyticalhalo
 export SunEarth
 
 # Module Dependencies

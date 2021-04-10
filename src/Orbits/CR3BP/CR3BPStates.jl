@@ -231,7 +231,7 @@ Base.show(io::IO, ::MIME"text/plain", sys::CircularRestrictedThreeBodySystem{F,L
 """
 Returns the normalized (nondimensional) mass parameter for a CR3BP system.
 """
-normalized_mass_parameter(sys::CircularRestrictedThreeBodySystem) = min(sys.μ) / reduce(+, sys.μ)
+normalized_mass_parameter(sys::CircularRestrictedThreeBodySystem) = min(sys.μ...) / reduce(+, sys.μ)
 
 """
 Returns the dimensioned (not normalized) mass parameters for a CR3BP system.
@@ -390,7 +390,12 @@ end
 """
 An alias for `CircularRestrictedThreeBodyOrbit` instances with `NormalizedCartesianState` states.
 """
-const NormalizedCR3BPOrbit{F,FR} = CircularRestrictedThreeBodyOrbit{F, NormalizedLengthUnit, NormalizedTimeUnit, FR}
+const NormalizedCR3BPOrbit{F,LU,TU,ST<:NormalizedCartesianState{F,<:AbstractFrame},SR} = CircularRestrictedThreeBodyOrbit{F, LU, TU, ST, SR}
+
+"""
+An alias for `CircularRestrictedThreeBodyOrbit` instances with `NormalizedCartesianState` states in the `Synodic` frame.
+"""
+const NormalizedSynodicCR3BPOrbit{F,LU,TU,SR} = NormalizedCR3BPOrbit{F, LU, TU, NormalizedCartesianState{F,Synodic},SR}
 
 """
 An alias for `CircularRestrictedThreeBodyOrbit`.
@@ -445,3 +450,8 @@ end
 Prints a `CircularRestrictedThreeBodyOrbit` to `io`.
 """
 Base.show(io::IO, ::MIME"text/plain", orb::CircularRestrictedThreeBodyOrbit{F,LU,TU}) where {F,LU,TU} = show(io, orb)
+
+"""
+Prints a `Trajectory` instance to `io`.
+"""
+Base.show(io::IO, traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}) = println(io, "Circular Restricted Three-body trajectory with ", length(traj), " steps")

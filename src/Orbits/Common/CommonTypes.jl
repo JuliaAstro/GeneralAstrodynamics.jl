@@ -204,3 +204,13 @@ scalar_position(state::CartesianState{F,LU,TU}) where {F, LU, TU} = norm(positio
 Returns the `Unitful` scalar velocity of the `CartesianState`.
 """
 scalar_velocity(state::CartesianState{F,LU,TU}) where {F, LU, TU} = norm(velocity_vector(state))
+
+"""
+A `Trajectory` is just a vector of `Orbit` instances!
+"""
+const Trajectory{T<:AbstractOrbit} = Vector{T}
+
+"""
+Prints a `Trajectory` instance to `io`.
+"""
+Base.show(io::IO, ::MIME"text/plain", traj::Trajectory) = show(io,traj)

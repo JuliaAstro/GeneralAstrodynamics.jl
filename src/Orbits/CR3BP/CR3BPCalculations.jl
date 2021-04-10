@@ -169,7 +169,7 @@ jacobi_constant(r, v, μ) = 2*potential_energy(r, μ) - (v⋅v)
 """
 Given the Synodic frame vector, returns the vector in the inertial reference frame.
 """
-function inertial(vecₛ, t, ω=1.0u"rad"/unit(t))
+function inertial(vecₛ, t, ω::Unitful.AbstractQuantity=1.0u"rad"/unit(t))
 
     θ = ω*t
     ᴵTₛ = @SMatrix [
@@ -185,7 +185,7 @@ end
 """
 Given an `InertialCartesianState`, returns the state in the synodic (rotating) reference frame.
 """
-function synodic(state::InertialCartesianState, ω=1.0u"rad"/timeunit(state))
+function synodic(state::InertialCartesianState, ω::Unitful.AbstractQuantity=1.0u"rad"/Orbits.timeunit(state))
 
     t = epoch(state)
     θ = ω*t
@@ -195,13 +195,13 @@ function synodic(state::InertialCartesianState, ω=1.0u"rad"/timeunit(state))
         0      0      1
     ]))
 
-    return CartesianState(ˢTᵢ * state.r, ˢTᵢ * state.v, state.t, Synodic; lengthunit = lengthunit(state), timeunit = timeunit(state))
+    return CartesianState(ˢTᵢ * state.r, ˢTᵢ * state.v, state.t, Synodic; lengthunit = Orbits.lengthunit(state), timeunit = Orbits.timeunit(state))
 end
 
 """
 Given a `SynodicCartesianState`, returns the state in the inertial reference frame.
 """
-function inertial(state::SynodicCartesianState, ω=1.0u"rad"/timeunit(state))
+function inertial(state::SynodicCartesianState, ω::Unitful.AbstractQuantity=(1.0u"rad")/Orbits.timeunit(state))
 
     t = epoch(state)
     θ = ω*t
@@ -211,7 +211,37 @@ function inertial(state::SynodicCartesianState, ω=1.0u"rad"/timeunit(state))
         0      0      1
     ]
 
-    return CartesianState(ⁱTₛ * state.r, ⁱTₛ * state.v, state.t, Inertial; lengthunit = lengthunit(state), timeunit = timeunit(state))
+    return CartesianState(ⁱTₛ * state.r, ⁱTₛ * state.v, state.t, Inertial; lengthunit = Orbits.lengthunit(state), timeunit = Orbits.timeunit(state))
+end
+
+"""
+If given an inertial `CartesianState`, no operation needed.
+"""
+function inertial(state::InertialCartesianState, ω::Unitful.AbstractQuantity=1.0u"rad"/Orbits.timeunit(state))
+    return state
+end
+
+"""
+If given a Synodic `CartesianState`, no operation needed.
+"""
+function synodic(state::SynodicCartesianState, ω::Unitful.AbstractQuantity=1.0u"rad"/Orbits.timeunit(state))
+    return state
+end
+
+"""
+Given a CR3BP orbit, returns the orbit in the inertial reference frame.
+"""
+function inertial(orb::CircularRestrictedThreeBodyOrbit)
+    state = inertial(orb.state)
+    return CircularRestrictedThreeBodyOrbit(state, orb.system)
+end
+
+"""
+Given a CR3BP orbit, returns the orbit in the Synodic (rotating) reference frame.
+"""
+function synodic(orb::CircularRestrictedThreeBodyOrbit)
+    state = synodic(orb.state)
+    return CircularRestrictedThreeBodyOrbit(state, orb.system)
 end
 
 """
@@ -266,7 +296,7 @@ function redimensionalize(cart::CartesianState{F, LU, TU}, sys::CircularRestrict
         r = redimensionalize_length(position_vector(cart), normalized_length_unit(sys))
         v = redimensionalize_velocity(velocity_vector(cart), normalized_length_unit(sys),  normalized_time_unit(sys))
         t = redimensionalize_time(epoch(cart), normalized_time_unit(sys))
-       return CartesianState(r, v,t, Synodic)
+       return CartesianState(r, v,t, coordinateframe(cart))
     end
 end
 
@@ -278,14 +308,14 @@ function redimensionalize(orb::CircularRestrictedThreeBodyOrbit)
     sys  = orb.system
     LU = typeof(lengthunit(cart))
     TU = typeof(timeunit(cart))
-    if LU != NormalizedLengthUnit() && TU != NormalizedTimeUnit()
+    if LU != NormalizedLengthUnit && TU != NormalizedTimeUnit
         return orb
     else
         r = redimensionalize_length(position_vector(cart), normalized_length_unit(sys))
         v = redimensionalize_velocity(velocity_vector(cart), normalized_length_unit(sys),  normalized_time_unit(sys))
         t = redimensionalize_time(epoch(cart), normalized_time_unit(sys))
        return CircularRestrictedThreeBodyOrbit(
-           CartesianState(r, v,t, Synodic),
+           CartesianState(r, v,t, coordinateframe(cart)),
            sys
        )
     end
@@ -345,4 +375,110 @@ function accel(rₛ, vₛ, μ)
     aₛ = similar(vₛ)
     accel!(aₛ, rₛ, vₛ, μ)
     return aₛ
+end
+
+"""
+Returns an analytical solution for a Halo orbit about `L`.
+
+__Arguments:__ 
+- `μ`: Non-dimensional mass parameter for the CR3BP system.
+- `Az`: Desired non-dimensional Z-amplitude for Halo orbit.
+- `ϕ`: Desired Halo orbit phase.
+- `steps`: Number of non-dimensional timepoints in returned state.
+- `L`: Lagrange point to orbit (L1 or L2).
+- `hemisphere`: Specifies northern or southern Halo orbit.
+
+__Outputs:__
+- Synodic position vector `r::Array{<:AbstractFloat}`
+- Synodic velocity vector `v::Array{<:Abstractfloat}`.
+- Halo orbit period `Τ`.
+- Throws `ArgumentError` if L is not `1` or `2`.
+
+__References:__
+- [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
+"""
+function analyticalhalo(μ; Az=0.00, ϕ=0.0, steps=1,
+                       L=1, hemisphere=:northern)
+
+    if L == 1
+        point = first(lagrange(μ, 1))
+        γ = abs(1 - μ - point)
+        n = collect(1:4)
+        c = @. (μ + (-1)^n * (1-μ)γ^(n+1)) / (γ^3 * (1 - γ^(n+1)))
+    elseif L == 2
+        point = first(lagrange(μ, 2))
+        γ = abs(point - 1 + μ)
+        n = collect(1:4)
+        c = @. ((-1)^n * μ + (-1)^n * (1-μ)γ^(n+1)) / (γ^3 * (1 + γ^(n+1)))
+    else
+        throw(ArgumentError("Only Halo orbits about L1 or L2 are supported."))
+    end
+
+    ωₚ  = √((2 - c[2] + √((9c[2]^2 - 8c[2])))/2)
+    k   = (ωₚ^2 + 1 + 2c[2]) / (2ωₚ)
+
+    d₁  = (3ωₚ^2 / k) * (k*(6ωₚ^2 - 1) - 2ωₚ)
+    d₂  = (8ωₚ^2 / k) * (k*(11ωₚ^2 - 1) - 2ωₚ)
+    a₂₁ = (3c[3] * (k^2 - 2)) / (4(1 + 2c[2]))
+    a₂₂ = (3c[3]) / (4(1 + 2c[2]))
+    a₂₃ = (-3c[3]ωₚ / (4k*d₁)) * (3k^3 * ωₚ - 6k*(k-ωₚ) + 4)
+    a₂₄ = (-3c[3]ωₚ / (4k*d₁)) * (2 + 3k*ωₚ)
+    b₂₁ = (-3c[3]ωₚ / (2d₁)) * (3k*ωₚ - 4)
+    b₂₂ = -3c[3]*ωₚ / d₁
+    d₂₁ = -c[3] / (2ωₚ^2)
+    a₃₁ = (-9ωₚ / (4d₂)) * (4c[3] * (k*a₂₃-b₂₁) + k*c[4]*(4+k^2)) + 
+          ((9ωₚ^2 + 1 - c[2]) / (2d₂)) * (3c[3]*(2a₂₃-k*b₂₁) + c[4]*(2+3k^2))
+    a₃₂ = (-9ωₚ / (4d₂)) * (4c[3] * (3k*a₂₄-b₂₂) + k*c[4]) -
+          (3 / (2d₂)) * (9ωₚ^2 + 1 - c[2]) * (c[3]*(k*b₂₂+d₂₁-2a₂₄) - c[4])
+    b₃₁ = (3 / (8d₂)) * 8ωₚ * (3c[3] * (k*b₂₁ - 2a₂₃) - c[4]*(2+3k^2)) + 
+          (3/(8d₂)) * (9ωₚ^2 + 1 + 2c[2]) * (4c[3]*(k*a₂₃-b₂₁) + k*c[4]*(4+k^2))
+    b₃₂ = (9ωₚ/d₂)*(c[3]*(k*b₂₂+d₂₁-2a₂₄)-c[4]) + 
+          (3(9ωₚ^2 + 1 + 2c[2]) / (8d₂) * (4c[3]*(k*a₂₄-b₂₂)+k*c[4]))
+    d₃₁ = (3 / (64ωₚ^2)) * (4c[3]*a₂₄ + c[4])
+    d₃₂ = (3 / (64 + ωₚ^2)) * (4c[3]*(a₂₃ - d₂₁) + c[4]*(4+k^2))
+
+    s₁  = (1 / (2ωₚ*(ωₚ*(1+k^2) - 2k))) * 
+          (3c[3]/2 * (2a₂₁*(k^2 - 2) - a₂₃*(k^2 + 2) - 2k*b₂₁) - 
+            (3c[4]/8) * (3k^4 - 8k^2 + 8))
+    s₂  = (1 / (2ωₚ*(ωₚ*(1+k^2) - 2k))) * 
+          (3c[3]/2 * (2a₂₂*(k^2-2) + a₂₄*(k^2 + 2) + 2k*b₂₂ + 5d₂₁) + 
+            (3c[4]/8) * (12 - k^2))
+    l₁  = (-3c[3] / 2) * (2a₂₁ + a₂₃ + 5d₂₁) - (3c[4]/8)*(12 - k^2) + 2ωₚ^2 * s₁
+    l₂  = (3c[3]/2) * (a₂₄ - 2a₂₂) + (9c[4]/8) + 2ωₚ^2 * s₂
+    Δ   = ωₚ^2 - c[2]
+
+    Aᵧ  = Az / γ
+    Aₓ  = √((-l₂*Aᵧ^2 - Δ) / l₁)
+
+    ν   = 1 + s₁*Aₓ^2 + s₂*Aᵧ^2
+    Τ   = 2π / (ωₚ*ν)
+    τ   = ν .* (steps > 1 ? range(0, stop=Τ, length=steps) : range(0, stop=Τ, length=1000))
+
+    if hemisphere == :northern
+        m = 1.0
+    elseif hemisphere == :southern
+        m = 3.0
+    else
+        throw(ArgumentError("`hemisphere` must be `:northern` or `:southern`."))
+    end
+
+    δₘ = 2 - m
+    τ₁ = @. ωₚ*τ + ϕ
+
+    x = @. γ * (a₂₁*Aₓ^2 + a₂₂*Aᵧ^2 - Aₓ*cos(τ₁) + (a₂₃*Aₓ^2 - 
+                    a₂₄*Aᵧ^2)*cos(2τ₁) + (a₃₁*Aₓ^3 - a₃₂*Aₓ*Aᵧ^2)*cos(3τ₁)) + 1 - μ - (L == 1 ? γ : -γ)
+    y = @. γ * (k*Aₓ*sin(τ₁) + (b₂₁*Aₓ^2 - b₂₂*Aᵧ^2)*sin(2τ₁) + 
+                    (b₃₁*Aₓ^3 - b₃₂*Aₓ*Aᵧ^2)*sin(3τ₁))
+    z = @. γ * (δₘ*Aᵧ*cos(τ₁) + δₘ*d₂₁*Aₓ*Aᵧ*(cos(2τ₁)-3) + 
+                    δₘ*(d₃₂*Aᵧ*Aₓ^2 - d₃₁*Aᵧ^3)*cos(3τ₁))
+
+    ẋ = @. γ * (ωₚ*ν*Aₓ*sin(τ₁) - 2ωₚ*ν*(a₂₃*Aₓ^2 - a₂₄*Aᵧ^2)*sin(2τ₁) - 
+                    3ωₚ*ν*(a₃₁*Aₓ^3 - a₃₂*Aₓ*Aᵧ^2)*sin(3τ₁))
+    ẏ = @. γ * (ωₚ*ν*k*Aₓ*cos(τ₁) + 2ωₚ*ν*(b₂₁*Aₓ^2 - b₂₂*Aᵧ^2)*cos(2τ₁) + 
+                    3ωₚ*ν*(b₃₁*Aₓ^3 - b₃₂*Aₓ*Aᵧ^2)*cos(3τ₁))
+    ż = @. γ * (-ωₚ*ν*δₘ*Aᵧ*sin(τ₁) - 2ωₚ*ν*δₘ*d₂₁*Aₓ*Aᵧ*sin(2τ₁) - 
+                    3ωₚ*ν*δₘ*(d₃₂*Aᵧ*Aₓ^2 - d₃₁*Aᵧ^2)*sin(3τ₁))
+
+    return hcat(x, y, z)[1:steps, :], hcat(ẋ, ẏ, ż)[1:steps, :], Τ
+
 end
