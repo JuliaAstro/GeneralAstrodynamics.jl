@@ -103,18 +103,6 @@ function nondimensionalize(r₃::R, v₃::V, Δt::T, μ₁::U1, μ₂::U2, a::A)
 
 end
 
-"""
-Returns the nondimensional (synodic / rotating) representation of a CR3BP state.
-"""
-function nondimensionalize(state::D) where D <: ThreeBodyState
-    return NondimensionalThreeBodyState(
-        nondimensionalize(state.r₃, state.a),
-        nondimensionalize(state.v₃, state.a, time_scale_factor(state.a, state.μ₁, state.μ₂)),
-        nondimensionalize(state.μ₁, state.μ₂),
-        nondimensionalize(state.Δt, state.a, state.μ₁, state.μ₂),
-        state.a, time_scale_factor(state.a, state.μ₁, state.μ₂)
-    )
-end
 
 """
 Returns dimensional length units.
@@ -163,22 +151,6 @@ Returns dimensional (inertial) form of (`Unitful`) time duration.
 redimensionalize(t::T1, a::A, μ₁::U1, μ₂::U2) where {
         T1<:Real, A<:Unitful.Length, U1<:MassParameter, U2<:MassParameter
     } = redimensionalize(t, time_scale_factor(a, μ₁, μ₂))
-
-"""
-Returns the dimensional (inertial) representation of a CR3BP state.
-"""
-function redimensionalize(state::N, μ₁::U1, μ₂::U2) where {
-        N  <: NondimensionalThreeBodyState, 
-        U1 <: MassParameter, U2 <: MassParameter
-    }
-    return ThreeBodyState(
-            μ₁, μ₂, 
-            state.DU, 
-            redimensionalize.(state.r, state.DU), 
-            redimensionalize.(state.v, state.DU, time_scale_factor(state.DU, μ₁, μ₂)), 
-            redimensionalize(state.Δt, state.DT)
-        )
-end
 
 """
 Returns the spacecraft's nondimensional position w.r.t. body 1 (or 2).
@@ -271,3 +243,5 @@ function accel(rₛ, vₛ, μ)
     accel!(aₛ, rₛ, vₛ, μ)
     return aₛ
 end
+
+SunEarth = CircularRestrictedThreeBodySystem(TwoBody.mass_parameter.((TwoBody.Systems.Sun, TwoBody.Systems.Earth)), 1.0u"AU", ThreeBody.time_scale_factor(1.0u"AU", TwoBody.mass_parameter.((TwoBody.Systems.Sun, TwoBody.Systems.Earth))...), "Sun-Earth")

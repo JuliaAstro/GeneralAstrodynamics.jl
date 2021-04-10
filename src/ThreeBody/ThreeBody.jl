@@ -19,7 +19,7 @@ using ComponentArrays
 using Symbolics
 using Roots
 
-export ThreeBodyState, NondimensionalThreeBodyState, RestrictedThreeBodySystem
+export CircularRestrictedThreeBodySystem, NormalizedCartesianState, CircularRestrictedThreeBodyOrbit, MinimalCircularRestrictedThreeBodySystem
 export time_scale_factor,
        nondimensionalize_length,
        nondimensionalize_velocity,
@@ -49,8 +49,8 @@ export time_scale_factor,
        isapprox,
        isequal,
        isperiodic
-       
-export CircularRestrictedThreeBodySystem, CircularRestrictedThreeBodySystem
+
+export convert, show
 
 include("ThreeBodyStates.jl")
 include("ThreeBodyCalculations.jl")

@@ -244,23 +244,6 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
 end
 
 """
-Returns a `NondimensionalThreeBodyState` type, instead of tuple `r,v,T`.
-"""
-function halo(μ, DU::T1, DT::T2; kwargs...) where T1 <: Unitful.Length where T2 <: Time
-    r, v, T = halo(μ; kwargs...)
-    return NondimensionalThreeBodyState(r, v, μ, T, DU, DT)
-end
-
-"""
-Iterative halo solver, returns a `NondimensionalThreeBodyState` in-place.
-"""
-function halo!(state, μ; kwargs...) 
-    r,v,T = halo(μ; kwargs...)
-    state = NondimensionalThreeBodyState(r, v, μ, T)
-    return nothing
-end
-
-"""
 Returns dynamics tic for combined Halo iterative solver state vector.
 
 __Arguments:__ 
@@ -295,27 +278,25 @@ end
 """
 Returns the Monodromy Matrix for a Halo orbit.
 """
-function monodromy(orbit::NondimensionalThreeBodyState; check_periodicity = true, reltol = 1e-14, abstol = 1e-14, atol = 1e-8)
+function monodromy(r, v, μ, T; check_periodicity = true, reltol = 1e-14, abstol = 1e-14, atol = 1e-8)
     problem = ODEProblem(
         RestrictedThreeBodySTMTic!,
-        ComponentArray(rₛ  = orbit.r,
-                       vₛ  = orbit.v,
+        ComponentArray(rₛ  = r,
+                       vₛ  = v,
                        Φ₁  = [1.0, 0, 0, 0, 0, 0],
                        Φ₂  = [0, 1.0, 0, 0, 0, 0],
                        Φ₃  = [0, 0, 1.0, 0, 0, 0],
                        Φ₄  = [0, 0, 0, 1.0, 0, 0],
                        Φ₅  = [0, 0, 0, 0, 1.0, 0],
                        Φ₆  = [0, 0, 0, 0, 0, 1.0]),
-        (0.0, orbit.Δt),
-        ComponentArray(μ   =  orbit.μ)
+        (0.0, T),
+        ComponentArray(μ   =  μ)
     )
 
     u = solve(problem; reltol = reltol, abstol = abstol).u[end]
     
     if check_periodicity
-        if !isapprox(orbit, NondimensionalThreeBodyState(u.rₛ, u.vₛ, orbit.μ, orbit.Δt, orbit.DU, orbit.DT); atol = atol)
-            throw(ErrorException("Provided CR3BP system is NOT periodic!"))
-        end
+        throw(ArgumentError("Not yet implemented!"))
     end
 
     Matrix(transpose(hcat(u.Φ₁, u.Φ₂, u.Φ₃, u.Φ₄, u.Φ₅, u.Φ₆)))
@@ -324,22 +305,22 @@ end
 """
 Returns true if a `RestrictedThreeBodySystem` is numerically periodic.
 """
-function isperiodic(orbit::NondimensionalThreeBodyState; reltol = 1e-14, abstol = 1e-14, atol = 1e-8)
+function isperiodic(r, v, μ, T; reltol = 1e-14, abstol = 1e-14, atol = 1e-8)
     problem = ODEProblem(
         RestrictedThreeBodySTMTic!,
-        ComponentArray(rₛ  = orbit.r,
-                       vₛ  = orbit.v,
+        ComponentArray(rₛ  = r,
+                       vₛ  = v,
                        Φ₁  = [1.0, 0, 0, 0, 0, 0],
                        Φ₂  = [0, 1.0, 0, 0, 0, 0],
                        Φ₃  = [0, 0, 1.0, 0, 0, 0],
                        Φ₄  = [0, 0, 0, 1.0, 0, 0],
                        Φ₅  = [0, 0, 0, 0, 1.0, 0],
                        Φ₆  = [0, 0, 0, 0, 0, 1.0]),
-        (0.0, orbit.Δt),
-        ComponentArray(μ   =  orbit.μ)
+        (0.0, T),
+        ComponentArray(μ   =  μ)
     )
 
     u = solve(problem; reltol = reltol, abstol = abstol).u[end]
     
-    return isapprox(orbit, NondimensionalThreeBodyState(u.rₛ, u.vₛ, orbit.μ, orbit.Δt, orbit.DU, orbit.DT); atol = 1e-8)
+    return isapprox.((r,v); atol = 1e-8)
 end

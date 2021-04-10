@@ -24,6 +24,16 @@ state with no dimensioned units.
 """
 const NormalizedCartesianState{F, FR<:CR3BPFrames} = CartesianState{F, NormalizedLengthUnit, NormalizedTimeUnit, FR}
 
+function Base.show(io::IO, state::NormalizedCartesianState{F,FR}) where {F,FR} 
+    println(io, "  ", "Normalized ", string(FR), " Cartesian State:")
+    println("")
+    println(io, "    t:  ", state.t)
+    println(io, "    r = ", [state.r[1] state.r[2] state.r[3]])
+    println(io, "    v = ", [state.v[1] state.v[2] state.v[3]])
+end
+
+Base.show(io::IO, ::MIME"text/plain", state::NormalizedCartesianState{F,FR}) where {F,FR} = show(io, state)
+
 """
     `NormalizedCartesianState(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, frame::FR = Synodic, epoch::Real = 0) where FR <: CR3BPFrames = CartesianState(r, v, frame, epoch)`
 
@@ -32,19 +42,40 @@ Constructor for a `NormalizedCartesianState`. No `Unitful` arguments allowed!
 NormalizedCartesianState(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, frame::FR = Synodic, epoch::Real = 0) where FR <: CR3BPFrames = CartesianState(r, v, frame, epoch)
 
 """
-    `IncompleteCircularRestrictedThreeBodySystem(μ::Real) <: AbstractSystem{F, NormalizedLengthUnit, NormalizedTimeUnit}`
+    `MinimalCircularRestrictedThreeBodySystem(μ::Real) <: AbstractSystem{F, NormalizedLengthUnit, NormalizedTimeUnit}`
 
 Sometimes you want to do CR3BP calculations with only one system parameter,
 the nondimensional mass parameter `μ`. That's what this structure is for!
 """ 
-mutable struct IncompleteCircularRestrictedThreeBodySystem{F} <: AbstractSystem{F, NormalizedLengthUnit, NormalizedTimeUnit}
+mutable struct MinimalCircularRestrictedThreeBodySystem{F} <: AbstractSystem{F, NormalizedLengthUnit, NormalizedTimeUnit}
     μ::F
+    name::String
 
-    function IncompleteCircularRestrictedThreeBodySystem(μ::Real) 
+    function MinimalCircularRestrictedThreeBodySystem(μ::Real; name = "") 
+        @assert μ ≤ 1//2 "Nondimensional mass parameter must be less than 0.5 by definition."
         F = typeof(μ)
-        return new{F}(F(μ))
+        return new{F}(F(μ), name)
     end
 end
+
+function normalized_mass_parameter(state::MinimalCircularRestrictedThreeBodySystem)
+    return state.μ
+end
+
+function mass_parameter(::MinimalCircularRestrictedThreeBodySystem)
+    throw(ArgumentError(
+        "Only a normalized mass parameter can be computed from a " * 
+        "MinimalCircularRestrictedThreeBodySystem. Try " * 
+        "`normalized_mass_parameter(sys)` instead."
+    ))
+end
+
+function Base.show(io::IO, sys::MinimalCircularRestrictedThreeBodySystem{F}) where {F} 
+    println(io, "  Normalized Circular Restricted Three-body System", isempty(sys.name) ? "\n" : " ($(sys.name))\n")
+    println(io, "    μ:    ", string(normalized_mass_parameter(sys)))
+end
+
+Base.show(io::IO, ::MIME"text/plain", sys::MinimalCircularRestrictedThreeBodySystem{F}) where {F} = show(io, sys)
 
 """
     `mutable struct CircularRestrictedThreeBodySystem{F, LU, TU} <: AbstractSystem{F, LU, TU}`
@@ -57,29 +88,47 @@ mutable struct CircularRestrictedThreeBodySystem{F, LU, TU} <: AbstractSystem{F,
     DU::F
     DT::F
     μ::Tuple{F,F}
+    name::String
 
-    function CircularRestrictedThreeBodySystem(μ::Tuple{Real, Real}, DU::Real, DT::Real; lengthunit = u"km", timeunit = u"s")
+    function CircularRestrictedThreeBodySystem(μ::Tuple{Real, Real}, DU::Real, DT::Real = time_scale_factor(DU, μ...), name = ""; lengthunit = u"km", timeunit = u"s")
         F = promote_type(typeof.(μ)..., typeof(DU), typeof(DT))
         if !(F <: AbstractFloat)
             @warn "Promoted type $(string(F)) is not a float. Defaulting to Float64."
             F = Float64
         end
-        return new{F, typeof(lengthunit), typeof(timeunit)}(F(DU), F(DT), F.(μ))
+        return new{F, typeof(lengthunit), typeof(timeunit)}(F(DU), F(DT), F.(μ), name)
     end
 
-    function CircularRestrictedThreeBodySystem(μ::Tuple{MassParameter,MassParameter}, DU::Unitful.Length, DT::Unitful.Time)
+    function CircularRestrictedThreeBodySystem(μ::Tuple{MassParameter,MassParameter}, DU::Unitful.Length, DT::Unitful.Time = time_scale_factor(DU, μ...), name = "")
         lengthunit = unit(DU)
         timeunit = unit(DT)
-        return CircularRestrictedThreeBodySystem(ustrip.(lengthunit^3 / timeunit^2, μ)..., 
-                                                 ustrip(lengthunit, DU), ustrip(timeunit, DT); 
+        return CircularRestrictedThreeBodySystem(ustrip.(lengthunit^3 / timeunit^2, μ), 
+                                                 ustrip(lengthunit, DU), ustrip(timeunit, DT), name; 
                                                  lengthunit = lengthunit, timeunit = timeunit)
     end
 end
 
+normalized_distance_unit(sys::CircularRestrictedThreeBodySystem) = sys.DU * lengthunit(sys)
+normalized_time_unit(sys::CircularRestrictedThreeBodySystem) = sys.DT * timeunit(sys)
+
+function Base.show(io::IO, sys::CircularRestrictedThreeBodySystem{F,LU,TU}) where {F,LU,TU} 
+    println(io, "  Circular Restricted Three-body System", isempty(sys.name) ? "\n" : " ($(sys.name))\n")
+    println(io, "        Length Unit:    ", sys.DU, " ", string(lengthunit(sys)))
+    println(io, "          Time Unit:    ", sys.DT, " ", string(timeunit(sys)))
+    println(io, "    Mass Parameters:    ", "(", max(sys.μ...), ", ", min(sys.μ...), ") ", string(massparameterunit(sys)))
+end
+
+Base.show(io::IO, ::MIME"text/plain", sys::CircularRestrictedThreeBodySystem{F,LU,TU}) where {F,LU,TU} = show(io, sys)
+
+normalized_mass_parameter(sys::CircularRestrictedThreeBodySystem) = min(sys.μ) / reduce(+, sys.μ)
+mass_parameters(sys::CircularRestrictedThreeBodySystem) = sys.μ .* massparameterunit(sys)
+primary_mass_parameter(sys::CircularRestrictedThreeBodySystem) = max(sys.μ...) * massparameterunit(sys)
+secondary_mass_parameter(sys::CircularRestrictedThreeBodySystem) = min(sys.μ...) * massparameterunit(sys)
+
 mutable struct CircularRestrictedThreeBodyOrbit{
         F, LU, TU,
         C<:CartesianState{F, <:Unitful.LengthFreeUnits, <:Unitful.TimeFreeUnits, <:CR3BPFrames},
-        S<:Union{IncompleteCircularRestrictedThreeBodySystem{F}, CircularRestrictedThreeBodySystem{F,LU,TU}}
+        S<:Union{MinimalCircularRestrictedThreeBodySystem{F}, CircularRestrictedThreeBodySystem{F,LU,TU}}
     } <: AbstractOrbit{F, LU, TU}
 
     state::C
@@ -92,7 +141,7 @@ mutable struct CircularRestrictedThreeBodyOrbit{
         1) Unitless state vectors, full & unitless system
         2) Unitful state vectors, full & unitful system
 
-        Incomplete system:
+        Minimal system:
         3) Unitless state vectors, incomplete & unitless system
 
     =#
@@ -146,8 +195,8 @@ mutable struct CircularRestrictedThreeBodyOrbit{
             @warn "Non-float promoted type $(string(F)) provided. Defaulting to Float64."
             F = Float64
         end
-        state = CartesianState(F.(r),F.(v),F(t),Synodic)
-        system = IncompleteCircularRestrictedThreeBodySystem(F(μ))
+        state = CartesianState(F.(r),F.(v),F(t),Synodic; lengthunit = NormalizedLengthUnit(), timeunit = NormalizedTimeUnit())
+        system = MinimalCircularRestrictedThreeBodySystem(F(μ))
         return new{F, NormalizedLengthUnit, NormalizedTimeUnit, typeof(state), typeof(system)}(state, system)
     end
 
@@ -162,7 +211,7 @@ mutable struct CircularRestrictedThreeBodyOrbit{
 
         return new{F, L, T, typeof(state), typeof(system)}(state, system)   
     end
-    
+
     function CircularRestrictedThreeBodyOrbit(r::AbstractVector{Unitful.Length}, v::AbstractVector{Unitful.Velocity}, system::CircularRestrictedThreeBodySystem, t::Unitful.Time; frame = Synodic)
         state = CartesianState(r, v, frame, t)   
         F = promote_type(eltype(state), eltype(system))
@@ -175,186 +224,26 @@ mutable struct CircularRestrictedThreeBodyOrbit{
         return new{F, L, T, typeof(state), typeof(system)}(state, system)   
     end
 
-    function CircularRestrictedThreeBodyOrbit(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, system::IncompleteCircularRestrictedThreeBodySystem, t::Real = 0; frame = Synodic)        
+    function CircularRestrictedThreeBodyOrbit(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, system::MinimalCircularRestrictedThreeBodySystem, t::Real = 0; frame = Synodic)        
         F = promote_type(eltype(r), eltype(v), eltype(system), typeof(t))
         state = NormalizedCartesianState(F.(r), F.(v), F(t), frame)
-        system = IncompleteCircularRestrictedThreeBodySystem(F(normalized_mass_parameter(system)))
+        system = MinimalCircularRestrictedThreeBodySystem(F(normalized_mass_parameter(system)))
         return new{F, typeof(NormalizedLengthUnit), typeof(NormalizedTimeUnit), typeof(state), typeof(system)}(state, system)
     end
 
 end
 
-"""
-Describes a dimensional state of a spacecraft
-within the Circular Restriested Three-body Problem in
-the Synodic frame.
-"""
-struct ThreeBodyState{F<:AbstractFloat} <: RestrictedThreeBodySystem
+normalized_distance_unit(orb::CircularRestrictedThreeBodyOrbit) = normalized_distance_unit(orb.system)
+normalized_time_unit(orb::CircularRestrictedThreeBodyOrbit) = normalized_time_unit(orb.system)
+normalized_mass_parameter(orb::CircularRestrictedThreeBodyOrbit) = normalized_mass_parameter(orb.system)
+mass_parameters(orb::CircularRestrictedThreeBodyOrbit) = mass_parameters(orb.system)
+primary_mass_parameter(orb::CircularRestrictedThreeBodyOrbit) = primary_mass_parameter(orb.system)
+secondary_mass_parameter(orb::CircularRestrictedThreeBodyOrbit) = secondary_mass_parameter(orb.system)
 
-    μ₁::MassParameter{F}
-    μ₂::MassParameter{F}
-    a::Unitful.Length{F}
-    r₃::SVector{3, <:Unitful.Length{F}}
-    v₃::SVector{3, <:Velocity{F}}
-    Δt::Time{F}
-
-    function ThreeBodyState(μ₁::MP1, μ₂::MP2, a::A, r₃::R, v₃::V, Δt::DT) where {
-            MP1 <: MassParameter{<:Real},
-            MP2 <: MassParameter{<:Real},
-            A   <: Unitful.Length{<:Real},
-            RT  <: Unitful.Length{<:Real},
-            VT  <: Velocity{<:Real},
-            R   <: AbstractVector{RT},
-            V   <: AbstractVector{VT},
-            DT  <: Time{<:Real}
-        }
-
-        T = promote_type(
-            typeof(μ₁.val), typeof(μ₂.val), typeof(a.val),
-            map(x->typeof(x.val), r₃)..., map(x->typeof(x.val), v₃)...,
-            typeof(Δt.val)
-        )
-        if !(T <: AbstractFloat)
-            @warn "Non-float parameters provided: defaulting to Float64."
-            T = Float64
-        end
-
-        return new{T}(
-            T(μ₁), T(μ₂), T(a), 
-            SVector{3, RT}(T.(r₃)),
-            SVector{3, VT}(T.(v₃)),
-            T(Δt)
-        )
-
-    end
-
+function Base.show(io::IO, orb::CircularRestrictedThreeBodyOrbit{F,LU,TU}) where {F,LU,TU} 
+    println(io, "Circular Restricted Three-body Orbit\n")
+    println(io, orb.state)
+    println(io, orb.system)
 end
 
-Base.convert(::Type{T}, t::ThreeBodyState) where {
-        T<:AbstractFloat
-    } = ThreeBodyState(map(f->T.(getfield(t,f), fieldnames(t)))...)
-Base.promote(::Type{ThreeBodyState{A}}, ::Type{ThreeBodyState{B}}) where {
-        A<:AbstractFloat, B<:AbstractFloat
-    } = ThreeBodyState{promote_type(A,B)}
-Core.Float16(o::ThreeBodyState) = convert(Float16, o)
-Core.Float32(o::ThreeBodyState) = convert(Float32, o)
-Core.Float64(o::ThreeBodyState) = convert(Float64, o)
-Base.MPFR.BigFloat(o::ThreeBodyState) = convert(BigFloat, o)
-
-function Base.show(io::IO, sys::ThreeBodyState)
-    println(io, "Dimensioned Circular Restricted Three-body State")
-    println(io, "  μ₁:        ", sys.μ₁)
-    println(io, "  μ₂:        ", sys.μ₂)
-    println(io, "   a:        ", sys.a)
-    println(io, "  r₃:        ", transpose(ustrip.(sys.r₃)), " ", unit(first(sys.r₃)))
-    println(io, "  v₃:        ", transpose(ustrip.(sys.v₃)), " ", unit(first(sys.v₃)))
-    println(io, "  Δt:        ", sys.Δt)
-end
-
-"""
-Describes the non-dimensional state of a spacecraft
-within the Circular Restricted Three-body Problem in
-the Synodic frame.
-"""
-struct NondimensionalThreeBodyState{F<:AbstractFloat} <: RestrictedThreeBodySystem
-    r::SVector{3, F}
-    v::SVector{3, F}
-    μ::F
-    Δt::F
-    DU::Unitful.Length{F}
-    DT::Time{F}
-
-    function NondimensionalThreeBodyState(rₛ::AbstractVecOrMat{R}, vₛ::AbstractVecOrMat{V}, μ::U, Δt::D = 1.0, 
-                                          DU::Unitful.Unitful.Length{L} = NaN * u"km", 
-                                          DT::Unitful.Time{C} = NaN * u"s") where {
-                                          R <: Real, V <: Real, L <: Real, C <: Real, U <: Real, D <: Real}
-        T = promote_type(R, V, L, C, U, D)
-        if !(T <: AbstractFloat)
-            @warn "Non-float parameters provided. Defaulting to Float64."
-            T = Float64
-        end
-        
-        return new{T}(
-            SVector{3,T}(rₛ...), 
-            SVector{3,T}(vₛ...), 
-            T(μ), T(Δt), T(DU), T(DT)
-        )
-    end
-end
-
-Base.convert(::Type{T}, t::NondimensionalThreeBodyState) where {
-    T<:AbstractFloat
-} = NondimensionalThreeBodyState(T.(Array(t.rₛ)), T.(Array(t.vₛ)), T(t.μ), T(t.Δt), T(t.DU), T(t.DT))
-Base.promote(::Type{NondimensionalThreeBodyState{A}}, ::Type{NondimensionalThreeBodyState{B}}) where {
-    A<:AbstractFloat, B<:AbstractFloat
-} = NondimensionalThreeBodyState{promote_type(A,B)}
-Core.Float16(o::NondimensionalThreeBodyState) = convert(Float16, o)
-Core.Float32(o::NondimensionalThreeBodyState) = convert(Float32, o)
-Core.Float64(o::NondimensionalThreeBodyState) = convert(Float64, o)
-Base.MPFR.BigFloat(o::NondimensionalThreeBodyState) = convert(BigFloat, o)
-
-function Base.show(io::IO, sys::NondimensionalThreeBodyState)
-    println(io, "Nondimensional Circular Restricted Three-body State")
-    println(io, "   μ:        ", sys.μ)
-    println(io, "   r:        ", transpose(sys.r))
-    println(io, "   v:        ", transpose(sys.v))
-    println(io, "  Δt:        ", sys.Δt)
-    println(io, "  DU:        ", sys.DU)
-    println(io, "  DT:        ", sys.DT)
-end
-
-"""
-Returns true if all elements in each system are within `atol` of the other.
-"""
-function Base.isapprox(c1::ThreeBodyState, c2::ThreeBodyState; atol = 1e-8)
-    ru(x) = ustrip(upreferred(x))
-    return isapprox(ru(c1.μ₁),  ru(c2.μ₁);  atol = atol) &&
-           isapprox(ru(c1.μ₂),  ru(c2.μ₂);  atol = atol) &&
-           isapprox(ru(c1.a),   ru(c2.a);   atol = atol) &&
-           isapprox(ru.(c1.r₃), ru.(c2.r₃); atol = atol) &&
-           isapprox(ru.(c1.v₃), ru.(c2.v₃); atol = atol) &&
-           isapprox(ru(c1.Δt),  ru(c2.Δt);  atol = atol)
-
-end
-
-"""
-Returns true if all elements in each system are equal to the other.
-"""
-function Base.isequal(c1::ThreeBodyState, c2::ThreeBodyState)
-    ru(x) = ustrip(upreferred(x))
-    return isequal(ru(c1.μ₁),  ru(c2.μ₁))  &&
-           isequal(ru(c1.μ₂),  ru(c2.μ₂))  &&
-           isequal(ru(c1.a),   ru(c2.a))   &&
-           isequal(ru.(c1.r₃), ru.(c2.r₃)) &&
-           isequal(ru.(c1.v₃), ru.(c2.v₃)) &&
-           isequal(ru(c1.Δt),  ru(c2.Δt))
-
-end
-
-"""
-Returns true if all elements in each system are within `atol` of the other.
-"""
-function Base.isapprox(c1::NondimensionalThreeBodyState, c2::NondimensionalThreeBodyState; atol = 1e-8)
-    ru(x) = ustrip(upreferred(x))
-    return isapprox(ru(c1.μ),   ru(c2.μ);   atol = atol) &&
-           isapprox(ru.(c1.r),  ru.(c2.r);  atol = atol) &&
-           isapprox(ru.(c1.v),  ru.(c2.v);  atol = atol) &&
-           isapprox(ru(c1.Δt),  ru(c2.Δt);  atol = atol) &&
-           isapprox(ru.(c1.DU), ru(c2.DU);  atol = atol) &&
-           isapprox(ru(c1.DT),  ru(c2.DT);  atol = atol)
-
-end
-
-"""
-Returns true if all elements in each system are equal to the other.
-"""
-function Base.isequal(c1::NondimensionalThreeBodyState, c2::NondimensionalThreeBodyState)
-    ru(x) = ustrip(upreferred(x))
-    return isequal(ru(c1.μ),  ru(c2.μ))  &&
-           isequal(ru.(c1.r), ru.(c2.r)) &&
-           isequal(ru.(c1.v), ru.(c2.v)) &&
-           isequal(ru(c1.Δt), ru(c2.Δt)) &&
-           isequal(ru(c1.DU), ru(c2.DU)) &&
-           isequal(ru(c1.DT),  ru(c2.DT))
-
-end
+Base.show(io::IO, ::MIME"text/plain", orb::CircularRestrictedThreeBodyOrbit{F,LU,TU}) where {F,LU,TU} = show(io, orb)
