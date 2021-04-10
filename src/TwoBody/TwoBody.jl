@@ -39,7 +39,7 @@ export  semimajor_axis, semi_parameter, eccentricity,
         specific_angular_momentum, specific_energy, specific_potential_energy,
         isapprox, isequal, TwobodyPropagationResult, kepler, lambert,
         conic, keplerian, cartesian, promote, convert, Float16, Float32, Float64,
-        BigFloat, CartesianOrbit, KeplerianOrbit
+        BigFloat, CartesianOrbit, KeplerianOrbit, R2BP
 
 # Include all module source code
 include("TwoBodyStates.jl")

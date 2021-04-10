@@ -253,6 +253,8 @@ end
 
 # Constants
 
+const R2BP = RestrictedTwoBodyOrbit
+
 const KeplerianOrbit{C,F,LU,TU} = RestrictedTwoBodyOrbit{C, F, LU, TU, K} where {K <: KeplerianState{F, LU, TU, AU} where AU}
 const CartesianOrbit{C,F,LU,TU} = RestrictedTwoBodyOrbit{C, F, LU, TU, R} where {R <: CartesianState{F, LU, TU, Bodycentric}}
 

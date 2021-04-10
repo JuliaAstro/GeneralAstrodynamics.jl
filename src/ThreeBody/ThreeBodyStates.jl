@@ -78,14 +78,69 @@ end
 
 mutable struct CircularRestrictedThreeBodyOrbit{
         F, LU, TU,
-        S<:Union{IncompleteCircularRestrictedThreeBodySystem{F}, CircularRestrictedThreeBodySystem{F,LU,TU}}, 
-        C<:CartesianState{F, <:Unitful.LengthFreeUnits, <:Unitful.TimeFreeUnits, <:CR3BPFrames}
+        C<:CartesianState{F, <:Unitful.LengthFreeUnits, <:Unitful.TimeFreeUnits, <:CR3BPFrames},
+        S<:Union{IncompleteCircularRestrictedThreeBodySystem{F}, CircularRestrictedThreeBodySystem{F,LU,TU}}
     } <: AbstractOrbit{F, LU, TU}
 
     state::C
     system::S
 
-    function CircularRestrictedThreeBodyOrbit(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, μ::Real, t::Real = zero(eltype(r)))
+    #=
+        Several CR3BP constructors are below. We need to handle the following cases...
+           
+        Fully described system:
+        1) Unitless state vectors, full & unitless system
+        2) Unitful state vectors, full & unitful system
+
+        Incomplete system:
+        3) Unitless state vectors, incomplete & unitless system
+
+    =#
+
+    function CircularRestrictedThreeBodyOrbit(
+            r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, 
+            μ::Tuple{<:Real, <:Real}, DU::Real, DT::Real, t::Real = 0; 
+            frame = Synodic, lengthunit = u"km", timeunit = u"s")     
+
+        F = promote_type(eltype(r), eltype(v), typeof(μ)..., typeof(DU), typeof(DT), typeof(t))
+        if !(F <: AbstractFloat)
+            @warn "Non-float promoted type $(string(F)) provided. Defaulting to Float64."
+            F = Float64
+        end
+
+        state = CartesianState(F.(r), F.(v), F(t), frame; lengthunit = lengthunit, timeunit = timeunit)
+        system = CircularRestrictedThreeBodySystem(
+            F.(ustrip.(lengthunit(state)^3 / timeunit(state)^2, μ)), 
+            F(ustrip(lengthunit(state), DU)), 
+            F(ustrip(timeunit(state), DT)))
+
+        return new{F, typeof(lengthunit(state)), typeof(timeunit(state)), typeof(state), typeof(system)}(state, system)
+
+    end
+
+    function CircularRestrictedThreeBodyOrbit(
+            r::AbstractVector{Unitful.Length}, v::AbstractVector{Unitful.Length}, 
+            μ::Tuple{MassParameter, MassParameter}, 
+            DU::Unitful.Length, DT::Unitful.Time, t::Unitful.Time = 0u"s"; 
+            frame = Synodic)        
+
+        F = promote_type(eltype(ustrip.(r)), eltype(ustrip.(v)), typeof(ustrip.(μ))..., typeof(ustrip(DU)), typeof(ustrip(DT)), typeof(ustrip(t)))
+        if !(F <: AbstractFloat)
+            @warn "Non-float promoted type $(string(F)) provided. Defaulting to Float64."
+            F = Float64
+        end
+        state = CartesianState(F.(r), F.(v), F(t), frame)
+        system = CircularRestrictedThreeBodySystem(
+            F.(ustrip.(lengthunit(state)^3 / timeunit(state)^2, μ)), 
+            F(ustrip(lengthunit(state), DU)), 
+            F(ustrip(timeunit(state), DT)))
+
+        return new{F, typeof(lengthunit(state)), typeof(timeunit(state)), typeof(state), typeof(system)}(state, system)
+
+    end
+
+
+    function CircularRestrictedThreeBodyOrbit(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, μ::Real, t::Real = 0)
         F = promote_type(eltype(r), eltype(v), typeof(μ), typeof(t))
         if !(F <: AbstractFloat)
             @warn "Non-float promoted type $(string(F)) provided. Defaulting to Float64."
@@ -93,40 +148,38 @@ mutable struct CircularRestrictedThreeBodyOrbit{
         end
         state = CartesianState(F.(r),F.(v),F(t),Synodic)
         system = IncompleteCircularRestrictedThreeBodySystem(F(μ))
-        return new{F, NormalizedLengthUnit, NormalizedTimeUnit, typeof(system), typeof(state)}(state, system)
+        return new{F, NormalizedLengthUnit, NormalizedTimeUnit, typeof(state), typeof(system)}(state, system)
     end
 
-    function CircularRestrictedThreeBodyOrbit(r::AbstractVector{Unitful.Length}, v::AbstractVector{Unitful.Length}, μ::Tuple{MassParameter, MassParameter}, DU::Unitful.Length, DT::Unitful.Time, t::Unitful.Time = 0u"s"; frame = Synodic)        
-        F = promote_type(eltype(ustrip.(r)), eltype(ustrip.(v)), typeof(ustrip.(μ))..., typeof(ustrip(DU)), typeof(ustrip(DT)), typeof(ustrip(t)))
-        if !(F <: AbstractFloat)
-            @warn "Non-float promoted type $(string(F)) provided. Defaulting to Float64."
-            F = Float64
-        end
-        state = CartesianState(F.(r), F.(v), F(t), frame)
-        system = CircularRestrictedThreeBodySystem(F.(ustrip.(lengthunit(state)^3 / timeunit(state)^2, μ)), F(ustrip(lengthunit(state), DU)), F(ustrip(timeunit(state), DT)))
-        return new{F, typeof(lengthunit(state)), typeof(timeunit(state)), typeof(system), typeof(state)}(state, system)
-    end
+    function CircularRestrictedThreeBodyOrbit(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, system::CircularRestrictedThreeBodySystem, t::Real = 0; frame = Synodic)  
+        state = CartesianState(r, v, frame, t; lengthunit = lengthunit(system), timeunit = timeunit(system))   
+        F = promote_type(eltype(state), eltype(system))
+        L = lengthunit(system) |> typeof
+        T = timeunit(system)   |> typeof
 
-    function CircularRestrictedThreeBodyOrbit(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, μ::Tuple{<:Real, <:Real}, DU::Real, DT::Real, t::Real = 0; frame = Synodic, lengthunit = u"km", timeunit = u"s")        
-        F = promote_type(eltype(r), eltype(v), typeof(μ)..., typeof(DU), typeof(DT), typeof(t))
-        if !(F <: AbstractFloat)
-            @warn "Non-float promoted type $(string(F)) provided. Defaulting to Float64."
-            F = Float64
-        end
-        state = CartesianState(F.(r), F.(v), F(t), frame; lengthunit = lengthunit, timeunit = timeunit)
-        system = CircularRestrictedThreeBodySystem(F.(ustrip.(lengthunit(state)^3 / timeunit(state)^2, μ)), F(ustrip(lengthunit(state), DU)), F(ustrip(timeunit(state), DT)))
-        return new{F, typeof(lengthunit(state)), typeof(timeunit(state)), typeof(system), typeof(state)}(state, system)
-    end
+        state  = convert(CartesianState{F, L, T}, state)
+        system = convert(CircularRestrictedThreeBodySystem{F, L, T}, system)
 
-    function CircularRestrictedThreeBodyOrbit(r, v, system::CircularRestrictedThreeBodySystem, t = 0; frame = Synodic)        
-        return CircularRestrictedThreeBodyOrbit(r, v, mass_parameters(system), normalized_distance(system), normalized_duration(system), t; frame = frame)
+        return new{F, L, T, typeof(state), typeof(system)}(state, system)   
+    end
+    
+    function CircularRestrictedThreeBodyOrbit(r::AbstractVector{Unitful.Length}, v::AbstractVector{Unitful.Velocity}, system::CircularRestrictedThreeBodySystem, t::Unitful.Time; frame = Synodic)
+        state = CartesianState(r, v, frame, t)   
+        F = promote_type(eltype(state), eltype(system))
+        L = lengthunit(system) |> typeof
+        T = timeunit(system)   |> typeof
+
+        state  = convert(CartesianState{F, L, T}, state)
+        system = convert(CircularRestrictedThreeBodySystem{F, L, T}, system)
+
+        return new{F, L, T, typeof(state), typeof(system)}(state, system)   
     end
 
     function CircularRestrictedThreeBodyOrbit(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, system::IncompleteCircularRestrictedThreeBodySystem, t::Real = 0; frame = Synodic)        
         F = promote_type(eltype(r), eltype(v), eltype(system), typeof(t))
         state = NormalizedCartesianState(F.(r), F.(v), F(t), frame)
         system = IncompleteCircularRestrictedThreeBodySystem(F(normalized_mass_parameter(system)))
-        return new{F, typeof(NormalizedLengthUnit), typeof(NormalizedTimeUnit), typeof(system), typeof(state)}(state, system)
+        return new{F, typeof(NormalizedLengthUnit), typeof(NormalizedTimeUnit), typeof(state), typeof(system)}(state, system)
     end
 
 end
