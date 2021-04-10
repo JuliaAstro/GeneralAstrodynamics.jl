@@ -1,10 +1,6 @@
-"""
-Provides out-of-the-box Two-body systems in our solar system.
-"""
-module Systems
-
-using Unitful, UnitfulAngles
-using ..TwoBody
+#
+# Provides out-of-the-box Two-body systems in our solar system.
+#
 
 """
 Constant `RestrictedTwoBodySystem` for our sun!
@@ -66,4 +62,3 @@ Constant `RestrictedTwoBodySystem` for Pluto. We couldn't leave you out again!
 """
 const Pluto = RestrictedTwoBodySystem(869.6138177608749u"km^3/s^2", "Pluto")
     
-end

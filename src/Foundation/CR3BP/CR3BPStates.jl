@@ -3,17 +3,11 @@
 #
 
 """
-Abstract type for restricted three-body systems.
-"""
-abstract type RestrictedThreeBodySystem <: AbstractOrbitalSystem end
-
-
-"""
-    `const CR3BPFrames = Union{Synodic, Bodycentric}`
+    `const CR3BPFrames = Union{Synodic, Inertial}`
 
 Coordinate frames that are valid within the Circular Restricted Three-body Problem.
 """
-const CR3BPFrames = Union{Synodic, Bodycentric}
+const CR3BPFrames = Union{Synodic, Inertial}
 
 """
     `const NormalizedCartesianState{F, FR<:CR3BPFrames} = CartesianState{F, NormalizedLengthUnit, NormalizedTimeUnit, FR}`
@@ -24,6 +18,9 @@ state with no dimensioned units.
 """
 const NormalizedCartesianState{F, FR<:CR3BPFrames} = CartesianState{F, NormalizedLengthUnit, NormalizedTimeUnit, FR}
 
+"""
+Print `NormalizedCartesianState` instances to `io`.
+"""
 function Base.show(io::IO, state::NormalizedCartesianState{F,FR}) where {F,FR} 
     println(io, "  ", "Normalized ", string(FR), " Cartesian State:")
     println("")
@@ -32,6 +29,9 @@ function Base.show(io::IO, state::NormalizedCartesianState{F,FR}) where {F,FR}
     println(io, "    v = ", [state.v[1] state.v[2] state.v[3]])
 end
 
+"""
+Print `NormalizedCartesianState` instances to `io`.
+"""
 Base.show(io::IO, ::MIME"text/plain", state::NormalizedCartesianState{F,FR}) where {F,FR} = show(io, state)
 
 """
@@ -51,30 +51,35 @@ mutable struct MinimalCircularRestrictedThreeBodySystem{F} <: AbstractSystem{F, 
     μ::F
     name::String
 
-    function MinimalCircularRestrictedThreeBodySystem(μ::Real; name = "") 
+    function MinimalCircularRestrictedThreeBodySystem(μ::Real, name = "") 
         @assert μ ≤ 1//2 "Nondimensional mass parameter must be less than 0.5 by definition."
         F = typeof(μ)
         return new{F}(F(μ), name)
     end
 end
 
+"""
+Returns the normalized (nondimensional) mass parameter for the CR3BP system.
+"""
 function normalized_mass_parameter(state::MinimalCircularRestrictedThreeBodySystem)
     return state.μ
 end
 
 function mass_parameter(::MinimalCircularRestrictedThreeBodySystem)
-    throw(ArgumentError(
-        "Only a normalized mass parameter can be computed from a " * 
-        "MinimalCircularRestrictedThreeBodySystem. Try " * 
-        "`normalized_mass_parameter(sys)` instead."
-    ))
+    throw(ArgumentError("Only a normalized mass parameter can be computed from a MinimalCircularRestrictedThreeBodySystem. Try `normalized_mass_parameter(sys)` instead."))
 end
 
+"""
+Print `MinimalCircularRestrictedThreeBodySystem` instances to `io`.
+"""
 function Base.show(io::IO, sys::MinimalCircularRestrictedThreeBodySystem{F}) where {F} 
     println(io, "  Normalized Circular Restricted Three-body System", isempty(sys.name) ? "\n" : " ($(sys.name))\n")
     println(io, "    μ:    ", string(normalized_mass_parameter(sys)))
 end
 
+"""
+Print `MinimalCircularRestrictedThreeBodySystem` instances to `io`.
+"""
 Base.show(io::IO, ::MIME"text/plain", sys::MinimalCircularRestrictedThreeBodySystem{F}) where {F} = show(io, sys)
 
 """
@@ -108,9 +113,31 @@ mutable struct CircularRestrictedThreeBodySystem{F, LU, TU} <: AbstractSystem{F,
     end
 end
 
-normalized_distance_unit(sys::CircularRestrictedThreeBodySystem) = sys.DU * lengthunit(sys)
+"""
+Convert between `eltype`, `lengthunit`, and `timeunit` types for CR3BP systems.
+"""
+function Base.convert(::Type{CircularRestrictedThreeBodySystem{F, LU, TU}}, sys::CircularRestrictedThreeBodySystem) where {F, LU, TU}
+    return CircularRestrictedThreeBodySystem(
+        F.(ustrip.(LU()^3 / TU()^2, mass_parameters(sys))),
+        F.(ustrip.(LU(), normalized_length_unit(sys))),
+        F.(ustrip.(TU(), normalized_time_unit(sys))),
+        sys.name; lengthunit = LU(), timeunit = TU()
+    )
+end
+
+"""
+Returns the normalized length unit for a CR3BP system.
+"""
+normalized_length_unit(sys::CircularRestrictedThreeBodySystem) = sys.DU * lengthunit(sys)
+
+"""
+Returns the normalized time unit for a CR3BP system.
+"""
 normalized_time_unit(sys::CircularRestrictedThreeBodySystem) = sys.DT * timeunit(sys)
 
+"""
+Print `CircularRestrictedThreeBodySystem` instances to `io`.
+"""
 function Base.show(io::IO, sys::CircularRestrictedThreeBodySystem{F,LU,TU}) where {F,LU,TU} 
     println(io, "  Circular Restricted Three-body System", isempty(sys.name) ? "\n" : " ($(sys.name))\n")
     println(io, "        Length Unit:    ", sys.DU, " ", string(lengthunit(sys)))
@@ -118,13 +145,34 @@ function Base.show(io::IO, sys::CircularRestrictedThreeBodySystem{F,LU,TU}) wher
     println(io, "    Mass Parameters:    ", "(", max(sys.μ...), ", ", min(sys.μ...), ") ", string(massparameterunit(sys)))
 end
 
+"""
+Print `CircularRestrictedThreeBodySystem` instances to `io`.
+"""
 Base.show(io::IO, ::MIME"text/plain", sys::CircularRestrictedThreeBodySystem{F,LU,TU}) where {F,LU,TU} = show(io, sys)
 
+"""
+Returns the normalized (nondimensional) mass parameter for a CR3BP system.
+"""
 normalized_mass_parameter(sys::CircularRestrictedThreeBodySystem) = min(sys.μ) / reduce(+, sys.μ)
+
+"""
+Returns the dimensioned (not normalized) mass parameters for a CR3BP system.
+"""
 mass_parameters(sys::CircularRestrictedThreeBodySystem) = sys.μ .* massparameterunit(sys)
+
+"""
+Returns the primary body's mass parameter within a CR3BP system.
+"""
 primary_mass_parameter(sys::CircularRestrictedThreeBodySystem) = max(sys.μ...) * massparameterunit(sys)
+
+"""
+Returns the secondary body's mass parameter within a CR3BP system.
+"""
 secondary_mass_parameter(sys::CircularRestrictedThreeBodySystem) = min(sys.μ...) * massparameterunit(sys)
 
+"""
+Contains __all__ relevant state and system information within the CR3BP.
+"""
 mutable struct CircularRestrictedThreeBodyOrbit{
         F, LU, TU,
         C<:CartesianState{F, <:Unitful.LengthFreeUnits, <:Unitful.TimeFreeUnits, <:CR3BPFrames},
@@ -133,18 +181,6 @@ mutable struct CircularRestrictedThreeBodyOrbit{
 
     state::C
     system::S
-
-    #=
-        Several CR3BP constructors are below. We need to handle the following cases...
-           
-        Fully described system:
-        1) Unitless state vectors, full & unitless system
-        2) Unitful state vectors, full & unitful system
-
-        Minimal system:
-        3) Unitless state vectors, incomplete & unitless system
-
-    =#
 
     function CircularRestrictedThreeBodyOrbit(
             r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, 
@@ -170,33 +206,34 @@ mutable struct CircularRestrictedThreeBodyOrbit{
     function CircularRestrictedThreeBodyOrbit(
             r::AbstractVector{Unitful.Length}, v::AbstractVector{Unitful.Length}, 
             μ::Tuple{MassParameter, MassParameter}, 
-            DU::Unitful.Length, DT::Unitful.Time, t::Unitful.Time = 0u"s"; 
-            frame = Synodic)        
+            DU::Unitful.Length, t::Unitful.Time = 0u"s"; 
+            frame = Synodic, name = "")        
 
-        F = promote_type(eltype(ustrip.(r)), eltype(ustrip.(v)), typeof(ustrip.(μ))..., typeof(ustrip(DU)), typeof(ustrip(DT)), typeof(ustrip(t)))
+        F = promote_type(eltype(ustrip.(r)), eltype(ustrip.(v)), typeof(ustrip.(μ))..., typeof(ustrip(DU)), typeof(ustrip(t)))
         if !(F <: AbstractFloat)
             @warn "Non-float promoted type $(string(F)) provided. Defaulting to Float64."
             F = Float64
         end
         state = CartesianState(F.(r), F.(v), F(t), frame)
+        DT = time_scale_factor(DU, μ...)
         system = CircularRestrictedThreeBodySystem(
             F.(ustrip.(lengthunit(state)^3 / timeunit(state)^2, μ)), 
             F(ustrip(lengthunit(state), DU)), 
-            F(ustrip(timeunit(state), DT)))
+            F(ustrip(timeunit(state), DT)), 
+            name)
 
         return new{F, typeof(lengthunit(state)), typeof(timeunit(state)), typeof(state), typeof(system)}(state, system)
-
     end
 
 
-    function CircularRestrictedThreeBodyOrbit(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, μ::Real, t::Real = 0)
+    function CircularRestrictedThreeBodyOrbit(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, μ::Real, t::Real = 0; frame = Synodic, name = "")
         F = promote_type(eltype(r), eltype(v), typeof(μ), typeof(t))
         if !(F <: AbstractFloat)
             @warn "Non-float promoted type $(string(F)) provided. Defaulting to Float64."
             F = Float64
         end
-        state = CartesianState(F.(r),F.(v),F(t),Synodic; lengthunit = NormalizedLengthUnit(), timeunit = NormalizedTimeUnit())
-        system = MinimalCircularRestrictedThreeBodySystem(F(μ))
+        state = CartesianState(F.(r),F.(v),F(t),frame; lengthunit = NormalizedLengthUnit(), timeunit = NormalizedTimeUnit())
+        system = MinimalCircularRestrictedThreeBodySystem(F(μ), name)
         return new{F, NormalizedLengthUnit, NormalizedTimeUnit, typeof(state), typeof(system)}(state, system)
     end
 
@@ -233,17 +270,69 @@ mutable struct CircularRestrictedThreeBodyOrbit{
 
 end
 
-normalized_distance_unit(orb::CircularRestrictedThreeBodyOrbit) = normalized_distance_unit(orb.system)
+"""
+Convert between `eltype`, `lengthunit`, and `timeunit` types for CR3BP orbits.
+"""
+function Base.convert(::Type{CircularRestrictedThreeBodyOrbit{F, LU, TU}}, orb::CircularRestrictedThreeBodyOrbit) where {F, LU, TU}
+    return CircularRestrictedThreeBodyOrbit(
+        F.(ustrip.(LU(), position_vector(orb.state))),
+        F.(ustrip.(LU()/TU(), velocity_vector(orb.state))),
+        convert(CircularRestrictedThreeBodySystem{F, LU, TU}, orb.sys),
+        F(ustrip(TU(), epoch(orb)));
+        frame = coordinateframe(orb.state)
+    )
+end
+
+"""
+An alias for `CircularRestrictedThreeBodyOrbit`.
+"""
+const CR3BPOrbit = CircularRestrictedThreeBodyOrbit
+
+"""
+an alias for `MinimalCircularRestrictedThreeBodySystem`.
+"""
+const CR3BPSystem = CircularRestrictedThreeBodySystem
+
+"""
+Returns the normalized (nondimensional) length unit associated with a CR3BP orbit.
+"""
+normalized_length_unit(orb::CircularRestrictedThreeBodyOrbit) = normalized_distance_unit(orb.system)
+
+"""
+Returns the normalized (nondimensional) time unit associated with a CR3BP orbit.
+"""
 normalized_time_unit(orb::CircularRestrictedThreeBodyOrbit) = normalized_time_unit(orb.system)
+
+"""
+Returns the normalized (nondimensional) mass parameter associated with a CR3BP orbit.
+"""
 normalized_mass_parameter(orb::CircularRestrictedThreeBodyOrbit) = normalized_mass_parameter(orb.system)
+
+"""
+Returns the dimensioned (not normalized) mass parameters associated with a CR3BP orbit.
+"""
 mass_parameters(orb::CircularRestrictedThreeBodyOrbit) = mass_parameters(orb.system)
+
+"""
+Returns the mass parameter of the primary body within a CR3BP orbit.
+"""
 primary_mass_parameter(orb::CircularRestrictedThreeBodyOrbit) = primary_mass_parameter(orb.system)
+
+"""
+Returns the mass parameter of the primary body within a CR3BP orbit.
+"""
 secondary_mass_parameter(orb::CircularRestrictedThreeBodyOrbit) = secondary_mass_parameter(orb.system)
 
+"""
+Prints a `CircularRestrictedThreeBodyOrbit` to `io`.
+"""
 function Base.show(io::IO, orb::CircularRestrictedThreeBodyOrbit{F,LU,TU}) where {F,LU,TU} 
     println(io, "Circular Restricted Three-body Orbit\n")
     println(io, orb.state)
     println(io, orb.system)
 end
 
+"""
+Prints a `CircularRestrictedThreeBodyOrbit` to `io`.
+"""
 Base.show(io::IO, ::MIME"text/plain", orb::CircularRestrictedThreeBodyOrbit{F,LU,TU}) where {F,LU,TU} = show(io, orb)

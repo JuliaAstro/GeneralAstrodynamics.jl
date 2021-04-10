@@ -47,35 +47,35 @@ nondimensionalize(rᵢ::R, a::A) where {
 Returns nondimensional form of (`Unitful`) scalar velocity.
 """
 nondimensionalize(vᵢ::V, a::A, Tₛ::T) where {
-        V<:Velocity, A<:Unitful.Length, T<:Time
+        V<:Unitful.Velocity, A<:Unitful.Length, T<:Unitful.Time
     } = nondimensionalize_velocity(vᵢ, a, Tₛ)
 
 """
 Returns nondimensional form of (`Unitful`) velocity vector.
 """
 nondimensionalize(vᵢ::V, a::A, Tₛ::T) where {
-        U<:Velocity, V<:AbstractVector{U}, A<:Unitful.Length, T<:Time
+        U<:Unitful.Velocity, V<:AbstractVector{U}, A<:Unitful.Length, T<:Unitful.Time
     } = nondimensionalize_velocity(vᵢ, a, Tₛ)
 
 """
 Returns nondimensional form of (`Unitful`) velocity vector.
 """
 nondimensionalize(vᵢ::V, a::A, μ₁::U1, μ₂::U2) where {
-        U<:Velocity, V<:AbstractVector{U}, A<:Unitful.Length, U1<:MassParameter, U2<:MassParameter
+        U<:Unitful.Velocity, V<:AbstractVector{U}, A<:Unitful.Length, U1<:MassParameter, U2<:MassParameter
     } = nondimensionalize_velocity(vᵢ, a, time_scale_factor(a, μ₁, μ₂))
 
 """
 Returns nondimensional form of (`Unitful`) time duration.
 """
 nondimensionalize(t::T1, Tₛ::T2) where {
-        T1<:Time, T2<:Time
+        T1<:Unitful.Time, T2<:Unitful.Time
     } = upreferred(t / Tₛ)
 
 """
 Returns nondimensional form of (`Unitful`) time duration.
 """
 nondimensionalize(t::T1, a::A, μ₁::U1, μ₂::U2) where {
-        T1<:Time, A<:Unitful.Length, U1<:MassParameter, U2<:MassParameter
+        T1<:Unitful.Time, A<:Unitful.Length, U1<:MassParameter, U2<:MassParameter
     } = nondimensionalize(t, time_scale_factor(a, μ₁, μ₂))
 
 """
@@ -90,8 +90,8 @@ Returns nondimensional Circular Restricted Three-body State.
 """
 function nondimensionalize(r₃::R, v₃::V, Δt::T, μ₁::U1, μ₂::U2, a::A) where {
         RT<:Unitful.Length, R<:AbstractVector{RT},
-        VT<:Velocity, V<:AbstractVector{VT},
-        T<:Time, U1<:MassParameter, U2<:MassParameter,
+        VT<:Unitful.Velocity, V<:AbstractVector{VT},
+        T<:Unitful.Time, U1<:MassParameter, U2<:MassParameter,
         A<:Unitful.Length
     }
 
@@ -102,7 +102,6 @@ function nondimensionalize(r₃::R, v₃::V, Δt::T, μ₁::U1, μ₂::U2, a::A)
            nondimensionalize(μ₁, μ₂)
 
 end
-
 
 """
 Returns dimensional length units.
@@ -135,14 +134,14 @@ redimensionalize(rᵢ::R, a::A) where {
 Returns dimensional (inertial) form of (`Unitful`) velocity vector.
 """
 redimensionalize(vᵢ::U, a::A, Tₛ::T) where {
-        U<:Real, A<:Unitful.Length, T<:Time
+        U<:Real, A<:Unitful.Length, T<:Unitful.Time
     } = redimensionalize_velocity(vᵢ, a, Tₛ)
 
 """
 Returns dimensional (inertial) form of (`Unitful`) time duration.
 """
 redimensionalize(t::T1, Tₛ::T2) where {
-        T1<:Real, T2<:Time
+        T1<:Real, T2<:Unitful.Time
     } = redimensionalize_time(t, Tₛ)
 
 """
@@ -186,7 +185,7 @@ end
 """
 Returns the position and velocity vectors in the synodic (rotating) reference frame.
 """
-synodic(rᵢ, vᵢ, a, Tₛ) =  nondimensionalize(rᵢ, a), nondimensionalize(vᵢ, a, Tₛ)
+normalize(rᵢ, vᵢ, a, Tₛ) =  nondimensionalize(rᵢ, a), nondimensionalize(vᵢ, a, Tₛ)
 
 """
 Returns the lagrange points for a CR3BP system.
@@ -243,5 +242,3 @@ function accel(rₛ, vₛ, μ)
     accel!(aₛ, rₛ, vₛ, μ)
     return aₛ
 end
-
-SunEarth = CircularRestrictedThreeBodySystem(TwoBody.mass_parameter.((TwoBody.Systems.Sun, TwoBody.Systems.Earth)), 1.0u"AU", ThreeBody.time_scale_factor(1.0u"AU", TwoBody.mass_parameter.((TwoBody.Systems.Sun, TwoBody.Systems.Earth))...), "Sun-Earth")

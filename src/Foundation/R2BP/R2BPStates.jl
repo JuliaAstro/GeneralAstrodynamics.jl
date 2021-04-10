@@ -1,7 +1,5 @@
 #
-#   RestrictedTwoBodyOrbits.jl
-#
-#   Describes Two Body Orbits through Cartesian coordinates and Orbital Elements.
+# Describes Restricted Two-body orbits through Cartesian coordinates and Orbital Elements.
 # 
 
 """
@@ -91,7 +89,7 @@ end
 """
 Struct for storing `Keplerian` states.
 """
-struct KeplerianState{F, LU, TU, AU} <: AbstractState{F, LU, TU, Bodycentric} where {AU<:Unitful.Units{U, NoDims, nothing} where U}
+struct KeplerianState{F, LU, TU, AU} <: AbstractState{F, LU, TU, Inertial} where {AU<:Unitful.Units{U, NoDims, nothing} where U}
     t::F
     e::F
     a::F
@@ -130,26 +128,55 @@ struct KeplerianState{F, LU, TU, AU} <: AbstractState{F, LU, TU, Bodycentric} wh
 
 end
 
+"""
+Returns `Unitful` Restricted Two-body orbit eccentricity.
+"""
 eccentricity(kep::KeplerianState) = kep.e
-semimajor_axis(kep::KeplerianState) = kep.a * lengthunit(kep)
-inclination(kep::KeplerianState) = kep.i * angularunit(kep)
-RAAN(kep::KeplerianState) = kep.Ω * angularunit(kep)
-argument_of_periapsis(kep::KeplerianState) = kep.ω * angularunit(kep)
-true_anomoly(kep::KeplerianState) = kep.ν * angularunit(kep)
-
-
-AstrodynamicsCore.epoch(kep::KeplerianState) = kep.t * timeunit(kep)
 
 """
-Returns the dimmensionless unit associated with the Keplerian state.
+Returns `Unitful` Restricted Two-body orbit semimajor axis.
+"""
+semimajor_axis(kep::KeplerianState) = kep.a * lengthunit(kep)
+
+"""
+Returns `Unitful` Restricted Two-body orbit inclination.
+"""
+inclination(kep::KeplerianState) = kep.i * angularunit(kep)
+
+"""
+Returns `Unitful` Restricted Two-body orbit right ascension of the ascending node (RAAN).
+"""
+RAAN(kep::KeplerianState) = kep.Ω * angularunit(kep)
+
+"""
+Returns `Unitful` Restricted Two-body orbit argument of periapsis.
+"""
+argument_of_periapsis(kep::KeplerianState) = kep.ω * angularunit(kep)
+
+"""
+Returns `Unitful` Restricted Two-body orbit true anomoly.
+"""
+true_anomoly(kep::KeplerianState) = kep.ν * angularunit(kep)
+
+"""
+Returns the timepoint associated with a `KeplerianState`.
+"""
+epoch(kep::KeplerianState) = kep.t * timeunit(kep)
+
+"""
+Returns the dimmensionless angular unit associated with the Keplerian state.
 """
 angularunit(::KeplerianState{F, LU, TU, AU}) where {F, LU, TU, AU} = AU()
 
 """
 An orbital state within the Restricted Two-body Problem.
 """
-const BodycentricState{F,LU,TU} = Union{CartesianState{F, LU, TU, Bodycentric}, KeplerianState{F, LU, TU, <:Unitful.DimensionlessUnits}} where {F,LU,TU}
-struct RestrictedTwoBodyOrbit{C<:AbstractConic, F, LU, TU, T<:BodycentricState{F,LU,TU}} <: AbstractOrbit{F, LU, TU} 
+const R2BPState{F,LU,TU} = Union{CartesianState{F, LU, TU, Inertial}, KeplerianState{F, LU, TU, <:Unitful.DimensionlessUnits}} where {F,LU,TU}
+
+"""
+A structure which contains __all__ relevant values for Restricted Two-body Problem orbits.
+"""
+struct RestrictedTwoBodyOrbit{C<:AbstractConic, F, LU, TU, T<:R2BPState{F,LU,TU}} <: AbstractOrbit{F, LU, TU} 
     state::T
     system::RestrictedTwoBodySystem{F,LU,TU}
     
@@ -159,7 +186,7 @@ struct RestrictedTwoBodyOrbit{C<:AbstractConic, F, LU, TU, T<:BodycentricState{F
             @warn "Promoted type $(string(F)) is not of type float. Defaulting to Float64."
             F = Float64
         end
-        state = CartesianState(r, v, epoch, Bodycentric)
+        state = CartesianState(r, v, epoch, Inertial)
         LU = lengthunit(state)
         TU   = timeunit(state)
         newbody = RestrictedTwoBodySystem(F(ustrip(LU^3 / TU^2, mass_parameter(body))), body.name; lengthunit = LU, timeunit = TU)
@@ -200,6 +227,10 @@ struct RestrictedTwoBodyOrbit{C<:AbstractConic, F, LU, TU, T<:BodycentricState{F
 
 end
 
+
+"""
+Convert between `eltype`, `lengthunit`, and `timeunit` values for `KeplerianStates`.
+"""
 function Base.convert(::Type{KeplerianState{F,LU,TU,AU}}, kep::KeplerianState) where {F,LU,TU,AU}
     e = F(eccentricity(kep))
     a = F(ustrip(LU(), semimajor_axis(kep)))
@@ -212,13 +243,21 @@ function Base.convert(::Type{KeplerianState{F,LU,TU,AU}}, kep::KeplerianState) w
 end
 
 """
-Alias for `RestrictedTwoBodyOrbit`.
+`RestrictedTwoBodyOrbit` instanes are likely the most commonly used feature
+of this package. To accomadate this, `Orbit` is an alias for common 
+`RestrictedTwoBodyOrbit` constructers.
 """
-Orbit(r, v, body) = CartesianOrbit(r, v, body)
-Orbit(e, a, i, Ω, ω, ν, body) = KeplerianOrbit(e, a, i, Ω, ω, ν, body)
+Orbit(r, v, body, t = 0) = CartesianOrbit(r, v, body, t)
 
 """
-Custom display for KeplerianState instances.
+`RestrictedTwoBodyOrbit` instanes are likely the most commonly used feature
+of this package. To accomadate this, `Orbit` is an alias for common 
+`RestrictedTwoBodyOrbit` constructers.
+"""
+Orbit(e, a, i, Ω, ω, ν, body, t = 0) = KeplerianOrbit(e, a, i, Ω, ω, ν, body, t)
+
+"""
+Print `KeplerianState` instances to `io`.
 """
 function Base.show(io::IO, orbit::KeplerianState{F,LU,TU,AU}) where {F,LU,TU,AU}
 
@@ -240,7 +279,7 @@ function Base.show(io::IO, orbit::KeplerianState{F,LU,TU,AU}) where {F,LU,TU,AU}
 end
 
 """
-Custom display for `RestrictedTwoBodyOrbit` instances.
+Print `RestrictedTwoBodyOrbit` instances to `io`.
 """
 function Base.show(io::IO, orbit::RestrictedTwoBodyOrbit{C, F, T}) where {C, F, T}
     print(io, string(C), " Restricted Two-body Orbit")
@@ -251,16 +290,52 @@ function Base.show(io::IO, orbit::RestrictedTwoBodyOrbit{C, F, T}) where {C, F, 
     show(io, orbit.system)
 end
 
-# Constants
+"""
+An alias for `RestrictedTwoBodyOrbit`.
+"""
+const R2BPOrbit = RestrictedTwoBodyOrbit
 
-const R2BP = RestrictedTwoBodyOrbit
+"""
+An alias for `RestrictedTwoBodySystem`.
+"""
+const R2BPSystem = RestrictedTwoBodySystem
 
+"""
+An alias for `RestrictedTwoBodyOrbit` instances with `KeplerianState` values.
+"""
 const KeplerianOrbit{C,F,LU,TU} = RestrictedTwoBodyOrbit{C, F, LU, TU, K} where {K <: KeplerianState{F, LU, TU, AU} where AU}
-const CartesianOrbit{C,F,LU,TU} = RestrictedTwoBodyOrbit{C, F, LU, TU, R} where {R <: CartesianState{F, LU, TU, Bodycentric}}
 
+"""
+An alias for `RestrictedTwoBodyOrbit` instances with `CartesianState` values.
+"""
+const CartesianOrbit{C,F,LU,TU} = RestrictedTwoBodyOrbit{C, F, LU, TU, R} where {R <: CartesianState{F, LU, TU, Inertial}}
+
+"""
+Alias for a `RestrictedTwoBodyOrbit` constructor with `KeplerianState` values.
+"""
 KeplerianOrbit(e, a, i, Ω, ω, ν, system, epoch) = RestrictedTwoBodyOrbit(e, a, i, Ω, ω, ν, system, epoch)
+
+"""
+Alias for a `RestrictedTwoBodyOrbit` constructor with `CartesianState` values.
+"""
 CartesianOrbit(r, v, system, epoch) = RestrictedTwoBodyOrbit(r, v, system, epoch)
+
+"""
+Alias for a `RestrictedTwoBodyOrbit` constructor with `KeplerianState` values.
+"""
 KeplerianOrbit(orbit::CartesianOrbit) = KeplerianOrbit(keplerian(position_vector(orbit), velocity_vector(orbit), orbit.system)..., orbit.system, epoch(orbit.state))
+
+"""
+Alias for a `RestrictedTwoBodyOrbit` constructor with `CartesianState` values.
+"""
 CartesianOrbit(orbit::KeplerianOrbit) = CartesianOrbit(cartesian(eccentricity(orbit), semimajor_axis(orbit), inclination(orbit), RAAN(orbit), argument_of_periapsis(orbit), true_anomoly(orbit), mass_parameter(orbit.system))..., orbit.system, epoch(orbit.state))
+
+"""
+Alias for a `RestrictedTwoBodyOrbit` constructor with `KeplerianState` values.
+"""
 KeplerianOrbit(state::KeplerianState, system) = RestrictedTwoBodyOrbit(state, system)
+
+"""
+Alias for a `RestrictedTwoBodyOrbit` constructor with `CartesianState` values.
+"""
 CartesianOrbit(state::CartesianOrbit, system) = RestrictedTwoBodyOrbit(state, system)
