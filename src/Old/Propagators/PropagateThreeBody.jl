@@ -20,7 +20,7 @@ end
 Uses OrdinaryDiffEq solvers to propagate `sys` Δt into the future.
 All keyword arguments are passed directly to OrdinaryDiffEq solvers.
 """
-function propagate(sys::NondimensionalThreeBodyState, Δt::T = sys.Δt; kwargs...) where T<:Real
+function propagate(r, v, μ, Δt; kwargs...)
 
     # Referencing:
     # [1] https://diffeq.sciml.ai/v4.0/tutorials/ode_example.html
@@ -32,31 +32,13 @@ function propagate(sys::NondimensionalThreeBodyState, Δt::T = sys.Δt; kwargs..
     options = merge(defaults, kwargs)
 
     # Initial conditions
-    u₀ = ComponentArray((rₛ=sys.r, vₛ=sys.v))
+    u₀ = ComponentArray((rₛ=r, vₛ=v))
     ts = (zero(Δt), Δt)
-    p  = ComponentArray((μ=sys.μ, x₁=-sys.μ, x₂=1-sys.μ))
+    p  = ComponentArray((μ=μ, x₁=-μ, x₂=1-μ))
 
     # Numerically integrate!
     sols = solve(ODEProblem(RestrictedThreeBodyTic!, u₀, ts, p); options...)
 
     # Return PropagationResult structure
-    return Trajectory(
-        map(step->NondimensionalThreeBodyState(step.rₛ, step.vₛ, sys.μ, sys.Δt, sys.DU, sys.DT), sols.u),
-        sols.t,
-        sols.retcode
-    )
-
-end
-
-"""
-Uses OrdinaryDiffEq solvers to propagate `sys` Δt into the future.
-All keyword arguments are passed directly to OrdinaryDiffEq solvers.
-"""
-function propagate(sys::ThreeBodyState, Δt::Unitful.Time{<:Real} = sys.Δt)
-    traj = propagate(nondimensionalize(sys), nondimensionalize(Δt, sys.a, sys.μ₁, sys.μ₂))
-    return Trajectory(
-        redimensionalize.(traj.t, sys.a, sys.μ₁, sys.μ₂),
-        redimensionalize.(traj.step),
-        traj.retcode
-    )
+    return sols
 end

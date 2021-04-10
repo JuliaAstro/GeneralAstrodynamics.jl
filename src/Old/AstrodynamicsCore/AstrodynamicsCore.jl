@@ -7,7 +7,9 @@ module AstrodynamicsCore
 export  AbstractBody, AbstractOrbitalSystem, AbstractUnitfulStructure, AbstractState, AbstractSystem, AbstractOrbit, AbstractTrajectory, CartesianState,
         getindex, setindex!, lengthunit, timeunit, velocityunit, massparameterunit, coordinateframe,
         position_vector, velocity_vector, scalar_position, scalar_velocity,
-        AbstractFrame, Bodycentric, Synodic, Perifocal, size, length, convert, epoch
+        AbstractFrame, Bodycentric, Synodic, Perifocal, size, length, convert, epoch, eltype
+
+export NormalizedLengthUnit, NormalizedTimeUnit
 
 using Reexport
 @reexport using Unitful, UnitfulAngles, UnitfulAstro
@@ -68,9 +70,8 @@ mutable struct CartesianState{F, LU, TU, FR} <: AbstractState{F, LU, TU, FR}
     v::SubArray{F, 1, MVector{6, F}, Tuple{UnitRange{Int64}}, true}
     rv::MVector{6,F}
 
-
     function CartesianState(r::AbstractVector{R}, v::AbstractVector{V}, epoch::E=0, frame=Bodycentric; lengthunit=u"km", timeunit=u"s") where {R<:Real, V<:Real, E<:Real}
-        F  = promote_type(R, V, typeof(epoch))
+        F  = promote_type(R, V, E)
         if !(F <: AbstractFloat)
             @warn "Type provided ($(string(F))) is not a float: defaulting to Float64."
             F = Float64
@@ -82,7 +83,7 @@ mutable struct CartesianState{F, LU, TU, FR} <: AbstractState{F, LU, TU, FR}
         return new{F, typeof(lengthunit), typeof(timeunit), frame}(F(epoch), pos, vel, rv)
     end
 
-    function CartesianState(r::AbstractVector{R}, v::AbstractVector{V}, epoch::Unitful.Time=0u"s", frame=Bodycentric) where {R<:Unitful.Length, V<:Unitful.Velocity}
+    function CartesianState(r::AbstractVector{R}, v::AbstractVector{V}, epoch::Unitful.Time = 0u"s", frame=Bodycentric) where {R<:Unitful.Length, V<:Unitful.Velocity}
 
         # Get ready to commit a crime... we need the Time unit provided in velocity quantity V
 
@@ -103,7 +104,7 @@ mutable struct CartesianState{F, LU, TU, FR} <: AbstractState{F, LU, TU, FR}
     end
 
     function CartesianState(cart::CartesianState{F,LU,TU,FR}) where {F,LU,TU,FR}
-        return CartesianState(cart.r,  cart.v, cart.t, FR; lengthunit = LU, timeunit = TU)
+        return CartesianState(cart.r,  cart.v, cart.t, FR; lengthunit = LU(), timeunit = TU())
     end
 
     function CartesianState(arr::StaticVector{6})
@@ -124,6 +125,12 @@ function Base.convert(::Type{CartesianState{F,LU,TU}}, cart::CartesianState) whe
 end
 
 epoch(cart::CartesianState) = cart.t * timeunit(cart)
+
+
+const NormalizedLengthUnit   = Unitful.FreeUnits{(), Unitful.𝐋, nothing}
+const NormalizedTimeUnit     = Unitful.FreeUnits{(), Unitful.𝐓, nothing}
+
+Base.eltype(::AbstractUnitfulStructure{F}) where F = F
 
 """
 Returns the `Unitful.Length` unit associated with the state.
