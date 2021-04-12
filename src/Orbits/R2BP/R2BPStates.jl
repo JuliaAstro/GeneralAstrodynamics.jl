@@ -253,14 +253,29 @@ end
 of this package. To accomadate this, `Orbit` is an alias for common 
 `RestrictedTwoBodyOrbit` constructers.
 """
-Orbit(r, v, body, t = 0) = CartesianOrbit(r, v, body, t)
+Orbit(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, body::RestrictedTwoBodySystem, t = 0) = CartesianOrbit(r, v, body, t)
 
 """
 `RestrictedTwoBodyOrbit` instanes are likely the most commonly used feature
 of this package. To accomadate this, `Orbit` is an alias for common 
 `RestrictedTwoBodyOrbit` constructers.
 """
-Orbit(e, a, i, Ω, ω, ν, body, t = 0) = KeplerianOrbit(e, a, i, Ω, ω, ν, body, t)
+Orbit(r::AbstractVector{<:Unitful.Length}, v::AbstractVector{<:Unitful.Velocity}, body::RestrictedTwoBodySystem, t = 0u"s") = CartesianOrbit(r, v, body, t)
+
+
+"""
+`RestrictedTwoBodyOrbit` instanes are likely the most commonly used feature
+of this package. To accomadate this, `Orbit` is an alias for common 
+`RestrictedTwoBodyOrbit` constructers.
+"""
+Orbit(e::Real, a::Real, i::Real, Ω::Real, ω::Real, ν::Real, body::RestrictedTwoBodySystem, t = 0) = KeplerianOrbit(e, a, i, Ω, ω, ν, body, t)
+
+"""
+`RestrictedTwoBodyOrbit` instanes are likely the most commonly used feature
+of this package. To accomadate this, `Orbit` is an alias for common 
+`RestrictedTwoBodyOrbit` constructers.
+"""
+Orbit(e::Real, a::Unitful.Length, i::Unitful.DimensionlessQuantity, Ω::Unitful.DimensionlessQuantity, ω::Unitful.DimensionlessQuantity, ν::Unitful.DimensionlessQuantity, body::RestrictedTwoBodySystem, t = 0u"s") = KeplerianOrbit(e, a, i, Ω, ω, ν, body, t)
 
 """
 Print `KeplerianState` instances to `io`.
