@@ -71,7 +71,7 @@ mutable struct CartesianState{F, LU, TU, FR} <: AbstractState{F, LU, TU, FR}
     end
 
     function CartesianState(r::AbstractVector{R}, v::AbstractVector{V}, 
-                            epoch::Unitful.Time = 0u"s", frame=Bodycentric) where {R<:Unitful.Length, V<:Unitful.Velocity}
+                            epoch::T = 0u"s", frame=Bodycentric) where {R<:Unitful.Length, V<:Unitful.Velocity, T<:Unitful.Time}
 
         # Get ready to commit a crime... we need the Time unit provided in velocity quantity V
 
@@ -214,3 +214,13 @@ const Trajectory{T<:AbstractOrbit} = Vector{T}
 Prints a `Trajectory` instance to `io`.
 """
 Base.show(io::IO, ::MIME"text/plain", traj::Trajectory) = show(io,traj)
+
+"""
+An alias for `CartesianState` instances with `Synodic` coordinate frames.
+"""
+const SynodicCartesianState{F, LU, TU} = CartesianState{F, LU, TU, Synodic}
+
+"""
+An alias for `CarteisianState` instances with `Inertial` coordinate frames.
+"""
+const InertialCartesianState{F, LU, TU} = CartesianState{F, LU, TU, Inertial}
