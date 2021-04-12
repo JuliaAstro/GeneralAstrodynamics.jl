@@ -7,9 +7,8 @@ Dynamics for ideal Circular Restricted Three-body numerical integration.
 Compatable with `DifferentialEquations` solvers!
 """
 function CR3BPTic!(∂u, u, p, t=0)
-    # Cartesian state
-    ∂u[1:3] .=  u[4:6]
-    accel!(∂u[4:6], u[1:3], u[4:6], p.μ)
+    ∂u.r =  u.v
+    accel!(∂u.v, u.r, u.v, p.μ)
     return nothing
 end
 
@@ -192,24 +191,12 @@ function state_transition_dynamics(μ, r)
 
 end
 
-
 """
 Returns the Monodromy Matrix for a Halo orbit.
 """
-function monodromy(orbit::NormalizedSynodicSTMCR3BPOrbit, T; reltol = 1e-14, abstol = 1e-14, atol = 1e-8)
-    problem = ODEProblem(orbit, T)
-
-    integrator = init(problem, Vern9(); reltol=reltol, abstol=abstol)
-    solve!(integrator)
-
-    Matrix(integrator.u[7:end]...) |> transpose |> Matrix
-end
-
-"""
-Returns the Monodromy Matrix for a Halo orbit.
-"""
-function monodromy(orbit::NormalizedSynodicCR3BPOrbit, T; reltol = 1e-14, abstol = 1e-14, atol = 1e-8)
-    problem = ODEProblem(NormalizedSynodicSTMCR3BPOrbit(orbit), T)
+function monodromy(orbit::CircularRestrictedThreeBodyOrbit, T; reltol = 1e-14, abstol = 1e-14, atol = 1e-8)
+    orb = (NormalizedSynodicSTMCR3BPOrbit ∘ normalize ∘ synodic)(orbit)
+    problem = ODEProblem(orb, T)
 
     integrator = init(problem, Vern9(); reltol=reltol, abstol=abstol)
     solve!(integrator)
@@ -221,12 +208,13 @@ end
 Returns true if a `RestrictedThreeBodySystem` is numerically periodic.
 """
 function isperiodic(orbit::CircularRestrictedThreeBodyOrbit, T; reltol = 1e-14, abstol = 1e-14, atol = 1e-8)
+    orb = (normalize ∘ synodic)(orbit)
     problem = ODEProblem(orbit, T)
 
     integrator = init(problem, Vern9(); reltol=reltol, abstol=abstol)
     solve!(integrator)
         
-    return isapprox.((orbit.r,orbit.v), (integrator.u.r, integrator.u.v); atol = atol)
+    return all((isapprox.(orbit.state.r, integrator.u.r; atol = atol)..., isapprox(orbit.state.v, integrator.u.v; atol = atol)...))
 end
 
 
@@ -331,15 +319,6 @@ function halo(sys::CircularRestrictedThreeBodySystem; kwargs...)
                                              redimensionalize_velocity.(v, normalized_length_unit(sys), normalized_time_unit(sys)),
                                              sys) |> normalize
     return orbit, T
-end
-
-"""
-A wrapper for `monodromy`.
-"""
-function monodromy(orb::CircularRestrictedThreeBodyOrbit, period::Real)
-    state = (NormalizedSynodicSTMCR3BPOrbit ∘ synodic ∘ normalize)(orb)
-    final = propagate(orbit, period) |> last
-    return final.state.stm
 end
 
 
