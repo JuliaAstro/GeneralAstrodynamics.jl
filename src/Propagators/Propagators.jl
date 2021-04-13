@@ -19,7 +19,7 @@ using DifferentialEquations
 
 using ..Orbits
 
-include("R2BPPropagators.jl")
-include("CR3BPPropagators.jl")
+include("R2BP/R2BPPropagators.jl")
+include("CR3BP/CR3BPPropagators.jl")
 
 end

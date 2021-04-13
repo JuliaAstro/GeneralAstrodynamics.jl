@@ -394,10 +394,10 @@ Convert between `eltype`, `lengthunit`, and `timeunit` types for CR3BP orbits.
 """
 function Base.convert(::Type{CircularRestrictedThreeBodyOrbit{F, LU, TU}}, orb::CircularRestrictedThreeBodyOrbit) where {F, LU, TU}
     return CircularRestrictedThreeBodyOrbit(
-        F.(ustrip.(LU(), position_vector(orb.state))),
-        F.(ustrip.(LU()/TU(), velocity_vector(orb.state))),
-        convert(CircularRestrictedThreeBodySystem{F, LU, TU}, orb.sys),
-        F(ustrip(TU(), epoch(orb)));
+        F.(position_vector(orb.state)),
+        F.(velocity_vector(orb.state)),
+        convert(CircularRestrictedThreeBodySystem{F, LU, TU}, orb.system),
+        F(epoch(orb.state));
         frame = coordinateframe(orb.state)
     )
 end
