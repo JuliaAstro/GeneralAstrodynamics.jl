@@ -6,6 +6,8 @@ module Propagators
 
 # Module Exports
 export propagate, halo, monodromy, isperiodic, potential_energy_hessian
+export stable_eigenvector, unstable_eigenvector, manifold
+export stable_manifold, unstable_manifold
 export ODEProblem
 export R2BPTic!, CR3BPTic!, CR3BPSTMTic!
 
@@ -21,5 +23,6 @@ using ..Orbits
 
 include("R2BP/R2BPPropagators.jl")
 include("CR3BP/CR3BPPropagators.jl")
+include("CR3BP/Halos.jl")
 
 end

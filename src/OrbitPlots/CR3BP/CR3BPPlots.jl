@@ -5,7 +5,7 @@
 """
 Plot the orbital positions of a CR3BP orbit.
 """
-function plotpositions(traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}; lengthunit = lengthunit(first(traj).system), kwargs...)
+function plotpositions(traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}; lengthunit = lengthunit(first(traj).system), exclude_z = false, kwargs...)
 
     all_true_or_false(vec) = all(vec) || all(map(v->!v, vec))
     @assert all_true_or_false(map(orbit -> coordinateframe(orbit.state), traj) isa Union{Synodic, Inertial}) "All coordinate frames within a trajectory must be identical for plotting!"
@@ -35,14 +35,17 @@ function plotpositions(traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}; len
 
     options = merge(defaults, kwargs)
 
-    plot(pos[:,1], pos[:,2], pos[:,3]; options...)
-
+    if !exclude_z
+        return plot(pos[:,1], pos[:,2], pos[:,3]; options...)
+    else 
+        return plot(pos[:,1], pos[:,2]; options...)
+    end
 end
 
 """
 Plot the orbital positions of a CR3BP orbit to the last plot.
 """
-function plotpositions!(traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}; lengthunit = lengthunit(first(traj).system), kwargs...)
+function plotpositions!(fig, traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}; lengthunit = lengthunit(first(traj).system), exclude_z = false, kwargs...)
 
     all_true_or_false(vec) = all(vec) || all(map(v->!v, vec))
     @assert all_true_or_false(map(orbit -> coordinateframe(orbit.state), traj) isa Union{Synodic, Inertial}) "All coordinate frames within a trajectory must be identical for plotting!"
@@ -64,14 +67,17 @@ function plotpositions!(traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}; le
     defaults = (; label = :none)
     options = merge(defaults, kwargs)
 
-    plot!(pos[:,1], pos[:,2], pos[:,3]; options...)
-
+    if !exclude_z
+        return plot!(fig, pos[:,1], pos[:,2], pos[:,3]; options...)
+    else 
+        return plot!(fig, pos[:,1], pos[:,2]; options...)
+    end
 end
 
 """
 Plot the orbital velocities of a CR3BP orbit.
 """
-function plotvelocities(traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}; velocityunit = velocityunit(first(traj).system), kwargs...)
+function plotvelocities(traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}; velocityunit = velocityunit(first(traj).system), exclude_z = false, kwargs...)
 
     all_true_or_false(vec) = all(vec) || all(map(v->!v, vec))
     @assert all_true_or_false(map(orbit -> coordinateframe(orbit.state), traj) isa Union{Synodic, Inertial}) "All coordinate frames within a trajectory must be identical for plotting!"
@@ -101,14 +107,17 @@ function plotvelocities(traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}; ve
 
     options = merge(defaults, kwargs)
 
-    plot(vel[:,1], vel[:,2], vel[:,3]; options...)
-
+    if !exclude_z
+        return plot(vel[:,1], vel[:,2], vel[:,3]; options...)
+    else 
+        return plot(vel[:,1], vel[:,2]; vel...)
+    end
 end
 
 """
 Plot the orbital velocities of a CR3BP orbit to the last plot.
 """
-function plotvelocities!(traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}; velocityunit = velocityunit(first(traj).system), kwargs...)
+function plotvelocities!(fig, traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}; velocityunit = velocityunit(first(traj).system), exclude_z = false, kwargs...)
 
     all_true_or_false(vec) = all(vec) || all(map(v->!v, vec))
     @assert all_true_or_false(map(orbit -> coordinateframe(orbit.state), traj) isa Union{Synodic, Inertial}) "All coordinate frames within a trajectory must be identical for plotting!"
@@ -130,6 +139,9 @@ function plotvelocities!(traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}; v
     defaults = (; label = :none)
     options = merge(defaults, kwargs)
 
-    plot(vel[:,1], vel[:,2], vel[:,3]; options...)
-
+    if !exclude_z
+        return plot!(fig, vel[:,1], vel[:,2], vel[:,3]; options...)
+    else 
+        return plot!(fig, vel[:,1], vel[:,2]; vel...)
+    end
 end
