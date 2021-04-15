@@ -10,4 +10,4 @@ const SunEarth = CircularRestrictedThreeBodySystem(mass_parameter.((Sun, Earth))
 """
 The Earth-Moon CR3BP system.
 """
-const EarthMoon = CircularRestrictedThreeBodySystem(mass_parameter.((Earth, Moon)), 384400u"km")
+const EarthMoon = CircularRestrictedThreeBodySystem(mass_parameter.((Earth, Moon)), 384400u"km", time_scale_factor(384400u"km", mass_parameter.((Earth, Moon))...), "Earth-Moon")

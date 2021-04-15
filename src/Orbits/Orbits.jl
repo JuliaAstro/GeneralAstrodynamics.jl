@@ -39,10 +39,12 @@ export time_scale_factor, nondimensionalize, redimensionalize
 export nondimensionalize_length, nondimensionalize_time, nondimensionalize_velocity
 export redimensionalize_length, redimensionalize_time, redimensionalize_velocity
 export normalize, lagrange, inertial, synodic, accel, accel!, analyticalhalo
+export potential_energy, jacobi_constant, zerovelocity_curves
 export SunEarth, EarthMoon
 
 # Module Dependencies
 using Reexport
+using Contour
 using StaticArrays
 using LinearAlgebra
 using Roots: find_zero

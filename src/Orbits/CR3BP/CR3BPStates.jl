@@ -390,14 +390,24 @@ than an explicit `CircularRestrictedThreeBodyOrbit` constructor.
 Orbit(r, v, sys::CircularRestrictedThreeBodySystem; include_stm = false) = include_stm ? CircularRestrictedThreeBodyOrbit(SynodicCartesianSTMState(r, v), sys) : CircularRestrictedThreeBodyOrbit(r, v, sys)
 
 """
+Returns the position vector of the CR3BP orbit.
+"""
+position_vector(orb::CircularRestrictedThreeBodyOrbit) = position_vector(orb.state)
+
+"""
+Returns the velocity vector of the CR3BP orbit.
+"""
+velocity_vector(orb::CircularRestrictedThreeBodyOrbit) = velocity_vector(orb.state)
+
+"""
 Convert between `eltype`, `lengthunit`, and `timeunit` types for CR3BP orbits.
 """
 function Base.convert(::Type{CircularRestrictedThreeBodyOrbit{F, LU, TU}}, orb::CircularRestrictedThreeBodyOrbit) where {F, LU, TU}
     return CircularRestrictedThreeBodyOrbit(
-        F.(ustrip.(LU(), position_vector(orb.state))),
-        F.(ustrip.(LU()/TU(), velocity_vector(orb.state))),
-        convert(CircularRestrictedThreeBodySystem{F, LU, TU}, orb.sys),
-        F(ustrip(TU(), epoch(orb)));
+        F.(position_vector(orb.state)),
+        F.(velocity_vector(orb.state)),
+        convert(CircularRestrictedThreeBodySystem{F, LU, TU}, orb.system),
+        F(epoch(orb.state));
         frame = coordinateframe(orb.state)
     )
 end
@@ -437,7 +447,7 @@ const CR3BPSystem = CircularRestrictedThreeBodySystem
 """
 Returns the normalized (nondimensional) length unit associated with a CR3BP orbit.
 """
-normalized_length_unit(orb::CircularRestrictedThreeBodyOrbit) = normalized_distance_unit(orb.system)
+normalized_length_unit(orb::CircularRestrictedThreeBodyOrbit) = normalized_length_unit(orb.system)
 
 """
 Returns the normalized (nondimensional) time unit associated with a CR3BP orbit.
@@ -482,3 +492,12 @@ Base.show(io::IO, ::MIME"text/plain", orb::CircularRestrictedThreeBodyOrbit{F,LU
 Prints a `Trajectory` instance to `io`.
 """
 Base.show(io::IO, traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}) = println(io, "Circular Restricted Three-body trajectory with ", length(traj), " steps")
+
+"""
+Returns true if both systems are equal.
+"""
+function Base.isequal(c1::CircularRestrictedThreeBodySystem, c2::CircularRestrictedThreeBodySystem)
+    return normalized_length_unit(c1)    == normalized_length_unit(c2) &&
+           normalized_time_unit(c1)      == normalized_time_unit(c2)   &&
+           normalized_mass_parameter(c1) == normalized_mass_parameter(c2)
+end

@@ -482,3 +482,55 @@ function analyticalhalo(μ; Az=0.00, ϕ=0.0, steps=1,
     return hcat(x, y, z)[1:steps, :], hcat(ẋ, ẏ, ż)[1:steps, :], Τ
 
 end
+
+"""
+Returns a `Vector` of `Matrix` values.
+Each `Matrix` contains a 3-column nondimensional
+position trajectory in the Synodic frame which
+represents a Zero Velocity Curve.
+"""
+function zerovelocity_curves(orbit::CircularRestrictedThreeBodyOrbit;
+                             nondimensional_range = range(-2; stop=2, length=1000))
+
+    x = nondimensional_range
+    y = nondimensional_range
+
+    rᵢ = orbit |> synodic |> normalize |> position_vector 
+    vᵢ = orbit |> synodic |> normalize |> velocity_vector 
+    μ  = normalized_mass_parameter(orbit.system)
+    LU = string(normalized_length_unit(orbit.system))
+
+    z = [
+        2 * potential_energy([xs, ys, 0.0], μ) - jacobi_constant(rᵢ, vᵢ, μ)
+        for xs ∈ x, ys ∈ y
+    ]
+
+    zvc_contour = contours(x,y,z,[0.0])
+
+    curves = Vector{Matrix{Float64}}()
+
+    for zvc_level ∈ Contour.levels(zvc_contour)
+
+        x = Float64[]
+        y = Float64[]
+        for zvc_line ∈ Contour.lines(zvc_level)
+            xs, ys = coordinates(zvc_line)
+            if length(x) == length(y) == 0
+                x = xs
+                y = ys
+            else
+                x = vcat(x, xs)
+                y = vcat(y, ys)
+            end
+        end
+
+        if length(curves) == 0
+            curves = [hcat(x,y)]
+        else
+            curves = vcat(curves, [hcat(x, y)])
+        end
+    end
+
+    return curves
+                         
+end
