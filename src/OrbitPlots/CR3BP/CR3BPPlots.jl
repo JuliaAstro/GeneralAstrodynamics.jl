@@ -145,3 +145,74 @@ function plotvelocities!(fig, traj::Trajectory{<:CircularRestrictedThreeBodyOrbi
         return plot!(fig, vel[:,1], vel[:,2]; vel...)
     end
 end
+
+"""
+Plot the nondimensional positions of 
+CR3BP celestial bodies.
+"""
+function plotbodies(system::CircularRestrictedThreeBodySystem; normalize = true, exclude_z = true, kwargs...)
+
+    μ = normalized_mass_parameter(system)
+
+    if normalize
+        r₁ = [[-μ],  [0], [0]]
+        r₂ = [[1-μ], [0], [0]]
+        LU = string(normalized_length_unit(system))
+    else
+        r₁ = [[ustrip(length_unit(system), -μ * normalized_length_unit(system))],  [0], [0]]
+        r₂ = [[ustrip(length_unit(system), 1-μ * normalized_length_unit(system))], [0], [0]]
+        LU = string(lengthunit(system))
+    end
+
+    defaults = (; title = "CR3BP Bodies", xlabel = "X ($LU)", ylabel = "Y ($LU)", zlabel = "Z ($LU)")
+    options  = merge(defaults, kwargs)
+
+    if exclude_z
+        fig = scatter(r₁[1:2]...; markersize=10, markercolor=:lightblue, label="Body 1")
+        scatter!(fig, r₂[1:2]...; markersize=6, markercolor=:gray, label="Body 2")
+        plot!(fig; options...)
+        return fig
+    else
+        fig = scatter(r₁...; markersize=10, markercolor=:lightblue, label="Body 1")
+        scatter!(fig, r₂...; markersize=6, markercolor=:gray, label="Body 2")
+        plot!(fig; options...)
+        return fig
+    end
+
+end
+
+
+"""
+Plot the nondimensional positions of 
+CR3BP celestial bodies to the last figure.
+"""
+function plotbodies!(fig, system::CircularRestrictedThreeBodySystem; normalize = true, exclude_z = true, kwargs...)
+
+    μ = normalized_mass_parameter(system)
+
+    if normalize
+        r₁ = [[-μ],  [0], [0]]
+        r₂ = [[1-μ], [0], [0]]
+        LU = string(normalized_length_unit(system))
+    else
+        r₁ = [[ustrip(length_unit(system), -μ * normalized_length_unit(system))],  [0], [0]]
+        r₂ = [[ustrip(length_unit(system), 1-μ * normalized_length_unit(system))], [0], [0]]
+        LU = string(lengthunit(system))
+    end
+
+    defaults = (; title = "CR3BP Bodies", xlabel = "X ($LU)", ylabel = "Y ($LU)", zlabel = "Z ($LU)")
+    options  = merge(defaults, kwargs)
+
+    if exclude_z
+        scatter!(fig, r₁[1:2]...; markersize=10, markercolor=:lightblue, label="Body 1")
+        scatter!(fig, r₂[1:2]...; markersize=6, markercolor=:gray, label="Body 2")
+        plot!(fig; options...)
+        return fig
+    else
+        scatter!(fig, r₁...; markersize=10, markercolor=:lightblue, label="Body 1")
+        scatter!(fig, r₂...; markersize=6, markercolor=:gray, label="Body 2")
+        plot!(fig; options...)
+        return fig
+    end
+
+end
