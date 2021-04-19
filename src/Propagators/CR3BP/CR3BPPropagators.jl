@@ -182,7 +182,7 @@ function state_transition_dynamics(μ, r)
 
     return SMatrix{6,6}(vcat(
         hcat(zeros((3,3)), I(3)),
-        hcat(potential_energy_hessian(r, μ), [0 2 0; -2 0 0; 0 0 0])
+        hcat(potential_energy_hessian(r..., μ), [0 2 0; -2 0 0; 0 0 0])
     ))
 
 end
