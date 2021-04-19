@@ -163,10 +163,7 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/)
 """
-potential_energy_hessian = let
-    func = include("PotentialEnergyHessian.jl")
-    (r,μ) -> func(r..., μ)
-end
+potential_energy_hessian = include("PotentialEnergyHessian.jl")
 
 """
 Returns the derivative mapping of CR3BP state transition matrix, `F`.

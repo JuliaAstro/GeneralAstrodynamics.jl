@@ -11,14 +11,14 @@ export AbstractUnitfulStructure, AbstractState, AbstractFrame, AbstractSystem, A
 export MassParameter, lengthunit, timeunit, velocityunit, massparameterunit, coordinateframe
 export position_vector, velocity_vector, scalar_position, scalar_velocity, epoch
 export AbstractFrame, Inertial, Synodic, Perifocal, convert, epoch
-export NormalizedLengthUnit, NormalizedTimeUnit, Trajectory
+export NormalizedLengthUnit, NormalizedTimeUnit, Trajectory, Manifold
 export convert, show, eltype, isapprox, isequal
 
 # Core data structures and functions for R2BP calculations 
 export AbstractConic, Circular, Elliptical, Parabolic, Hyperbolic, Invalid
 export KeplerianState, RestrictedTwoBodySystem, RestrictedTwoBodyOrbit
 export R2BPState, R2BPSystem, R2BPOrbit, Orbit, CartesianOrbit, KeplerianOrbit
-export position_vector, velocity_vector, mass_parameter, scalar_position, scalar_velocity
+export mass_parameter, primary_synodic_position, secondary_synodic_position
 export eccentricity, semimajor_axis, inclination, RAAN, argument_of_periapsis, true_anomoly
 export conic, keplerian, cartesian, perifocal, semi_parameter, periapsis_radius
 export specific_angular_momentum_vector, specific_angular_momentum, eccentricity_vector
@@ -39,7 +39,7 @@ export time_scale_factor, nondimensionalize, redimensionalize
 export nondimensionalize_length, nondimensionalize_time, nondimensionalize_velocity
 export redimensionalize_length, redimensionalize_time, redimensionalize_velocity
 export normalize, lagrange, inertial, synodic, accel, accel!, analyticalhalo
-export potential_energy, jacobi_constant, zerovelocity_curves
+export potential_energy, jacobi_constant, zerovelocity_curves, closest_approach
 export SunEarth, EarthMoon
 
 # Module Dependencies
@@ -63,5 +63,6 @@ include("R2BP/R2BPSystems.jl")
 include("CR3BP/CR3BPStates.jl")
 include("CR3BP/CR3BPCalculations.jl")
 include("CR3BP/CR3BPSystems.jl")
+include("CR3BP/CR3BPTransfers.jl")
 
 end
