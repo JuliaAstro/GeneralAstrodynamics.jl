@@ -216,6 +216,11 @@ Prints a `Trajectory` instance to `io`.
 Base.show(io::IO, ::MIME"text/plain", traj::Trajectory) = show(io,traj)
 
 """
+A `Manifold` is a vector of `Trajectory` instances.
+"""
+const Manifold{T} = Vector{Trajectory{T}} where T <: AbstractOrbit
+
+"""
 An alias for `CartesianState` instances with `Synodic` coordinate frames.
 """
 const SynodicCartesianState{F, LU, TU} = CartesianState{F, LU, TU, Synodic}

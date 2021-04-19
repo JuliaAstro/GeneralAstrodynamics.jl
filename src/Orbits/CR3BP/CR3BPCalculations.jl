@@ -157,14 +157,30 @@ Returns the spacecraft's nondimensional position w.r.t. body 1 (or 2).
 nondimensional_radius(r, xᵢ=0) = √( (r[1]-xᵢ)^2 + r[2]^2 + r[3]^2 )
 
 """
-Returns the potential energy `U`.
+Returns the potential energy `U` in the Synodic frame with Normalized units.
 """
 potential_energy(r, μ) = (r[1]^2 + r[2]^2)/2 + ((1-μ)/nondimensional_radius(r,-μ)) + (μ/nondimensional_radius(r,1-μ))
 
 """
-Returns the Jacobi Constant `C`.
+Returns the potential energy `U` in the Synodic frame with Normalized units.
+"""
+function potential_energy(orbit::CircularRestrictedThreeBodyOrbit) 
+    orb = (normalize ∘ synodic)(orbit)
+    return potential_energy(position_vector(orb), normalized_mass_parameter(orb.system))
+end
+
+"""
+Returns the Jacobi Constant, `C` in the Synodic frame with Normalized units.
 """
 jacobi_constant(r, v, μ) = 2*potential_energy(r, μ) - (v⋅v)
+
+"""
+Returns the Jacobi Constant, `C` in the Synodic frame with Normalized units.
+"""
+function jacobi_constant(orbit::CircularRestrictedThreeBodyOrbit)
+    orb = (normalize ∘ synodic)(orbit)
+    return jacobi_constant(position_vector(orbit), velocity_vector(orbit), normalized_mass_parameter(orb.system))
+end
 
 """
 Given the Synodic frame vector, returns the vector in the inertial reference frame.

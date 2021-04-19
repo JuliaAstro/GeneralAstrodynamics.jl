@@ -435,6 +435,16 @@ An alias for `CircularRestrictedThreeBodyOrbit` instances with `NormalizedCartes
 const NormalizedSynodicCR3BPOrbit{F,LU,TU,ST<:NormalizedCartesianState{F,Synodic}, SR} = NormalizedCR3BPOrbit{F, LU, TU, ST,SR}
 
 """
+Returns the Synodic position of the primary body.
+"""
+primary_synodic_position(orb::T) where T <: NormalizedSynodicCR3BPOrbit = SVector{3}(-normalized_mass_parameter(orb.system), 0.0, 0.0)
+
+"""
+Returns the Synodic position of the primary body.
+"""
+secondary_synodic_position(orb::T) where T <: NormalizedSynodicCR3BPOrbit = SVector{3}(1-normalized_mass_parameter(orb.system), 0.0, 0.0)
+
+"""
 An alias for `CircularRestrictedThreeBodyOrbit`.
 """
 const CR3BPOrbit = CircularRestrictedThreeBodyOrbit
@@ -492,6 +502,12 @@ Base.show(io::IO, ::MIME"text/plain", orb::CircularRestrictedThreeBodyOrbit{F,LU
 Prints a `Trajectory` instance to `io`.
 """
 Base.show(io::IO, traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}) = println(io, "Circular Restricted Three-body trajectory with ", length(traj), " steps")
+
+"""
+Prints a `Manifold` instance to `io`.
+"""
+Base.show(io::IO, man::Manifold{<:Trajectory{<:CircularRestrictedThreeBodyOrbit}}) = println(io, "Circular Restricted Three-body manifold with ", length(man), " trajectories")
+
 
 """
 Returns true if both systems are equal.
