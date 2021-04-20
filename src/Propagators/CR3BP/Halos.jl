@@ -79,37 +79,42 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
         ∂vₛ = accel(rₛ, vₛ, μ)
 
         if Az ≉ 0
-        F = @SMatrix [
-            Φ[4,1] Φ[4,5] ∂vₛ[1];
-            Φ[6,1] Φ[6,5] ∂vₛ[3];
-            Φ[2,1] Φ[2,5]  vₛ[2]
-        ]
+            F = @SMatrix [
+                Φ[4,1] Φ[4,5] ∂vₛ[1];
+                Φ[6,1] Φ[6,5] ∂vₛ[3];
+                Φ[2,1] Φ[2,5]  vₛ[2]
+            ]
 
-        TERM1 = @SMatrix [r₀[1]; v₀[2]; τ] 
-        TERM2 = - inv(F) * @SMatrix [vₛ[1]; vₛ[3]; rₛ[2]] 
-        xᵪ = TERM1 + TERM2
+            TERM1 = @SMatrix [r₀[1]; v₀[2]; τ] 
+            TERM2 = - inv(F) * @SMatrix [vₛ[1]; vₛ[3]; rₛ[2]] 
+            xᵪ = TERM1 + TERM2
 
-        r₀[1] = xᵪ[1]
-        v₀[2] = xᵪ[2]
-        τ     = xᵪ[3]
+            r₀[1] = xᵪ[1]
+            v₀[2] = xᵪ[2]
+            τ     = xᵪ[3]
         else
-        F = @SMatrix [
-            Φ[4,3] Φ[4,5] ∂vₛ[1];
-            Φ[6,3] Φ[6,5] ∂vₛ[3];
-            Φ[2,3] Φ[2,5]  vₛ[2]
-        ]
+            F = @SMatrix [
+                Φ[4,3] Φ[4,5] ∂vₛ[1];
+                Φ[6,3] Φ[6,5] ∂vₛ[3];
+                Φ[2,3] Φ[2,5]  vₛ[2]
+            ]
 
-        TERM1 = @SMatrix [r₀[3]; v₀[2]; τ] 
-        TERM2 = - inv(F) * @SMatrix [vₛ[1]; vₛ[3]; rₛ[2]] 
-        xᵪ = TERM1 + TERM2
+            TERM1 = @SMatrix [r₀[3]; v₀[2]; τ] 
+            TERM2 = - inv(F) * @SMatrix [vₛ[1]; vₛ[3]; rₛ[2]] 
+            xᵪ = TERM1 + TERM2
 
-        r₀[3] = xᵪ[1]
-        v₀[2] = xᵪ[2]
-        τ     = xᵪ[3]
+            r₀[3] = xᵪ[1]
+            v₀[2] = xᵪ[2]
+            τ     = xᵪ[3]
         end
 
         if abs(vₛ[1]) ≤ tolerance && abs(vₛ[3]) ≤ tolerance
             break;
+        elseif τ > 10 * one(τ)
+            if !disable_warnings
+                @warn "Unreasonably large halo period, $τ, ending iterations."
+            end
+            return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN
         elseif i == max_iter
             if !disable_warnings
                 @warn "Desired tolerance was not reached, and iterations have hit the maximum number of iterations: $max_iter."
