@@ -12,17 +12,17 @@ time_scale_factor(a, μ₁, μ₂) = period(a, μ₁+μ₂)
 """
 Returns nondimensional length unit, `DU`.
 """
-nondimensionalize_length(rᵢ, a) = rᵢ ./ a
+nondimensionalize_length(rᵢ, a) = upreferred.(rᵢ ./ a)
 
 """
 Returns nondimensional velocity unit, `DU/DT`.
 """
-nondimensionalize_velocity(vᵢ, a, Tₛ) = vᵢ ./ (a / Tₛ)
+nondimensionalize_velocity(vᵢ, a, Tₛ) = upreferred.(vᵢ ./ (a / Tₛ))
 
 """
 Returns nondimensional time unit, `DT`.
 """
-nondimensionalize_time(t, a, μ₁, μ₂) = t / time_scale_factor(a, μ₁, μ₂)
+nondimensionalize_time(t, a, μ₁, μ₂) = upreferred.(t / time_scale_factor(a, μ₁, μ₂))
 
 """
 Returns nondimensional mass parameter, `μ`.

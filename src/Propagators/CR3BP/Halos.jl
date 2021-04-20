@@ -111,21 +111,15 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
         if abs(vₛ[1]) ≤ tolerance && abs(vₛ[3]) ≤ tolerance
             break;
         elseif τ > 5 * one(τ)
-            if !disable_warnings
-                @warn "Unreasonably large halo period, $τ, ending iterations."
-            end
+            disable_warnings || @warn "Unreasonably large halo period, $τ, ending iterations."
             !nan_on_fail || return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN
             break
         elseif i == max_iter
-            if !disable_warnings
-                @warn "Desired tolerance was not reached, and iterations have hit the maximum number of iterations: $max_iter."
-            end
+            disable_warnings || @warn "Desired tolerance was not reached, and iterations have hit the maximum number of iterations: $max_iter."
             !nan_on_fail || return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN
             break
         elseif retcode != :Success
-            if !disable_warnings
-                @warn "Integrator returned $(string(retcode))."
-            end
+            !disable_warnings || @warn "Integrator returned $(string(retcode))."
             !nan_on_fail || return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN    
             break        
         end
@@ -140,7 +134,13 @@ A `halo` wrapper! Returns a `CircularRestrictedThreeBodyOrbit`.
 Returns a tuple: `halo_orbit, halo_period`.
 """
 function halo(sys::CircularRestrictedThreeBodySystem; kwargs...)
-    r,v,T = halo(normalized_mass_parameter(sys); kwargs...)
+    if :Az ∈ keys(kwargs)
+        unitless = (; Az = nondimensionalize_length(kwargs.data.Az, normalized_length_unit(sys)))
+        options = merge(kwargs.data, unitless)
+    else
+        options = kwargs
+    end
+    r,v,T = halo(normalized_mass_parameter(sys); options...)
     orbit = CircularRestrictedThreeBodyOrbit(redimensionalize_length.(r, normalized_length_unit(sys)), 
                                              redimensionalize_velocity.(v, normalized_length_unit(sys), normalized_time_unit(sys)),
                                              sys) |> normalize
