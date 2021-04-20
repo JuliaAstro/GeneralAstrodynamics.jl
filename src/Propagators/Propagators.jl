@@ -16,6 +16,7 @@ using Reexport
 
 using StaticArrays
 using LinearAlgebra
+using SymbolicUtils
 using ComponentArrays
 using DifferentialEquations
 
