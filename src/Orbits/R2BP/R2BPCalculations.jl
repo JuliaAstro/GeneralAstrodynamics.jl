@@ -184,7 +184,7 @@ Returns specific orbital energy, ϵ.
 """
 specific_energy(a, μ) = ( -μ / (2 * a) )
 specific_energy(r, v, μ) = (v^2 / 2) - (μ / r)
-specific_energy(orbit::CartesianOrbit) = specific_energy(position_vector(orbit.state), velocity_vector(orbit.state), mass_parameter(orbit.system))
+specific_energy(orbit::CartesianOrbit) = specific_energy(scalar_position(orbit.state), scalar_velocity(orbit.state), mass_parameter(orbit.system))
 specific_energy(orbit::KeplerianOrbit) = specific_energy(semimajor_axis(orbit.state), mass_parameter(orbit.system))
 
 """
