@@ -117,7 +117,7 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
             return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN
         elseif retcode != :Success
             if !disable_warnings
-                @warn "Integrator returned $(string(integrator.retcode))."
+                @warn "Integrator returned $(string(retcode))."
             end
             return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN            
         end
