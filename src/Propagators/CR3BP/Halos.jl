@@ -50,7 +50,7 @@ __References:__
 function halo(μ; Az=0.0, L=1, hemisphere=:northern,
               tolerance=1e-8, max_iter=20,
               reltol=1e-14, abstol=1e-14,
-              nan_on_fail = true)
+              nan_on_fail = true, disable_warnings = false)
 
     r₀, v₀, Τ = analyticalhalo(μ; Az=Az, ϕ=0.0, L=L, hemisphere=hemisphere)
     r₀ = r₀[1,:]
@@ -113,7 +113,9 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
         if abs(integrator.u.v[1]) ≤ tolerance && abs(integrator.u.v[3]) ≤ tolerance
             break;
         elseif i == max_iter
-            @warn "Desired tolerance was not reached, and iterations have hit the maximum number of iterations: $max_iter."
+            if !disable_warnings
+                @warn "Desired tolerance was not reached, and iterations have hit the maximum number of iterations: $max_iter."
+            end
             return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN
         end
 
