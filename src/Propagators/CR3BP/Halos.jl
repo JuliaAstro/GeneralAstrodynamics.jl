@@ -114,17 +114,20 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
             if !disable_warnings
                 @warn "Unreasonably large halo period, $τ, ending iterations."
             end
-            return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN
+            !nan_on_fail || return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN
+            break
         elseif i == max_iter
             if !disable_warnings
                 @warn "Desired tolerance was not reached, and iterations have hit the maximum number of iterations: $max_iter."
             end
-            return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN
+            !nan_on_fail || return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN
+            break
         elseif retcode != :Success
             if !disable_warnings
                 @warn "Integrator returned $(string(retcode))."
             end
-            return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN            
+            !nan_on_fail || return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN    
+            break        
         end
     end
 
