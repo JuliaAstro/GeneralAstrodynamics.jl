@@ -70,13 +70,11 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
             (μ = μ,)
         )    
 
-        integrator = init(problem, Vern9(); reltol=reltol, abstol=abstol)
-        solve!(integrator)
-
-        rₛ = integrator.u.r
-        vₛ = integrator.u.v
-
-        Φ = hcat(integrator.u.Φ₁, integrator.u.Φ₂, integrator.u.Φ₃, integrator.u.Φ₄, integrator.u.Φ₅, integrator.u.Φ₆) |> transpose
+        retcode, rₛ, vₛ, Φ = let 
+            sols  = solve(problem; reltol=reltol, abstol=abstol)
+            final = sols.u[end] 
+            sols.retcode, final.r, final.v,  transpose(hcat(final.Φ₁, final.Φ₂, final.Φ₃, final.Φ₄, final.Φ₅, final.Φ₆))
+        end
 
         ∂vₛ = accel(rₛ, vₛ, μ)
 
@@ -110,14 +108,14 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
         τ     = xᵪ[3]
         end
 
-        if abs(integrator.u.v[1]) ≤ tolerance && abs(integrator.u.v[3]) ≤ tolerance
+        if abs(vₛ[1]) ≤ tolerance && abs(vₛ[3]) ≤ tolerance
             break;
         elseif i == max_iter
             if !disable_warnings
                 @warn "Desired tolerance was not reached, and iterations have hit the maximum number of iterations: $max_iter."
             end
             return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN
-        elseif integrator.retcode != :Success
+        elseif retcode != :Success
             if !disable_warnings
                 @warn "Integrator returned $(string(integrator.retcode))."
             end
