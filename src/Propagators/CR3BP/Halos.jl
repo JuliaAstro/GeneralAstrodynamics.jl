@@ -117,8 +117,12 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
                 @warn "Desired tolerance was not reached, and iterations have hit the maximum number of iterations: $max_iter."
             end
             return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN
+        elseif integrator.retcode != :Success
+            if !disable_warnings
+                @warn "Integrator returned $(string(integrator.retcode))."
+            end
+            return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN            
         end
-
     end
 
     return r₀, v₀, 2τ
