@@ -405,6 +405,11 @@ Returns the velocity vector of the CR3BP orbit.
 velocity_vector(orb::CircularRestrictedThreeBodyOrbit) = velocity_vector(orb.state)
 
 """
+Returns the epoch associated with the `state` field.
+"""
+epoch(orb::CircularRestrictedThreeBodyOrbit) = epoch(orb.state)
+
+"""
 Convert between `eltype`, `lengthunit`, and `timeunit` types for CR3BP orbits.
 """
 function Base.convert(::Type{CircularRestrictedThreeBodyOrbit{F, LU, TU}}, orb::CircularRestrictedThreeBodyOrbit) where {F, LU, TU}

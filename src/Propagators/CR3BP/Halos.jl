@@ -205,8 +205,8 @@ returns a collection of `Trajectory` instances representing
 the stable manifold near orbit.
 """
 function stable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real; 
-                         duration = T, reltol = 1e-16, 
-                         abstol = 1e-16, eps = 1e-6)
+                         duration = 5T, reltol = 1e-14, 
+                         abstol = 1e-14, eps = 1e-8)
 
     @assert duration > 0 "The provided duration cannot be zero or negative."
     @assert isperiodic(orbit, T) "The provided orbit is not periodic!"
@@ -227,8 +227,8 @@ returns a collection of `Trajectory` instances representing
 the unstable manifold near orbit.
 """
 function unstable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real; 
-                           duration = 2T, reltol = 1e-16, 
-                           abstol = 1e-16, eps = 1e-6)
+                           duration = 5T, reltol = 1e-14, 
+                           abstol = 1e-14, eps = 1e-8)
 
     @assert duration > 0 "The provided duration cannot be zero or negative."
     @assert isperiodic(orbit, T) "The provided orbit is not periodic!"
