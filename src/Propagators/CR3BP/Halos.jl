@@ -49,7 +49,8 @@ __References:__
 """
 function halo(μ; Az=0.0, L=1, hemisphere=:northern,
               tolerance=1e-8, max_iter=20,
-              reltol=1e-14, abstol=1e-14)
+              reltol=1e-14, abstol=1e-14,
+              nan_on_fail = true, disable_warnings = false)
 
     r₀, v₀, Τ = analyticalhalo(μ; Az=Az, ϕ=0.0, L=L, hemisphere=hemisphere)
     r₀ = r₀[1,:]
@@ -69,52 +70,59 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
             (μ = μ,)
         )    
 
-        integrator = init(problem, Vern9(); reltol=reltol, abstol=abstol)
-        solve!(integrator)
-
-        rₛ = integrator.u.r
-        vₛ = integrator.u.v
-
-        Φ = hcat(integrator.u.Φ₁, integrator.u.Φ₂, integrator.u.Φ₃, integrator.u.Φ₄, integrator.u.Φ₅, integrator.u.Φ₆) |> transpose
+        retcode, rₛ, vₛ, Φ = let 
+            sols  = solve(problem; reltol=reltol, abstol=abstol)
+            final = sols.u[end] 
+            sols.retcode, final.r, final.v,  transpose(hcat(final.Φ₁, final.Φ₂, final.Φ₃, final.Φ₄, final.Φ₅, final.Φ₆))
+        end
 
         ∂vₛ = accel(rₛ, vₛ, μ)
 
         if Az ≉ 0
-        F = @SMatrix [
-            Φ[4,1] Φ[4,5] ∂vₛ[1];
-            Φ[6,1] Φ[6,5] ∂vₛ[3];
-            Φ[2,1] Φ[2,5]  vₛ[2]
-        ]
+            F = @SMatrix [
+                Φ[4,1] Φ[4,5] ∂vₛ[1];
+                Φ[6,1] Φ[6,5] ∂vₛ[3];
+                Φ[2,1] Φ[2,5]  vₛ[2]
+            ]
 
-        TERM1 = @SMatrix [r₀[1]; v₀[2]; τ] 
-        TERM2 = - inv(F) * @SMatrix [vₛ[1]; vₛ[3]; rₛ[2]] 
-        xᵪ = TERM1 + TERM2
+            TERM1 = @SMatrix [r₀[1]; v₀[2]; τ] 
+            TERM2 = - inv(F) * @SMatrix [vₛ[1]; vₛ[3]; rₛ[2]] 
+            xᵪ = TERM1 + TERM2
 
-        r₀[1] = xᵪ[1]
-        v₀[2] = xᵪ[2]
-        τ     = xᵪ[3]
+            r₀[1] = xᵪ[1]
+            v₀[2] = xᵪ[2]
+            τ     = xᵪ[3]
         else
-        F = @SMatrix [
-            Φ[4,3] Φ[4,5] ∂vₛ[1];
-            Φ[6,3] Φ[6,5] ∂vₛ[3];
-            Φ[2,3] Φ[2,5]  vₛ[2]
-        ]
+            F = @SMatrix [
+                Φ[4,3] Φ[4,5] ∂vₛ[1];
+                Φ[6,3] Φ[6,5] ∂vₛ[3];
+                Φ[2,3] Φ[2,5]  vₛ[2]
+            ]
 
-        TERM1 = @SMatrix [r₀[3]; v₀[2]; τ] 
-        TERM2 = - inv(F) * @SMatrix [vₛ[1]; vₛ[3]; rₛ[2]] 
-        xᵪ = TERM1 + TERM2
+            TERM1 = @SMatrix [r₀[3]; v₀[2]; τ] 
+            TERM2 = - inv(F) * @SMatrix [vₛ[1]; vₛ[3]; rₛ[2]] 
+            xᵪ = TERM1 + TERM2
 
-        r₀[3] = xᵪ[1]
-        v₀[2] = xᵪ[2]
-        τ     = xᵪ[3]
+            r₀[3] = xᵪ[1]
+            v₀[2] = xᵪ[2]
+            τ     = xᵪ[3]
         end
 
-        if abs(integrator.u.v[1]) ≤ tolerance && abs(integrator.u.v[3]) ≤ tolerance
+        if abs(vₛ[1]) ≤ tolerance && abs(vₛ[3]) ≤ tolerance
             break;
+        elseif τ > 5 * one(τ)
+            disable_warnings || @warn "Unreasonably large halo period, $τ, ending iterations."
+            !nan_on_fail || return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN
+            break
         elseif i == max_iter
-            @warn "Desired tolerance was not reached, and iterations have hit the maximum number of iterations: $max_iter."
+            disable_warnings || @warn "Desired tolerance was not reached, and iterations have hit the maximum number of iterations: $max_iter."
+            !nan_on_fail || return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN
+            break
+        elseif retcode != :Success
+            !disable_warnings || @warn "Integrator returned $(string(retcode))."
+            !nan_on_fail || return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN    
+            break        
         end
-
     end
 
     return r₀, v₀, 2τ
@@ -126,7 +134,13 @@ A `halo` wrapper! Returns a `CircularRestrictedThreeBodyOrbit`.
 Returns a tuple: `halo_orbit, halo_period`.
 """
 function halo(sys::CircularRestrictedThreeBodySystem; kwargs...)
-    r,v,T = halo(normalized_mass_parameter(sys); kwargs...)
+    if :Az ∈ keys(kwargs)
+        unitless = (; Az = nondimensionalize_length(kwargs.data.Az, normalized_length_unit(sys)))
+        options = merge(kwargs.data, unitless)
+    else
+        options = kwargs
+    end
+    r,v,T = halo(normalized_mass_parameter(sys); options...)
     orbit = CircularRestrictedThreeBodyOrbit(redimensionalize_length.(r, normalized_length_unit(sys)), 
                                              redimensionalize_velocity.(v, normalized_length_unit(sys), normalized_time_unit(sys)),
                                              sys) |> normalize
@@ -191,8 +205,8 @@ returns a collection of `Trajectory` instances representing
 the stable manifold near orbit.
 """
 function stable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real; 
-                         duration = T, reltol = 1e-16, 
-                         abstol = 1e-16, eps = 1e-6)
+                         duration = 5T, reltol = 1e-14, 
+                         abstol = 1e-14, eps = 1e-8)
 
     @assert duration > 0 "The provided duration cannot be zero or negative."
     @assert isperiodic(orbit, T) "The provided orbit is not periodic!"
@@ -213,8 +227,8 @@ returns a collection of `Trajectory` instances representing
 the unstable manifold near orbit.
 """
 function unstable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real; 
-                           duration = 2T, reltol = 1e-16, 
-                           abstol = 1e-16, eps = 1e-6)
+                           duration = 5T, reltol = 1e-14, 
+                           abstol = 1e-14, eps = 1e-8)
 
     @assert duration > 0 "The provided duration cannot be zero or negative."
     @assert isperiodic(orbit, T) "The provided orbit is not periodic!"

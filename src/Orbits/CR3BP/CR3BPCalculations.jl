@@ -12,17 +12,17 @@ time_scale_factor(a, μ₁, μ₂) = period(a, μ₁+μ₂)
 """
 Returns nondimensional length unit, `DU`.
 """
-nondimensionalize_length(rᵢ, a) = rᵢ ./ a
+nondimensionalize_length(rᵢ, a) = upreferred.(rᵢ ./ a)
 
 """
 Returns nondimensional velocity unit, `DU/DT`.
 """
-nondimensionalize_velocity(vᵢ, a, Tₛ) = vᵢ ./ (a / Tₛ)
+nondimensionalize_velocity(vᵢ, a, Tₛ) = upreferred.(vᵢ ./ (a / Tₛ))
 
 """
 Returns nondimensional time unit, `DT`.
 """
-nondimensionalize_time(t, a, μ₁, μ₂) = t / time_scale_factor(a, μ₁, μ₂)
+nondimensionalize_time(t, a, μ₁, μ₂) = upreferred.(t / time_scale_factor(a, μ₁, μ₂))
 
 """
 Returns nondimensional mass parameter, `μ`.
@@ -124,28 +124,28 @@ Returns dimensional time unit.
 redimensionalize_time(t, Tₛ) = t * Tₛ
 
 """
-Returns dimensional (inertial) form of (`Unitful`) scalar posiion.
+Returns dimensional form of (`Unitful`) scalar posiion.
 """
 redimensionalize(rᵢ::R, a::A) where {
         R<:Real, A<:Unitful.Length
     } = redimensionalize_length(rᵢ, a)
 
 """
-Returns dimensional (inertial) form of (`Unitful`) velocity vector.
+Returns dimensional form of (`Unitful`) velocity vector.
 """
 redimensionalize(vᵢ::U, a::A, Tₛ::T) where {
         U<:Real, A<:Unitful.Length, T<:Unitful.Time
     } = redimensionalize_velocity(vᵢ, a, Tₛ)
 
 """
-Returns dimensional (inertial) form of (`Unitful`) time duration.
+Returns dimensional form of (`Unitful`) time duration.
 """
 redimensionalize(t::T1, Tₛ::T2) where {
         T1<:Real, T2<:Unitful.Time
     } = redimensionalize_time(t, Tₛ)
 
 """
-Returns dimensional (inertial) form of (`Unitful`) time duration.
+Returns dimensional form of (`Unitful`) time duration.
 """
 redimensionalize(t::T1, a::A, μ₁::U1, μ₂::U2) where {
         T1<:Real, A<:Unitful.Length, U1<:MassParameter, U2<:MassParameter
@@ -183,7 +183,7 @@ function jacobi_constant(orbit::CircularRestrictedThreeBodyOrbit)
 end
 
 """
-Given the Synodic frame vector, returns the vector in the inertial reference frame.
+Given the Synodic frame vector, returns the vector in the barycenteric-inertial reference frame.
 """
 function inertial(vecₛ, t, ω::Unitful.AbstractQuantity=1.0u"rad"/unit(t))
 
@@ -258,6 +258,39 @@ Given a CR3BP orbit, returns the orbit in the Synodic (rotating) reference frame
 function synodic(orb::CircularRestrictedThreeBodyOrbit)
     state = synodic(orb.state)
     return CircularRestrictedThreeBodyOrbit(state, orb.system)
+end
+
+"""
+Translates the state from one inertial frame to another.
+"""
+function transform(orb::CircularRestrictedThreeBodyOrbit, inertial_position, inertial_velocity = [0, 0, 0]u"km/s")
+    orbit = (inertial ∘ redimensionalize)(orb)
+
+    r = position_vector(orbit) - inertial_position
+    v = velocity_vector(orbit) # - inertial_velocity
+
+    return CircularRestrictedThreeBodyOrbit(r, v, orb.system, epoch(orbit); frame = Inertial)
+
+end
+
+"""
+Translates the state to the primary body center of mass (inertial frame).
+"""
+function transform_to_primary(orb::CircularRestrictedThreeBodyOrbit)
+    return transform(orb, inertial(
+            (primary_synodic_position ∘ synodic ∘ normalize)(orb) .* 
+                normalized_length_unit(orb.system),  
+            (epoch ∘ redimensionalize)(orb)))
+end
+
+"""
+Translates the state to the secondary body center of mass (inertial frame).
+"""
+function transform_to_secondary(orb::CircularRestrictedThreeBodyOrbit)
+    return transform(orb, inertial(
+            (secondary_synodic_position ∘ synodic ∘ normalize)(orb) .* 
+                normalized_length_unit(orb.system),  
+            (epoch ∘ redimensionalize)(orb)))
 end
 
 """

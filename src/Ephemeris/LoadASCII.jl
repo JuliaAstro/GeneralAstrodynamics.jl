@@ -33,11 +33,29 @@ const NAIF_IDS = Dict{String, Int}(
 Loads a comma-delimited ephemeris file and returns a matrix of all values.
 """
 function loadascii(filename)
-	return hcat(
-            map(col->col, 
-              filter(col->!all([el=="" for el ∈ col]), 
-                collect(eachcol(readdlm(filename, ',')))))...)
+  df = DataFrame(CSV.File(filename))
+  return hcat(map(col->col, filter(col->!all(x->ismissing(x), col), collect(eachcol(df))))...)
 end
+
+"""
+A structure for storing a `CubicSplineInterpolation`
+for an ephemeris file.
+"""
+struct Interpolator{T1<:Unitful.Time, T2<:Unitful.Time, F<:Function}
+  timespan::Tuple{T1,T2}
+  state::F
+  Interpolator(tspan, func) = new{typeof(tspan[1]), typeof(tspan[2]), typeof(func)}(tspan, func)
+end
+
+"""
+Prints an `Interpolator` instance to `io`.
+"""
+Base.show(io::IO, interp::Interpolator) = println(io, "Interpolated `CartesianState` ephemeris data. Valid within the following Julian epochs: [$(string(interp.timespan[1])), $(string(interp.timespan[2]))].")
+
+"""
+Prints an `Interpolator` instance to `io`.
+"""
+Base.show(io::IO, ::MIME"text/plain", interp::Interpolator) = show(io, interp)
 
 """
 Given ephemeris file `filename` in CSV format (Julian Day, x, y, z, ẋ, ẏ, ż),
@@ -66,16 +84,25 @@ function interpolator(data; type=Float64, dateunit=u"d", lengthunit=u"km", veloc
 	cart = map(col->CubicSplineInterpolation(times, col), eachcol(ephem))
 	
 	tspan = (times[1] * timeunit, times[end] * timeunit)
-    function rv(t)
+  function rv(t; frame=Inertial)
+      ts = ustrip(timeunit, t)
+      
+      return CartesianState(
+          SVector{3}(cart[1](ts), cart[2](ts), cart[3](ts)) * lengthunit, 
+          SVector{3}(cart[4](ts), cart[5](ts), cart[6](ts)) * velocityunit,
+          t, Inertial
+      )    
+  end
+
+  return Interpolator(tspan, (t; frame=Inertial) -> let
         ts = ustrip(timeunit, t)
-        
-        return (
+        CartesianState(
             SVector{3}(cart[1](ts), cart[2](ts), cart[3](ts)) * lengthunit, 
-            SVector{3}(cart[4](ts), cart[5](ts), cart[6](ts)) * velocityunit
+            SVector{3}(cart[4](ts), cart[5](ts), cart[6](ts)) * velocityunit,
+            t, Inertial
         )    
     end
-	
-    return tspan, rv
+  )
 end
 
 """

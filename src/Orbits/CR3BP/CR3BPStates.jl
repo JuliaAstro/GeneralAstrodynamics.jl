@@ -360,7 +360,12 @@ mutable struct CircularRestrictedThreeBodyOrbit{
         F = promote_type(eltype(r), eltype(v), eltype(system), typeof(t))
         state = NormalizedCartesianState(F.(r), F.(v), F(t), frame)
         system = MinimalCircularRestrictedThreeBodySystem(F(normalized_mass_parameter(system)))
-        return new{F, typeof(NormalizedLengthUnit), typeof(NormalizedTimeUnit), typeof(state), typeof(system)}(state, system)
+        return new{F, NormalizedLengthUnit, NormalizedTimeUnit, typeof(state), typeof(system)}(state, system)
+    end
+
+    function CircularRestrictedThreeBodyOrbit(state::NormalizedCartesianState, system::MinimalCircularRestrictedThreeBodySystem, t::Real = 0; frame = Synodic)        
+        F = promote_type(typeof(state).parameters[1], typeof(system).parameters[1])
+        return new{F, NormalizedLengthUnit, NormalizedTimeUnit, typeof(state), typeof(system)}(state, system)
     end
 
     function CircularRestrictedThreeBodyOrbit(state::CartesianState, sys::CircularRestrictedThreeBodySystem)
@@ -398,6 +403,11 @@ position_vector(orb::CircularRestrictedThreeBodyOrbit) = position_vector(orb.sta
 Returns the velocity vector of the CR3BP orbit.
 """
 velocity_vector(orb::CircularRestrictedThreeBodyOrbit) = velocity_vector(orb.state)
+
+"""
+Returns the epoch associated with the `state` field.
+"""
+epoch(orb::CircularRestrictedThreeBodyOrbit) = epoch(orb.state)
 
 """
 Convert between `eltype`, `lengthunit`, and `timeunit` types for CR3BP orbits.

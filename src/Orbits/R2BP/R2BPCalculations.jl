@@ -184,15 +184,27 @@ Returns specific orbital energy, ϵ.
 """
 specific_energy(a, μ) = ( -μ / (2 * a) )
 specific_energy(r, v, μ) = (v^2 / 2) - (μ / r)
-specific_energy(orbit::CartesianOrbit) = specific_energy(position_vector(orbit.state), velocity_vector(orbit.state), mass_parameter(orbit.system))
+specific_energy(orbit::CartesianOrbit) = specific_energy(scalar_position(orbit.state), scalar_velocity(orbit.state), mass_parameter(orbit.system))
 specific_energy(orbit::KeplerianOrbit) = specific_energy(semimajor_axis(orbit.state), mass_parameter(orbit.system))
+
+"""
+Returns C3 value.
+"""
+C3(r, v, μ) = v^2 - 2μ/r
+C3(orbit::RestrictedTwoBodyOrbit) = C3(scalar_position(orbit), scalar_velocity(orbit), mass_parameter(orbit.system))
+
+"""
+Returns v∞.
+"""
+v_infinity(r, v, μ) = √C3(r, v, μ)
+v_infinity(orbit::RestrictedTwoBodyOrbit) = v_infinity(scalar_position(orbit), scalar_velocity(orbit), mass_parameter(orbit.system))
 
 """
 Returns potential energy for an orbit about a `RestrictedTwoBodySystem`.
 """
 specific_potential_energy(r, μ) = (μ/r)
 specific_potential_energy(r, μ, R, J₂, ϕ) = (μ/r) * (1 - J₂ * (R/r)^2 * ((3/2) * (sin(ϕ))^2 - (1/2)))
-specific_potential_energy(orbit::CartesianOrbit) = specific_potential_energy(position_vector(orbit.state), mass_parameter(orbit.system))
+specific_potential_energy(orbit::CartesianOrbit) = specific_potential_energy(scalar_position(orbit.state), mass_parameter(orbit.system))
 specific_potential_energy(orbit::KeplerianOrbit) = specific_potential_energy(CartesianOrbit(orbit))
 
 """
