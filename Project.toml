@@ -31,6 +31,7 @@ UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 
 [compat]
 ComponentArrays = "0.8, 0.9"
+ConcreteStructs = "0.2"
 Contour = "0.5"
 Crayons = "4.0"
 DataFrames = "0.22, 1"
