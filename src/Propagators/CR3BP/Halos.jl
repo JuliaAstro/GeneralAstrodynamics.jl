@@ -134,7 +134,7 @@ A `halo` wrapper! Returns a `CircularRestrictedThreeBodyOrbit`.
 Returns a tuple: `halo_orbit, halo_period`.
 """
 function halo(sys::CircularRestrictedThreeBodySystem; kwargs...)
-    if :Az ∈ keys(kwargs)
+    if :Az ∈ keys(kwargs) && kwargs.data.Az isa Unitful.AbstractQuantity
         unitless = (; Az = nondimensionalize_length(kwargs.data.Az, normalized_length_unit(sys)))
         options = merge(kwargs.data, unitless)
     else

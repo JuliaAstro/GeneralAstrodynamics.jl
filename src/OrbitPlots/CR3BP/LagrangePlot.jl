@@ -11,7 +11,7 @@ function lagrangeplot(μ::Real, L=1:5; kwargs...)
     defaults = (; title  = "Nondimensional Lagrange Points", 
                   xlabel = "X (DU)", ylabel="Y (DU)", 
                   labels = ["Body 1" "Body 2" [string("L",i) for i ∈ L]...],
-                  legend = :topleft)
+                  legend = :topleft, dpi=150)
     options  = merge(defaults, kwargs)
 
     lagrange_points = lagrange(μ)
@@ -44,7 +44,7 @@ function lagrangeplot(sys::CircularRestrictedThreeBodySystem, L=1:5; normalize =
     defaults = (; title  = sys.name != "" ? "$(sys.name) Lagrange Points" : "Lagrange Plots", 
                   xlabel = "X ($(string(lengthunit(sys))))", ylabel="Y ($(string(lengthunit(sys))))", 
                   labels = [string("L",i) for i ∈ L], 
-                  legend = :topleft)
+                  legend = :topleft, dpi=150)
     options  = merge(defaults, kwargs)
 
     μ = normalized_mass_parameter(sys)

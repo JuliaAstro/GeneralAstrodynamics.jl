@@ -18,7 +18,9 @@ function zerovelocityplot(orbit::CircularRestrictedThreeBodyOrbit;
                  labels = :none,
                  formatter = :plain,
                  grid      = :on,
-                 linewidth = 2)
+                 linewidth = 2,
+                 dpi       = 150)
+                                  
     options = merge(default, kwargs)
 
     fig = plot(; options...)
