@@ -143,7 +143,7 @@ end
 Plot the positions of an orbit.
 """
 function plotpositions(pos::AbstractMatrix{<:Unitful.Length}; lengthunit = unit(pos[1]), exclude_z = false, kwargs...) 
-    return plotpositions(ustrip.(lengthunit(pos[1]), pos); lengthunit = lengthunit, exclude_z = exclude_z, kwargs...)
+    return plotpositions(ustrip.(lengthunit, pos); lengthunit = lengthunit, exclude_z = exclude_z, kwargs...)
 end
 
 """
