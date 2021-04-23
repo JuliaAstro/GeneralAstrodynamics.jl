@@ -1,7 +1,7 @@
 """
 Structures and functions for handling common Astrodynamics problems! 🚀
 """
-module UnitfulAstrodynamics
+module SimpleAstrodynamics
 
 using Reexport 
 
