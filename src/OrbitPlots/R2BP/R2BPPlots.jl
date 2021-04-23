@@ -82,7 +82,7 @@ end
 """
 Plot the positions of an orbit.
 """
-function plotpositions(pos::AbstractVector{V}; lengthunit = unit(pos[1][1]), exclude_z = false, kwargs...) where V <: AbstractVector{<:Unitful.Length}
+function plotpositions(pos::AbstractVector{<:V}; lengthunit = unit(pos[1][1]), exclude_z = false, kwargs...) where V <: AbstractVector{<:Unitful.Length}
     return plotpositions(ustrip.(lengthunit, pos); lengthunit = lengthunit, exclude_z = exclude_z, kwargs...)
 end
 
