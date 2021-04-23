@@ -445,14 +445,50 @@ An alias for `CircularRestrictedThreeBodyOrbit` instances with `NormalizedCartes
 const NormalizedSynodicCR3BPOrbit{F,LU,TU,ST<:NormalizedCartesianState{F,Synodic}, SR} = NormalizedCR3BPOrbit{F, LU, TU, ST,SR}
 
 """
-Returns the Synodic position of the primary body.
+Returns the position of one of the two CR3BP bodies in the `state`'s reference frame.
 """
-primary_synodic_position(orb::T) where T <: NormalizedSynodicCR3BPOrbit = SVector{3}(-normalized_mass_parameter(orb.system), 0.0, 0.0)
+function body_position(orbit::CircularRestrictedThreeBodyOrbit, N)
+    (N == 1 || N == 2) || throw(ArgumentError("The second argument must specify the primary or secondary body! Set N equal to 1 or 2."))
+
+    if N == 1
+        pos = MVector{3}(-normalized_mass_parameter(orbit.system), 0.0, 0.0)
+        if coordinateframe(orbit.state) != Synodic
+            pos = inertial(pos, epoch(normalize(orbit)))
+        end
+        pos *= lengthunit(orbit.state)
+    else
+        pos = MVector{3}(1-normalized_mass_parameter(orbit.system), 0.0, 0.0)
+        if coordinateframe(orbit.state) != Synodic
+            pos = inertial(pos, epoch(normalize(orbit)))
+        end
+        pos *= lengthunit(orbit.state)
+        return pos
+    end
+end
 
 """
-Returns the Synodic position of the primary body.
+Returns the position of one of the two CR3BP bodies in the normalized `Synodic` reference frame.
 """
-secondary_synodic_position(orb::T) where T <: NormalizedSynodicCR3BPOrbit = SVector{3}(1-normalized_mass_parameter(orb.system), 0.0, 0.0)
+function body_position(sys::CircularRestrictedThreeBodySystem, N)
+    (N == 1 || N == 2) || throw(ArgumentError("The second argument must specify the primary or secondary body! Set N equal to 1 or 2."))
+
+    if N == 1
+        pos = MVector{3}(-normalized_mass_parameter(sys), 0.0, 0.0)
+    else
+        pos = MVector{3}(1-normalized_mass_parameter(sys), 0.0, 0.0)
+        return pos
+    end
+end
+
+"""
+Returns the position of the orbiter with respect to one of the two CR3BP bodies,
+in the `state`'s reference frame.
+"""
+function position_wrt_body(orbit::CircularRestrictedThreeBodyOrbit, N)
+    (N == 1 || N == 2) || throw(ArgumentError("The second argument must specify the primary or secondary body! Set N equal to 1 or 2."))
+    body_pos = body_position(orbit, N)
+    return position_vector(orbit) .- body_pos
+end
 
 """
 An alias for `CircularRestrictedThreeBodyOrbit`.
