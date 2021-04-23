@@ -49,3 +49,135 @@ function plotvelocities(traj::Trajectory{<:RestrictedTwoBodyOrbit}; velocityunit
     plot(vel[:,1], vel[:,2], vel[:,3]; options...)
 
 end
+
+"""
+Plot the positions of an orbit.
+"""
+function plotpositions(pos::AbstractVector{V}; lengthunit = u"km", exclude_z = false, kwargs...) where V <: AbstractVector{<:Real}
+    
+    pos = transpose(hcat(pos...))
+    LU  = string(lengthunit)
+
+    defaults = (; title     = "Orbit Positions",
+                  xlabel    = "X ($LU)", 
+                  ylabel    = "Y ($LU)", 
+                  zlabel    = "Z ($LU)",
+                  label     = "Orbit Position",
+                  formatter = :plain,
+                  grid      = :on,
+                  linewidth = 2)
+
+    options = merge(defaults, kwargs)
+
+    if !exclude_z
+        plot(pos[:,1], pos[:,2], pos[:,3]; options...)
+    else 
+        plot(pos[:,1], pos[:,2]; options...)
+    end
+end
+
+"""
+Plot the positions of an orbit.
+"""
+function plotpositions(pos::AbstractVector{V}; lengthunit = unit(pos[1][1]), exclude_z = false, kwargs...) where V <: AbstractVector{<:Unitful.Length}
+    return plotpositions(lengthunit(pos[1][1]), pos); lengthunit = lengthunit, exclude_z = exclude_z, kwargs...)
+end
+
+"""
+Plot the positions of an orbit.
+"""
+function plotpositions!(fig, pos::AbstractVector{V}; lengthunit = u"km", exclude_z = false, kwargs...) where V <: AbstractVector{<:Real}
+    
+    pos = transpose(hcat(pos...))
+    LU  = string(lengthunit)
+
+    defaults = (; title     = "Orbit Positions",
+                  xlabel    = "X ($LU)", 
+                  ylabel    = "Y ($LU)", 
+                  zlabel    = "Z ($LU)",
+                  label     = "Orbit Position",
+                  formatter = :plain,
+                  grid      = :on,
+                  linewidth = 2)
+
+    options = merge(defaults, kwargs)
+
+    if !exclude_z
+        plot!(fig, pos[:,1], pos[:,2], pos[:,3]; options...)
+    else 
+        plot!(fig, pos[:,1], pos[:,2]; options...)
+    end
+end
+
+"""
+Plot the positions of an orbit.
+"""
+function plotpositions!(fig, pos::AbstractVector{V}; lengthunit = unit(pos[1][1]), exclude_z = false, kwargs...) where V <: AbstractVector{<:Unitful.Length}
+    return plotpositions!(fig, ustrip.(lengthunit(pos[1][1]), pos); lengthunit = lengthunit, exclude_z = exclude_z, kwargs...)
+end
+
+"""
+Plot the positions of an orbit.
+"""
+function plotpositions(pos::AbstractMatrix{<:Real}; lengthunit = u"km", exclude_z = false, kwargs...) 
+    
+    size(pos,2) == 3 || (pos = transpose(pos))
+    LU  = string(lengthunit)
+
+    defaults = (; title     = "Orbit Positions",
+                  xlabel    = "X ($LU)", 
+                  ylabel    = "Y ($LU)", 
+                  zlabel    = "Z ($LU)",
+                  label     = "Orbit Position",
+                  formatter = :plain,
+                  grid      = :on,
+                  linewidth = 2)
+
+    options = merge(defaults, kwargs)
+
+    if !exclude_z
+        plot(pos[:,1], pos[:,2], pos[:,3]; options...)
+    else 
+        plot(pos[:,1], pos[:,2]; options...)
+    end
+end
+
+"""
+Plot the positions of an orbit.
+"""
+function plotpositions(pos::AbstractMatrix{<:Unitful.Length}; lengthunit = unit(pos[1]), exclude_z = false, kwargs...) 
+    return plotpositions(ustrip.(lengthunit(pos[1]), pos); lengthunit = lengthunit, exclude_z = exclude_z, kwargs...)
+end
+
+"""
+Plot the positions of an orbit.
+"""
+function plotpositions!(fig, pos::AbstractMatrix{<:Real}; lengthunit = u"km", exclude_z = false, kwargs...) 
+    
+    size(pos,2) == 3 || (pos = transpose(pos))
+    LU  = string(lengthunit)
+
+    defaults = (; title     = "Orbit Positions",
+                  xlabel    = "X ($LU)", 
+                  ylabel    = "Y ($LU)", 
+                  zlabel    = "Z ($LU)",
+                  label     = "Orbit Position",
+                  formatter = :plain,
+                  grid      = :on,
+                  linewidth = 2)
+
+    options = merge(defaults, kwargs)
+
+    if !exclude_z
+        plot!(fig, pos[:,1], pos[:,2], pos[:,3]; options...)
+    else 
+        plot!(fig, pos[:,1], pos[:,2]; options...)
+    end
+end
+
+"""
+Plot the positions of an orbit.
+"""
+function plotpositions!(fig, pos::AbstractMatrix{<:Unitful.Length}; lengthunit = unit(pos[1]), exclude_z = false, kwargs...) 
+    return plotpositions!(fig, ustrip.(lengthunit(pos[1]), pos); lengthunit = lengthunit, exclude_z = exclude_z, kwargs...)
+end

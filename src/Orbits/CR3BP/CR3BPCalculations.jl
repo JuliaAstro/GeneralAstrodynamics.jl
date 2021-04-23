@@ -185,7 +185,7 @@ end
 """
 Given the Synodic frame vector, returns the vector in the barycenteric-inertial reference frame.
 """
-function inertial(vecₛ, t, ω::Unitful.AbstractQuantity=1.0u"rad"/unit(t))
+function inertial(vecₛ::AbstractVector, t, ω::Unitful.AbstractQuantity=1.0u"rad"/unit(t))
 
     θ = ω*t
     ᴵTₛ = @SMatrix [
@@ -248,16 +248,26 @@ end
 Given a CR3BP orbit, returns the orbit in the inertial reference frame.
 """
 function inertial(orb::CircularRestrictedThreeBodyOrbit)
-    state = inertial(orb.state)
-    return CircularRestrictedThreeBodyOrbit(state, orb.system)
+    if !(orb.state isa NormalizedCartesianState) # TODO not type stable
+        state = inertial(normalize(orb).state)
+        return redimensionalize(CircularRestrictedThreeBodyOrbit(state, orb.system))
+    else
+        state = inertial(orb.state)
+        return CircularRestrictedThreeBodyOrbit(state, orb.system)
+    end
 end
 
 """
 Given a CR3BP orbit, returns the orbit in the Synodic (rotating) reference frame.
 """
 function synodic(orb::CircularRestrictedThreeBodyOrbit)
-    state = synodic(orb.state)
-    return CircularRestrictedThreeBodyOrbit(state, orb.system)
+    if !(orb.state isa NormalizedCartesianState) # TODO not type stable
+        state = synodic(normalize(orb).state)
+        return redimensionalize(CircularRestrictedThreeBodyOrbit(state, orb.system))
+    else
+        state = synodic(orb.state)
+        return CircularRestrictedThreeBodyOrbit(state, orb.system)
+    end
 end
 
 """
