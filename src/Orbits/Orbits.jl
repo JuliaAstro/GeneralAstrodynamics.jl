@@ -18,7 +18,7 @@ export convert, show, eltype, isapprox, isequal
 export AbstractConic, Circular, Elliptical, Parabolic, Hyperbolic, Invalid
 export KeplerianState, RestrictedTwoBodySystem, RestrictedTwoBodyOrbit
 export R2BPState, R2BPSystem, R2BPOrbit, Orbit, CartesianOrbit, KeplerianOrbit
-export mass_parameter
+export mass_parameter, C3
 export eccentricity, semimajor_axis, inclination, RAAN, argument_of_periapsis, true_anomoly
 export conic, keplerian, cartesian, perifocal, semi_parameter, periapsis_radius
 export specific_angular_momentum_vector, specific_angular_momentum, eccentricity_vector
