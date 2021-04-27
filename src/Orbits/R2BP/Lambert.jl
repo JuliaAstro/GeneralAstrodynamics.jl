@@ -639,6 +639,24 @@ function lambert_lancaster_blanchard(
 	
 end
 
+function lambert_lancaster_blanchard(
+		r₁::AbstractVector{<:Unitful.Length},
+		r₂::AbstractVector{<:Unitful.Length},
+	 	μ::SimpleAstrodynamics.Orbits.MassParameter,
+		Δt::Unitful.Time; kwargs...)
+
+	v₁, v₂, rₘ = mlambert(
+	ustrip.(u"km", r₁),
+	ustrip.(u"km", r₂),
+	ustrip(u"km^3/s^2", μ),
+	ustrip(u"s", Δt); 
+	kwargs...
+	)
+
+	return v₁ .* u"km/s", v₂ .* u"km/s", rₘ .* u"km"
+
+end
+
 """
 Lambert solver defaults to Lanchaster-Blanchard method.
 """
