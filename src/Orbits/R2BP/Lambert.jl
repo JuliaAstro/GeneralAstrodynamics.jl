@@ -700,7 +700,7 @@ end
 """
 Lambert solver defaults to Lanchaster-Blanchard method.
 """
-function lambert(r₁, r₂, μ, Δt; kwargs...)
+function lambert(r₁, r₂, μ, Δt; try_universal = Val{true}, kwargs...)
     
     defaults = (; output_extrema = Val{false}, revolutions = 0)
     options  = merge(defaults, kwargs)
@@ -711,9 +711,11 @@ function lambert(r₁, r₂, μ, Δt; kwargs...)
     end
 
     v₁, v₂ = lambert_lancaster_blanchard(r₁, r₂, μ, Δt; options...)
-    if any(isnan, vcat(v₁, v₂)) && options.revolutions == 0
+    if try_universal == Val{true} && any(isnan, vcat(v₁, v₂)) && options.revolutions == 0
         @warn "Gooding-Lancaster-Blanchard algorithm failed to find a solution. Trying universal variables method."
         return lambert_universal(r₁, r₂, μ, Δt; options...)
+    else
+        return v₁, v₂
     end
 
 end
