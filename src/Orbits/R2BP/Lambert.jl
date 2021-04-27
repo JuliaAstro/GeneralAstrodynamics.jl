@@ -633,7 +633,7 @@ function lambert_lancaster_blanchard(
     
     # Find min / max distances
     a = s/2 / (1 - x^2)
-    rₘ = minmax_distances(r̲₁, r̲₁, r₁, r₂, δₜ, a, v̲₁, v̲₂, m, μ)
+    rₘ = minmax_distances(r̲₁, r̲₂, r₁, r₂, δₜ, a, v̲₁, v̲₂, m, μ)
     
     return v̲₁, v̲₂, rₘ
     
