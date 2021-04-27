@@ -24,7 +24,7 @@ export conic, keplerian, cartesian, perifocal, semi_parameter, periapsis_radius
 export specific_angular_momentum_vector, specific_angular_momentum, eccentricity_vector
 export specific_energy, specific_potential_energy, mean_motion, mean_motion_vector
 export eccentric_anomoly, time_since_periapsis, period
-export kepler, lambert
+export kepler, lambert, lambert_universal, lambert_lancaster_blanchard
 export Sun, Mercury, Venus, Earth, Moon, Luna, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto
 
 # Core data structures and functions for CR3BP calculations 
