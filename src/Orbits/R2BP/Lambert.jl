@@ -645,7 +645,7 @@ function lambert_lancaster_blanchard(
 	 	 μ::MassParameter,
 		Δt::Unitful.Time; kwargs...)
 
-	v₁, v₂, rₘ = mlambert(
+	v₁, v₂, rₘ = lambert_lancaster_blanchard(
 	ustrip.(u"km", r₁),
 	ustrip.(u"km", r₂),
 	ustrip(u"km^3/s^2", μ),
