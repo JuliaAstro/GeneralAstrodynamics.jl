@@ -379,12 +379,24 @@ either expressed or implied, of this project.
 """
 function lambert_lancaster_blanchard(
         r̲₁::AbstractVector, r̲₂::AbstractVector, 
-        μ::Number, Δt::Number; revolutions = 0,
-        branch=:left, trajectory=:short,
-        tolerance=1e-12, max_iter=25)
+        μ::Number, Δt::Number; 
+        revolutions = 0,
+        branch=:left, 
+        trajectory=:short,
+        tolerance=1e-12, 
+        max_iter=25,
+        output_extrema=Val{false})
     
     m = revolutions
     
+    if output_extrama == Val{true}
+        error_output = [NaN, NaN, NaN] * u"km/s", [NaN, NaN, NaN] * u"km/s", (NaN * u"km", NaN * u"km")
+    elseif output_extrema == Val{false}
+        error_output = [NaN, NaN, NaN] * u"km/s", [NaN, NaN, NaN] * u"km/s"
+    else
+        throw(ArgumentError("Keyword argument `output_extrema` must be set to Val{true} or Val{false}."))
+    end
+
     if trajectory ∉ (:short, :long)
         throw(ArgumentError("Must specify :long or :short for trajectory kwarg."))
     end
@@ -470,7 +482,7 @@ function lambert_lancaster_blanchard(
         # Check if solution can't be found
         if x₀ < -one(x₀)
             @error "Unable to find solution."
-            return [NaN, NaN, NaN], [NaN, NaN, NaN], (NaN, NaN)
+            error_output
         end
         
     else
@@ -503,7 +515,7 @@ function lambert_lancaster_blanchard(
             
             if iter > max_iter
                 @error "Unable to find solution."
-                return [NaN, NaN, NaN], [NaN, NaN, NaN], (NaN, NaN)
+                error_output
             end
             
         end
@@ -511,7 +523,7 @@ function lambert_lancaster_blanchard(
         # xM should be elliptic: xM ∈ (-1, 1)
         if xM < -one(xM) || xM > one(xM)
             @error "Unable to find solution."
-            return [NaN, NaN, NaN], [NaN, NaN, NaN], (NaN, NaN)	
+            error_output	
         end
         
         # Corresponding time
@@ -520,7 +532,7 @@ function lambert_lancaster_blanchard(
         # Check that T > minimum
         if TM > T
             @error "Unable to find solution."
-            return [NaN, NaN, NaN], [NaN, NaN, NaN], (NaN, NaN)
+            error_output
         end
         
         # Move onto initial values for second solution!
@@ -540,7 +552,7 @@ function lambert_lancaster_blanchard(
                     (1 + 0.15m) * x * (W/2 + 0.03x * √W)) + xM
             if x₀ > one(x₀)
                 @error "Unable to find solution."
-                return [NaN, NaN, NaN], [NaN, NaN, NaN], (NaN, NaN)
+                error_output
             end
             
         else # Second estimate if m > 0
@@ -565,7 +577,7 @@ function lambert_lancaster_blanchard(
 
             if x₀ < -one(x₀)
                 @error "Unable to find solution."
-                return [NaN, NaN, NaN], [NaN, NaN, NaN], (NaN, NaN)
+                error_output
             end
             
         end
@@ -599,7 +611,7 @@ function lambert_lancaster_blanchard(
         
         if iter > max_iter
             @error "Unable to find solution."
-            return [NaN, NaN, NaN], [NaN, NaN, NaN], (NaN, NaN)
+            error_output
         end
         
     end
@@ -635,11 +647,19 @@ function lambert_lancaster_blanchard(
     v̲₁ = v̲ₜ₁ .+ v̲ᵣ₁
     v̲₂ = v̲ₜ₂ .+ v̲ᵣ₂
     
-    # Find min / max distances
-    a = s/2 / (1 - x^2)
-    rₘ = minmax_distances(r̲₁, r̲₂, r₁, r₂, δₜ, a, v̲₁, v̲₂, m, μ)
-    
-    return v̲₁, v̲₂, rₘ
+    if output_extrema == Val{true}
+
+        # Find min / max distances
+        a = s/2 / (1 - x^2)
+        rₘ = minmax_distances(r̲₁, r̲₂, r₁, r₂, δₜ, a, v̲₁, v̲₂, m, μ)
+        
+        return v̲₁, v̲₂, rₘ
+
+    else
+
+        return v̲₁, v̲₂
+
+    end
     
 end
 
@@ -664,4 +684,20 @@ end
 """
 Lambert solver defaults to Lanchaster-Blanchard method.
 """
-lambert = lambert_lancaster_blanchard
+function lambert(r₁, r₂, μ, Δt; kwargs...)
+    
+    defaults = (; output_extrema = Val{false}, revolutions = 0)
+    options  = merge(defaults, kwargs)
+
+    if options.output_extrama == Val{true}
+        @warn "Outputing the extreme distances is only supported by `lambert_lancaster_blanchard`."
+        options.output_extrema = Val{false}
+    end
+
+    v₁, v₂ = lambert_lancaster_blanchard(r₁, r₂, μ, Δt; options...)
+    if any(isnan, vcat(v₁, v₂)) && options.revolutions == 0
+        @warn "Gooding-Lancaster-Blanchard algorithm failed to find a solution. Trying universal variables method."
+        return lambert_universal(r₁, r₂, μ, Δt; options...)
+    end
+
+end
