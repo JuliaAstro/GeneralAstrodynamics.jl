@@ -642,7 +642,7 @@ end
 function lambert_lancaster_blanchard(
 		r₁::AbstractVector{<:Unitful.Length},
 		r₂::AbstractVector{<:Unitful.Length},
-	 	μ::SimpleAstrodynamics.Orbits.MassParameter,
+	 	 μ::MassParameter,
 		Δt::Unitful.Time; kwargs...)
 
 	v₁, v₂, rₘ = mlambert(
