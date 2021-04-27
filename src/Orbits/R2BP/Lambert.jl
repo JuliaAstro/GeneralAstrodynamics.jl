@@ -453,13 +453,14 @@ function lambert_lancaster_blanchard(
             x₀₂ = -√(-δT / (T + T₀/2))
             
             # TODO potential bug, see https://github.com/rodyo/FEX-Lambert/issues/1
-            # W   = x₀₁ + 1.7 * √(2 - phr/π)  # one of these is right!
-            W   = x₀₁ + 1.7 * √(2 - δₜ/π)     # is it this one?           
+            W   = x₀₁ + 1.7 * √(2 - phr/π)  # one of these is right! (1)
+            # W   = x₀₁ + 1.7 * √(2 - δₜ/π)     # is it this one?     (2)    
             
             if W ≥ zero(W)
                 x₀₃ = x₀₁
             else
-                x₀₃ = x₀₁ + (-W^(1/16) * (x₀₂ - x₀₁))
+                x₀₃ = x₀₁ + ((-W)^(1/16) * (x₀₂ - x₀₁)) # one of these is right! (1)
+                # x₀₃ = x₀₁ + (-W^(1/16) * (x₀₂ - x₀₁)) # is it this one?        (2)
             end
             
             λ  = 1 + x₀₃ * (1 + x₀₁)/2 - 0.03 * x₀₃^2 * √(1 + x₀₁)
