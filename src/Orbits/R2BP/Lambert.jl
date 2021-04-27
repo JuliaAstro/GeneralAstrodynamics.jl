@@ -389,7 +389,7 @@ function lambert_lancaster_blanchard(
     
     m = revolutions
     
-    if output_extrama == Val{true}
+    if output_extrema == Val{true}
         error_output = [NaN, NaN, NaN] * u"km/s", [NaN, NaN, NaN] * u"km/s", (NaN * u"km", NaN * u"km")
     elseif output_extrema == Val{false}
         error_output = [NaN, NaN, NaN] * u"km/s", [NaN, NaN, NaN] * u"km/s"
@@ -667,17 +667,33 @@ function lambert_lancaster_blanchard(
         r₁::AbstractVector{<:Unitful.Length},
         r₂::AbstractVector{<:Unitful.Length},
          μ::MassParameter,
-        Δt::Unitful.Time; kwargs...)
+        Δt::Unitful.Time; 
+        output_extrema = Val{false}, 
+        kwargs...)
 
-    v₁, v₂, rₘ = lambert_lancaster_blanchard(
-    ustrip.(u"km", r₁),
-    ustrip.(u"km", r₂),
-    ustrip(u"km^3/s^2", μ),
-    ustrip(u"s", Δt); 
-    kwargs...
-    )
+    if output_extrema == Val{true}
+        v₁, v₂, rₘ = lambert_lancaster_blanchard(
+        ustrip.(u"km", r₁),
+        ustrip.(u"km", r₂),
+        ustrip(u"km^3/s^2", μ),
+        ustrip(u"s", Δt); 
+        output_extrema = output_extrema,
+        kwargs...
+        )
 
-    return v₁ .* u"km/s", v₂ .* u"km/s", rₘ .* u"km"
+        return v₁ .* u"km/s", v₂ .* u"km/s", rₘ .* u"km"
+    else
+        v₁, v₂ = lambert_lancaster_blanchard(
+        ustrip.(u"km", r₁),
+        ustrip.(u"km", r₂),
+        ustrip(u"km^3/s^2", μ),
+        ustrip(u"s", Δt); 
+        output_extrema = output_extrema,
+        kwargs...
+        )
+
+        return v₁ .* u"km/s", v₂ .* u"km/s"
+    end
 
 end
 
@@ -689,7 +705,7 @@ function lambert(r₁, r₂, μ, Δt; kwargs...)
     defaults = (; output_extrema = Val{false}, revolutions = 0)
     options  = merge(defaults, kwargs)
 
-    if options.output_extrama == Val{true}
+    if options.output_extrema == Val{true}
         @warn "Outputing the extreme distances is only supported by `lambert_lancaster_blanchard`."
         options.output_extrema = Val{false}
     end
