@@ -18,7 +18,8 @@ function plotpositions(traj::Trajectory{<:RestrictedTwoBodyOrbit}; lengthunit = 
                   label     = "Orbit Position",
                   formatter = :plain,
                   grid      = :on,
-                  linewidth = 2)
+                  linewidth = 2,
+                  dpi       = 150)
 
     options = merge(defaults, kwargs)
 
@@ -42,7 +43,8 @@ function plotvelocities(traj::Trajectory{<:RestrictedTwoBodyOrbit}; velocityunit
                   label     = "Orbit Velocity",
                   formatter = :plain,
                   grid      = :on,
-                  linewidth = 2)
+                  linewidth = 2,
+                  dpi       = 150)
 
     options = merge(defaults, kwargs)
 
@@ -65,7 +67,8 @@ function plotpositions(pos::AbstractVector{V}; lengthunit = u"km", exclude_z = f
                   label     = "Orbit Position",
                   formatter = :plain,
                   grid      = :on,
-                  linewidth = 2)
+                  linewidth = 2,
+                  dpi       = 150)
 
     options = merge(defaults, kwargs)
 
@@ -79,8 +82,8 @@ end
 """
 Plot the positions of an orbit.
 """
-function plotpositions(pos::AbstractVector{V}; lengthunit = unit(pos[1][1]), exclude_z = false, kwargs...) where V <: AbstractVector{<:Unitful.Length}
-    return plotpositions(ustrip.(lengthunit, pos); lengthunit = lengthunit, exclude_z = exclude_z, kwargs...)
+function plotpositions(pos::AbstractVector{<:V}; lengthunit = unit(pos[1][1]), exclude_z = false, kwargs...) where V <: AbstractVector{<:Unitful.Length}
+    return plotpositions(map(p->ustrip.(lengthunit, p), pos); lengthunit = lengthunit, exclude_z = exclude_z, kwargs...)
 end
 
 """
@@ -91,14 +94,7 @@ function plotpositions!(fig, pos::AbstractVector{V}; lengthunit = u"km", exclude
     pos = transpose(hcat(pos...))
     LU  = string(lengthunit)
 
-    defaults = (; title     = "Orbit Positions",
-                  xlabel    = "X ($LU)", 
-                  ylabel    = "Y ($LU)", 
-                  zlabel    = "Z ($LU)",
-                  label     = "Orbit Position",
-                  formatter = :plain,
-                  grid      = :on,
-                  linewidth = 2)
+    defaults = (; label=:none)
 
     options = merge(defaults, kwargs)
 
@@ -113,7 +109,7 @@ end
 Plot the positions of an orbit.
 """
 function plotpositions!(fig, pos::AbstractVector{V}; lengthunit = unit(pos[1][1]), exclude_z = false, kwargs...) where V <: AbstractVector{<:Unitful.Length}
-    return plotpositions!(fig, ustrip.(lengthunit(pos[1][1]), pos); lengthunit = lengthunit, exclude_z = exclude_z, kwargs...)
+    return plotpositions!(fig, map(p->ustrip.(lengthunit, p), pos); lengthunit = lengthunit, exclude_z = exclude_z, kwargs...)
 end
 
 """
@@ -131,7 +127,8 @@ function plotpositions(pos::AbstractMatrix{<:Real}; lengthunit = u"km", exclude_
                   label     = "Orbit Position",
                   formatter = :plain,
                   grid      = :on,
-                  linewidth = 2)
+                  linewidth = 2,
+                  dpi       = 150)
 
     options = merge(defaults, kwargs)
 
@@ -146,7 +143,7 @@ end
 Plot the positions of an orbit.
 """
 function plotpositions(pos::AbstractMatrix{<:Unitful.Length}; lengthunit = unit(pos[1]), exclude_z = false, kwargs...) 
-    return plotpositions(ustrip.(lengthunit(pos[1]), pos); lengthunit = lengthunit, exclude_z = exclude_z, kwargs...)
+    return plotpositions(ustrip.(lengthunit, pos); lengthunit = lengthunit, exclude_z = exclude_z, kwargs...)
 end
 
 """
@@ -157,14 +154,7 @@ function plotpositions!(fig, pos::AbstractMatrix{<:Real}; lengthunit = u"km", ex
     size(pos,2) == 3 || (pos = transpose(pos))
     LU  = string(lengthunit)
 
-    defaults = (; title     = "Orbit Positions",
-                  xlabel    = "X ($LU)", 
-                  ylabel    = "Y ($LU)", 
-                  zlabel    = "Z ($LU)",
-                  label     = "Orbit Position",
-                  formatter = :plain,
-                  grid      = :on,
-                  linewidth = 2)
+    defaults = (; label=:none)
 
     options = merge(defaults, kwargs)
 

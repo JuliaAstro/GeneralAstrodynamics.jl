@@ -201,7 +201,7 @@ end
 """
 Given an `InertialCartesianState`, returns the state in the synodic (rotating) reference frame.
 """
-function synodic(state::InertialCartesianState, ω::Unitful.AbstractQuantity=1.0u"rad"/Orbits.timeunit(state))
+function synodic(state::NormalizedCartesianState{F, Inertial}, ω::Unitful.AbstractQuantity=1.0u"rad"/Orbits.timeunit(state)) where F
 
     t = epoch(state)
     θ = ω*t
@@ -217,7 +217,7 @@ end
 """
 Given a `SynodicCartesianState`, returns the state in the inertial reference frame.
 """
-function inertial(state::SynodicCartesianState, ω::Unitful.AbstractQuantity=(1.0u"rad")/Orbits.timeunit(state))
+function inertial(state::NormalizedCartesianState{F, Synodic}, ω::Unitful.AbstractQuantity=(1.0u"rad")/Orbits.timeunit(state)) where F
 
     t = epoch(state)
     θ = ω*t

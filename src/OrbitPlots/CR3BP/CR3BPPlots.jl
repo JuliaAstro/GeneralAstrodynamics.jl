@@ -31,7 +31,8 @@ function plotpositions(traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}; len
                   label     = "Orbit Position",
                   formatter = :plain,
                   grid      = :on,
-                  linewidth = 2)
+                  linewidth = 2,
+                  dpi       = 150)
 
     options = merge(defaults, kwargs)
 
@@ -103,8 +104,9 @@ function plotvelocities(traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}; ve
                   label     = "Orbit Velocity",
                   formatter = :plain,
                   grid      = :on,
-                  linewidth = 2)
-
+                  linewidth = 2,
+                  dpi       = 150)
+                                    
     options = merge(defaults, kwargs)
 
     if !exclude_z

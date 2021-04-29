@@ -18,13 +18,13 @@ export convert, show, eltype, isapprox, isequal
 export AbstractConic, Circular, Elliptical, Parabolic, Hyperbolic, Invalid
 export KeplerianState, RestrictedTwoBodySystem, RestrictedTwoBodyOrbit
 export R2BPState, R2BPSystem, R2BPOrbit, Orbit, CartesianOrbit, KeplerianOrbit
-export mass_parameter
+export mass_parameter, C3
 export eccentricity, semimajor_axis, inclination, RAAN, argument_of_periapsis, true_anomoly
 export conic, keplerian, cartesian, perifocal, semi_parameter, periapsis_radius
 export specific_angular_momentum_vector, specific_angular_momentum, eccentricity_vector
 export specific_energy, specific_potential_energy, mean_motion, mean_motion_vector
 export eccentric_anomoly, time_since_periapsis, period
-export kepler, lambert
+export kepler, lambert, lambert_universal, lambert_lancaster_blanchard
 export Sun, Mercury, Venus, Earth, Moon, Luna, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto
 
 # Core data structures and functions for CR3BP calculations 

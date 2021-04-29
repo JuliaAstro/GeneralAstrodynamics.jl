@@ -1,5 +1,5 @@
 [![Tests](https://github.com/cadojo/SimpleAstrodynamics.jl/workflows/Tests/badge.svg)](https://github.com/cadojo/SimpleAstrodynamics.jl/actions?query=workflow%3ATests)
-[![Docs](https://github.com/cadojo/SimpleAstrodynamics.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/SimpleAstrodynamics.jl/stable)
+[![Docs](https://github.com/cadojo/SimpleAstrodynamics.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/SimpleAstrodynamics.jl/dev)
 
 # SimpleAstrodynamics.jl
 Common astrodynamics calculations, with units!
