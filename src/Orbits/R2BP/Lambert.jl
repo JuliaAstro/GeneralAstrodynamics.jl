@@ -8,7 +8,7 @@
 """
 Solves Lambert's problem through the use of univeral variables.
 """
-function lambert_universal(r̅₁, r̅₂, μ, Δt; trajectory=:short, tolerance=1e-6, max_iter=25)
+function lambert_universal(r̅₁, r̅₂, μ, Δt; trajectory=:short, tolerance=1e-12, max_iter=25)
 
     # Specify short way, or long way trajectory
     if trajectory == :short
@@ -43,7 +43,7 @@ function lambert_universal(r̅₁, r̅₂, μ, Δt; trajectory=:short, tolerance
     iter = 0
 
     while (iter < max_iter) && 
-          (abs(Δtₙ - Δt) > (tol * oneunit(Δt))) || (A > 0 *oneunit(A) && yₙ < 0 * oneunit(yₙ))
+          (abs(Δtₙ - Δt) > (tolerance * oneunit(Δt))) || (A > 0 *oneunit(A) && yₙ < 0 * oneunit(yₙ))
 
         yₙ = r₁ + r₂ + (A * (ψₙ*C₃ - 1) / √(C₂))
         χₙ = √(yₙ / C₂)
@@ -482,7 +482,7 @@ function lambert_lancaster_blanchard(
         # Check if solution can't be found
         if x₀ < -one(x₀)
             @error "Unable to find solution."
-            error_output
+            return error_output
         end
         
     else
@@ -490,6 +490,8 @@ function lambert_lancaster_blanchard(
         # Minumum ∂T(x)
         xMπ = 4 / (3π * (2m + 1))
         if phr < π
+            xM₀ = xMπ * (phr / π)^(1/8)
+        elseif phr > π
             xM₀ = xMπ * (2 - (2 - phr/π)^(1/8))
         else
             xM₀ = zero(xMπ)
@@ -515,7 +517,7 @@ function lambert_lancaster_blanchard(
             
             if iter > max_iter
                 @error "Unable to find solution."
-                error_output
+                return error_output
             end
             
         end
@@ -523,7 +525,7 @@ function lambert_lancaster_blanchard(
         # xM should be elliptic: xM ∈ (-1, 1)
         if xM < -one(xM) || xM > one(xM)
             @error "Unable to find solution."
-            error_output	
+            return error_output	
         end
         
         # Corresponding time
@@ -532,7 +534,7 @@ function lambert_lancaster_blanchard(
         # Check that T > minimum
         if TM > T
             @error "Unable to find solution."
-            error_output
+            return error_output
         end
         
         # Move onto initial values for second solution!
@@ -545,14 +547,14 @@ function lambert_lancaster_blanchard(
         # First estimate if m > 0
         if branch == :left
             
-            x = √(tmTM / (∂²T/2 + TmTM / (1 - xM)^2))
+            x = √(TmTM / (∂²T/2 + TmTM / (1 - xM)^2))
             W = xM + x
             W = 4 * W / (4 + TmTM) + (1 - W)^2
             x₀  = x * (1 - (1 + m + (δₜ - 1/2)) / 
                     (1 + 0.15m) * x * (W/2 + 0.03x * √W)) + xM
             if x₀ > one(x₀)
                 @error "Unable to find solution."
-                error_output
+                return error_output
             end
             
         else # Second estimate if m > 0
@@ -561,9 +563,9 @@ function lambert_lancaster_blanchard(
                 x₀ = xM - √(TM / (∂²T/2 - TmTM * (∂²T/2/T0mTM - 1/xM^2)))
             else
                 x₀₀ = δT / (4 - δT)
-                W   = x₀₀ + 1.7 * √(2 * (1 - phr))
+                W   = x₀₀ + 1.7 * √Complex(2 * (1 - phr))
                 
-                if W ≥ zero(W)
+                if real(W) ≥ zero(real(W))
                     x₀₃ = x₀₀
                 else
                     x₀₃ = x₀₀ - √((-W)^(1/8)) * (x₀₀ + √(-δT / (1.5*T₀ - δT)))
@@ -575,9 +577,9 @@ function lambert_lancaster_blanchard(
                 x₀ = x₀₃ * λ
             end
 
-            if x₀ < -one(x₀)
+            if real(x₀) < -one(real(x₀))
                 @error "Unable to find solution."
-                error_output
+                return error_output
             end
             
         end
@@ -611,7 +613,7 @@ function lambert_lancaster_blanchard(
         
         if iter > max_iter
             @error "Unable to find solution."
-            error_output
+            return error_output
         end
         
     end
@@ -663,59 +665,338 @@ function lambert_lancaster_blanchard(
     
 end
 
-function lambert_lancaster_blanchard(
-        r₁::AbstractVector{<:Unitful.Length},
-        r₂::AbstractVector{<:Unitful.Length},
-         μ::MassParameter,
-        Δt::Unitful.Time; 
-        output_extrema = Val{false}, 
-        kwargs...)
 
-    if output_extrema == Val{true}
-        v₁, v₂, rₘ = lambert_lancaster_blanchard(
-        ustrip.(u"km", r₁),
-        ustrip.(u"km", r₂),
-        ustrip(u"km^3/s^2", μ),
-        ustrip(u"s", Δt); 
-        output_extrema = output_extrema,
-        kwargs...
-        )
+"""
+The following code was converted to Julia, from a [GitHub repository](https://github.com/rodyo/FEX-Lambert)
+that hosts a MATLAB implementation. At the time of writing, this respository has a BSD license. I'm providing the copyright notice here, as instructed by the license text.
 
-        return v₁ .* u"km/s", v₂ .* u"km/s", rₘ .* u"km"
-    else
-        v₁, v₂ = lambert_lancaster_blanchard(
-        ustrip.(u"km", r₁),
-        ustrip.(u"km", r₂),
-        ustrip(u"km^3/s^2", μ),
-        ustrip(u"s", Δt); 
-        output_extrema = output_extrema,
-        kwargs...
-        )
+```
+Copyright (c) 2018, Rody Oldenhuis
+All rights reserved.
 
-        return v₁ .* u"km/s", v₂ .* u"km/s"
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The views and conclusions contained in the software and documentation are those
+of the authors and should not be interpreted as representing official policies,
+either expressed or implied, of this project.
+```
+"""
+function lambert(r1vec, r2vec, tf, m, muC) 
+
+    # original documentation:
+    #=
+    This routine implements a new algorithm that solves Lambert's problem. The
+    algorithm has two major characteristics that makes it favorable to other
+    existing ones.
+
+    1) It describes the generic orbit solution of the boundary condition
+    problem through the variable X=log(1+cos(alpha/2)). By doing so the
+    graph of the time of flight become defined in the entire real axis and
+    resembles a straight line. Convergence is granted within few iterations
+    for all the possible geometries (except, of course, when the transfer
+    angle is zero). When multiple revolutions are considered the variable is
+    X=tan(cos(alpha/2)*pi/2).
+
+    2) Once the orbit has been determined in the plane, this routine
+    evaluates the velocity vectors at the two points in a way that is not
+    singular for the transfer angle approaching to pi (Lagrange coefficient
+    based methods are numerically not well suited for this purpose).
+
+    As a result Lambert's problem is solved (with multiple revolutions
+    being accounted for) with the same computational effort for all
+    possible geometries. The case of near 180 transfers is also solved
+    efficiently.
+
+    We note here that even when the transfer angle is exactly equal to pi
+    the algorithm does solve the problem in the plane (it finds X), but it
+    is not able to evaluate the plane in which the orbit lies. A solution
+    to this would be to provide the direction of the plane containing the
+    transfer orbit from outside. This has not been implemented in this
+    routine since such a direction would depend on which application the
+    transfer is going to be used in.
+
+    please report bugs to dario.izzo@esa.int    
+    =#
+
+    # adjusted documentation:
+    #=
+    By default, the short-way solution is computed. The long way solution
+    may be requested by giving a negative value to the corresponding
+    time-of-flight [tf].
+
+    For problems with |m| > 0, there are generally two solutions. By
+    default, the right branch solution will be returned. The left branch
+    may be requested by giving a negative value to the corresponding
+    number of complete revolutions [m].
+    =#
+
+    # Authors
+    # .-`-.-`-.-`-.-`-.-`-.-`-.-`-.-`-.-`-.-`-.-`-.-`-.-`-.-`-.-`-.
+    # Name       : Dr. Dario Izzo
+    # E-mail     : dario.izzo@esa.int
+    # Affiliation: ESA / Advanced Concepts Team (ACT)
+
+    # Made more readible and optimized for speed by Rody P.S. Oldenhuis
+    # Code available in MGA.M on   http://www.esa.int/gsp/ACT/inf/op/globopt.htm
+
+    # last edited 12/Dec/2009
+
+    # ADJUSTED FOR EML-COMPILATION 24/Dec/2009
+
+    # initial values        
+    tol = 1e-14;    bad = false;     days = 86400; 
+
+    # work with non-dimensional units
+    r1 = sqrt(dot(r1vec, r1vec));  r1vec = r1vec/r1;
+    V = sqrt(muC/r1);          r2vec = r2vec/r1;
+    T = r1/V;                  tf    = tf*days/T; # also transform to seconds
+
+    # relevant geometry parameters (non dimensional)
+    mr2vec = sqrt(dot(r2vec, r2vec));
+    # make 100# sure it's in (-1 <= dth <= +1)
+    dth = acos( max(-1, min(1, (dot(r1vec, r2vec))/mr2vec)) );  
+        
+    # decide whether to use the left or right branch (for multi-revolution
+    # problems), and the long- or short way    
+    leftbranch = sign(m);   longway = sign(tf);     
+    m = abs(m);             tf = abs(tf);
+    if (longway < 0)
+        dth = 2*pi - dth
+    end    
+
+    # derived quantities        
+    c      = sqrt(1 + mr2vec^2 - 2*mr2vec*cos(dth)); # non-dimensional chord
+    s      = (1 + mr2vec + c)/2;                     # non-dimensional semi-perimeter
+    a_min  = s/2;                                    # minimum energy ellipse semi major axis
+    Lambda = sqrt(mr2vec)*cos(dth/2)/s;              # lambda parameter (from BATTIN's book)
+    crossprd = [r1vec[2]*r2vec[3] - r1vec[3]*r2vec[2],
+                r1vec[3]*r2vec[1] - r1vec[1]*r2vec[3], # non-dimensional normal vectors
+                r1vec[1]*r2vec[2] - r1vec[2]*r2vec[1]];
+    mcr       = sqrt(dot(crossprd, crossprd));           # magnitues thereof
+    nrmunit   = crossprd/mcr;                        # unit vector thereof
+
+    # Initial values
+    # ---------------------------------------------------------
+
+    # ELMEX requires this variable to be declared OUTSIDE the IF-statement
+    logt = log(tf); # avoid re-computing the same value
+
+    # single revolution (1 solution)
+    if (m == 0)
+
+        # initial values        
+        inn1 = -0.5233;      # first initial guess
+        inn2 = +0.5233;      # second initial guess
+        x1   = log(1 + inn1);# transformed first initial guess
+        x2   = log(1 + inn2);# transformed first second guess
+
+        # multiple revolutions (0, 1 or 2 solutions)
+        # the returned soltuion depends on the sign of [m]
+    else            
+        # select initial values
+        if (leftbranch < 0)
+            inn1 = -0.5234; # first initial guess, left branch
+            inn2 = -0.2234; # second initial guess, left branch
+        else
+            inn1 = +0.7234; # first initial guess, right branch
+            inn2 = +0.5234; # second initial guess, right branch
+        end        
+        x1 = tan(inn1*pi/2);# transformed first initial guess
+        x2 = tan(inn2*pi/2);# transformed first second guess
     end
+
+    # since (inn1, inn2) < 0, initial estimate is always ellipse
+    xx   = [inn1, inn2];  aa = a_min ./ (1 .- xx.^2);
+    bbeta = longway * 2*asin.(sqrt.((s-c) / 2 ./ aa));
+    # make 100.4# sure it's in (-1 <= xx <= +1)
+    aalfa = 2*acos.(  max.(-1, min.(1, xx)) );
+
+    # evaluate the time of flight via Lagrange expression
+    y12  = @. aa.*sqrt(aa).*((aalfa - sin(aalfa)) - (bbeta-sin(bbeta)) + 2*pi*m);
+
+    # initial estimates for y
+    if m == 0
+        y1 = log(y12[1]) - logt;
+        y2 = log(y12[2]) - logt;
+    else
+        y1 = y12[1] - tf;
+        y2 = y12[2] - tf;
+    end
+
+    # Solve for x
+    # ---------------------------------------------------------
+
+    # Newton-Raphson iterations
+    # NOTE - the number of iterations will go to infinity in case
+    # m > 0  and there is no solution. Start the other routine in 
+    # that case
+    err = Inf;  iterations = 0; xnew = 0;    
+    while (err > tol)
+        # increment number of iterations
+        iterations = iterations + 1;
+        # new x
+        xnew = (x1*y2 - y1*x2) / (y2-y1);
+        # copy-pasted code (for performance)
+        if m == 0
+            x = exp(xnew) - 1; 
+        else 
+            x = atan(xnew)*2/pi; 
+        end
+
+        a = a_min/(1 - x^2);
+        if (x < 1) # ellipse
+            beta = longway * 2*asin(sqrt((s-c)/2/a));
+            # make 100.4# sure it's in (-1 <= xx <= +1)
+            alfa = 2*acos( max(-1, min(1, x)) );
+        else # hyperbola
+            alfa = 2*acosh(x);
+            beta = longway * 2*asinh(sqrt((s-c)/(-2*a)));
+        end
+        # evaluate the time of flight via Lagrange expression
+        if (a > 0)
+            tof = a*sqrt(a)*((alfa - sin(alfa)) - (beta-sin(beta)) + 2*pi*m);
+        else
+            tof = -a*sqrt(-a)*((sinh(alfa) - alfa) - (sinh(beta) - beta));
+        end
+        # new value of y
+        if m ==0
+            ynew = log(tof) - logt; 
+        else 
+            ynew = tof - tf; 
+        end
+
+        # save previous and current values for the next iterarion
+        # (prevents getting stuck between two values)
+        x1 = x2;  x2 = xnew;
+        y1 = y2;  y2 = ynew;
+        # update error
+        err = abs(x1 - xnew);
+        # escape clause
+        if (iterations > 15)
+            bad = true; break; 
+        end
+    end
+
+    # If the Newton-Raphson scheme failed, try to solve the problem
+    # with the other Lambert targeter. 
+    if bad
+        # NOTE: use the original, UN-normalized quantities
+        _branch = leftbranch > 0 ? :left : :right
+        _traj   = longway > 0 ? :long : :short
+        _m = m
+
+        V1, V2, extremal_distances = lambert_lancaster_blanchard(
+            r1vec*r1, r2vec*r1, tf*T, muC;
+            revolutions = _m,
+            branch = _branch,
+            trajectory = _traj,
+            output_extrema = Val{true});
+        return V1, V2, extremal_distances, 1
+    end
+
+    # convert converged value of x
+    if m==0
+        x = exp(xnew) - 1; 
+    else 
+        x = atan(xnew)*2/pi; 
+    end
+
+    #=
+    The solution has been evaluated in terms of log(x+1) or tan(x*pi/2), we
+    now need the conic. As for transfer angles near to pi the Lagrange-
+    coefficients technique goes singular (dg approaches a zero/zero that is
+    numerically bad) we here use a different technique for those cases. When
+    the transfer angle is exactly equal to pi, then the ih unit vector is not
+    determined. The remaining equations, though, are still valid.
+    =#
+
+    # Solution for the semi-major axis
+    a = a_min/(1-x^2);
+
+    # Calculate psi
+    if (x < 1) # ellipse
+        beta = longway * 2*asin(sqrt((s-c)/2/a));
+        # make 100.4# sure it's in (-1 <= xx <= +1)
+        alfa = 2*acos( max(-1, min(1, x)) );
+        psi  = (alfa-beta)/2;
+        eta2 = 2*a*sin(psi)^2/s;
+        eta  = sqrt(eta2);
+    else       # hyperbola
+        beta = longway * 2*asinh(sqrt((c-s)/2/a));
+        alfa = 2*acosh(x);
+        psi  = (alfa-beta)/2;
+        eta2 = -2*a*sinh(psi)^2/s;
+        eta  = sqrt(eta2);
+    end
+
+    # unit of the normalized normal vector
+    ih = longway * nrmunit;
+
+    # unit vector for normalized [r2vec]
+    r2n = r2vec/mr2vec;
+
+    # cross-products
+    # don't use cross() (emlmex() would try to compile it, and this way it
+    # also does not create any additional overhead)
+    crsprd1 = [ih[2]*r1vec[3]-ih[3]*r1vec[2],
+            ih[3]*r1vec[1]-ih[1]*r1vec[3],
+            ih[1]*r1vec[2]-ih[2]*r1vec[1]];    
+    crsprd2 = [ih[2]*r2n[3]-ih[3]*r2n[2],
+            ih[3]*r2n[1]-ih[1]*r2n[3],
+            ih[1]*r2n[2]-ih[2]*r2n[1]];
+
+    # radial and tangential directions for departure velocity
+    Vr1 = 1/eta/sqrt(a_min) * (2*Lambda*a_min - Lambda - x*eta);
+    Vt1 = sqrt(mr2vec/a_min/eta2 * sin(dth/2)^2);
+
+    # radial and tangential directions for arrival velocity
+    Vt2 = Vt1/mr2vec;
+    Vr2 = (Vt1 - Vt2)/tan(dth/2) - Vr1;
+
+    # terminal velocities
+    V1 = (Vr1*r1vec + Vt1*crsprd1)*V;
+    V2 = (Vr2*r2n + Vt2*crsprd2)*V;
+
+    # exitflag
+    exitflag = 1; # (success)
+
+    # also compute minimum distance to central body
+    # NOTE: use un-transformed vectors again!
+    extremal_distances = minmax_distances(r1vec*r1, r2vec*r1, r1, mr2vec*r1, dth, a*r1, V1, V2, m, muC);
+
+    return V1, V2, extremal_distances, exitflag
 
 end
 
 """
-Lambert solver defaults to Lanchaster-Blanchard method.
+Wrapper for Unitful inputs.
 """
-function lambert(r₁, r₂, μ, Δt; try_universal = Val{true}, kwargs...)
-    
-    defaults = (; output_extrema = Val{false}, revolutions = 0)
-    options  = merge(defaults, kwargs)
+function lambert(r1::AbstractVector{<:Unitful.Length}, r2::AbstractVector{<:Unitful.Length}, tf::Unitful.Time, m::Integer, mu::MassParameter)
+    v1, v2, ex, fl = lambert(
+        ustrip.(u"km", r1),
+        ustrip.(u"km", r2),
+        ustrip.(u"d", tf),
+        m,
+        ustrip.(u"km^3/s^2", mu)
+    )
 
-    if options.output_extrema == Val{true}
-        @warn "Outputing the extreme distances is only supported by `lambert_lancaster_blanchard`."
-        options.output_extrema = Val{false}
-    end
-
-    v₁, v₂ = lambert_lancaster_blanchard(r₁, r₂, μ, Δt; options...)
-    if try_universal == Val{true} && any(isnan, vcat(v₁, v₂)) && options.revolutions == 0
-        @warn "Gooding-Lancaster-Blanchard algorithm failed to find a solution. Trying universal variables method."
-        return lambert_universal(r₁, r₂, μ, Δt; options...)
-    else
-        return v₁, v₂
-    end
-
+    return v1 .* u"km/s", v2 .* u"km/s", ex .* u"km", fl
 end
