@@ -1,4 +1,4 @@
-# SimpleAstrodynamics.jl
+# Orbits.jl
 
 ## Overview
 
@@ -17,10 +17,10 @@ get this page up and running!
 ## Examples!
 
 ```julia
+using Orbits
+
 using Plots
-using Unitful
-using UnitfulAngles
-using SimpleAstrodynamics
+using Unitful, UnitfulAngles
 
 # Find a numerically periodic halo orbit
 halo_orbit, halo_period = halo(SunEarth; Az=200_000u"km", L=2)

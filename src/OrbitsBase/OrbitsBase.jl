@@ -4,7 +4,7 @@ for core astrodynamics problems, including the
 Restricted Two-body Problem, the Circular Restricted
 Three-body Problem, and the N-body problem.
 """
-module Orbits
+module OrbitsBase
 
 # Common stuctures and functions
 export AbstractUnitfulStructure, AbstractState, AbstractFrame, AbstractSystem, AbstractOrbit, CartesianState
@@ -50,8 +50,6 @@ using Contour
 using StaticArrays
 using LinearAlgebra
 using Roots: find_zero
-
-@reexport using Unitful, UnitfulAstro, UnitfulAngles
 
 # Source Code 
 include("Common/CommonTypes.jl")

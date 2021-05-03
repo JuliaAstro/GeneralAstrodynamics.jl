@@ -1,7 +1,7 @@
-[![Tests](https://github.com/cadojo/SimpleAstrodynamics.jl/workflows/Tests/badge.svg)](https://github.com/cadojo/SimpleAstrodynamics.jl/actions?query=workflow%3ATests)
-[![Docs](https://github.com/cadojo/SimpleAstrodynamics.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/SimpleAstrodynamics.jl/dev)
+[![Tests](https://github.com/cadojo/Orbits.jl/workflows/Tests/badge.svg)](https://github.com/cadojo/Orbits.jl/actions?query=workflow%3ATests)
+[![Docs](https://github.com/cadojo/Orbits.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/Orbits.jl/dev)
 
-# SimpleAstrodynamics.jl
+# Orbits.jl
 Common astrodynamics calculations, with units!
 
 ## ⚠️ Under Construction ⚠️
@@ -37,10 +37,12 @@ This package aims to provide a simple interface for common astrodynamics problem
 ## Credits
 
 \[1\] Vallado, David A. Fundamentals of astrodynamics and applications. Vol. 12. Springer Science & Business Media, 2001.
-* All equations and algorithms within `SimpleAstrodynamics` are pulled from Vallado's _Fundamentals of Astrodynamics and Applications_, as well as course notes from ENAE 601 (Astrodynamics) at the University of Maryland.
+* Many equations and algorithms within `Orbits` are pulled from Vallado's _Fundamentals of Astrodynamics and Applications_, as well as course notes from ENAE 601 (Astrodynamics) at the University of Maryland.
 
 \[2\] [Unitful.jl](https://github.com/PainterQubits/Unitful.jl) and [UnitfulAstro.jl](https://github.com/JuliaAstro/UnitfulAstro.jl) are used for unit handling.
 
+\[3\]
+
 ## Usage
 
-Check out the [Getting Started](https://cadojo.github.io/SimpleAstrodynamics.jl/stable/Overview/getting-started/#Getting-Started) documentation for code examples, and more detail about using this package. 
+Check out the [Getting Started](https://cadojo.github.io/Orbits.jl/stable/Overview/getting-started/#Getting-Started) documentation for code examples, and more detail about using this package. 

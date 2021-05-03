@@ -15,7 +15,7 @@ export loadascii, Interpolator, interpolator
 using StaticArrays
 using Interpolations
 using CSV, DataFrames
-using ..Orbits
+using ..OrbitsBase
 
 # Module source code
 include("LoadASCII.jl")
