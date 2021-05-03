@@ -226,6 +226,23 @@ An alias for `CartesianState` instances with `Synodic` coordinate frames.
 const SynodicCartesianState{F, LU, TU} = CartesianState{F, LU, TU, Synodic}
 
 """
-An alias for `CarteisianState` instances with `Inertial` coordinate frames.
+An alias for `CartesianState` instances with `Inertial` coordinate frames.
 """
 const InertialCartesianState{F, LU, TU} = CartesianState{F, LU, TU, Inertial}
+
+"""
+A common reference frame for astrodynamics problems that humans solve! 
+The Earth-centered Inertial frame.
+"""
+struct ECI <: AbstractFrame end;
+
+"""
+A common reference frame for astrodynamics problems that humans solve! 
+The Sun-centered (heliocentric) Inertial frame.
+"""
+struct HCI <: AbstractFrame end;
+
+"""
+An inertial frame centered at the CR3BP system barycenter.
+"""
+struct BarycentricInertial  <: AbstractFrame end;

@@ -1,10 +1,10 @@
 using Documenter
-using SimpleAstrodynamics
+using Orbits 
 
 
 makedocs(
     modules=[
-        SimpleAstrodynamics
+       Orbits 
     ],
     format=Documenter.HTML(),
     sitename="SimpleAstrodynamics.jl",
@@ -16,7 +16,7 @@ makedocs(
 
 deploydocs(
     target = "build",
-    repo="github.com/cadojo/SimpleAstrodynamics.jl.git",
+    repo="github.com/cadojo/Orbits.jl.git",
     branch = "gh-pages",
     deps   = nothing,
     make   = nothing,

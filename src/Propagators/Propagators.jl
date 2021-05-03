@@ -19,8 +19,9 @@ using LinearAlgebra
 using SymbolicUtils
 using ComponentArrays
 using DifferentialEquations
+using Unitful, UnitfulAstro, UnitfulAngles
 
-using ..Orbits
+using ..OrbitsBase
 
 include("R2BP/R2BPPropagators.jl")
 include("CR3BP/CR3BPPropagators.jl")
