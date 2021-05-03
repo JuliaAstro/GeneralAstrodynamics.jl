@@ -15,6 +15,7 @@ export zerovelocityplot, zerovelocityplot!
 # Module Dependencies
 using Plots
 using LinearAlgebra
+using Unitful, UnitfulAstro, UnitfulAngles
 
 using ..OrbitsBase
 

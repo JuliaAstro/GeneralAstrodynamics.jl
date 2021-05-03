@@ -15,6 +15,8 @@ export loadascii, Interpolator, interpolator
 using StaticArrays
 using Interpolations
 using CSV, DataFrames
+using Unitful, UnitfulAstro, UnitfulAngles
+
 using ..OrbitsBase
 
 # Module source code

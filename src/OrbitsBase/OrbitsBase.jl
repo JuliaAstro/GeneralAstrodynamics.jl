@@ -45,11 +45,12 @@ export transform, transform_to_primary, transform_to_secondary
 export SunEarth, EarthMoon
 
 # Module Dependencies
-using Reexport
 using Contour
 using StaticArrays
 using LinearAlgebra
 using Roots: find_zero
+using Unitful, UnitfulAstro, UnitfulAngles
+
 
 # Source Code 
 include("Common/CommonTypes.jl")
