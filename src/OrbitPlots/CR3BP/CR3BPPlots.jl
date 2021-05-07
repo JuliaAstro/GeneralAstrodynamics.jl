@@ -24,15 +24,15 @@ function plotpositions(traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}; len
         LU  = string(normalized_length_unit(first(traj).system))
     end
 
-    defaults = (; title     = "$(string(frame)) Positions" * (first(traj).system.name == "" ? "" : " w.r.t. $(first(traj).system.name) Barycenter"),
-                  xlabel    = "X ($LU)", 
-                  ylabel    = "Y ($LU)", 
-                  zlabel    = "Z ($LU)",
-                  label     = "Orbit Position",
-                  formatter = :plain,
-                  grid      = :on,
-                  linewidth = 2,
-                  dpi       = 150)
+    defaults = (; title        = "$(string(frame)) Positions" * (first(traj).system.name == "" ? "" : " w.r.t. $(first(traj).system.name) Barycenter"),
+                  xlabel       = "X ($LU)", 
+                  ylabel       = "Y ($LU)", 
+                  zlabel       = "Z ($LU)",
+                  label        = "Orbit Position",
+                  formatter    = :plain,
+                  grid         = :on,
+                  linewidth    = 2,
+                  dpi          = 150)
 
     options = merge(defaults, kwargs)
 
@@ -65,7 +65,7 @@ function plotpositions!(fig, traj::Trajectory{<:CircularRestrictedThreeBodyOrbit
         LU  = string(normalized_length_unit(first(traj).system))
     end
 
-    defaults = (; label = :none)
+    defaults = (; linewidth = 2, label = :none)
     options = merge(defaults, kwargs)
 
     if !exclude_z
@@ -97,15 +97,15 @@ function plotvelocities(traj::Trajectory{<:CircularRestrictedThreeBodyOrbit}; ve
         VU  = string(normalized_length_unit(first(traj).system) / normalized_time_unit(first(traj).system))
     end
 
-    defaults = (; title     = "$(string(frame)) Velocities" * (first(traj).system.name == "" ? "" : " w.r.t. $(first(traj).system.name) Barycenter"),
-                  xlabel    = "X ($VU)", 
-                  ylabel    = "Y ($VU)", 
-                  zlabel    = "Z ($VU)",
-                  label     = "Orbit Velocity",
-                  formatter = :plain,
-                  grid      = :on,
-                  linewidth = 2,
-                  dpi       = 150)
+    defaults = (; title        = "$(string(frame)) Velocities" * (first(traj).system.name == "" ? "" : " w.r.t. $(first(traj).system.name) Barycenter"),
+                  xlabel       = "X ($VU)", 
+                  ylabel       = "Y ($VU)", 
+                  zlabel       = "Z ($VU)",
+                  label        = "Orbit Velocity",
+                  formatter    = :plain,
+                  grid         = :on,
+                  linewidth    = 2,
+                  dpi          = 150)
                                     
     options = merge(defaults, kwargs)
 
@@ -138,7 +138,7 @@ function plotvelocities!(fig, traj::Trajectory{<:CircularRestrictedThreeBodyOrbi
         VU  = string(normalized_length_unit(first(traj).system) / normalized_time_unit(first(traj).system))
     end
 
-    defaults = (; label = :none)
+    defaults = (; linewidth = 2, label = :none)
     options = merge(defaults, kwargs)
 
     if !exclude_z
@@ -152,9 +152,17 @@ end
 Plot the nondimensional positions of 
 CR3BP celestial bodies.
 """
-function plotbodies(system::CircularRestrictedThreeBodySystem; normalize = true, exclude_z = true, kwargs...)
+function plotbodies(system::CircularRestrictedThreeBodySystem; bodies = ("", ""), normalize = true, exclude_z = true, kwargs...)
 
     μ = normalized_mass_parameter(system)
+
+    if all(isempty, bodies)
+        if occursin("-", system.name)
+            bodies = (string.(split(system.name, "-"))...,)
+        else
+            bodies = ("Body 1", "Body 2")
+        end
+    end
 
     if normalize
         r₁ = [[-μ],  [0], [0]]
@@ -170,8 +178,8 @@ function plotbodies(system::CircularRestrictedThreeBodySystem; normalize = true,
     options  = merge(defaults, kwargs)
 
     if exclude_z
-        fig = scatter(r₁[1:2]...; markersize=10, markercolor=:lightblue, label="Body 1")
-        scatter!(fig, r₂[1:2]...; markersize=6, markercolor=:gray, label="Body 2")
+        fig = scatter(r₁[1:2]...; label=bodies[1], options...)
+        scatter!(fig, r₂[1:2]...; label=bodies[2], options...)
         plot!(fig; options...)
         return fig
     else
@@ -188,9 +196,21 @@ end
 Plot the nondimensional positions of 
 CR3BP celestial bodies to the last figure.
 """
-function plotbodies!(fig, system::CircularRestrictedThreeBodySystem; normalize = true, exclude_z = true, kwargs...)
+function plotbodies!(fig, system::CircularRestrictedThreeBodySystem;
+                     bodies = ("", ""),
+                     normalize = true, 
+                     exclude_z = true, 
+                     kwargs...)
 
     μ = normalized_mass_parameter(system)
+
+    if all(isempty, bodies)
+        if occursin("-", system.name)
+            bodies = (string.(split(system.name, "-"))...,)
+        else
+            bodies = ("Body 1", "Body 2")
+        end
+    end
 
     if normalize
         r₁ = [[-μ],  [0], [0]]
@@ -202,18 +222,13 @@ function plotbodies!(fig, system::CircularRestrictedThreeBodySystem; normalize =
         LU = string(lengthunit(system))
     end
 
-    defaults = (; title = "CR3BP Bodies", xlabel = "X ($LU)", ylabel = "Y ($LU)", zlabel = "Z ($LU)")
-    options  = merge(defaults, kwargs)
-
     if exclude_z
-        scatter!(fig, r₁[1:2]...; markersize=10, markercolor=:lightblue, label="Body 1")
-        scatter!(fig, r₂[1:2]...; markersize=6, markercolor=:gray, label="Body 2")
-        plot!(fig; options...)
+        scatter!(fig, r₁[1:2]...; label = bodies[1], kwargs...)
+        scatter!(fig, r₂[1:2]...; label = bodies[2], kwargs...)
         return fig
     else
-        scatter!(fig, r₁...; markersize=10, markercolor=:lightblue, label="Body 1")
-        scatter!(fig, r₂...; markersize=6, markercolor=:gray, label="Body 2")
-        plot!(fig; options...)
+        scatter!(fig, r₁...; label = bodies[1], kwargs...)
+        scatter!(fig, r₂...; label = bodies[2], kwargs...)
         return fig
     end
 

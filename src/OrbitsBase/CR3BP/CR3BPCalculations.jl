@@ -201,7 +201,7 @@ end
 """
 Given an `InertialCartesianState`, returns the state in the synodic (rotating) reference frame.
 """
-function synodic(state::NormalizedCartesianState{F, Inertial}, ω::Unitful.AbstractQuantity=1.0u"rad"/Orbits.timeunit(state)) where F
+function synodic(state::NormalizedCartesianState{F, Inertial}, ω::Unitful.AbstractQuantity=1.0u"rad"/OrbitsBase.timeunit(state)) where F
 
     t = epoch(state)
     θ = ω*t
@@ -211,13 +211,13 @@ function synodic(state::NormalizedCartesianState{F, Inertial}, ω::Unitful.Abstr
         0      0      1
     ]))
 
-    return CartesianState(ˢTᵢ * state.r, ˢTᵢ * state.v, state.t, Synodic; lengthunit = Orbits.lengthunit(state), timeunit = Orbits.timeunit(state))
+    return CartesianState(ˢTᵢ * state.r, ˢTᵢ * state.v, state.t, Synodic; lengthunit = OrbitsBase.lengthunit(state), timeunit = OrbitsBase.timeunit(state))
 end
 
 """
 Given a `SynodicCartesianState`, returns the state in the inertial reference frame.
 """
-function inertial(state::NormalizedCartesianState{F, Synodic}, ω::Unitful.AbstractQuantity=(1.0u"rad")/Orbits.timeunit(state)) where F
+function inertial(state::NormalizedCartesianState{F, Synodic}, ω::Unitful.AbstractQuantity=(1.0u"rad")/OrbitsBase.timeunit(state)) where F
 
     t = epoch(state)
     θ = ω*t
@@ -227,20 +227,20 @@ function inertial(state::NormalizedCartesianState{F, Synodic}, ω::Unitful.Abstr
         0      0      1
     ]
 
-    return CartesianState(ⁱTₛ * state.r, ⁱTₛ * state.v, state.t, Inertial; lengthunit = Orbits.lengthunit(state), timeunit = Orbits.timeunit(state))
+    return CartesianState(ⁱTₛ * state.r, ⁱTₛ * state.v, state.t, Inertial; lengthunit = OrbitsBase.lengthunit(state), timeunit = OrbitsBase.timeunit(state))
 end
 
 """
 If given an inertial `CartesianState`, no operation needed.
 """
-function inertial(state::InertialCartesianState, ω::Unitful.AbstractQuantity=1.0u"rad"/Orbits.timeunit(state))
+function inertial(state::InertialCartesianState, ω::Unitful.AbstractQuantity=1.0u"rad"/OrbitsBase.timeunit(state))
     return state
 end
 
 """
 If given a Synodic `CartesianState`, no operation needed.
 """
-function synodic(state::SynodicCartesianState, ω::Unitful.AbstractQuantity=1.0u"rad"/Orbits.timeunit(state))
+function synodic(state::SynodicCartesianState, ω::Unitful.AbstractQuantity=1.0u"rad"/OrbitsBase.timeunit(state))
     return state
 end
 
@@ -268,6 +268,30 @@ function synodic(orb::CircularRestrictedThreeBodyOrbit)
         state = synodic(orb.state)
         return CircularRestrictedThreeBodyOrbit(state, orb.system)
     end
+end
+
+"""
+Position of primary body.
+"""
+function primary_synodic_position(orb::NormalizedSynodicCR3BPOrbit)
+    μ = normalized_mass_parameter(orb)
+    SVector{3}(
+        -μ, 
+        zero(μ),
+        zero(μ)
+    )
+end
+
+"""
+Position of secondary body.
+"""
+function secondary_synodic_position(orb::NormalizedSynodicCR3BPOrbit)
+    μ = normalized_mass_parameter(orb)
+    SVector{3}(
+        one(μ) - μ, 
+        zero(μ),
+        zero(μ)
+    )
 end
 
 """
@@ -394,7 +418,7 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/)
 """
-function lagrange(μ, L=1:5)
+function lagrange(μ::Real, L=1:5)
     
     if !all(L[i] ∈ (1,2,3,4,5) for i ∈ 1:length(L))
         throw(ArgumentError("Requested lagrange points must be in range [1,5]"))
@@ -409,6 +433,25 @@ function lagrange(μ, L=1:5)
 	return  (map(f->[find_zero(f, (-3,3)), 0, 0], expressions)..., 
 			[(1/2) - μ, √(3)/2, 0], [(1/2) - μ, -√(3)/2, 0])[L]
 	
+end
+
+"""
+Returns the lagrange points for a CR3BP system.
+
+__Arguments:__ 
+- `sys`: Non-dimensional mass parameter for the CR3BP system.
+- `L`: Langrange points requested, must be in range [1,5]
+
+__Outputs:__
+- Tuple of Lagrange points
+- Throws `ArgumentError` if L is out of range [1,5]
+
+__References:__
+- [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/)
+"""
+function lagrange(sys::CircularRestrictedThreeBodySystem, L=1:5)
+    
+    return lagrange(normalized_mass_parameter(sys), L)
 end
 
 """
@@ -461,14 +504,14 @@ function analyticalhalo(μ; Az=0.00, ϕ=0.0, steps=1,
 
     if L == 1
         point = first(lagrange(μ, 1))
-        γ = abs(1 - μ - point)
-        n = collect(1:4)
-        c = @. (μ + (-1)^n * (1-μ)γ^(n+1)) / (γ^3 * (1 - γ^(n+1)))
+        γ = abs(one(μ) - μ - point)
+        n = collect(1:4) .* one(μ)
+        c = @. (μ + (-one(1))^n * (one(μ)-μ)γ^(n+1)) / (γ^3 * (one(μ) - γ^(n+1)))
     elseif L == 2
         point = first(lagrange(μ, 2))
-        γ = abs(point - 1 + μ)
-        n = collect(1:4)
-        c = @. ((-1)^n * μ + (-1)^n * (1-μ)γ^(n+1)) / (γ^3 * (1 + γ^(n+1)))
+        γ = abs(point - one(μ) + μ)
+        n = collect(1:4) .* one(μ)
+        c = @. ((-one(μ))^n * μ + (-one(μ))^n * (one(μ)-μ)γ^(n+1)) / (γ^3 * (one(μ) + γ^(n+1)))
     else
         throw(ArgumentError("Only Halo orbits about L1 or L2 are supported."))
     end

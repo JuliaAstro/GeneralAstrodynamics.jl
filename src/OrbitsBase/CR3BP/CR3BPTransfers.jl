@@ -3,7 +3,7 @@
 #
 
 function closest_approach(man::Manifold{<:NormalizedSynodicCR3BPOrbit}, 
-                          body_position::AbstractVector  = (secondary_synodic_position ∘ first ∘ first)(man),
+                          body_position::AbstractVector  = (secondary_synodic_position ∘ first ∘ first)(man);
                           max_velocity::Unitful.Velocity = 10u"km/s",
                           max_position::Unitful.Length   = 50_000u"km") where O <: NormalizedSynodicCR3BPOrbit
 

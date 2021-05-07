@@ -171,7 +171,7 @@ angularunit(::KeplerianState{F, LU, TU, AU}) where {F, LU, TU, AU} = AU()
 """
 An orbital state within the Restricted Two-body Problem.
 """
-const R2BPState{F,LU,TU} = Union{CartesianState{F, LU, TU, Inertial}, KeplerianState{F, LU, TU, <:Unitful.DimensionlessUnits}} where {F,LU,TU}
+const R2BPState{F,LU,TU} = Union{CartesianState{F, LU, TU, <:Union{Inertial, BarycentricInertial, ECI, HCI}}, KeplerianState{F, LU, TU, <:Unitful.DimensionlessUnits}} where {F,LU,TU}
 
 """
 A structure which contains __all__ relevant values for Restricted Two-body Problem orbits.

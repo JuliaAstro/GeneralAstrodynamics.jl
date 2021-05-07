@@ -133,14 +133,25 @@ end
 A `halo` wrapper! Returns a `CircularRestrictedThreeBodyOrbit`.
 Returns a tuple: `halo_orbit, halo_period`.
 """
-function halo(sys::CircularRestrictedThreeBodySystem; kwargs...)
-    if :Az ∈ keys(kwargs) && kwargs.data.Az isa Unitful.AbstractQuantity
-        unitless = (; Az = nondimensionalize_length(kwargs.data.Az, normalized_length_unit(sys)))
-        options = merge(kwargs.data, unitless)
-    else
-        options = kwargs
+function halo(sys::CircularRestrictedThreeBodySystem; 
+              Az=0.0,
+              L=1, 
+              hemisphere=:northern,
+              tolerance=1e-8, 
+              max_iter=20,
+              reltol=1e-14, 
+              abstol=1e-14,
+              nan_on_fail = true, 
+              disable_warnings = false)
+    
+    if Az isa Unitful.Length
+        Az = nondimensionalize_length(Az, normalized_length_unit(sys))
     end
-    r,v,T = halo(normalized_mass_parameter(sys); options...)
+
+    r,v,T = halo(normalized_mass_parameter(sys); 
+                 Az = Az, L = L, hemisphere = hemisphere, 
+                 tolerance = tolerance, max_iter = max_iter, reltol = reltol, abstol = abstol, 
+                 nan_on_fail = nan_on_fail, disable_warnings = disable_warnings)
     orbit = CircularRestrictedThreeBodyOrbit(redimensionalize_length.(r, normalized_length_unit(sys)), 
                                              redimensionalize_velocity.(v, normalized_length_unit(sys), normalized_time_unit(sys)),
                                              sys) |> normalize

@@ -19,6 +19,13 @@ state with no dimensioned units.
 const NormalizedCartesianState{F, FR<:CR3BPFrames} = CartesianState{F, NormalizedLengthUnit, NormalizedTimeUnit, FR}
 
 """
+    `NormalizedCartesianState(r, v, t, frame)`
+
+Convenience constructor for a normalized `CartesianState`.
+"""
+NormalizedCartesianState(r, v, t=0, frame=Inertial) = CartesianState(r, v, t, frame; lengthunit = NormalizedLengthUnit(), timeunit = NormalizedTimeUnit())
+
+"""
 Print `NormalizedCartesianState` instances to `io`.
 """
 function Base.show(io::IO, state::NormalizedCartesianState{F,FR}) where {F,FR} 
@@ -45,8 +52,8 @@ mutable struct SynodicCartesianSTMState{F, LU, TU} <: AbstractState{F, LU, TU, S
                                       lengthunit = NormalizedLengthUnit(), timeunit = NormalizedTimeUnit())
         state = CartesianState(r, v, t, Synodic; lengthunit = lengthunit, timeunit = timeunit)
         F = eltype(state)
-        LU = typeof(Orbits.lengthunit(state))
-        TU = typeof(Orbits.timeunit(state))
+        LU = typeof(OrbitsBase.lengthunit(state))
+        TU = typeof(OrbitsBase.timeunit(state))
 
         return new{F, LU, TU}(state, SMatrix{6,6,eltype(state)}(stm))
     end
@@ -333,7 +340,7 @@ mutable struct CircularRestrictedThreeBodyOrbit{
     end
 
     function CircularRestrictedThreeBodyOrbit(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, system::CircularRestrictedThreeBodySystem, t::Real = 0; frame = Synodic)  
-        state = CartesianState(r, v, t, frame; lengthunit = Orbits.lengthunit(system), timeunit = Orbits.timeunit(system))   
+        state = CartesianState(r, v, t, frame; lengthunit = OrbitsBase.lengthunit(system), timeunit = OrbitsBase.timeunit(system))   
         F = promote_type(eltype(state), eltype(system))
         L = lengthunit(system) |> typeof
         T = timeunit(system)   |> typeof
@@ -410,7 +417,7 @@ Returns the epoch associated with the `state` field.
 epoch(orb::CircularRestrictedThreeBodyOrbit) = epoch(orb.state)
 
 """
-Convert between `eltype`, `lengthunit`, and `timeunit` types for CR3BP orbits.
+Convert between `eltype`, `lengthunit`, and `timeunit` types for CR3BP OrbitsBase.
 """
 function Base.convert(::Type{CircularRestrictedThreeBodyOrbit{F, LU, TU}}, orb::CircularRestrictedThreeBodyOrbit) where {F, LU, TU}
     return CircularRestrictedThreeBodyOrbit(
