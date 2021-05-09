@@ -46,6 +46,7 @@ Symbolics = "0.1"
 Unitful = "1.4"
 UnitfulAngles = "0.6"
 UnitfulAstro = "1.0"
+Plots = "1"
 julia = "1"
 
 [extras]
