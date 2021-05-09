@@ -1,10 +1,10 @@
 using Documenter
-using Orbits 
+using GeneralAstrodynamics 
 
 
 makedocs(
     modules=[
-       Orbits 
+       GeneralAstrodynamics 
     ],
     format=Documenter.HTML(),
     sitename="GeneralAstrodynamics.jl",
