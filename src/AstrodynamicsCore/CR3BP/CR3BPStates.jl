@@ -52,8 +52,8 @@ mutable struct SynodicCartesianSTMState{F, LU, TU} <: AbstractState{F, LU, TU, S
                                       lengthunit = NormalizedLengthUnit(), timeunit = NormalizedTimeUnit())
         state = CartesianState(r, v, t, Synodic; lengthunit = lengthunit, timeunit = timeunit)
         F = eltype(state)
-        LU = typeof(OrbitsBase.lengthunit(state))
-        TU = typeof(OrbitsBase.timeunit(state))
+        LU = typeof(AstrodynamicsCore.lengthunit(state))
+        TU = typeof(AstrodynamicsCore.timeunit(state))
 
         return new{F, LU, TU}(state, SMatrix{6,6,eltype(state)}(stm))
     end
@@ -340,7 +340,7 @@ mutable struct CircularRestrictedThreeBodyOrbit{
     end
 
     function CircularRestrictedThreeBodyOrbit(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, system::CircularRestrictedThreeBodySystem, t::Real = 0; frame = Synodic)  
-        state = CartesianState(r, v, t, frame; lengthunit = OrbitsBase.lengthunit(system), timeunit = OrbitsBase.timeunit(system))   
+        state = CartesianState(r, v, t, frame; lengthunit = AstrodynamicsCore.lengthunit(system), timeunit = AstrodynamicsCore.timeunit(system))   
         F = promote_type(eltype(state), eltype(system))
         L = lengthunit(system) |> typeof
         T = timeunit(system)   |> typeof
@@ -417,7 +417,7 @@ Returns the epoch associated with the `state` field.
 epoch(orb::CircularRestrictedThreeBodyOrbit) = epoch(orb.state)
 
 """
-Convert between `eltype`, `lengthunit`, and `timeunit` types for CR3BP OrbitsBase.
+Convert between `eltype`, `lengthunit`, and `timeunit` types for CR3BP AstrodynamicsCore.
 """
 function Base.convert(::Type{CircularRestrictedThreeBodyOrbit{F, LU, TU}}, orb::CircularRestrictedThreeBodyOrbit) where {F, LU, TU}
     return CircularRestrictedThreeBodyOrbit(

@@ -446,3 +446,13 @@ Returns true if all elements are identically equal.
 function Base.isequal(b1::RestrictedTwoBodySystem, b2::RestrictedTwoBodySystem)
     return mass_parameter(b1) == mass_parameter(b2)
 end
+
+"""
+Sphere of influence.
+"""
+SOI(a, m, M) = a * (m / M)^(2/5)
+
+"""
+Sphere of activity.
+"""
+SOA(a, m, M) = a * (m / 3M)^(1/3)

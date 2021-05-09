@@ -130,9 +130,9 @@ Print a `CartesianState` to `io`.
 function Base.show(io::IO, state::CartesianState{F,LU,TU,FR}) where {F,LU,TU,FR} 
     println(io, "  ", string(FR), " Cartesian State:")
     println("")
-    println(io, "    t:  ", state.t, " ", string(TU()))
-    println(io, "    r = ", [state.r[1] state.r[2] state.r[3]], " ", string(LU()))
-    println(io, "    v = ", [state.v[1] state.v[2] state.v[3]], " ", string(LU()/TU()))
+    println(io, "    t =  ", round(state.t; digits=6), " ", string(TU()))
+    println(io, "    r = ", [round(state.r[1]; digits=6) round(state.r[2]; digits=6) round(state.r[3]; digits=6)], " ", string(LU()))
+    println(io, "    v = ", [round(state.v[1]; digits=6) round(state.v[2]; digits=6) round(state.v[3]; digits=6)], " ", string(LU()/TU()))
 end
 
 """
@@ -246,3 +246,9 @@ struct HCI <: AbstractFrame end;
 An inertial frame centered at the CR3BP system barycenter.
 """
 struct BarycentricInertial  <: AbstractFrame end;
+
+Base.string(::Type{Inertial}) = "Inertial"
+Base.string(::Type{BarycentricInertial}) = "BarycentricInertial"
+Base.string(::Type{ECI}) = "ECI"
+Base.string(::Type{HCI}) = "HCI"
+Base.string(::Type{Synodic}) = "Synodic"

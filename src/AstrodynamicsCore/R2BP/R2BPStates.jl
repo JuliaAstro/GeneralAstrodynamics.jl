@@ -83,7 +83,7 @@ Custom display for `RestrictedTwoBodySystem` instances.
 function Base.show(io::IO, body::RestrictedTwoBodySystem{F,LU,TU}) where {F,LU,TU}
     println(io, "  Restricted Two-body System ", body.name == "" ? "" : string("(",body.name,")"), ":")
     println(io, "")
-    println(io, "    μ:  ", body.μ, " ", string(LU()^3 / TU()^2))
+    println(io, "    μ = ", body.μ, " ", string(LU()^3 / TU()^2))
 end
 
 """
@@ -329,7 +329,7 @@ const KeplerianOrbit{C,F,LU,TU} = RestrictedTwoBodyOrbit{C, F, LU, TU, K} where 
 """
 An alias for `RestrictedTwoBodyOrbit` instances with `CartesianState` values.
 """
-const CartesianOrbit{C,F,LU,TU} = RestrictedTwoBodyOrbit{C, F, LU, TU, R} where {R <: CartesianState{F, LU, TU, Inertial}}
+const CartesianOrbit{C,F,LU,TU} = RestrictedTwoBodyOrbit{C, F, LU, TU, R} where {R <: CartesianState{F, LU, TU, <:Union{Inertial, BarycentricInertial, ECI, HCI}}}
 
 """
 Alias for a `RestrictedTwoBodyOrbit` constructor with `KeplerianState` values.
@@ -371,3 +371,9 @@ Base.show(io::IO, traj::Trajectory{<:CartesianOrbit}) = println(io, "Cartesian T
 Prints a `Trajectory` instance to `io`.
 """
 Base.show(io::IO, traj::Trajectory{<:KeplerianOrbit}) = println(io, "Keplerian Two-body trajectory with ", length(traj), " steps")
+
+Base.string(::Type{Circular}) = "Circular"
+Base.string(::Type{Elliptical}) = "Elliptical"
+Base.string(::Type{Hyperbolic}) = "Hyperbolic"
+Base.string(::Type{Parabolic}) = "Parabolic"
+Base.string(::Type{Invalid}) = "Invalid"

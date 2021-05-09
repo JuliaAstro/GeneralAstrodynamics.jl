@@ -1,4 +1,4 @@
-name = "Orbits"
+name = "GeneralAstrodynamics"
 uuid = "8068df5b-8501-4530-bd82-d24d3c9619db"
 authors = ["Joe Carpinelli <jdcarpinelli@gmail.com>"]
 version = "0.9.1"

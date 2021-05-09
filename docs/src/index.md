@@ -1,4 +1,4 @@
-# Orbits.jl
+# GeneralAstrodynamics.jl
 
 ## Overview
 
@@ -17,16 +17,20 @@ get this page up and running!
 ## Examples!
 
 ```julia
-using Orbits
+using GeneralAstrodynamics
 
 using Plots
 using Unitful, UnitfulAngles
 
-# Find a numerically periodic halo orbit
-halo_orbit, halo_period = halo(SunEarth; Az=200_000u"km", L=2)
+# Find a numerically periodic halo orbit and orbital period
+orbit, T = halo(SunEarth; Az=200_000u"km", L=2)
+
+# Invariant manifolds about halo orbits
+stable   = stable_manifold(orbit, T; eps=1e-9)
+unstable = unstable_manifold(orbit, T; eps=-1e-9, duration=5T)
 
 # Propagate the orbit in time
-trajectory = propagate(halo_orbit, halo_period)
+trajectory = propagate(orbit, T)
 
 # And plot!
 plotpositions(trajectory; title="Try Plots.jl `kwargs`")

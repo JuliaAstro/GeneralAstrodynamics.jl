@@ -17,7 +17,7 @@ using Interpolations
 using CSV, DataFrames
 using Unitful, UnitfulAstro, UnitfulAngles
 
-using ..OrbitsBase
+using ..AstrodynamicsCore
 
 # Module source code
 include("LoadASCII.jl")

@@ -157,6 +157,16 @@ Returns the spacecraft's nondimensional position w.r.t. body 1 (or 2).
 nondimensional_radius(r, xᵢ=0) = √( (r[1]-xᵢ)^2 + r[2]^2 + r[3]^2 )
 
 """
+Returns synodic distance to primary body.
+"""
+distance_to_primary(orbit::CR3BPOrbit) = nondimensional_radius((position_vector ∘ synodic ∘ normalize)(orbit), -normalized_mass_parameter(orbit.system))
+
+"""
+Returns synodic distance to secondary body.
+"""
+distance_to_secondary(orbit::CR3BPOrbit) = nondimensional_radius((position_vector ∘ synodic ∘ normalize)(orbit), 1-normalized_mass_parameter(orbit.system))
+
+"""
 Returns the potential energy `U` in the Synodic frame with Normalized units.
 """
 potential_energy(r, μ) = (r[1]^2 + r[2]^2)/2 + ((1-μ)/nondimensional_radius(r,-μ)) + (μ/nondimensional_radius(r,1-μ))
@@ -201,7 +211,7 @@ end
 """
 Given an `InertialCartesianState`, returns the state in the synodic (rotating) reference frame.
 """
-function synodic(state::NormalizedCartesianState{F, Inertial}, ω::Unitful.AbstractQuantity=1.0u"rad"/OrbitsBase.timeunit(state)) where F
+function synodic(state::NormalizedCartesianState{F, Inertial}, ω::Unitful.AbstractQuantity=1.0u"rad"/AstrodynamicsCore.timeunit(state)) where F
 
     t = epoch(state)
     θ = ω*t
@@ -211,13 +221,13 @@ function synodic(state::NormalizedCartesianState{F, Inertial}, ω::Unitful.Abstr
         0      0      1
     ]))
 
-    return CartesianState(ˢTᵢ * state.r, ˢTᵢ * state.v, state.t, Synodic; lengthunit = OrbitsBase.lengthunit(state), timeunit = OrbitsBase.timeunit(state))
+    return CartesianState(ˢTᵢ * state.r, ˢTᵢ * state.v, state.t, Synodic; lengthunit = AstrodynamicsCore.lengthunit(state), timeunit = AstrodynamicsCore.timeunit(state))
 end
 
 """
 Given a `SynodicCartesianState`, returns the state in the inertial reference frame.
 """
-function inertial(state::NormalizedCartesianState{F, Synodic}, ω::Unitful.AbstractQuantity=(1.0u"rad")/OrbitsBase.timeunit(state)) where F
+function inertial(state::NormalizedCartesianState{F, Synodic}, ω::Unitful.AbstractQuantity=(1.0u"rad")/AstrodynamicsCore.timeunit(state)) where F
 
     t = epoch(state)
     θ = ω*t
@@ -227,20 +237,20 @@ function inertial(state::NormalizedCartesianState{F, Synodic}, ω::Unitful.Abstr
         0      0      1
     ]
 
-    return CartesianState(ⁱTₛ * state.r, ⁱTₛ * state.v, state.t, Inertial; lengthunit = OrbitsBase.lengthunit(state), timeunit = OrbitsBase.timeunit(state))
+    return CartesianState(ⁱTₛ * state.r, ⁱTₛ * state.v, state.t, Inertial; lengthunit = AstrodynamicsCore.lengthunit(state), timeunit = AstrodynamicsCore.timeunit(state))
 end
 
 """
 If given an inertial `CartesianState`, no operation needed.
 """
-function inertial(state::InertialCartesianState, ω::Unitful.AbstractQuantity=1.0u"rad"/OrbitsBase.timeunit(state))
+function inertial(state::InertialCartesianState, ω::Unitful.AbstractQuantity=1.0u"rad"/AstrodynamicsCore.timeunit(state))
     return state
 end
 
 """
 If given a Synodic `CartesianState`, no operation needed.
 """
-function synodic(state::SynodicCartesianState, ω::Unitful.AbstractQuantity=1.0u"rad"/OrbitsBase.timeunit(state))
+function synodic(state::SynodicCartesianState, ω::Unitful.AbstractQuantity=1.0u"rad"/AstrodynamicsCore.timeunit(state))
     return state
 end
 
