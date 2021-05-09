@@ -42,9 +42,9 @@ reference frame of CR3BP system μ.
 function lagrangeplot(sys::CircularRestrictedThreeBodySystem, L=1:5; normalize = true, exclude_z = true, kwargs...)
 
     defaults = (; title  = sys.name != "" ? "$(sys.name) Lagrange Points" : "Lagrange Plots", 
-                  xlabel = "X ($(string(lengthunit(sys))))", ylabel="Y ($(string(lengthunit(sys))))", 
+                  xlabel = "X ($(string(normalized_length_unit(sys))))", ylabel="Y ($(string(normalized_length_unit(sys))))", 
                   labels = [string("L",i) for i ∈ L], 
-                  legend = :topleft, dpi=150)
+                  legend = :topleft, dpi=150, aspect_ratio = 1)
     options  = merge(defaults, kwargs)
 
     μ = normalized_mass_parameter(sys)

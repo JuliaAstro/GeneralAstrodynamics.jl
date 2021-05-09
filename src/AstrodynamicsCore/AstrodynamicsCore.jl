@@ -4,21 +4,21 @@ for core astrodynamics problems, including the
 Restricted Two-body Problem, the Circular Restricted
 Three-body Problem, and the N-body problem.
 """
-module OrbitsBase
+module AstrodynamicsCore
 
 # Common stuctures and functions
 export AbstractUnitfulStructure, AbstractState, AbstractFrame, AbstractSystem, AbstractOrbit, CartesianState
 export MassParameter, lengthunit, timeunit, velocityunit, massparameterunit, coordinateframe
-export position_vector, velocity_vector, scalar_position, scalar_velocity, epoch
-export AbstractFrame, Inertial, Synodic, Perifocal, convert, epoch
+export position_vector, velocity_vector, scalar_position, scalar_velocity
+export AbstractFrame, Inertial, Synodic, Perifocal, ECI, HCI, convert, epoch
 export NormalizedLengthUnit, NormalizedTimeUnit, Trajectory, Manifold
-export convert, show, eltype, isapprox, isequal
+export convert, show, eltype, isapprox, isequal, string
 
 # Core data structures and functions for R2BP calculations 
 export AbstractConic, Circular, Elliptical, Parabolic, Hyperbolic, Invalid
 export KeplerianState, RestrictedTwoBodySystem, RestrictedTwoBodyOrbit
 export R2BPState, R2BPSystem, R2BPOrbit, Orbit, CartesianOrbit, KeplerianOrbit
-export mass_parameter, C3
+export mass_parameter, C3, SOI, SOA
 export eccentricity, semimajor_axis, inclination, RAAN, argument_of_periapsis, true_anomoly
 export conic, keplerian, cartesian, perifocal, semi_parameter, periapsis_radius
 export specific_angular_momentum_vector, specific_angular_momentum, eccentricity_vector
@@ -35,14 +35,15 @@ export NormalizedCartesianState, MinimalCircularRestrictedThreeBodySystem
 export CircularRestrictedThreeBodySystem, CircularRestrictedThreeBodyOrbit
 export normalized_length_unit, normalized_time_unit, normalized_mass_parameter
 export mass_parameters, primary_mass_parameter, secondary_mass_parameter
-export time_scale_factor, nondimensionalize, redimensionalize
+export primary_synodic_position, secondary_synodic_position, distance_to_primary, distance_to_secondary
+export time_scale_factor, nondimensionalize, redimensionalize, nondimensional_radius
 export nondimensionalize_length, nondimensionalize_time, nondimensionalize_velocity
 export redimensionalize_length, redimensionalize_time, redimensionalize_velocity
 export normalize, lagrange, inertial, synodic, accel, accel!, analyticalhalo
 export potential_energy, jacobi_constant, zerovelocity_curves
 export closest_approach, optimal_approach, body_position, position_wrt_body
 export transform, transform_to_primary, transform_to_secondary
-export SunEarth, EarthMoon
+export SunVenus, SunEarth, EarthMoon, SunMars, SunJupiter, SunSaturn
 
 # Module Dependencies
 using Contour

@@ -7,7 +7,7 @@ makedocs(
        Orbits 
     ],
     format=Documenter.HTML(),
-    sitename="SimpleAstrodynamics.jl",
+    sitename="GeneralAstrodynamics.jl",
     authors = "Joey Carpinelli",
     pages=[
         "Home" => "index.md"
@@ -16,7 +16,7 @@ makedocs(
 
 deploydocs(
     target = "build",
-    repo="github.com/cadojo/Orbits.jl.git",
+    repo="github.com/cadojo/GeneralAstrodynamics.jl.git",
     branch = "gh-pages",
     deps   = nothing,
     make   = nothing,

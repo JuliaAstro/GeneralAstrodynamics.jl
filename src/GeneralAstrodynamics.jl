@@ -1,16 +1,16 @@
 """
 Structures and functions for handling common Astrodynamics problems! 🚀
 """
-module Orbits
+module GeneralAstrodynamics
 
 using Reexport 
 
-include("OrbitsBase/OrbitsBase.jl")
+include("AstrodynamicsCore/AstrodynamicsCore.jl")
 include("Propagators/Propagators.jl")
 include("OrbitPlots/OrbitPlots.jl")
 include("Ephemeris/Ephemeris.jl")
 
-@reexport using .OrbitsBase
+@reexport using .AstrodynamicsCore
 @reexport using .Propagators
 @reexport using .OrbitPlots
 @reexport using .Ephemeris

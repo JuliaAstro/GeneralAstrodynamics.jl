@@ -1,4 +1,4 @@
-name = "Orbits"
+name = "GeneralAstrodynamics"
 uuid = "8068df5b-8501-4530-bd82-d24d3c9619db"
 authors = ["Joe Carpinelli <jdcarpinelli@gmail.com>"]
 version = "0.9.1"
@@ -37,7 +37,6 @@ DifferentialEquations = "6"
 DocStringExtensions = "0.8"
 Interpolations = "0.13"
 PhysicalConstants = "0.2"
-Plots = "1.6"
 Reexport = "0.2, 1.0"
 Roots = "1.0"
 SciMLBase = "1.10"
