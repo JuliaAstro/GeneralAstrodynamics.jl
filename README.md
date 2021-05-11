@@ -16,7 +16,14 @@ Here's a sneak peak at some features to come! The plot below shows a family of H
 package features will take advantage of manifolds about Halo orbits like these to find low-cost transfer designs
 for interplanetary missions! 🚀
 
-<img width="713" alt="A plot of Halo orbits about Earth-Moon L1" src="https://user-images.githubusercontent.com/12131808/114203607-517ebf00-9926-11eb-8d77-16c7fc2b303a.png">
+#### Analytical and Numerical Halo Orbit Solvers
+![analytical_v_numerical](https://user-images.githubusercontent.com/12131808/117874829-7e006080-b26f-11eb-97df-cefaba8e2087.png)
+
+#### Earth-Moon Halo Orbit Family
+![earth_moon_halo](https://user-images.githubusercontent.com/12131808/117874868-8a84b900-b26f-11eb-9ef2-54e6658a261e.png)
+
+#### CR3BP Manifolds
+![unstable_manifold](https://user-images.githubusercontent.com/12131808/117874975-a4be9700-b26f-11eb-8db0-80c90240156b.png)
 
 ## Features
 * Restricted two-body problem equations, states, propagation, and plotting
@@ -30,18 +37,6 @@ More to come! In the near term, additional features will include...
 * Zero-velocity curve plots for circular restricted three-body problem trajectories
 * Stability analysis for circular restricted three-body problem states
 
-## Motivation 
-
-This package aims to provide a simple interface for common astrodynamics problems. It was created to learn more about Astrodynamics, and will be developed alongside a Graduate Astrodynamics course at the University of Maryland. The packages [JuliaSpace/Astrodynamics.jl](https://github.com/JuliaSpace/Astrodynamics.jl) and [JuliaAstro/AstroBase.jl](https://github.com/JuliaAstro/AstroBase.jl) are more fully featured. I will continue adding features to this package, but for a more complete feature set, use the packages provided by [JuliaSpace](https://github.com/JuliaSpace) and [JuliaAstro](https://github.com/JuliaAstro).
-
-## Credits
-
-\[1\] Vallado, David A. Fundamentals of astrodynamics and applications. Vol. 12. Springer Science & Business Media, 2001.
-* Many equations and algorithms within `GeneralAstrodynamics` are pulled from Vallado's _Fundamentals of Astrodynamics and Applications_, as well as course notes from ENAE 601 (Astrodynamics) at the University of Maryland.
-
-\[2\] [Unitful.jl](https://github.com/PainterQubits/Unitful.jl) and [UnitfulAstro.jl](https://github.com/JuliaAstro/UnitfulAstro.jl) are used for unit handling.
-
-\[3\]
 
 ## Usage
 
