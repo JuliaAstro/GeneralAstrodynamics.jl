@@ -50,7 +50,7 @@ end
 """
 Prints an `Interpolator` instance to `io`.
 """
-Base.show(io::IO, interp::Interpolator) = println(io, "Interpolated `CartesianState` ephemeris data. Valid within the following Julian epochs: [$(string(interp.timespan[1])), $(string(interp.timespan[2]))].")
+Base.show(io::IO, interp::Interpolator) = println(io, "Interpolated `CartesianState` ephemeris data. Valid within the following epochs: [$(string(interp.timespan[1])), $(string(interp.timespan[2]))].")
 
 """
 Prints an `Interpolator` instance to `io`.
@@ -109,3 +109,19 @@ end
 Wrapper for `interpolator(data; kwargs...)`
 """
 interpolator(filename::String; kwargs...) = interpolator(loadascii(filename); kwargs...)
+
+"""
+Create an interpolator using `Trajectory` data!
+"""
+function interpolator(traj::Trajectory)
+
+  states = map(orbit -> orbit.state, traj)
+  @assert all(el -> el == coordinateframe(states[1]), coordinateframe.(states[2:end])) "Trajectory must have the same coordinate frame throughout for interpolation."
+
+  times = ustrip.(u"s", epoch.(states))
+  pos   = ustrip.(u"km",   hcat(position_vector.(states)...)) |> transpose
+  vel   = ustrip.(u"km/s", hcat(velocity_vector.(states)...)) |> transpose
+
+  data  = hcat(times, pos, vel)
+  return interpolator(data; dateunit = u"s", lengthunit = u"km", velocityunit = u"km/s", timeunit = u"s")
+end

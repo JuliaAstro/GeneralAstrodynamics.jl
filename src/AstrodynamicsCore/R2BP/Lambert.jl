@@ -56,10 +56,10 @@ function lambert_universal(r̅₁, r̅₂, μ, Δt; trajectory=:short, tolerance
         end
 
         ψₙ = (ψ₊ + ψ₋) / 2
-        if ψₙ > tol
+        if ψₙ > tolerance
             C₂ = (1 - cos(√(ψₙ))) /  ψₙ
             C₃ = (√(ψₙ) - sin(√(ψₙ))) / √(ψₙ^3)
-        elseif ψₙ < -tol
+        elseif ψₙ < -tolerance
             C₂ = (1 - cosh(√(-ψₙ))) / ψₙ
             C₃ = (sinh(√(-ψₙ)) - √(-ψₙ)) / √((-ψₙ)^3)
         else
