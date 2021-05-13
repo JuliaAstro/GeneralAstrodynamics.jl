@@ -25,7 +25,7 @@ function zerovelocityplot(orbit::CircularRestrictedThreeBodyOrbit;
 
     fig = plot(; options...)
     for curve ∈ curves
-        plot!(fig, curve[:,1], curve[:,2])
+        plot!(fig, curve[:,1], curve[:,2]; kwargs...)
     end
 
     return fig
@@ -46,7 +46,7 @@ function zerovelocityplot!(fig, orbit::CircularRestrictedThreeBodyOrbit;
 
     fig = plot!(; options...)
     for (i,curve) ∈ zip(1:length(curves), curves)
-        plot!(fig, curve[:,1], curve[:,2]; label = "Zero Velocity Curve #$i")
+        plot!(fig, curve[:,1], curve[:,2]; kwargs...)
     end
 
     return fig

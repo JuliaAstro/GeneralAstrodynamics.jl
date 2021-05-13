@@ -200,8 +200,8 @@ returns a nearby `CircularRestrictedThreeBodyOrbit` on the
 __stable manifold__ of the initial state.
 """
 function manifold(orbit::NormalizedSynodicCR3BPOrbit, V::AbstractVector; eps = 1e-4)
-    r = @views position_vector(orbit) + eps * V[1:3]
-    v = @views velocity_vector(orbit) + eps * V[4:6]
+    r = position_vector(orbit)
+    v = velocity_vector(orbit) + eps * V[4:6]
 
     cart = CartesianState(r, v, orbit.state.t, Synodic;
                           lengthunit = NormalizedLengthUnit(), 
@@ -217,7 +217,8 @@ the stable manifold near orbit.
 """
 function stable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real; 
                          duration = 5T, reltol = 1e-14, 
-                         abstol = 1e-14, eps = 1e-8)
+                         abstol = 1e-14, eps = 1e-8,
+                         saveat = 1e-2, num_trajectories = 100)
 
     @assert duration > 0 "The provided duration cannot be zero or negative."
     @assert isperiodic(orbit, T) "The provided orbit is not periodic!"
@@ -225,11 +226,18 @@ function stable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real;
     M = monodromy(orbit, T)
     V = stable_eigenvector(M)
 
+    traj = propagate(orbit, T; reltol = reltol, abstol = abstol, saveat = saveat)
+    if length(traj) ÷ num_trajectories < 1
+        ind = 1:length(traj)
+    else
+        ind  = 1 : length(traj) ÷ num_trajectories : length(traj) - (length(traj) % num_trajectories)
+    end
+    
     return [
         propagate(manifold(step, V; eps = eps), -duration; 
                   reltol = reltol, abstol = abstol)
-        for step ∈ propagate(orbit, T; reltol = reltol, abstol = abstol)
-    ]
+        for step ∈ traj[ind]
+    ] |> reverse
 end
 
 """
@@ -239,17 +247,22 @@ the unstable manifold near orbit.
 """
 function unstable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real; 
                            duration = 5T, reltol = 1e-14, 
-                           abstol = 1e-14, eps = 1e-8)
+                           abstol = 1e-14, eps = 1e-8,
+                           num_trajectories = 100,
+                           saveat = 1e-2)
 
-    @assert duration > 0 "The provided duration cannot be zero or negative."
+    @assert duration > zero(duration) "The provided duration cannot be zero or negative."
     @assert isperiodic(orbit, T) "The provided orbit is not periodic!"
 
     M = monodromy(orbit, T)
     V = unstable_eigenvector(M)
 
+    traj = propagate(orbit, T; reltol = reltol, abstol = abstol, saveat = saveat)
+    ind  = 1 : length(traj) ÷ num_trajectories : length(traj) - (length(traj) % num_trajectories)
+
     return [
         propagate(manifold(step, V; eps = eps), duration; 
-                  reltol = reltol, abstol = abstol)
-        for step ∈ propagate(orbit, T; reltol = reltol, abstol = abstol)
+                  reltol = reltol, abstol = abstol, saveat = saveat)
+        for step ∈ traj[ind]
     ]
 end
