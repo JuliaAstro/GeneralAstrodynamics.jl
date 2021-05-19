@@ -231,7 +231,7 @@ function inertial(state::NormalizedCartesianState{F, Synodic}, ω::Unitful.Abstr
 
     t = epoch(state)
     θ = ω*t
-    ⁱTₛ = @SMatrix [
+    ⁱTₛ = @MMatrix [
         cos(θ) sin(θ) 0
        -sin(θ) cos(θ) 0
         0      0      1
