@@ -45,6 +45,17 @@ __Outputs:__
 - Throws `ArgumentError` if L is not `:L1` or `:L2`
 
 __References:__
+
+The iterative scheme was pulled from directly from literature
+and sample code, including Rund 2018,
+and Dr. Mireles' lecture notes and EarthSunHaloOrbit_NewtonMewhod.m 
+file available on their website.
+Specifically, the half-period iterative scheme (the `F` matrix
+in the source code, and corresponding "next guess" computation) 
+was ported __directly__ from Dr. Mireles' public code, which is 
+available on their website. 
+- [Dr. Mireles Notes](http://cosweb1.fau.edu/~jmirelesjames/hw5Notes.pdf)
+- [Dr. Mireles Code](http://cosweb1.fau.edu/~jmirelesjames/notes.html)
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
 function halo(μ; Az=0.0, L=1, hemisphere=:northern,
@@ -78,6 +89,12 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
 
         ∂vₛ = accel(rₛ, vₛ, μ)
 
+        # All code in this `if, else, end` block is ported from
+        # Dr. Mireles' MATLAB code, which is available on his 
+        # website: http://cosweb1.fau.edu/~jmirelesjames/notes.html.
+        # Lecture notes, which describe this algorithm further,
+        # are available for reference as well:
+        # http://cosweb1.fau.edu/~jmirelesjames/hw5Notes.pdf
         if Az ≉ 0
             F = @SMatrix [
                 Φ[4,1] Φ[4,5] ∂vₛ[1];
@@ -85,9 +102,7 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
                 Φ[2,1] Φ[2,5]  vₛ[2]
             ]
 
-            TERM1 = @SMatrix [r₀[1]; v₀[2]; τ] 
-            TERM2 = - inv(F) * @SMatrix [vₛ[1]; vₛ[3]; rₛ[2]] 
-            xᵪ = TERM1 + TERM2
+            xᵪ = SVector(r₀[1], v₀[2], τ) - inv(F) * SVector(vₛ[1], vₛ[3], rₛ[2])
 
             r₀[1] = xᵪ[1]
             v₀[2] = xᵪ[2]
@@ -99,9 +114,7 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
                 Φ[2,3] Φ[2,5]  vₛ[2]
             ]
 
-            TERM1 = @SMatrix [r₀[3]; v₀[2]; τ] 
-            TERM2 = - inv(F) * @SMatrix [vₛ[1]; vₛ[3]; rₛ[2]] 
-            xᵪ = TERM1 + TERM2
+            xᵪ = SVector(r₀[3], v₀[2], τ) - inv(F) * SVector(vₛ[1], vₛ[3], rₛ[2])
 
             r₀[3] = xᵪ[1]
             v₀[2] = xᵪ[2]
@@ -199,9 +212,9 @@ Given a __periodic__ `CircularRestrictedThreeBodyOrbit`,
 returns a nearby `CircularRestrictedThreeBodyOrbit` on the 
 __stable manifold__ of the initial state.
 """
-function manifold(orbit::NormalizedSynodicCR3BPOrbit, V::AbstractVector; eps = 1e-4)
-    r = position_vector(orbit)
-    v = velocity_vector(orbit) + eps * V[4:6]
+function manifold(orbit::NormalizedSynodicCR3BPOrbit, V::AbstractVector; eps = 1e-8, velocity_perturbation = eps, position_perturbation = 0)
+    r = position_vector(orbit) + position_perturbation * V[1:3]
+    v = velocity_vector(orbit) + velocity_perturbation * V[4:6]
 
     cart = CartesianState(r, v, orbit.state.t, Synodic;
                           lengthunit = NormalizedLengthUnit(), 
@@ -220,7 +233,7 @@ function stable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real;
                          abstol = 1e-14, eps = 1e-8,
                          saveat = 1e-2, num_trajectories = 100)
 
-    @assert duration > 0 "The provided duration cannot be zero or negative."
+    @assert duration > 0 "The provided duration cannot be zero or negative. Duration provided was $duration"
     @assert isperiodic(orbit, T) "The provided orbit is not periodic!"
 
     M = monodromy(orbit, T)
@@ -233,11 +246,7 @@ function stable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real;
         ind  = 1 : length(traj) ÷ num_trajectories : length(traj) - (length(traj) % num_trajectories)
     end
     
-    return [
-        propagate(manifold(step, V; eps = eps), -duration; 
-                  reltol = reltol, abstol = abstol)
-        for step ∈ traj[ind]
-    ] |> reverse
+    return map(step -> reverse(propagate(manifold(step, V; eps = eps), -duration; reltol = reltol, abstol = abstol)), traj[ind])
 end
 
 """
@@ -258,11 +267,12 @@ function unstable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real;
     V = unstable_eigenvector(M)
 
     traj = propagate(orbit, T; reltol = reltol, abstol = abstol, saveat = saveat)
-    ind  = 1 : length(traj) ÷ num_trajectories : length(traj) - (length(traj) % num_trajectories)
-
-    return [
-        propagate(manifold(step, V; eps = eps), duration; 
-                  reltol = reltol, abstol = abstol, saveat = saveat)
-        for step ∈ traj[ind]
-    ]
+    if length(traj) ÷ num_trajectories < 1
+        ind = 1:length(traj)
+    else
+        ind  = 1 : length(traj) ÷ num_trajectories : length(traj) - (length(traj) % num_trajectories)
+    end
+    
+    return map(step -> propagate(manifold(step, V; eps = eps), duration; reltol = reltol, abstol = abstol, saveat = saveat), traj[ind])
+        
 end

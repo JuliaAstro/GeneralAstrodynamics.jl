@@ -14,6 +14,7 @@ export R2BPTic!, CR3BPTic!, CR3BPSTMTic!
 # Module Dependencies
 using Reexport
 
+using Distributed
 using StaticArrays
 using LinearAlgebra
 using SymbolicUtils
