@@ -8,7 +8,7 @@ wrappers.
 module AstrodynamicalModels
 
 # Export every model!
-export R2BPModel, CR3BPModel, CR3BPModelWithSTM
+export R2BP, CR3BP, CR3BPWithSTM
 
 # AstrodynamicalSystems.jl simply defines constant 
 # `*System` variables that represent common 
@@ -32,7 +32,7 @@ small body. This model is commonly used as a simplification to
 descibe our solar systems' planets orbiting our sun, or a 
 spacecraft orbiting Earth. 
 """
-const R2BPModel = let
+const R2BP = let
 
     @parameters t μ 
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
@@ -45,7 +45,7 @@ const R2BPModel = let
         δ.(v) .~ -μ .* (r ./ norm(r)^3)
     )
 
-    @named R2BPModel = ODESystem(eqs)
+    @named R2BP = ODESystem(eqs)
 
 end
 
@@ -60,7 +60,7 @@ This may seem like an arbitrary simplification, but this assumption
 holds reasonably well for the Earth-Moon, Sun-Earth, and many other 
 systems in our solar system.
 """
-const CR3BPModel = let
+const CR3BP = let
 
     @parameters t μ 
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
@@ -75,7 +75,7 @@ const CR3BPModel = let
         δ(ż) ~ z*(-μ*(sqrt((μ + x - 1)^2 + y^2 + z^2)^-3) - ((sqrt(y^2 + z^2 + (μ + x)^2)^-3)*(1 - μ)))
     )
 
-    @named CR3BPModel = ODESystem(eqs)
+    @named CR3BP = ODESystem(eqs)
 
 end
 
@@ -83,7 +83,7 @@ end
 A `ModelingToolkit.ODESystem` for the Circular Restricted Three-body Problem,
 with the local linearization included in the state vector and dynamics.
 """
-const CR3BPModelWithSTM = let 
+const CR3BPWithSTM = let 
 
     @parameters t μ 
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t) Φ[1:6,1:6](t)
@@ -102,7 +102,7 @@ const CR3BPModelWithSTM = let
         hcat(H, [0 2 0; -2 0 0; 0 0 0])
     ) * Φ
 
-    @named CR3BPModelWithSTM = ODESystem(vcat(equations(CR3BPModel)..., eqs...))
+    @named CR3BPWithSTM = ODESystem(vcat(equations(CR3BP)..., eqs...))
 end
 
 end # module
