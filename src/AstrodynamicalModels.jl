@@ -7,6 +7,14 @@ wrappers.
 """
 module AstrodynamicalModels
 
+# NOTE right at the top. DO NOT CHANGE THE ORDER
+# OF THE VARIABLES IN THE MODELS BELOW. Due to 
+# a ModelingToolkit quirk (as of the time of 
+# writing), downstream users do not have any 
+# way to specify individual states when 
+# constructing an `ODEProblem` from each 
+# `ODESystem`.
+
 # Export every model!
 export R2BP, CR3BP, CR3BPWithSTM
 
@@ -45,7 +53,7 @@ R2BP = let
         δ.(v) .~ -μ .* (r ./ norm(r)^3)
     )
 
-    @named R2BP = ODESystem(eqs)
+    @named R2BP = ODESystem(eqs, t, vcat(r,v), [μ])
 
 end
 
@@ -75,7 +83,7 @@ CR3BP = let
         δ(ż) ~ z*(-μ*(sqrt((μ + x - 1)^2 + y^2 + z^2)^-3) - ((sqrt(y^2 + z^2 + (μ + x)^2)^-3)*(1 - μ)))
     )
 
-    @named CR3BP = ODESystem(eqs)
+    @named CR3BP = ODESystem(eqs, t, vcat(r,v), [μ])
 
 end
 
@@ -91,7 +99,7 @@ CR3BPWithSTM = let
     r = @SVector [x,y,z]
     v = @SVector [ẋ,ẏ,ż]
 
-    # Potential energy of spacecraft
+    # Potential energy of spacecraft (this code was symbolically generated with Symbolics.jl)
     U = μ*(sqrt((μ + x - 1)^2 + y^2 + z^2)^-1) + (1//2) * (x^2) + (1//2) * (y^2) + (sqrt(y^2 + z^2 + (μ + x)^2)^-1)*(1 - μ)
 
     # Hessian of potential energy
@@ -102,7 +110,7 @@ CR3BPWithSTM = let
         hcat(H, [0 2 0; -2 0 0; 0 0 0])
     ) * Φ
 
-    @named CR3BPWithSTM = ODESystem(vcat(equations(CR3BP)..., eqs...))
+    @named CR3BPWithSTM = ODESystem(vcat(equations(CR3BP)..., eqs...), t, vcat(r,v,Φ...), [μ])
 end
 
 end # module
