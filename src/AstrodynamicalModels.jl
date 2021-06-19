@@ -1,5 +1,5 @@
 """
-Provides astrodynamical models as `ModelingToolkit` `Systems`. 
+Provides astrodynamical models as `ModelingToolkit.ODESystems`. 
 Check out the `ModelingToolkit` docs to learn how to use these 
 systems for orbit propagation with `DifferentialEquations`, or
 see `GeneralAstrodynamics` for some convenient orbit propagation 
@@ -10,7 +10,7 @@ module AstrodynamicalModels
 # Export every model!
 export R2BP, CR3BP, CR3BPWithSTM
 
-# AstrodynamicalSystems.jl simply defines constant 
+# AstrodynamicalSystems.jl simply defines 
 # `*System` variables that represent common 
 # astrodynamical models: R2BPP, CR3BP, etc.
 using Symbolics, ModelingToolkit
@@ -32,7 +32,7 @@ small body. This model is commonly used as a simplification to
 descibe our solar systems' planets orbiting our sun, or a 
 spacecraft orbiting Earth. 
 """
-const R2BP = let
+R2BP = let
 
     @parameters t μ 
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
@@ -60,7 +60,7 @@ This may seem like an arbitrary simplification, but this assumption
 holds reasonably well for the Earth-Moon, Sun-Earth, and many other 
 systems in our solar system.
 """
-const CR3BP = let
+CR3BP = let
 
     @parameters t μ 
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
@@ -83,7 +83,7 @@ end
 A `ModelingToolkit.ODESystem` for the Circular Restricted Three-body Problem,
 with the local linearization included in the state vector and dynamics.
 """
-const CR3BPWithSTM = let 
+CR3BPWithSTM = let 
 
     @parameters t μ 
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t) Φ[1:6,1:6](t)
