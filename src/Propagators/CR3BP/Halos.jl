@@ -52,8 +52,8 @@ and Dr. Mireles' lecture notes and EarthSunHaloOrbit_NewtonMewhod.m
 file available on their website.
 Specifically, the half-period iterative scheme (the `F` matrix
 in the source code, and corresponding "next guess" computation) 
-was ported __directly__ from Dr. Mireles' public code, which is 
-available on their website. 
+was ported __directly__ from Dr. Mireles' public code and notes, which are
+available online. 
 - [Dr. Mireles Notes](http://cosweb1.fau.edu/~jmirelesjames/hw5Notes.pdf)
 - [Dr. Mireles Code](http://cosweb1.fau.edu/~jmirelesjames/notes.html)
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
@@ -212,11 +212,12 @@ Given a __periodic__ `CircularRestrictedThreeBodyOrbit`,
 returns a nearby `CircularRestrictedThreeBodyOrbit` on the 
 __stable manifold__ of the initial state.
 """
-function manifold(orbit::NormalizedSynodicCR3BPOrbit, V::AbstractVector; eps = 1e-8, velocity_perturbation = eps, position_perturbation = 0)
-    r = position_vector(orbit) + position_perturbation * V[1:3]
-    v = velocity_vector(orbit) + velocity_perturbation * V[4:6]
+function manifold(orbit::NormalizedSynodicSTMCR3BPOrbit, V::AbstractVector; eps = 1e-8, velocity_perturbation = eps, position_perturbation = 0)
+    V = normalize(V)
+    r = orbit.state.cart.r + position_perturbation * V[1:3]
+    v = orbit.state.cart.v + velocity_perturbation * V[4:6]
 
-    cart = CartesianState(r, v, orbit.state.t, Synodic;
+    cart = CartesianState(r, v, orbit.state.cart.t, Synodic;
                           lengthunit = NormalizedLengthUnit(), 
                           timeunit = NormalizedTimeUnit())
 
@@ -239,6 +240,7 @@ function stable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real;
     M = monodromy(orbit, T)
     V = stable_eigenvector(M)
 
+    orbit = NormalizedSynodicSTMCR3BPOrbit(orbit)
     traj = propagate(orbit, T; reltol = reltol, abstol = abstol, saveat = saveat)
     if length(traj) ÷ num_trajectories < 1
         ind = 1:length(traj)
@@ -246,7 +248,7 @@ function stable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real;
         ind  = 1 : length(traj) ÷ num_trajectories : length(traj) - (length(traj) % num_trajectories)
     end
     
-    return map(step -> reverse(propagate(manifold(step, V; eps = eps), -duration; reltol = reltol, abstol = abstol)), traj[ind])
+    return map(step -> reverse(propagate(manifold(step, step.state.stm * V; eps = eps), -duration; reltol = reltol, abstol = abstol)), traj[ind])
 end
 
 """
@@ -263,6 +265,7 @@ function unstable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real;
     @assert duration > zero(duration) "The provided duration cannot be zero or negative."
     @assert isperiodic(orbit, T) "The provided orbit is not periodic!"
 
+    orbit = NormalizedSynodicSTMCR3BPOrbit(orbit)
     M = monodromy(orbit, T)
     V = unstable_eigenvector(M)
 
@@ -273,6 +276,6 @@ function unstable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real;
         ind  = 1 : length(traj) ÷ num_trajectories : length(traj) - (length(traj) % num_trajectories)
     end
     
-    return map(step -> propagate(manifold(step, V; eps = eps), duration; reltol = reltol, abstol = abstol, saveat = saveat), traj[ind])
+    return map(step -> propagate(manifold(step, step.state.stm * V; eps = eps), duration; reltol = reltol, abstol = abstol, saveat = saveat), traj[ind])
         
 end
