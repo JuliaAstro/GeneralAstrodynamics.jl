@@ -133,7 +133,7 @@ CR3BPWithSTM = let
         [LHS[i] ~ RHS[i] for i in 1:length(LHS)]
     end
 
-    CR3BPWithSTM = ODESystem(vcat(equations(CR3BP)..., eqs...), t, vcat(r,v,Φ...), [μ])
+    @named CR3BPWithSTM = ODESystem(vcat(equations(CR3BP)..., eqs...), t, vcat(r,v,Φ...), [μ])
 end
 
 """
