@@ -64,7 +64,7 @@ Note that this function has several methods, including an in-place
 method! Function signatures follow `ModelingToolkit` and `DifferentialEquations`
 conventions.
 """
-R2BPVectorField = ODEFunction(R2BP; jac = true, tgrad = true)
+R2BPVectorField = ODEFunction(R2BP; jac = true, tgrad = false)
 
 """
 A `ModelingToolkit.ODESystem` for the Circular Restricted Three-body Problem. 
@@ -102,7 +102,7 @@ Note that this function has several methods, including an in-place
 method! Function signatures follow `ModelingToolkit` and `DifferentialEquations`
 conventions.
 """
-CR3BPVectorField = ODEFunction(CR3BP; jac = true, tgrad = true)
+CR3BPVectorField = ODEFunction(CR3BP; jac = true, tgrad = false)
 
 """
 A `ModelingToolkit.ODESystem` for the Circular Restricted Three-body Problem,
@@ -142,6 +142,6 @@ Note that this function has several methods, including an in-place
 method! Function signatures follow `ModelingToolkit` and `DifferentialEquations`
 conventions.
 """
-CR3BPWithSTMVectorField = ODEFunction(CR3BPWithSTM; jac = true, tgrad = true)
+# CR3BPWithSTMVectorField = ODEFunction(CR3BPWithSTM; jac = true, tgrad = false)
 
 end # module
