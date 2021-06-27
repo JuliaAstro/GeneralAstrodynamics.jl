@@ -8,12 +8,10 @@ wrappers.
 module AstrodynamicalModels
 
 # NOTE right at the top. DO NOT CHANGE THE ORDER
-# OF THE VARIABLES IN THE MODELS BELOW. Due to 
-# a ModelingToolkit quirk (as of the time of 
-# writing), downstream users do not have any 
-# way to specify individual states when 
-# constructing an `ODEProblem` from each 
-# `ODESystem`.
+# OF THE VARIABLES IN THE MODELS BELOW. 
+# Downstream users do not have any way to 
+# specify individual states when constructing 
+# an `ODEProblem` from each `ODESystem`.
 
 # Export every model!
 export R2BP, CR3BP, CR3BPWithSTM
@@ -64,7 +62,7 @@ Note that this function has several methods, including an in-place
 method! Function signatures follow `ModelingToolkit` and `DifferentialEquations`
 conventions.
 """
-R2BPVectorField = ODEFunction(R2BP; jac = true, tgrad = false)
+R2BPVectorField = ODEFunction(R2BP; jac = true, tgrad = true)
 
 """
 A `ModelingToolkit.ODESystem` for the Circular Restricted Three-body Problem. 
@@ -102,7 +100,7 @@ Note that this function has several methods, including an in-place
 method! Function signatures follow `ModelingToolkit` and `DifferentialEquations`
 conventions.
 """
-CR3BPVectorField = ODEFunction(CR3BP; jac = true, tgrad = false)
+CR3BPVectorField = ODEFunction(CR3BP; jac = true, tgrad = true)
 
 """
 A `ModelingToolkit.ODESystem` for the Circular Restricted Three-body Problem,
@@ -123,11 +121,11 @@ CR3BPWithSTM = let
     H = Symbolics.hessian(U, r)
 
     eqs = let
-        LHS = δ.(Φ) 
-        RHS = vcat(
-            Matrix{Num}(hcat(zeros(3,3), I(3))),
-            hcat(H, [0 2 0; -2 0 0; 0 0 0])
-        ) * Φ
+        LHS = [δ(Φ[i,j]) for j in 1:size(Φ,2) for i in 1:size(Φ,1)]
+        RHS = vec(vcat(
+            Matrix{Float64}(hcat(zeros(3,3), I(3))),
+            hcat(H, Float64[0 2 0; -2 0 0; 0 0 0])
+        ) * Φ)
 
         @assert length(LHS) == length(RHS) == 36 "If this assertion fails, please file an issue at https://github.com/cadojo/AstrodynamicalModels.jl!"
         [LHS[i] ~ RHS[i] for i in 1:length(LHS)]
@@ -142,6 +140,6 @@ Note that this function has several methods, including an in-place
 method! Function signatures follow `ModelingToolkit` and `DifferentialEquations`
 conventions.
 """
-# CR3BPWithSTMVectorField = ODEFunction(CR3BPWithSTM; jac = true, tgrad = false)
+CR3BPWithSTMVectorField = ODEFunction(CR3BPWithSTM; jac = true, tgrad = false, sparse = false)
 
 end # module
