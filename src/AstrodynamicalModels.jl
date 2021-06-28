@@ -28,6 +28,11 @@ using LinearAlgebra
 # Provides @SVector
 using StaticArrays
 
+# Allows for providing compiled functions to user
+using RuntimeGeneratedFunctions
+RuntimeGeneratedFunctions.init(@__MODULE__)
+
+
 """
 A `ModelingToolkit.ODESystem` for the Restricted Two-body Problem. 
 
@@ -62,7 +67,7 @@ Note that this function has several methods, including an in-place
 method! Function signatures follow `ModelingToolkit` and `DifferentialEquations`
 conventions.
 """
-R2BPVectorField = ODEFunction(R2BP; jac = true, tgrad = true)
+const R2BPVectorField = ODEFunction(R2BP; jac = true, tgrad = true, eval_expression=false, eval_module=@__MODULE__)
 
 """
 A `ModelingToolkit.ODESystem` for the Circular Restricted Three-body Problem. 
@@ -100,7 +105,7 @@ Note that this function has several methods, including an in-place
 method! Function signatures follow `ModelingToolkit` and `DifferentialEquations`
 conventions.
 """
-CR3BPVectorField = ODEFunction(CR3BP; jac = true, tgrad = true)
+const CR3BPVectorField = ODEFunction(CR3BP; jac = true, tgrad = true, eval_expression=false, eval_module=@__MODULE__)
 
 """
 A `ModelingToolkit.ODESystem` for the Circular Restricted Three-body Problem,
@@ -121,13 +126,21 @@ CR3BPWithSTM = let
     H = Symbolics.hessian(U, r)
 
     eqs = let
-        LHS = [δ(Φ[i,j]) for j in 1:size(Φ,2) for i in 1:size(Φ,1)]
-        RHS = vec(vcat(
+        A = vcat(
             Matrix{Float64}(hcat(zeros(3,3), I(3))),
             hcat(H, Float64[0 2 0; -2 0 0; 0 0 0])
-        ) * Φ)
+        )
+
+        LHS = [
+            δ(Φ[i,j]) for j in 1:6 for i in 1:6
+        ]
+
+        RHS = [
+           A[i,j] * Φ[i,j] for j in 1:6 for i in 1:6
+        ]
 
         @assert length(LHS) == length(RHS) == 36 "If this assertion fails, please file an issue at https://github.com/cadojo/AstrodynamicalModels.jl!"
+
         [LHS[i] ~ RHS[i] for i in 1:length(LHS)]
     end
 
@@ -140,6 +153,6 @@ Note that this function has several methods, including an in-place
 method! Function signatures follow `ModelingToolkit` and `DifferentialEquations`
 conventions.
 """
-CR3BPWithSTMVectorField = ODEFunction(CR3BPWithSTM; jac = true, tgrad = false, sparse = false)
+const CR3BPWithSTMVectorField = ODEFunction(CR3BPWithSTM; jac = true, tgrad = false, sparse = false, eval_expression = false, eval_module=@__MODULE__)
 
 end # module
