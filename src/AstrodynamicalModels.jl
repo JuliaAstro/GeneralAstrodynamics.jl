@@ -117,6 +117,8 @@ CR3BPWithSTM = let
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t) Φ[1:6,1:6](t)
     δ = Differential(t)
 
+    Φ = Matrix(Φ) # this produces a non-symbolic broadcast
+
     r = @SVector [x, y, z]
     v = @SVector [ẋ, ẏ, ż]
     
@@ -132,13 +134,8 @@ CR3BPWithSTM = let
             hcat(H, Float64[0 2 0; -2 0 0; 0 0 0])
         )
 
-        LHS = [
-            δ(Φ[i,j]) for j in 1:6 for i in 1:6
-        ]
-
-        RHS = [
-            A[i,j] * Φ[i,j] for j in 1:6 for i in 1:6
-        ]
+        LHS = map(δ, Φ)
+        RHS = map(simplify, A * Φ)
 
         @assert length(LHS) == length(RHS) == 36 "If this assertion fails, please file an issue at https://github.com/cadojo/AstrodynamicalModels.jl!"
 
