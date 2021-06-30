@@ -4,6 +4,7 @@ authors = ["Joe Carpinelli <jdcarpinelli@gmail.com>"]
 version = "0.9.2"
 
 [deps]
+AstrodynamicalModels = "4282b555-f590-4262-b575-3e516e1493a7"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 ComponentArrays = "b0b7db55-cfe3-40fc-9ded-d10e2dbeff66"
 Contour = "d38c429a-6771-53c6-b99e-75d170b6e991"
@@ -29,6 +30,7 @@ UnitfulAngles = "6fb2a4bd-7999-5318-a3b2-8ad61056cd98"
 UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 
 [compat]
+AstrodynamicalModels = "0.2.5"
 CSV = "0.8"
 ComponentArrays = "0.8, 0.9"
 Contour = "0.5"
@@ -44,6 +46,7 @@ Roots = "1.0"
 SciMLBase = "1.10"
 StaticArrays = "0.12, 1.0"
 SymbolicUtils = "0.10, 0.11, 0.12"
+SymbolicUtils = "0.10, 0.11, 0.12, 0.13"
 Symbolics = "0.1"
 Unitful = "1.4"
 UnitfulAngles = "0.6"
