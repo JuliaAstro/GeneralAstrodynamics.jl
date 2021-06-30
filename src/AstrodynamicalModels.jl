@@ -114,10 +114,8 @@ with the local linearization included in the state vector and dynamics.
 CR3BPWithSTM = let 
 
     @parameters t μ 
-    @variables Φ[1:6,1:6](t)
+    @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t) Φ[1:6,1:6](t)
     δ = Differential(t)
-    
-    x, y, z, ẋ, ẏ, ż = states(CR3BP)
 
     r = @SVector [x, y, z]
     v = @SVector [ẋ, ẏ, ż]
@@ -144,10 +142,17 @@ CR3BPWithSTM = let
 
         @assert length(LHS) == length(RHS) == 36 "If this assertion fails, please file an issue at https://github.com/cadojo/AstrodynamicalModels.jl!"
 
-        [LHS[i] ~ RHS[i] for i in 1:length(LHS)]
+        vcat(
+            δ.(r) .~ v,
+            δ(ẋ) ~ x + 2ẏ - (μ*(μ + x - 1)*(sqrt((μ + x - 1)^2 + y^2 + z^2)^-3)) - ((μ + x)*(sqrt(y^2 + z^2 + (μ + x)^2)^-3)*(1 - μ)),
+            δ(ẏ) ~ y - (ẋ) - (y*(μ*(sqrt((μ + x - 1)^2 + y^2 + z^2)^-3) + (sqrt(y^2 + z^2 + (μ + x)^2)^-3)*(1 - μ))),
+            δ(ż) ~ z*(-μ*(sqrt((μ + x - 1)^2 + y^2 + z^2)^-3) - ((sqrt(y^2 + z^2 + (μ + x)^2)^-3)*(1 - μ))),
+            [LHS[i] ~ RHS[i] for i in 1:length(LHS)]
+        )
+
     end
 
-    @named CR3BPWithSTM = ODESystem(vcat(equations(CR3BP), eqs), t, vcat(r,v,[col for col in eachcol(Φ)]...), [μ])
+    @named CR3BPWithSTM = ODESystem(eqs, t, vcat(r,v,Φ...), [μ])
 end
 
 """
