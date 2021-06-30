@@ -158,6 +158,6 @@ Note that this function has several methods, including an in-place
 method! Function signatures follow `ModelingToolkit` and `DifferentialEquations`
 conventions.
 """
-const CR3BPWithSTMVectorField = ODEFunction(CR3BPWithSTM; jac = true, tgrad = false, sparse = false, eval_expression = false, eval_module=@__MODULE__)
+const CR3BPWithSTMVectorField = ODEFunction(CR3BPWithSTM; jac = false, tgrad = false, sparse = false, eval_expression = false, eval_module=@__MODULE__)
 
 end # module
