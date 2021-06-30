@@ -125,15 +125,10 @@ CR3BPWithSTM = let
     # Potential energy of spacecraft (this code was symbolically generated with Symbolics.jl, then copied and pasted)
     U = μ*(sqrt((μ + x - 1)^2 + y^2 + z^2)^-1) + (1//2) * (x^2) + (1//2) * (y^2) + (sqrt(y^2 + z^2 + (μ + x)^2)^-1)*(1 - μ)
 
-    # Hessian of potential energy, equivalent to Jacobian of CR3BP dynamics!
-    H = CR3BPVectorField(Val{:jac}, vcat(r, v), [μ], NaN)
-
     eqs = let
-        A = vcat(
-            Matrix{Float64}(hcat(zeros(3,3), I(3))),
-            hcat(H, Float64[0 2 0; -2 0 0; 0 0 0])
-        )
 
+        A = CR3BPVectorField(Val{:jac}, vcat(r, v), [μ], NaN)
+    
         LHS = map(δ, Φ)
         RHS = map(simplify, A * Φ)
 
