@@ -1,7 +1,7 @@
 name = "GeneralAstrodynamics"
 uuid = "8068df5b-8501-4530-bd82-d24d3c9619db"
 authors = ["Joe Carpinelli <jdcarpinelli@gmail.com>"]
-version = "0.9.3"
+version = "0.9.4"
 
 [deps]
 AstrodynamicalModels = "4282b555-f590-4262-b575-3e516e1493a7"
@@ -46,7 +46,7 @@ Roots = "1.0"
 SciMLBase = "1.10"
 StaticArrays = "0.12, 1.0"
 SymbolicUtils = "0.10, 0.11, 0.13"
-Symbolics = "0.1"
+Symbolics = "0.1, 1"
 Unitful = "1.4"
 UnitfulAngles = "0.6"
 UnitfulAstro = "1.0"
