@@ -6,27 +6,25 @@
 """
 Returns the Monodromy Matrix for a Halo orbit.
 """
-function monodromy(orbit::CircularRestrictedThreeBodyOrbit, T; reltol = 1e-14, abstol = 1e-14, atol = 1e-8)
+function monodromy(orbit::CircularRestrictedThreeBodyOrbit, T; reltol = 1e-14, abstol = 1e-14)
     orb = (NormalizedSynodicSTMCR3BPOrbit ∘ normalize ∘ synodic)(orbit)
     problem = ODEProblem(orb, T)
 
-    integrator = init(problem, Vern9(); reltol=reltol, abstol=abstol)
-    solve!(integrator)
+    final = solve(problem; reltol=reltol, abstol=abstol, save_everystep=false).u[end]
 
-    SMatrix{6,6}(integrator.u[7:end]...) |> transpose |> Matrix
+    SMatrix{6,6}(final[7:end]...) |> Matrix
 end
 
 """
 Returns true if a `RestrictedThreeBodySystem` is numerically periodic.
 """
-function isperiodic(orbit::CircularRestrictedThreeBodyOrbit, T; reltol = 1e-14, abstol = 1e-14, atol = 1e-8)
+function isperiodic(orbit::CircularRestrictedThreeBodyOrbit, T; reltol = 1e-14, abstol = 1e-14, atol = 1e-6)
     orb = (normalize ∘ synodic)(orbit)
     problem = ODEProblem(orbit, T)
 
-    integrator = init(problem, Vern9(); reltol=reltol, abstol=abstol)
-    solve!(integrator)
+    final = solve(problem; reltol=reltol, abstol=abstol, save_everystep=false).u[end]
         
-    return all((isapprox.(orbit.state.r, integrator.u.r; atol = atol)..., isapprox(orbit.state.v, integrator.u.v; atol = atol)...))
+    return all(isapprox.(vcat(position_vector(orbit.state), velocity_vector(orbit.state)), final[1:6]; atol = atol))
 end
 
 
@@ -52,8 +50,8 @@ and Dr. Mireles' lecture notes and EarthSunHaloOrbit_NewtonMewhod.m
 file available on their website.
 Specifically, the half-period iterative scheme (the `F` matrix
 in the source code, and corresponding "next guess" computation) 
-was ported __directly__ from Dr. Mireles' public code, which is 
-available on their website. 
+was ported __directly__ from Dr. Mireles' public code and notes, which are
+available online. 
 - [Dr. Mireles Notes](http://cosweb1.fau.edu/~jmirelesjames/hw5Notes.pdf)
 - [Dr. Mireles Code](http://cosweb1.fau.edu/~jmirelesjames/notes.html)
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
@@ -67,27 +65,25 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
     r₀ = r₀[1,:]
     v₀ = v₀[1,:]
     τ  = Τ/2
-
-    Φ  = Matrix{promote_type(eltype(r₀), eltype(v₀), typeof(τ))}(undef, 6, 6)
+    ∂vₛ = Vector{typeof(Τ)}(undef, 3)
+    Id = Matrix(I(6))
 
     for i ∈ 1:max_iter
 
         problem = ODEProblem(
-            CR3BPSTMTic!,
-            ComponentVector(vcat(r₀, v₀, [row for row ∈ eachrow(I(6))]...),
-                            Axis(r=1:3, v=4:6, Φ₁=7:12, Φ₂=13:18,
-                                 Φ₃=19:24, Φ₄=25:30, Φ₅=31:36, Φ₆=37:42)),
+            AstrodynamicalModels.CR3BPWithSTMVectorField,
+            vcat(r₀, v₀, Id...),
             (0.0, τ),
-            (μ = μ,)
+            (μ,)
         )    
 
         retcode, rₛ, vₛ, Φ = let 
             sols  = solve(problem; reltol=reltol, abstol=abstol)
             final = sols.u[end] 
-            sols.retcode, final.r, final.v,  transpose(hcat(final.Φ₁, final.Φ₂, final.Φ₃, final.Φ₄, final.Φ₅, final.Φ₆))
+            sols.retcode, final[1:3], final[4:6], SMatrix{6,6}(final[7:end]...)
         end
 
-        ∂vₛ = accel(rₛ, vₛ, μ)
+        AstrodynamicalModels.CR3BPVectorField(∂vₛ, vcat(rₛ, vₛ), (μ,), NaN)
 
         # All code in this `if, else, end` block is ported from
         # Dr. Mireles' MATLAB code, which is available on his 
@@ -212,11 +208,12 @@ Given a __periodic__ `CircularRestrictedThreeBodyOrbit`,
 returns a nearby `CircularRestrictedThreeBodyOrbit` on the 
 __stable manifold__ of the initial state.
 """
-function manifold(orbit::NormalizedSynodicCR3BPOrbit, V::AbstractVector; eps = 1e-8, velocity_perturbation = eps, position_perturbation = 0)
-    r = position_vector(orbit) + position_perturbation * V[1:3]
-    v = velocity_vector(orbit) + velocity_perturbation * V[4:6]
+function manifold(orbit::NormalizedSynodicSTMCR3BPOrbit, V::AbstractVector; eps = 1e-8, velocity_perturbation = eps, position_perturbation = 0)
+    V = normalize(V)
+    r = orbit.state.cart.r + position_perturbation * V[1:3]
+    v = orbit.state.cart.v + velocity_perturbation * V[4:6]
 
-    cart = CartesianState(r, v, orbit.state.t, Synodic;
+    cart = CartesianState(r, v, orbit.state.cart.t, Synodic;
                           lengthunit = NormalizedLengthUnit(), 
                           timeunit = NormalizedTimeUnit())
 
@@ -239,6 +236,7 @@ function stable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real;
     M = monodromy(orbit, T)
     V = stable_eigenvector(M)
 
+    orbit = NormalizedSynodicSTMCR3BPOrbit(orbit)
     traj = propagate(orbit, T; reltol = reltol, abstol = abstol, saveat = saveat)
     if length(traj) ÷ num_trajectories < 1
         ind = 1:length(traj)
@@ -246,7 +244,7 @@ function stable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real;
         ind  = 1 : length(traj) ÷ num_trajectories : length(traj) - (length(traj) % num_trajectories)
     end
     
-    return map(step -> reverse(propagate(manifold(step, V; eps = eps), -duration; reltol = reltol, abstol = abstol)), traj[ind])
+    return map(step -> reverse(propagate(manifold(step, step.state.stm * V; eps = eps), -duration; reltol = reltol, abstol = abstol)), traj[ind])
 end
 
 """
@@ -263,6 +261,7 @@ function unstable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real;
     @assert duration > zero(duration) "The provided duration cannot be zero or negative."
     @assert isperiodic(orbit, T) "The provided orbit is not periodic!"
 
+    orbit = NormalizedSynodicSTMCR3BPOrbit(orbit)
     M = monodromy(orbit, T)
     V = unstable_eigenvector(M)
 
@@ -273,6 +272,6 @@ function unstable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real;
         ind  = 1 : length(traj) ÷ num_trajectories : length(traj) - (length(traj) % num_trajectories)
     end
     
-    return map(step -> propagate(manifold(step, V; eps = eps), duration; reltol = reltol, abstol = abstol, saveat = saveat), traj[ind])
+    return map(step -> propagate(manifold(step, step.state.stm * V; eps = eps), duration; reltol = reltol, abstol = abstol, saveat = saveat), traj[ind])
         
 end

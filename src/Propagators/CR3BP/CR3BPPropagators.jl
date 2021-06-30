@@ -49,15 +49,14 @@ Given a `CartesianOrbit`, return a `DifferentialEquations.ODEProblem` instance
 that describes the Restricted Two-body Problem.
 """
 function SciMLBase.ODEProblem(orbit::NormalizedSynodicCR3BPOrbit, Δt::Real) 
-    # Initial conditions
-    u = ComponentVector(vcat(position_vector(orbit.state), velocity_vector(orbit.state)), Axis(r=1:3, v=4:6))
 
-    ts = (epoch(orbit.state), Δt)
-    p  = let μ = normalized_mass_parameter(orbit.system)
-        (μ=μ, x₁=-μ, x₂=1-μ)
-    end
+    return ODEProblem(
+        AstrodynamicalModels.CR3BPVectorField, 
+        Vector(orbit.state.rv), 
+        (epoch(orbit.state), Δt), 
+        [normalized_mass_parameter(orbit.system)]
+    )
 
-    return ODEProblem(CR3BPTic!, u, ts, p)
 end
 
 
@@ -66,18 +65,14 @@ Given a `CartesianOrbit`, return a `DifferentialEquations.ODEProblem` instance
 that describes the Restricted Two-body Problem.
 """
 function SciMLBase.ODEProblem(orbit::NormalizedSynodicSTMCR3BPOrbit, Δt::Real) 
-    # Initial conditions
-    u = ComponentVector(vcat(orbit.state.cart.r, orbit.state.cart.r, [row for row ∈ eachrow(I(6))]...),
-                        Axis(r=1:3, v=4:6, Φ₁=7:12, Φ₂=13:18,
-                             Φ₃=19:24, Φ₄=25:30, Φ₅=31:36, Φ₆=37:42))
 
-    ts = (epoch(orbit.state), Δt)
-    ts = (min(ts...), max(ts...))
-    p  = let μ = normalized_mass_parameter(orbit.system)
-        (μ=μ, x₁=-μ, x₂=1-μ)
-    end
+    return ODEProblem(
+        AstrodynamicalModels.CR3BPWithSTMVectorField, 
+        vcat(orbit.state.cart.rv, vec(orbit.state.stm)), 
+        (epoch(orbit.state), Δt), 
+        [normalized_mass_parameter(orbit.system)]
+    )
 
-    return ODEProblem(CR3BPSTMTic!, u, ts, p)
 end
 
 
@@ -143,7 +138,7 @@ function propagate(orbit::NormalizedSynodicSTMCR3BPOrbit, Δt::Real; kwargs...)
         let 
             cart = CartesianState(sols.u[i][1:3], sols.u[i][4:6], sols.t[i], Synodic;
                                   lengthunit = NormalizedLengthUnit(), timeunit = NormalizedTimeUnit())
-            state = SynodicCartesianSTMState(cart, SMatrix{6,6}(transpose(hcat(sols.u[i].Φ₁, sols.u[i].Φ₂, sols.u[i].Φ₃, sols.u[i].Φ₄, sols.u[i].Φ₅, sols.u[i].Φ₆))))
+            state = SynodicCartesianSTMState(cart, SMatrix{6,6}(sols.u[i][7:end]...))
             CircularRestrictedThreeBodyOrbit(state, orbit.system)
         end
         for i ∈ 1:length(sols.t)

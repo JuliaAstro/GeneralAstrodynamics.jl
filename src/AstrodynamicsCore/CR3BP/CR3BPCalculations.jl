@@ -225,6 +225,13 @@ function synodic(state::NormalizedCartesianState{F, Inertial}, ω::Unitful.Abstr
 end
 
 """
+Given an `InertialCartesianState`, returns the state in the synodic (rotating) reference frame.
+"""
+function synodic(state::SynodicCartesianSTMState{F}, ω::Unitful.AbstractQuantity=1.0u"rad"/AstrodynamicsCore.timeunit(state)) where F
+    return state
+end
+
+"""
 Given a `SynodicCartesianState`, returns the state in the inertial reference frame.
 """
 function inertial(state::NormalizedCartesianState{F, Synodic}, ω::Unitful.AbstractQuantity=(1.0u"rad")/AstrodynamicsCore.timeunit(state)) where F
@@ -238,6 +245,22 @@ function inertial(state::NormalizedCartesianState{F, Synodic}, ω::Unitful.Abstr
     ]
 
     return CartesianState(ⁱTₛ * state.r, ⁱTₛ * state.v, state.t, Inertial; lengthunit = AstrodynamicsCore.lengthunit(state), timeunit = AstrodynamicsCore.timeunit(state))
+end
+
+"""
+Given a `SynodicCartesianState`, returns the state in the inertial reference frame.
+"""
+function inertial(state::NormalizedSynodicCartesianSTMState{F}, ω::Unitful.AbstractQuantity=(1.0u"rad")/AstrodynamicsCore.timeunit(state)) where F
+
+    t = epoch(state.cart)
+    θ = ω*t
+    ⁱTₛ = @MMatrix [
+        cos(θ) sin(θ) 0
+       -sin(θ) cos(θ) 0
+        0      0      1
+    ]
+
+    return CartesianState(ⁱTₛ * state.cart.r, ⁱTₛ * state.cart.v, state.cart.t, Inertial; lengthunit = AstrodynamicsCore.lengthunit(state.cart), timeunit = AstrodynamicsCore.timeunit(state.cart))
 end
 
 """
