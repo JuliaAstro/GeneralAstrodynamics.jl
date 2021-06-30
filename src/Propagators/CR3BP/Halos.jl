@@ -6,27 +6,25 @@
 """
 Returns the Monodromy Matrix for a Halo orbit.
 """
-function monodromy(orbit::CircularRestrictedThreeBodyOrbit, T; reltol = 1e-14, abstol = 1e-14, atol = 1e-8)
+function monodromy(orbit::CircularRestrictedThreeBodyOrbit, T; reltol = 1e-14, abstol = 1e-14)
     orb = (NormalizedSynodicSTMCR3BPOrbit ∘ normalize ∘ synodic)(orbit)
     problem = ODEProblem(orb, T)
 
-    integrator = init(problem, Vern9(); reltol=reltol, abstol=abstol)
-    solve!(integrator)
+    final = solve(problem; reltol=reltol, abstol=abstol, save_everystep=false).u[end]
 
-    SMatrix{6,6}(integrator.u[7:end]...) |> transpose |> Matrix
+    SMatrix{6,6}(final[7:end]...) |> Matrix
 end
 
 """
 Returns true if a `RestrictedThreeBodySystem` is numerically periodic.
 """
-function isperiodic(orbit::CircularRestrictedThreeBodyOrbit, T; reltol = 1e-14, abstol = 1e-14, atol = 1e-8)
+function isperiodic(orbit::CircularRestrictedThreeBodyOrbit, T; reltol = 1e-14, abstol = 1e-14, atol = 1e-6)
     orb = (normalize ∘ synodic)(orbit)
     problem = ODEProblem(orbit, T)
 
-    integrator = init(problem, Vern9(); reltol=reltol, abstol=abstol)
-    solve!(integrator)
+    final = solve(problem; reltol=reltol, abstol=abstol, save_everystep=false).u[end]
         
-    return all((isapprox.(orbit.state.r, integrator.u.r; atol = atol)..., isapprox(orbit.state.v, integrator.u.v; atol = atol)...))
+    return all(isapprox.(vcat(position_vector(orbit.state), velocity_vector(orbit.state)), final[1:6]; atol = atol))
 end
 
 
@@ -67,27 +65,25 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
     r₀ = r₀[1,:]
     v₀ = v₀[1,:]
     τ  = Τ/2
-
-    Φ  = Matrix{promote_type(eltype(r₀), eltype(v₀), typeof(τ))}(undef, 6, 6)
+    ∂vₛ = Vector{typeof(Τ)}(undef, 3)
+    Id = Matrix(I(6))
 
     for i ∈ 1:max_iter
 
         problem = ODEProblem(
-            CR3BPSTMTic!,
-            ComponentVector(vcat(r₀, v₀, [row for row ∈ eachrow(I(6))]...),
-                            Axis(r=1:3, v=4:6, Φ₁=7:12, Φ₂=13:18,
-                                 Φ₃=19:24, Φ₄=25:30, Φ₅=31:36, Φ₆=37:42)),
+            AstrodynamicalModels.CR3BPWithSTMVectorField,
+            vcat(r₀, v₀, Id...),
             (0.0, τ),
-            (μ = μ,)
+            (μ,)
         )    
 
         retcode, rₛ, vₛ, Φ = let 
             sols  = solve(problem; reltol=reltol, abstol=abstol)
             final = sols.u[end] 
-            sols.retcode, final.r, final.v,  transpose(hcat(final.Φ₁, final.Φ₂, final.Φ₃, final.Φ₄, final.Φ₅, final.Φ₆))
+            sols.retcode, final[1:3], final[4:6], reshape(final[7:end], 6, 6)
         end
 
-        ∂vₛ = accel(rₛ, vₛ, μ)
+        AstrodynamicalModels.CR3BPVectorField(∂vₛ, vcat(rₛ, vₛ), (μ,), NaN)
 
         # All code in this `if, else, end` block is ported from
         # Dr. Mireles' MATLAB code, which is available on his 

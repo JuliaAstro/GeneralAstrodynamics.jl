@@ -17,10 +17,14 @@ Given a `CartesianOrbit`, return a `DifferentialEquations.ODEProblem` instance
 that describes the Restricted Two-body Problem.
 """
 function SciMLBase.ODEProblem(orbit::CartesianOrbit, Δt::Real = ustrip(timeunit(orbit.state), period(orbit))) 
-    u = orbit.state.rv
-    t = (orbit.state.t, Δt)
-    p = (μ = ustrip(lengthunit(orbit.state)^3 / timeunit(orbit.state)^2, mass_parameter(orbit.system)),)
-    return ODEProblem(R2BPTic!, u, t, p)
+
+    return ODEProblem(
+        AstrodynamicalModels.R2BPVectorField, 
+        MVector{6}(orbit.state.rv), 
+        (orbit.state.t, Δt), 
+        MVector{1}(orbit.system.μ)
+    )
+    
 end
 
 """
