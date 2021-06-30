@@ -24,7 +24,7 @@ function isperiodic(orbit::CircularRestrictedThreeBodyOrbit, T; reltol = 1e-14, 
 
     final = solve(problem; reltol=reltol, abstol=abstol, save_everystep=false).u[end]
         
-    return all(isapprox.(vcat(position_vector(orbit.state), velocity_vector(orbit.state)), final[1:6]; atol = atol))
+    return all(isapprox.(position_vector(orbit.state), final[1:3]; atol = atol)) && all(isapprox.(velocity_vector(orbit.state), final[4:6]; atol = atol))
 end
 
 
@@ -57,7 +57,7 @@ available online.
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
 function halo(μ; Az=0.0, L=1, hemisphere=:northern,
-              tolerance=1e-8, max_iter=20,
+              tolerance=1e-8, max_iter=100,
               reltol=1e-14, abstol=1e-14,
               nan_on_fail = true, disable_warnings = false)
 
@@ -65,7 +65,7 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
     r₀ = r₀[1,:]
     v₀ = v₀[1,:]
     τ  = Τ/2
-    ∂vₛ = Vector{typeof(Τ)}(undef, 3)
+    δu = Vector{typeof(τ)}(undef, 6)
     Id = Matrix(I(6))
 
     for i ∈ 1:max_iter
@@ -78,13 +78,14 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
         )    
 
         retcode, rₛ, vₛ, Φ = let 
-            sols  = solve(problem; reltol=reltol, abstol=abstol)
+            sols  = solve(problem, Vern9(); reltol=reltol, abstol=abstol)
             final = sols.u[end] 
             sols.retcode, final[1:3], final[4:6], SMatrix{6,6}(final[7:end]...)
         end
 
-        AstrodynamicalModels.CR3BPVectorField(∂vₛ, vcat(rₛ, vₛ), (μ,), NaN)
-
+        AstrodynamicalModels.CR3BPVectorField(δu, vcat(rₛ, vₛ), (μ,), NaN)
+        ∂vₛ = δu[4:6]
+        
         # All code in this `if, else, end` block is ported from
         # Dr. Mireles' MATLAB code, which is available on his 
         # website: http://cosweb1.fau.edu/~jmirelesjames/notes.html.
