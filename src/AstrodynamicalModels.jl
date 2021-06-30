@@ -114,11 +114,14 @@ with the local linearization included in the state vector and dynamics.
 CR3BPWithSTM = let 
 
     @parameters t μ 
-    @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t) Φ[1:6,1:6](t)
+    @variables Φ[1:6,1:6](t)
     δ = Differential(t)
-    r = @SVector [x,y,z]
-    v = @SVector [ẋ,ẏ,ż]
+    
+    x, y, z, ẋ, ẏ, ż = states(CR3BP)
 
+    r = @SVector [x, y, z]
+    v = @SVector [ẋ, ẏ, ż]
+    
     # Potential energy of spacecraft (this code was symbolically generated with Symbolics.jl, then copied and pasted)
     U = μ*(sqrt((μ + x - 1)^2 + y^2 + z^2)^-1) + (1//2) * (x^2) + (1//2) * (y^2) + (sqrt(y^2 + z^2 + (μ + x)^2)^-1)*(1 - μ)
 
@@ -136,7 +139,7 @@ CR3BPWithSTM = let
         ]
 
         RHS = [
-           A[i,j] * Φ[i,j] for j in 1:6 for i in 1:6
+            A[i,j] * Φ[i,j] for j in 1:6 for i in 1:6
         ]
 
         @assert length(LHS) == length(RHS) == 36 "If this assertion fails, please file an issue at https://github.com/cadojo/AstrodynamicalModels.jl!"
@@ -144,7 +147,7 @@ CR3BPWithSTM = let
         [LHS[i] ~ RHS[i] for i in 1:length(LHS)]
     end
 
-    @named CR3BPWithSTM = ODESystem(vcat(equations(CR3BP)..., eqs...), t, vcat(r,v,Φ...), [μ])
+    @named CR3BPWithSTM = ODESystem(vcat(equations(CR3BP), eqs), t, vcat(r,v,[col for col in eachcol(Φ)]...), [μ])
 end
 
 """
