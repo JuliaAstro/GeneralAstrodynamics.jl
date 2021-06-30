@@ -121,13 +121,12 @@ CR3BPWithSTM = let
 
     r = @SVector [x, y, z]
     v = @SVector [ẋ, ẏ, ż]
-    
-    # Potential energy of spacecraft (this code was symbolically generated with Symbolics.jl, then copied and pasted)
-    U = μ*(sqrt((μ + x - 1)^2 + y^2 + z^2)^-1) + (1//2) * (x^2) + (1//2) * (y^2) + (sqrt(y^2 + z^2 + (μ + x)^2)^-1)*(1 - μ)
 
     eqs = let
 
-        A = CR3BPVectorField(Val{:jac}, vcat(r, v), [μ], NaN)
+        A = let t = NaN # no explicit time dependence!
+            CR3BPVectorField(Val{:jac}, vcat(r, v), [μ], t)
+        end
     
         LHS = map(δ, Φ)
         RHS = map(simplify, A * Φ)
@@ -137,7 +136,7 @@ CR3BPWithSTM = let
         vcat(
             δ.(r) .~ v,
             δ(ẋ) ~ x + 2ẏ - (μ*(μ + x - 1)*(sqrt((μ + x - 1)^2 + y^2 + z^2)^-3)) - ((μ + x)*(sqrt(y^2 + z^2 + (μ + x)^2)^-3)*(1 - μ)),
-            δ(ẏ) ~ y - (ẋ) - (y*(μ*(sqrt((μ + x - 1)^2 + y^2 + z^2)^-3) + (sqrt(y^2 + z^2 + (μ + x)^2)^-3)*(1 - μ))),
+            δ(ẏ) ~ y - 2ẋ - (y*(μ*((sqrt(y^2 + z^2 + (x + μ - 1)^2)^3)^-1) + (1 - μ)*((sqrt(y^2 + z^2 + (x + μ)^2)^3)^-1))),
             δ(ż) ~ z*(-μ*(sqrt((μ + x - 1)^2 + y^2 + z^2)^-3) - ((sqrt(y^2 + z^2 + (μ + x)^2)^-3)*(1 - μ))),
             [LHS[i] ~ RHS[i] for i in 1:length(LHS)]
         )
