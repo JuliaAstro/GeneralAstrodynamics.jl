@@ -80,7 +80,7 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
         retcode, rₛ, vₛ, Φ = let 
             sols  = solve(problem; reltol=reltol, abstol=abstol)
             final = sols.u[end] 
-            sols.retcode, final[1:3], final[4:6], reshape(final[7:end], 6, 6)
+            sols.retcode, final[1:3], final[4:6], SMatrix{6,6}(final[7:end]...)
         end
 
         AstrodynamicalModels.CR3BPVectorField(∂vₛ, vcat(rₛ, vₛ), (μ,), NaN)
