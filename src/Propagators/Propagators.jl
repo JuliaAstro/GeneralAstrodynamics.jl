@@ -22,6 +22,7 @@ using ComponentArrays
 using DifferentialEquations
 using Unitful, UnitfulAstro, UnitfulAngles
 using AstrodynamicalModels
+using Distributed
 
 using ..AstrodynamicsCore
 
