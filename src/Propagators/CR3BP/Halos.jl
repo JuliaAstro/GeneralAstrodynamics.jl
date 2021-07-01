@@ -172,36 +172,32 @@ end
 Calculates the eigenvector associated with the __stable manifold__
 of a Monodromy matrix.
 """
-function stable_eigenvector(monodromy::AbstractMatrix)
+function stable_eigenvector(monodromy::AbstractMatrix; check=true)
     evals, evecs = eigen(monodromy)
-    evals = filter(isreal, evals)
-    evecs = filter(x->!isempty(x), map(vec->filter(x->all(isreal.(vec)), vec), eachcol(evecs)))
+    evals = filter(isreal, evals) .|> real
+    evecs = filter(x->!isempty(x), map(vec->filter(x->all(isreal.(vec)), vec), eachcol(evecs))) .|> real
 
-    @assert length(evals) == length(evecs) == 2 "There should only be one real eigenvalue pair."
+    imin = findmin(evals)[2]
+    imax = findmax(evals)[2]
 
-    if min(real.(evals)...) == evals[1]
-        return real.(evecs[1])
-    else
-        return real.(evecs[2])
-    end
+    !check || @assert (evals[imin] * evals[imax]) ≈ one(eltype(evals)) "Min and max eigenvalue should be multiplicative inverses. Invalid Monodromy matrix. Product equals $(evals[imin] * evals[imax]), not $(one(eltype(evals)))."
+    return evecs[imin]
 end
 
 """
 Calculates the eigenvector associated with the __unstable manifold__
 of a Monodromy matrix.
 """
-function unstable_eigenvector(monodromy::AbstractMatrix)
+function unstable_eigenvector(monodromy::AbstractMatrix; check=true)
     evals, evecs = eigen(monodromy)
-    evals = filter(isreal, evals)
-    evecs = filter(x->!isempty(x), map(vec->filter(x->all(isreal.(vec)), vec), eachcol(evecs)))
+    evals = filter(isreal, evals) .|> real
+    evecs = filter(x->!isempty(x), map(vec->filter(x->all(isreal.(vec)), vec), eachcol(evecs))) .|> real
 
-    @assert length(evals) == length(evecs) == 2 "There should only be one real eigenvalue pair."
+    imin = findmin(evals)[2]
+    imax = findmax(evals)[2]
 
-    if max(real.(evals)...) == evals[1]
-        return real.(evecs[1])
-    else
-        return real.(evecs[2])
-    end
+    !check || @assert (evals[imin] * evals[imax]) ≈ one(eltype(evals)) "Min and max eigenvalue should be multiplicative inverses. Invalid Monodromy matrix. Product equals $(evals[imin] * evals[imax]), not $(one(eltype(evals)))."
+    return evecs[imax]
 end
 
 """
@@ -209,10 +205,10 @@ Given a __periodic__ `CircularRestrictedThreeBodyOrbit`,
 returns a nearby `CircularRestrictedThreeBodyOrbit` on the 
 __stable manifold__ of the initial state.
 """
-function manifold(orbit::NormalizedSynodicSTMCR3BPOrbit, V::AbstractVector; eps = 1e-8, velocity_perturbation = eps, position_perturbation = 0)
+function manifold(orbit::NormalizedSynodicSTMCR3BPOrbit, V::AbstractVector; eps = 1e-8)
     V = normalize(V)
-    r = orbit.state.cart.r + position_perturbation * V[1:3]
-    v = orbit.state.cart.v + velocity_perturbation * V[4:6]
+    r = orbit.state.cart.r + eps * V[1:3]
+    v = orbit.state.cart.v + eps * V[4:6]
 
     cart = CartesianState(r, v, orbit.state.cart.t, Synodic;
                           lengthunit = NormalizedLengthUnit(), 
@@ -227,9 +223,9 @@ returns a collection of `Trajectory` instances representing
 the stable manifold near orbit.
 """
 function stable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real; 
-                         duration = 5T, reltol = 1e-14, 
+                         duration = T, reltol = 1e-14, 
                          abstol = 1e-14, eps = 1e-8,
-                         saveat = 1e-2, num_trajectories = 100)
+                         saveat = 1e-2, num_trajectories = 10)
 
     @assert duration > 0 "The provided duration cannot be zero or negative. Duration provided was $duration"
     @assert isperiodic(orbit, T) "The provided orbit is not periodic!"
@@ -245,7 +241,9 @@ function stable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real;
         ind  = 1 : length(traj) ÷ num_trajectories : length(traj) - (length(traj) % num_trajectories)
     end
     
-    return map(step -> reverse(propagate(manifold(step, step.state.stm * V; eps = eps), -duration; reltol = reltol, abstol = abstol)), traj[ind])
+    f = step -> reverse(propagate(manifold(step, step.state.stm * V; eps = eps), -duration; 
+                                  reltol = reltol, abstol = abstol))
+    return pmap(f, traj[ind])
 end
 
 """
@@ -254,9 +252,9 @@ returns a collection of `Trajectory` instances representing
 the unstable manifold near orbit.
 """
 function unstable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real; 
-                           duration = 5T, reltol = 1e-14, 
+                           duration = T, reltol = 1e-14, 
                            abstol = 1e-14, eps = 1e-8,
-                           num_trajectories = 100,
+                           num_trajectories = 10,
                            saveat = 1e-2)
 
     @assert duration > zero(duration) "The provided duration cannot be zero or negative."
@@ -273,6 +271,7 @@ function unstable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real;
         ind  = 1 : length(traj) ÷ num_trajectories : length(traj) - (length(traj) % num_trajectories)
     end
     
-    return map(step -> propagate(manifold(step, step.state.stm * V; eps = eps), duration; reltol = reltol, abstol = abstol, saveat = saveat), traj[ind])
-        
+    f = step -> propagate(manifold(step, step.state.stm * V; eps = eps), duration; 
+                          reltol = reltol, abstol = abstol, saveat = saveat)
+    return pmap(f, traj[ind])
 end
