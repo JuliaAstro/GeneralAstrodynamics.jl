@@ -225,7 +225,7 @@ the stable manifold near orbit.
 function stable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real; 
                          duration = T, reltol = 1e-14, 
                          abstol = 1e-14, eps = 1e-8,
-                         saveat = 1e-2, num_trajectories = 10)
+                         saveat = 1e-2, num_trajectories = 10, parallel = false)
 
     @assert duration > 0 "The provided duration cannot be zero or negative. Duration provided was $duration"
     @assert isperiodic(orbit, T) "The provided orbit is not periodic!"
@@ -243,7 +243,7 @@ function stable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real;
     
     f = step -> reverse(propagate(manifold(step, step.state.stm * V; eps = eps), -duration; 
                                   reltol = reltol, abstol = abstol))
-    return pmap(f, traj[ind])
+    return parallel ? pmap(f, traj[ind]) : map(f, traj[ind])
 end
 
 """
@@ -255,7 +255,7 @@ function unstable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real;
                            duration = T, reltol = 1e-14, 
                            abstol = 1e-14, eps = 1e-8,
                            num_trajectories = 10,
-                           saveat = 1e-2)
+                           saveat = 1e-2, parallel = false)
 
     @assert duration > zero(duration) "The provided duration cannot be zero or negative."
     @assert isperiodic(orbit, T) "The provided orbit is not periodic!"
@@ -273,5 +273,5 @@ function unstable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real;
     
     f = step -> propagate(manifold(step, step.state.stm * V; eps = eps), duration; 
                           reltol = reltol, abstol = abstol, saveat = saveat)
-    return pmap(f, traj[ind])
+    return parallel ? pmap(f, traj[ind]) : map(f, traj[ind])
 end
