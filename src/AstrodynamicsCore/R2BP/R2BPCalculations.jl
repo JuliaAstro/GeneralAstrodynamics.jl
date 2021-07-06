@@ -456,3 +456,16 @@ SOI(a, m, M) = a * (m / M)^(2/5)
 Sphere of activity.
 """
 SOA(a, m, M) = a * (m / 3M)^(1/3)
+
+"""
+Computes a Hohmann transfer, and returns the departure and 
+arrival velocity vectors. 
+"""
+function hohmann(r₁::Vector, r₂::Vector, μ::Number)
+		
+    vₐ = √((2μ/r₁) - (2μ/(r₁+r₂)))
+    vₚ = √((2μ/r₂) - (2μ/(r₁+r₂)))
+    
+    return vₐ, vₚ
+    
+end
