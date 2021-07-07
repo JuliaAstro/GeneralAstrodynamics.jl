@@ -304,7 +304,7 @@ Print `RestrictedTwoBodyOrbit` instances to `io`.
 """
 function Base.show(io::IO, orbit::RestrictedTwoBodyOrbit{C, F, T}) where {C, F, T}
     print(io, string(C), " Restricted Two-body Orbit")
-    println(" (", string(F), "):")
+    println(io, " (", string(F), "):")
     println(io, "")
     show(io, orbit.state)
     println(io, "")
