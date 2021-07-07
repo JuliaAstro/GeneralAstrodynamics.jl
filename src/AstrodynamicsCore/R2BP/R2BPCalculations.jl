@@ -461,7 +461,7 @@ SOA(a, m, M) = a * (m / 3M)^(1/3)
 Computes a Hohmann transfer, and returns the departure and 
 arrival velocity vectors. 
 """
-function hohmann(r₁::Vector, r₂::Vector, μ::Number)
+function hohmann(r₁, r₂, μ)
 		
     vₐ = √((2μ/r₁) - (2μ/(r₁+r₂)))
     vₚ = √((2μ/r₂) - (2μ/(r₁+r₂)))
