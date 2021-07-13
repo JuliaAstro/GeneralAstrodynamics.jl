@@ -1,57 +1,53 @@
 # GeneralAstrodynamics.jl
+_Common astrodynamics calculations in Julia, with units!_
 
-## Overview
+!!! note
+    This package is fairly new, and documentation is even newer! 
+    Thanks for your patience as we get these docs up and running. 
 
-Welcome to the _new_ iteration of `UnitfulAstrodynamics`!
-This package contains types, functions, and abstractions
-for common astrodynamics problems, including the 
-_Restricted Two-body Problem_, the 
-_Circular Restricted Three-body Problem_, and the 
-_N-body Problem_, as well as some abstractions 
-for interpolating ephemeris data.
+## Introduction
 
-These new docs are entirely new! The old version was 
-completely deleted. Thanks for your patience as we 
-get this page up and running!
+Welcome! This package contains types, functions, and abstractions
+for common astrodynamics models, including the _Restricted Two-body Problem_, 
+the _Circular Restricted Three-body Problem_, and the _N-body Problem_, \
+as well as some abstractions for interpolating ephemeris data. 
+If you're not familiar with those models by name, that's okay. We'll walk
+through common concepts in astrodynamics in this documentation, alongside
+`GeneralAstrodynamics` usage and syntax!
 
-## Examples!
+You might imagine we want to describe how a spacecraft moves in space.
+As with all physical systems, reality is really complicated – we can 
+make simplifying assumptions to write _models_, or _equations of motion_
+which _approximately_ describe how a spacecraft moves in space. 
+Some models are better than others in a variety of circumstances. For 
+example, if your spacecraft is only $200$ km above the Earth's surface,
+then the gravity due to Earth will _far_ outweigh the gravity of any other
+celestial body in our universe. On the other hand, if you're 
+around halfway between the Earth and the Moon, then a model which only
+includes the gravitational affect of _one_ of the two bodies may not be 
+accurate enough to be useful. 
 
-```julia
-using GeneralAstrodynamics
+Several models are provided by 
+[`AstrodynamicalModels.jl`](https://github.com/cadojo/AstrodynamicalModels/jl).
+Each are incorporated into this package, and an overview of each astrodynamical 
+model is provided below!
 
-using Plots
-using Unitful, UnitfulAngles
+## Restricted Two-body Problem
+_A massless spacecraft orbiting __one__ point mass._
 
-# Find a numerically periodic halo orbit and orbital period
-orbit, T = halo(SunEarth; Az=200_000u"km", L=2)
+!!! warning
+    To do!
 
-# Invariant manifolds about halo orbits
-stable   = stable_manifold(orbit, T; eps=1e-9)
-unstable = unstable_manifold(orbit, T; eps=-1e-9, duration=5T)
+## Circular Restricted Three-body Problem
+_A massless spacecraft orbiting __two__ point masses which orbit their common center of mass._
 
-# Propagate the orbit in time
-trajectory = propagate(orbit, T)
+!!! warning
+    To do!
 
-# And plot!
-plotpositions(trajectory; title="Try Plots.jl `kwargs`")
+## N-body Problem
+_A collection of __N__ point masses which are each affected by the gravitational pull of the others._
 
-# Make a simple Restricted Two-body orbit about Earth
-orbit = Orbit(randn(3), randn(3), Earth) # defaults to km, km/s
+!!! warning
+    To do!
 
-# Specify units with...
-orbit = Orbit(randn(3), randn(3), Earth; lengthunits=u"km", timeunits=u"s")
 
-# Or with...
-orbit = Orbit(randn(3) * u"km", randn(3) * u"km/s", Earth)
-
-# Or, specify an orbit with Keplerian elements! (e, a, i, Ω, ω, ν)
-orbit = KeplerianOrbit(0.4, 10_000u"km", 0u"rad", 0u"rad", 0u"rad", 0u"rad", Earth)
-
-# Propagate for one orbital period
-trajectory = propagate(orbit, period(orbit))
-
-# And plot! 
-plotpositions(trajectory)
-```
-
-__There are many more features. More documentation to come!__
