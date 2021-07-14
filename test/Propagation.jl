@@ -8,7 +8,12 @@ using LinearAlgebra, Unitful, UnitfulAstro, GeneralAstrodynamics, Test
 @testset verbose=false "R2BP Propagation" begin
     
     orbit = KeplerianOrbit(0.4, 10_000, 0, 0, 0, 0, Mars, 0.0) |> CartesianOrbit
-    @test propagate(orbit) ≈ orbit
+    final = propagate(orbit; save_everystep=false)[end]
+
+    @test_broken final.state ≈ orbit.state
+
+    @test all(isapprox.(position_vector(final), position_vector(orbit); atol=1e-8u"km"))
+    @test all(isapprox.(velocity_vector(final), velocity_vector(orbit); atol=1e-8u"km/s"))
 
 end
 
@@ -18,13 +23,10 @@ end
     v  = [0, 0, 0]u"AU/s"
 
     orbit = CR3BPOrbit(r, v, SunEarth) |> normalize
-
     T = 3.0967384408950527
-    final = propagate(orbit, T)[end]
-    @test_broken final ≈ orbit
 
-    @test all(position_vector(final) .≈ position_vector(orbit))
-    @test all(Velocity_vector(final) .≈ velocity_vector(orbit))
+    @test isperiodic(orbit, T)
+    
 
 end
 
