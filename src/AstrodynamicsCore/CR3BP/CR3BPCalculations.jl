@@ -189,7 +189,7 @@ Returns the Jacobi Constant, `C` in the Synodic frame with Normalized units.
 """
 function jacobi_constant(orbit::CircularRestrictedThreeBodyOrbit)
     orb = (normalize ∘ synodic)(orbit)
-    return jacobi_constant(position_vector(orbit), velocity_vector(orbit), normalized_mass_parameter(orb.system))
+    return jacobi_constant(position_vector(orb), velocity_vector(orb), normalized_mass_parameter(orb.system))
 end
 
 """

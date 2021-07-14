@@ -4,13 +4,20 @@ using GeneralAstrodynamics
 
 makedocs(
     modules=[
-       GeneralAstrodynamics 
+        GeneralAstrodynamics, 
+        GeneralAstrodynamics.AstrodynamicsCore,
+        GeneralAstrodynamics.Propagators,
+        GeneralAstrodynamics.OrbitPlots,
+        GeneralAstrodynamics.Ephemeris
     ],
     format=Documenter.HTML(),
     sitename="GeneralAstrodynamics.jl",
     authors = "Joey Carpinelli",
     pages=[
-        "Home" => "index.md"
+        "Quick Start" => [
+            "Getting Started" => "index.md",
+            "Docstrings" => "docstrings.md"
+        ]
     ]
 )
 

@@ -7,7 +7,7 @@
 Returns the Monodromy Matrix for a Halo orbit.
 """
 function monodromy(orbit::CircularRestrictedThreeBodyOrbit, T; reltol = 1e-14, abstol = 1e-14)
-    orb = (NormalizedSynodicSTMCR3BPOrbit ∘ normalize ∘ synodic)(orbit)
+    orb = NormalizedSynodicSTMCR3BPOrbit(normalize(synodic(orbit)))
     problem = ODEProblem(orb, T)
 
     final = solve(problem; reltol=reltol, abstol=abstol, save_everystep=false).u[end]
@@ -19,7 +19,7 @@ end
 Returns true if a `RestrictedThreeBodySystem` is numerically periodic.
 """
 function isperiodic(orbit::CircularRestrictedThreeBodyOrbit, T; reltol = 1e-14, abstol = 1e-14, atol = 1e-6)
-    orb = (normalize ∘ synodic)(orbit)
+    orb = NormalizedSynodicSTMCR3BPOrbit(normalize(synodic(orbit)))
     problem = ODEProblem(orbit, T)
 
     final = solve(problem; reltol=reltol, abstol=abstol, save_everystep=false).u[end]
