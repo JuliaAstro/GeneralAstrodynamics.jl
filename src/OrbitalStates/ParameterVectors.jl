@@ -17,7 +17,7 @@ $(TYPEDEF)
 
 A supertype for parameter representations in astrodynamics.
 """
-abstract type ParameterVector{F, MU, LU, TU, AU, N, T} <: ParameterizedLabelledArray{F, 1, T, SLArray{Tuple{N},F,1,N,T}} end
+abstract type ParameterVector{F, MU, LU, TU, AU, N, T, B} <: ParameterizedLabelledArray{F, 1, T, SLArray{Tuple{N},F,1,N,T}} end
 
 """
 $(SIGNATURES)
@@ -67,14 +67,44 @@ $(TYPEDEF)
 
 All parameters required for the Restricted Two-body Problem.
 """
-struct R2BPParameters{F, MU, LU, TU, AU} <: ParameterVector{F, MU, LU, TU, AU, 1, (:μ,)}
+struct R2BPParameters{F, MU, LU, TU, AU, B} <: ParameterVector{F, MU, LU, TU, AU, 1, (:μ,), B}
     __rawdata::SLArray{Tuple{1}, F, 1, 1, (:μ,)}
     
-    function R2BPParameters(μ; massunit=u"kg", lengthunit=u"km", timeunit=u"s", angularunit=u"°")
+    function R2BPParameters(μ; massunit=u"kg", lengthunit=u"km", timeunit=u"s", angularunit=u"°", name=:Primary)
         μμ = (μ isa MassParameter) ? ustrip(massunit^3/timeunit^2, μ) : μ
         F = eltype(μμ)
         F isa AbstractFloat || (F = Float64)
-        return new{F, massunit, lengthunit, timeunit, angularunit}(SLArray{Tuple{1}, F, 1, 1, (:μ,)}(μμ))
+        B = Symbol(name)
+        return new{F, massunit, lengthunit, timeunit, angularunit, B}(SLArray{Tuple{1}, F, 1, 1, (:μ,)}(μμ))
+    end
+end
+
+"""
+$(TYPEDEF)
+
+All parameters required for the Circular Restricted Three-body Problem.
+"""
+struct CR3BPParameters{F, MU, LU, TU, AU, B} <: ParameterVector{F, MU, LU, TU, AU, 3, (:μ,:μ₁,:μ₂), B}
+    __rawdata::SLArray{Tuple{3}, F, 1, 3, (:μ,:μ₁,:μ₂)}
+    
+    function CR3BPParameters(μ₁, μ₂; massunit=u"kg", lengthunit=u"km", timeunit=u"s", angularunit=u"°", primary=:Primary, secondary=:Secondary)
+        μμ₁ = (μ₁ isa MassParameter) ? ustrip(massunit^3/timeunit^2, μ₁) : μ₁
+        μμ₂ = (μ₂ isa MassParameter) ? ustrip(massunit^3/timeunit^2, μ₂) : μ₂
+        μμ  = max(μμ₁, μμ₂) / (μμ₁+μμ₂)
+        @assert μμ ≤ 1//2 "Nondimensional mass parameter must be less than 1/2, by definition! Received max(μ₁,μ₂)/(μ₁+μ₂)=$μμ."
+        F = promote_type(typeof(μμ₁), typeof(μμ₂))
+        F isa AbstractFloat || (F = Float64)
+        B = (Symbol(primary), Symbol(secondary))
+        return new{F, massunit, lengthunit, timeunit, angularunit, B}(SLArray{Tuple{3}, F, 1, 3, (:μ,:μ₁,:μ₂)}((max(μμ₁,μμ₂)/(μμ₁+μμ₂), μμ₁, μμ₂)))
+    end
+
+    function CR3BPParameters(μ::Number; massunit=u"kg", lengthunit=u"km", timeunit=u"s", angularunit=u"°", primary=:Unknown, secondary=:Unknown)
+        μμ = (μ isa MassParameter) ? ustrip(massunit^3/timeunit^2, μ) : μ
+        @assert μμ ≤ 1//2 "Nondimensional mass parameter must be less than 1/2, by definition! Received $μμ."
+        F = typeof(μμ)
+        F isa AbstractFloat || (F = Float64)
+        B = (Symbol(primary), Symbol(secondary))
+        return new{F, massunit, lengthunit, timeunit, angularunit, B}(SLArray{Tuple{3}, F, 1, 3, (:μ,:μ₁,:μ₂)}(μμ, NaN , NaN))
     end
 end
 

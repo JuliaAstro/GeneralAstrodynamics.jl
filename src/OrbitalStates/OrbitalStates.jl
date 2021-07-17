@@ -19,6 +19,7 @@ module OrbitalStates
 
 using ArrayInterface: Cartesian
 export StateVector, CartesianState, KeplerianState
+export ParameterVector, R2BPParameters, CR3BPParameters
 export OrbitalState
 export lengthunit, timeunit, angularunit
 
