@@ -63,6 +63,13 @@ Returns the size of the parameter vector.
 Base.@pure Base.size(::ParameterVector{F, MU, LU, TU, AU, N}) where {F, MU, LU, TU, AU, N} = (N,)
 
 """
+$(SIGNATURES)
+
+Returns the name of the parameter vector.
+"""
+name(::ParameterVector{F, MU, LU, TU, AU, N, T, B}) where {F, MU, LU, TU, AU, N, T, B} = string(B)
+
+"""
 $(TYPEDEF)
 
 All parameters required for the Restricted Two-body Problem.
@@ -78,6 +85,17 @@ struct R2BPParameters{F, MU, LU, TU, AU, B} <: ParameterVector{F, MU, LU, TU, AU
         return new{F, massunit, lengthunit, timeunit, angularunit, B}(SLArray{Tuple{1}, F, 1, 1, (:μ,)}(μμ))
     end
 end
+
+"""
+$(SIGNATURES)
+
+Displays `R2BPParameters`.
+"""
+function Base.show(io::IO, state::R2BPParameters; showfloats=true, space="")
+    println(io, space, "R2BP Parameters ", name(state) == "Unknown" ? "" : "for the $(name(state)) System", showfloats ? " ($(eltype(state)))" : "")
+    println(io, space, "  μ = $(state[1]) $(lengthunit(state)^3/timeunit(state)^2)")
+end
+
 
 """
 $(TYPEDEF)
@@ -107,4 +125,16 @@ struct CR3BPParameters{F, MU, LU, TU, AU, B} <: ParameterVector{F, MU, LU, TU, A
         return new{F, massunit, lengthunit, timeunit, angularunit, B}(SLArray{Tuple{3}, F, 1, 3, (:μ,:μ₁,:μ₂)}(μμ, NaN , NaN))
     end
 end
+
+
+"""
+$(SIGNATURES)
+
+Displays `CR3BPParameters`.
+"""
+function Base.show(io::IO, state::CR3BPParameters; showfloats=true, space="")
+    println(io, space, "CR3BP Parameters ", any(x == "Unknown", name(state)) ? "" : "for the $(name(state)[1])-$(name(state)[2]) System", showfloats ? " ($(eltype(state)))" : "")
+    println(io, space, "  μ = $(state[1]) $(lengthunit(state)^3/timeunit(state)^2)")
+end
+
 

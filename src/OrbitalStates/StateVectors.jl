@@ -90,6 +90,24 @@ function CartesianState(statevector; lengthunit=u"km", timeunit=u"s", angularuni
 end
 
 """
+$(SIGNATURES)
+
+Displays a `CartesianState`.
+"""
+function Base.show(io::IO, state::CartesianState; showfloats=true, space="")
+    println(io, space, "Cartesian State:", showfloats ? "($(eltype(state)))" : "", "\n")
+    println(io, space, "  Position: [$(state[1]), $(state[2]), $(state[3])] $(lengthunit(state))")
+    println(io, space, "  Velocity: [$(state[4]), $(state[5]), $(state[6])] $(lengthunit(state)/timeunit(state))")
+end
+
+"""
+$(SIGNATURES)
+
+Displays a `CartesianState`.
+"""
+Base.show(io::IO, ::MIME"text/plain", state::CartesianState; showfloats=true, space="") = show(io, state; showfloats=showfloats, space=space)
+
+"""
 $(TYPEDEF)
 
 A Keplerian state vector with length 6. Internally
@@ -141,6 +159,16 @@ end
 """
 $(SIGNATURES)
 
-Returns dot-accessible property names for a `CartesianState`: (:x, :y, :z, :ẋ, :ẏ, :ż, :r, :v).
+Displays a `KeplerianState`.
 """
-Base.@pure Base.propertynames(::KeplerianState) = (:e, :a, :i, :Ω, :ω, :ν)
+function Base.show(io::IO, state::KeplerianState; showfloats=true, space="")
+    println(io, space, "Keplerian State:", showfloats ? "($(eltype(state)))" : "")
+    println(io, space, "  (e=$(state[1]), a=$(state[2]) $(lengthunit(state)), i=$(state[3]) $(angularunit(state)), Ω=$(state[4]) $(angularunit(state)), ω=$(state[5]) $(angularunit(state)), ν=$(state[6]) $(angularunit(state))")
+end
+
+"""
+$(SIGNATURES)
+
+Displays a `KeplerianState`.
+"""
+Base.show(io::IO, ::MIME"text/plain", state::KeplerianState; showfloats=true, space="") = show(io, state; showfloats=showfloats, space=space)

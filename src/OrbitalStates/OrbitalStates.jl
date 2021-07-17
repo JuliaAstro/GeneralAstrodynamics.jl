@@ -17,7 +17,7 @@ $(IMPORTS)
 """
 module OrbitalStates
 
-using ArrayInterface: Cartesian
+import ArrayInterface: Cartesian
 export StateVector, CartesianState, KeplerianState
 export ParameterVector, R2BPParameters, CR3BPParameters
 export OrbitalState

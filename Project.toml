@@ -5,6 +5,7 @@ version = "0.9.8"
 
 [deps]
 ArrayInterface = "4fba245c-0d91-5ea0-9b3e-6abc04ee57a9"
+AstroTime = "c61b5328-d09d-5e37-a9a8-0eb41c39009c"
 AstrodynamicalModels = "4282b555-f590-4262-b575-3e516e1493a7"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 ComponentArrays = "b0b7db55-cfe3-40fc-9ded-d10e2dbeff66"
