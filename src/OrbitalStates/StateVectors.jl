@@ -55,32 +55,14 @@ access `x,y,z` and `v` accesses `ẋ, ẏ, ż`.
 """
 mutable struct CartesianState{F, LU, TU, AU} <: StateVector{F, LU, TU, AU, (x = 1, y = 2, z = 3, ẋ = 4, ẏ = 5, ż = 6, r = 1:3, v = 4:6)} 
     __rawdata::LArray{F, 1, MVector{6, F}, (x = 1, y = 2, z = 3, ẋ = 4, ẏ = 5, ż = 6, r = 1:3, v = 4:6)}
-
-    function CartesianState(statevector; lengthunit=u"km", timeunit=u"s", angularunit=u"°")
-        F = eltype(statevector)
-        F isa AbstractFloat || (F = Float64)
-
-        return new{F, lengthunit, timeunit, angularunit}(
-            statevector
-        )
-    end
 end
-
-"""
-$(SIGNATURES)
-
-Constructs a `CartesianState` from any `AbstractVector`.
-"""
-CartesianState{F, LU, TU, AU}(statevector::AbstractVector{<:Real}) where {F, LU, TU, AU} = CartesianState(
-    convert(LArray{F, 1, MVector{6, F}, (x = 1, y = 2, z = 3, ẋ = 4, ẏ = 5, ż = 6, r = 1:3, v = 4:6)}, statevector)
-)
 
 """
 $(SIGNATURES)
 
 Constructs a `CartesianState` from provided position and velocity vectors.
 """
-function CartesianState(r::AbstractVector, v::AbstractVector; 
+function CartesianState(r::AbstractArray, v::AbstractArray; 
                         lengthunit=(unit(eltype(r)) isa Unitful.Length ? unit(eltype(r)) : u"km"),
                         timeunit=(unit(eltype(v)) isa Unitful.Velocity ? lengthunit / unit(eltype(v)) : u"s"),
                         angularunit=u"°")
@@ -88,7 +70,23 @@ function CartesianState(r::AbstractVector, v::AbstractVector;
     vv = (eltype(v) isa Unitful.Velocity ? ustrip.(lengthunit / timeunit, v) : v)
     F = promote_type(eltype(rr), eltype(vv))
     F isa AbstractFloat || (F = Float64)
-    return CartesianState{F, lengthunit, timeunit, angularunit}(vcat(rr,vv))
+    return CartesianState(vcat(rr,vv); lengthunit = lengthunit, timeunit = timeunit, angularunit = angularunit)
+end
+
+"""
+$(SIGNATURES)
+
+Constructs a `CartesianState`.
+"""
+function CartesianState(statevector; lengthunit=u"km", timeunit=u"s", angularunit=u"°")
+    F = eltype(statevector)
+    F isa AbstractFloat || (F = Float64)
+
+    return CartesianState{F, lengthunit, timeunit, angularunit}(
+        LArray{F, 1, MVector{6, F}, (x = 1, y = 2, z = 3, ẋ = 4, ẏ = 5, ż = 6, r = 1:3, v = 4:6)}(
+            statevector
+        )
+    )
 end
 
 """
