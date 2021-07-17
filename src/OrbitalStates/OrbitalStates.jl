@@ -28,9 +28,11 @@ using LabelledArrays
 using ArrayInterface
 using DocStringExtensions
 
-# using ..OrbitalFrames
+using ..OrbitalFrames
 
+include("ParameterizedLabelledArrays.jl")
 include("StateVectors.jl")
+include("ParameterVectors.jl")
 include("OrbitDescriptions.jl")
 
 end # module
