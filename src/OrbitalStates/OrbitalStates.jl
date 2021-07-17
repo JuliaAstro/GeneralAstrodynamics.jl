@@ -36,6 +36,7 @@ import ArrayInterface: Cartesian
 
 function __init__()
     @require AstrodynamicalModels="4282b555-f590-4262-b575-3e516e1493a7" include(joinpath(@__DIR__, "Hooks", "AstrodynamicalModels.jl"))
+    @require SymbolicUtils="d1185830-fcd6-423d-90d6-eec64667417b" include(joinpath(@__DIR__, "Hooks", "SymbolicUtils.jl"))
 end
 
 using ..OrbitalFrames
