@@ -51,6 +51,20 @@ Base.@pure angularunit(::ParameterVector{F, MU, LU, TU, AU, N}) where {F, MU, LU
 """
 $(SIGNATURES)
 
+Returns the velocity unit of the state vector.
+"""
+velocityunit(::ParameterVector{F, LU, TU, AU}) where {F, LU, TU, AU} = LU/TU
+
+"""
+$(SIGNATURES)
+
+Returns the mass-parameter unit of the state vector.
+"""
+massparamunit(::ParameterVector{F, LU, TU, AU}) where {F, LU, TU, AU} = MU^3/LU^2
+
+"""
+$(SIGNATURES)
+
 Returns the length of the parameter vector.
 """
 Base.@pure Base.length(::ParameterVector{F, MU, LU, TU, AU, N}) where {F, MU, LU, TU, AU, N} = N
@@ -61,6 +75,7 @@ $(SIGNATURES)
 Returns the size of the parameter vector.
 """
 Base.@pure Base.size(::ParameterVector{F, MU, LU, TU, AU, N}) where {F, MU, LU, TU, AU, N} = (N,)
+
 
 """
 $(SIGNATURES)
@@ -89,13 +104,25 @@ end
 """
 $(SIGNATURES)
 
+Converts between `R2BPParameters`.
+"""
+Base.convert(::Type{R2BPParameters{F, MU, LU, TU, AU}}, params::R2BPParameters) where {F,MU,LU,TU,AU} = R2BPParameters(
+    F(get_μ(params)); massparamunit = massparamunit(params), 
+                      lengthunit    = lengthunit(params),
+                      timeunit      = timeunit(params),
+                      angularunit   = angularunit(params),
+                      name          = name(params)
+)
+
+"""
+$(SIGNATURES)
+
 Displays `R2BPParameters`.
 """
 function Base.show(io::IO, state::R2BPParameters; showfloats=true, space="")
     println(io, space, "R2BP Parameters ", name(state) == "Unknown" ? "" : "for the $(name(state)) System", showfloats ? " ($(eltype(state)))" : "")
     println(io, space, "  μ = $(state[1]) $(lengthunit(state)^3/timeunit(state)^2)")
 end
-
 
 """
 $(TYPEDEF)
@@ -126,6 +153,31 @@ struct CR3BPParameters{F, MU, LU, TU, AU, B} <: ParameterVector{F, MU, LU, TU, A
     end
 end
 
+"""
+$(SIGNATURES)
+
+Converts between `CR3BPParameters`.
+"""
+function Base.convert(::Type{CR3BPParameters{F, MU, LU, TU, AU}}, params::CR3BPParameters) where {F, MU, LU, TU, AU}
+    if any(isnan, (params.μ₁, params.μ₂))
+        return CR3BPParameters(
+            F(get_μ(params)); massparamunit = massparamunit(params), 
+            lengthunit    = lengthunit(params),
+            timeunit      = timeunit(params),
+            angularunit   = angularunit(params),
+            name          = name(params)
+        )
+    else 
+        return CR3BPParameters(
+            F(get_μ₁(params)), F(get_μ₂(params)); 
+            massparamunit = massparamunit(params), 
+            lengthunit    = lengthunit(params),
+            timeunit      = timeunit(params),
+            angularunit   = angularunit(params),
+            name          = name(params)
+        )
+    end
+end
 
 """
 $(SIGNATURES)
@@ -136,5 +188,4 @@ function Base.show(io::IO, state::CR3BPParameters; showfloats=true, space="")
     println(io, space, "CR3BP Parameters ", any(x == "Unknown", name(state)) ? "" : "for the $(name(state)[1])-$(name(state)[2]) System", showfloats ? " ($(eltype(state)))" : "")
     println(io, space, "  μ = $(state[1]) $(lengthunit(state)^3/timeunit(state)^2)")
 end
-
 

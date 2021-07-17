@@ -33,6 +33,13 @@ Base.@pure angularunit(::StateVector{F, LU, TU, AU}) where {F, LU, TU, AU} = AU
 """
 $(SIGNATURES)
 
+Returns the angularunit of the state vector.
+"""
+velocityunit(::StateVector{F, LU, TU, AU}) where {F, LU, TU, AU} = LU/TU
+
+"""
+$(SIGNATURES)
+
 The length of any `StateVector` is 6!
 """
 Base.@pure Base.length(::StateVector) = 6
@@ -88,6 +95,69 @@ function CartesianState(statevector; lengthunit=u"km", timeunit=u"s", angularuni
         )
     )
 end
+
+"""
+$(SIGNATURES)
+
+Returns `x`.
+"""
+get_x(state::CartesianState) = state[1] * lengthunit(state)
+
+"""
+$(SIGNATURES)
+
+Returns `y`.
+"""
+get_y(state::CartesianState) = state[2] * lengthunit(state)
+
+"""
+$(SIGNATURES)
+
+Returns `z`.
+"""
+get_z(state::CartesianState) = state[3] * lengthunit(state)
+
+"""
+$(SIGNATURES)
+
+Returns `ẋ`.
+"""
+get_ẋ(state::CartesianState) = state[4] * velocityunit(state)
+
+"""
+$(SIGNATURES)
+
+Returns `ẏ`.
+"""
+get_ẏ(state::CartesianState) = state[5] * velocityunit(state)
+
+"""
+$(SIGNATURES)
+
+Returns `ż`.
+"""
+get_ż(state::CartesianState) = state[6] * velocityunit(state)
+
+"""
+$(SIGNATURES)
+
+Returns `r`.
+"""
+get_r(state::CartesianState) = state[1:3] * lengthunit(state)
+
+"""
+$(SIGNATURES)
+
+Returns `v`.
+"""
+get_v(state::CartesianState) = state[4:6] * velocityunit(state)
+
+"""
+$(SIGNATURES)
+
+Returns the whole state vector, with units.
+"""
+statevector(state::CartesianState) = MVector{6}(get_x(state), get_y(state), get_z(state), get_ẋ(state), get_ẏ(state), get_ż(state))
 
 """
 $(SIGNATURES)
@@ -155,6 +225,55 @@ function KeplerianState(e::Real, a, i, Ω, ω, ν;
     F isa AbstractFloat || (F = Float64)
     return Keplerian{F, lengthunit, timeunit, angularunit}(@LArray(MVector{6,F}(e,a,i,Ω,ω,ν),(e=1, a=2, i=3, Ω=4, ω=5, ν=6)))
 end
+
+"""
+$(SIGNATURES)
+
+Returns `e`.
+"""
+get_e(state::CartesianState) = state[1]
+
+"""
+$(SIGNATURES)
+
+Returns `a`.
+"""
+get_a(state::CartesianState) = state[2] * lengthunit(state)
+
+"""
+$(SIGNATURES)
+
+Returns `i`.
+"""
+get_i(state::CartesianState) = state[3] * angularunit(state)
+
+"""
+$(SIGNATURES)
+
+Returns `Ω`.
+"""
+get_Ω(state::CartesianState) = state[4] * angularunit(state)
+
+"""
+$(SIGNATURES)
+
+Returns `ω.
+"""
+get_ω(state::CartesianState) = state[5] * angularunit(state)
+
+"""
+$(SIGNATURES)
+
+Returns `ν`.
+"""
+get_ν(state::CartesianState) = state[6] * angularunit(state)
+
+"""
+$(SIGNATURES)
+
+Returns the whole state vector, with units.
+"""
+statevector(state::KeplerianState) = MVector{6}(get_e(state), get_a(state), get_i(state), get_Ω(state), get_ω(state), get_ν(state))
 
 """
 $(SIGNATURES)

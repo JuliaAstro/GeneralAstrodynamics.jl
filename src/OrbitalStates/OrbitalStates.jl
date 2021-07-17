@@ -17,19 +17,22 @@ $(IMPORTS)
 """
 module OrbitalStates
 
-import ArrayInterface: Cartesian
+using StaticArrays: getproperty
 export StateVector, CartesianState, KeplerianState
 export ParameterVector, R2BPParameters, CR3BPParameters
-export OrbitalState
+export AbstractOrbit, Orbit, state, system
+export R2BPOrbit, CR3BPOrbit
 export lengthunit, timeunit, angularunit
 
+import Dates: now
+using AstroTime
 using Unitful
 using Requires
 using StaticArrays
 using LabelledArrays
 using ArrayInterface
-
 using DocStringExtensions
+import ArrayInterface: Cartesian
 
 function __init__()
     @require AstrodynamicalModels="4282b555-f590-4262-b575-3e516e1493a7" include(joinpath(@__DIR__, "Hooks", "AstrodynamicalModels.jl"))
