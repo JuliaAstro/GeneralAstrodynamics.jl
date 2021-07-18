@@ -62,6 +62,14 @@ access `x,y,z` and `v` accesses `ẋ, ẏ, ż`.
 """
 mutable struct CartesianState{F, LU, TU, AU} <: StateVector{F, LU, TU, AU, (x = 1, y = 2, z = 3, ẋ = 4, ẏ = 5, ż = 6, r = 1:3, v = 4:6)} 
     __rawdata::LArray{F, 1, MVector{6, F}, (x = 1, y = 2, z = 3, ẋ = 4, ẏ = 5, ż = 6, r = 1:3, v = 4:6)}
+
+
+    """
+    $(SIGNATURES)
+    
+    Constructs a `CartesianState` with types specified.
+    """
+    CartesianState{F, LU, TU, AU}(data) where {F, LU, TU, AU} = new{F,LU,TU,AU}(LArray{F, 1, MVector{6, F}, (x = 1, y = 2, z = 3, ẋ = 4, ẏ = 5, ż = 6, r = 1:3, v = 4:6)}(data))
 end
 
 """

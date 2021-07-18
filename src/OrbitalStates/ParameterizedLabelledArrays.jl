@@ -100,7 +100,6 @@ Returns dot-accessible property names for a `ParameterizedLabelledArray`.
 """
 Base.propertynames(::ParameterizedLabelledArray{F,N,T}) where {F,N,T} = keys(T)
 
-
 """
 $(SIGNATURES)
 

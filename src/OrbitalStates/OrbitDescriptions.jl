@@ -70,7 +70,7 @@ $(SIGNATURES)
 
 Outer constructor for `Orbit`s.
 """
-function Orbit(state::StateVector, system::ParameterVector, epoch=UTCEpoch(now())) 
+function Orbit(state::StateVector, system::ParameterVector, epoch=AstroTime.UTCEpoch(now())) 
     F  = promote_type(eltype(state), eltype(system))
     MU = massunit(system)
     LU = lengthunit(state)

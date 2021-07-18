@@ -25,7 +25,7 @@ export R2BPOrbit, CR3BPOrbit
 export lengthunit, timeunit, angularunit
 
 import Dates: now
-using AstroTime
+import AstroTime
 using Unitful
 using Requires
 using StaticArrays
