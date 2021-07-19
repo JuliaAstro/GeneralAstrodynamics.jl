@@ -5,7 +5,7 @@ including Cartesian and Keplerian states,
 and orbital states which include epoch and 
 coordinate frame information.
 
-# Extended help
+# Extended Help
 
 **Exports**
 
@@ -15,26 +15,29 @@ $(EXPORTS)
 
 $(IMPORTS)
 """
-module OrbitalStates
+module AstrodynamicalStates
 
-using StaticArrays: getproperty
 export StateVector, CartesianState, KeplerianState
 export ParameterVector, R2BPParameters, CR3BPParameters
 export AbstractOrbit, Orbit, state, system, epoch
 export R2BPOrbit, CR3BPOrbit
 export lengthunit, timeunit, angularunit, massparamunit
+export position, velocity, distance, speed
+export eccentricity, semimajor_axis, inclination
+export RAAN, argument_of_periapsis, true_anomoly
 export massparameter, massparameters, normalized_massparameter
 export primary_massparameter, secondary_massparameter
 
 import Dates: now
-import AstroTime
+import AstroTime: UTCEpoch
+import Requires: @require
+import LinearAlgebra: norm
+
 using Unitful
-using Requires
 using StaticArrays
-using LabelledArrays
 using ArrayInterface
+using LabelledArrays
 using DocStringExtensions
-import ArrayInterface: Cartesian
 
 function __init__()
     @require AstrodynamicalModels="4282b555-f590-4262-b575-3e516e1493a7" include(joinpath(@__DIR__, "Hooks", "AstrodynamicalModels.jl"))
@@ -43,9 +46,9 @@ end
 
 using ..OrbitalFrames
 
-include("ParameterizedLabelledArrays.jl")
-include("StateVectors.jl")
-include("ParameterVectors.jl")
-include("OrbitDescriptions.jl")
+include(joinpath("Common","ParameterizedLabelledArrays.jl"))
+include(joinpath("States", "StateVectors.jl"))
+include(joinpath("Systems", "ParameterVectors.jl"))
+include(joinpath("Orbits", "OrbitDescriptions.jl"))
 
 end # module

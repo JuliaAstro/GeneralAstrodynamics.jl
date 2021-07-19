@@ -186,6 +186,34 @@ Displays a `CartesianState`.
 Base.show(io::IO, ::MIME"text/plain", state::CartesianState; showfloats=true, space="") = show(io, state; showfloats=showfloats, space=space)
 
 """
+$(SIGNATURES)
+
+Returns the position vector of the `CartesianState`.
+"""
+Base.position(state::CartesianState) = state[1:3] * lengthunit(state)
+
+"""
+$(SIGNATURES)
+
+Returns the scalar position of the `CartesianState`.
+"""
+distance(state::CartesianState) = norm(state[1:3]) * lengthunit(state)
+
+"""
+$(SIGNATURES)
+
+Returns the velocity vector for the `CartesianState`.
+"""
+velocity(state::CartesianState) = state[4:6] * velocityunit(state)
+
+"""
+$(SIGNATURES)
+
+Returns the scalar velocity of the `CartesianState`.
+"""
+speed(state::CartesianState) = norm(state[4:6]) * velocityunit(state)
+
+"""
 $(TYPEDEF)
 
 A Keplerian state vector with length 6. Internally
@@ -299,3 +327,47 @@ $(SIGNATURES)
 Displays a `KeplerianState`.
 """
 Base.show(io::IO, ::MIME"text/plain", state::KeplerianState; showfloats=true, space="") = show(io, state; showfloats=showfloats, space=space)
+
+"""
+$(SIGNATURES)
+
+Returns orbital eccentricity, `e`.
+"""
+eccentricity(state::KeplerianState) = get_e(state)
+
+"""
+$(SIGNATURES)
+
+Returns semi-major axis, `a`.
+"""
+semimajor_axis(state::KeplerianState) = get_a(state)
+
+"""
+$(SIGNATURES)
+
+Returns orbital inclination, `i`.
+"""
+inclination(state::KeplerianState) = get_i(state)
+
+"""
+$(SIGNATURES)
+
+Returns the right ascension of the ascending node (R.A.A.N), `Ω`.
+"""
+RAAN(state::KeplerianState) = get_Ω(state)
+
+"""
+$(SIGNATURES)
+
+Returns the argument of periapsis, `ω`.
+"""
+argument_of_periapsis(state::KeplerianState) = get_ω(state)
+
+"""
+$(SIGNATURES)
+
+Returns the true anomoly, `ν`.
+"""
+true_anomoly(state::KeplerianState) = get_ν(state)
+
+

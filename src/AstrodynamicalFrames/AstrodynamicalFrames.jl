@@ -14,7 +14,7 @@ $(EXPORTS)
 
 $(IMPORTS)
 """
-module OrbitalFrames
+module AstrodynamicalFrames
 
 # Frames
 export AstrodynamicsFrame, Inertial, Rotating
