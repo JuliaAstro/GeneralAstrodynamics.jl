@@ -10,9 +10,15 @@ include("Propagators/Propagators.jl")
 include("OrbitPlots/OrbitPlots.jl")
 include("Ephemeris/Ephemeris.jl")
 
-@reexport using .AstrodynamicsCore
+include("AstrodynamicalFrames/AstrodynamicalFrames.jl")
+include("AstrodynamicalStates/AstrodynamicalStates.jl")
+
+using .AstrodynamicsCore
 @reexport using .Propagators
 @reexport using .OrbitPlots
 @reexport using .Ephemeris
+
+@reexport using .OrbitalFrames
+@reexport using .OrbitalStates
 
 end # module
