@@ -2,6 +2,63 @@
 # Provides calculations directory on `Orbit` types.
 #
 
+#
+# Defines AstrodynamicalCalculations methods for 
+# AstrodynamicalStates types
+#
+
+"""
+Returns the position vector of the `CartesianState`.
+"""
+Base.position(state::CartesianState) = AstrodynamicalStates.get_r(state) * lengthunit(state)
+
+"""
+Returns the scalar position of the `CartesianState`.
+"""
+distance(state::CartesianState) = norm(position(state))
+
+"""
+Returns the velocity vector for the `CartesianState`.
+"""
+velocity(state::CartesianState) = AstrodynamicalStates.get_v(state) * velocityunit(state)
+
+"""
+Returns the scalar velocity of the `CartesianState`.
+"""
+speed(state::CartesianState) = norm(velocity(state))
+
+"""
+Returns orbital eccentricity, `e`.
+"""
+eccentricity(state::KeplerianState) = AstrodynamicalStates.get_e(state)
+
+"""
+Returns semi-major axis, `a`.
+"""
+semimajor_axis(state::KeplerianState) = AstrodynamicalStates.get_a(state) * lengthunit(state)
+
+"""
+Returns orbital inclination, `i`.
+"""
+inclination(state::KeplerianState) = AstrodynamicalStates.get_i(state) * angularunit(state)
+
+"""
+Returns the right ascension of the ascending node (R.A.A.N), `Ω`.
+"""
+RAAN(state::KeplerianState) = AstrodynamicalStates.get_Ω(state) * angularunit(state)
+
+"""
+Returns the argument of periapsis, `ω`.
+"""
+argument_of_periapsis(state::KeplerianState) = AstrodynamicalStates.get_ω(state) * angularunit(state)
+
+"""
+Returns the true anomoly, `ν`.
+"""
+true_anomoly(state::KeplerianState) = AstrodynamicalStates.get_ν(state) * angularunit(state)
+
+#=
+
 # This isn't necessary yet, since they're all in the same package!
 
 conic(orbit::T) where T<:RestrictedTwoBodyOrbit = conic(eccentricity(orbit))
@@ -198,6 +255,8 @@ function Base.isequal(c1::RestrictedTwoBodyOrbit, c2::RestrictedTwoBodyOrbit)
            
 end
 
+specific_potential_energy(orbit::CartesianOrbit) = specific_potential_energy(scalar_position(orbit.state), mass_parameter(orbit.system))
+specific_potential_energy(orbit::KeplerianOrbit) = specific_potential_energy(CartesianOrbit(orbit))
 
 """
 Returns true if all elements are within `atol` of the other.
@@ -213,3 +272,5 @@ function Base.isequal(b1::RestrictedTwoBodySystem, b2::RestrictedTwoBodySystem)
     return mass_parameter(b1) == mass_parameter(b2)
 end
 
+
+=#

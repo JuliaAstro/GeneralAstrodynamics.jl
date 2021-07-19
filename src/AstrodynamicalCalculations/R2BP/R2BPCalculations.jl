@@ -107,7 +107,7 @@ Returns position and velocity vectors in the Perifocal frame.
 function perifocal(a, e, ν, μ)
 
         p = semi_parameter(a, e)
-        r = scalar_position(p, e, ν)
+        r = distance(p, e, ν)
         
         P̂=SVector{3, Float64}([1, 0, 0])
         Q̂=SVector{3, Float64}([0, 1, 0])
@@ -180,8 +180,6 @@ Returns potential energy for an orbit about a `RestrictedTwoBodySystem`.
 """
 specific_potential_energy(r, μ) = (μ/r)
 specific_potential_energy(r, μ, R, J₂, ϕ) = (μ/r) * (1 - J₂ * (R/r)^2 * ((3/2) * (sin(ϕ))^2 - (1/2)))
-specific_potential_energy(orbit::CartesianOrbit) = specific_potential_energy(scalar_position(orbit.state), mass_parameter(orbit.system))
-specific_potential_energy(orbit::KeplerianOrbit) = specific_potential_energy(CartesianOrbit(orbit))
 
 """
 Returns orbital eccentricity vector e̅.
@@ -197,31 +195,28 @@ Returns orbital eccentricity, e.
 """
 eccentricity(rᵢ, vᵢ, μ) = norm(eccentricity_vector(rᵢ, vᵢ, μ)) |> upreferred
 
-
 """
 Returns semilatus parameter, p.
 """
 semi_parameter(a, e) = a * (1 - e^2)
 
 """
-Returns scalar_position, r.
+Returns distance, r.
 """
-scalar_position(p, e, ν) = upreferred(p / (1 + e * cos(ν)))
-
-
+distance(p, e, ν) = upreferred(p / (1 + e * cos(ν)))
 
 """
 Returns instantaneous velocity, v, for any orbital representation.
 """
-scalar_velocity(r, a, μ) =  upreferred(√( (2 * μ / r) - (μ / a)))
+speed(r, a, μ) =  upreferred(√( (2 * μ / r) - (μ / a)))
 
 """
-Returns periapsis scalar_position, rₚ.
+Returns periapsis distance, rₚ.
 """
 periapsis_radius(a, e) = a * (1 - e)
 
 """
-Returns apoapsis scalar_position, rₐ.
+Returns apoapsis distance, rₐ.
 """
 apoapsis_radius(a, e) = a * (1 + e)
 

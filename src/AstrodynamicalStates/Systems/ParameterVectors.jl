@@ -12,80 +12,58 @@ dimension used in astrodynamics calculations.
 MassParameter
 
 """
-$(TYPEDEF)
-
 A supertype for parameter representations in astrodynamics.
 """
 abstract type ParameterVector{F, MU, LU, TU, AU, N, T, B} <: ParameterizedLabelledArray{F, 1, T, SLArray{Tuple{N},F,1,N,T}} end
 
 """
-$(SIGNATURES)
-
 Returns the mass unit of the parameter vector.
 """
 Base.@pure massunit(::ParameterVector{F, MU, LU, TU, AU, N}) where {F, MU, LU, TU, AU, N} = MU
 
 
 """
-$(SIGNATURES)
-
 Returns the length unit of the parameter vector.
 """
 Base.@pure lengthunit(::ParameterVector{F, MU, LU, TU, AU, N}) where {F, MU, LU, TU, AU, N} = LU
 
 """
-$(SIGNATURES)
-
 Returns the time unit of the parameter vector.
 """
 Base.@pure timeunit(::ParameterVector{F, MU, LU, TU, AU, N}) where {F, MU, LU, TU, AU, N} = TU
 
 """
-$(SIGNATURES)
-
 Returns the angular unit of the parameter vector.
 """
 Base.@pure angularunit(::ParameterVector{F, MU, LU, TU, AU, N}) where {F, MU, LU, TU, AU, N} = AU
 
 """
-$(SIGNATURES)
-
 Returns the velocity unit of the state vector.
 """
 velocityunit(::ParameterVector{F, LU, TU, AU}) where {F, LU, TU, AU} = LU/TU
 
 """
-$(SIGNATURES)
-
 Returns the mass-parameter unit of the state vector.
 """
 massparamunit(::ParameterVector{F, LU, TU, AU}) where {F, LU, TU, AU} = MU^3/LU^2
 
 """
-$(SIGNATURES)
-
 Returns the length of the parameter vector.
 """
 Base.@pure Base.length(::ParameterVector{F, MU, LU, TU, AU, N}) where {F, MU, LU, TU, AU, N} = N
 
 """
-$(SIGNATURES)
-
 Returns the size of the parameter vector.
 """
 Base.@pure Base.size(::ParameterVector{F, MU, LU, TU, AU, N}) where {F, MU, LU, TU, AU, N} = (N,)
 
 
 """
-$(SIGNATURES)
-
 Returns the name of the parameter vector.
 """
 name(::ParameterVector{F, MU, LU, TU, AU, N, T, B}) where {F, MU, LU, TU, AU, N, T, B} = string(B)
 
 """
-$(TYPEDEF)
-
 All parameters required for the Restricted Two-body Problem.
 """
 struct R2BPParameters{F, MU, LU, TU, AU, B} <: ParameterVector{F, MU, LU, TU, AU, 1, (:μ,), B}
@@ -101,8 +79,6 @@ struct R2BPParameters{F, MU, LU, TU, AU, B} <: ParameterVector{F, MU, LU, TU, AU
 end
 
 """
-$(SIGNATURES)
-
 Converts between `R2BPParameters`.
 """
 Base.convert(::Type{R2BPParameters{F, MU, LU, TU, AU}}, params::R2BPParameters) where {F,MU,LU,TU,AU} = R2BPParameters(
@@ -114,15 +90,11 @@ Base.convert(::Type{R2BPParameters{F, MU, LU, TU, AU}}, params::R2BPParameters) 
 )
 
 """
-$(SIGNATURES)
-
 Returns the mass parameter of the R2BP system.
 """
 massparameter(system::R2BPParameters) = system[1] * massparamunit(system)
 
 """
-$(SIGNATURES)
-
 Displays `R2BPParameters`.
 """
 function Base.show(io::IO, state::R2BPParameters; showfloats=true, space="")
@@ -131,8 +103,6 @@ function Base.show(io::IO, state::R2BPParameters; showfloats=true, space="")
 end
 
 """
-$(TYPEDEF)
-
 All parameters required for the Circular Restricted Three-body Problem.
 """
 struct CR3BPParameters{F, MU, LU, TU, AU, B} <: ParameterVector{F, MU, LU, TU, AU, 3, (:μ,:μ₁,:μ₂), B}
@@ -160,8 +130,6 @@ struct CR3BPParameters{F, MU, LU, TU, AU, B} <: ParameterVector{F, MU, LU, TU, A
 end
 
 """
-$(SIGNATURES)
-
 Converts between `CR3BPParameters`.
 """
 function Base.convert(::Type{CR3BPParameters{F, MU, LU, TU, AU}}, params::CR3BPParameters) where {F, MU, LU, TU, AU}
@@ -186,8 +154,6 @@ function Base.convert(::Type{CR3BPParameters{F, MU, LU, TU, AU}}, params::CR3BPP
 end
 
 """
-$(SIGNATURES)
-
 Displays `CR3BPParameters`.
 """
 function Base.show(io::IO, state::CR3BPParameters; showfloats=true, space="")
@@ -197,29 +163,21 @@ end
 
 
 """
-$(SIGNATURES)
-
 Returns the mass parameter of the CR3BP system.
 """
 normalized_massparameter(system::CR3BPParameters) = system[1]
 
 """
-$(SIGNATURES)
-
 Returns the mass parameters of the CR3BP system.
 """
 massparameters(system::CR3BPParameters) = (system[2], system[3]) * massparamunit(system)
 
 """
-$(SIGNATURES)
-
 Returns the primary mass parameter of the CR3BP system.
 """
 primary_massparameter(system::CR3BPParameters) = system[2] * massparamunit(system)
 
 """
-$(SIGNATURES)
-
 Returns the secondary mass parameter of the CR3BP system.
 """
 secondary_massparameter(system::CR3BPParameters) = system[3] * massparamunit(system)

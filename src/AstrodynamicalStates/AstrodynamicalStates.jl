@@ -19,7 +19,7 @@ module AstrodynamicalStates
 
 export StateVector, CartesianState, KeplerianState
 export ParameterVector, R2BPParameters, CR3BPParameters
-export AbstractOrbit, Orbit, state, system, epoch
+export Orbit, state, system, epoch
 export R2BPOrbit, CR3BPOrbit
 export lengthunit, timeunit, angularunit, massparamunit
 export position, velocity, distance, speed
@@ -39,16 +39,28 @@ using ArrayInterface
 using LabelledArrays
 using DocStringExtensions
 
-function __init__()
-    @require AstrodynamicalModels="4282b555-f590-4262-b575-3e516e1493a7" include(joinpath(@__DIR__, "Hooks", "AstrodynamicalModels.jl"))
-    @require SymbolicUtils="d1185830-fcd6-423d-90d6-eec64667417b" include(joinpath(@__DIR__, "Hooks", "SymbolicUtils.jl"))
-end
+@template (FUNCTIONS, METHODS, MACROS) =
+    """
+    $(SIGNATURES)
+    $(DOCSTRING)
+    """
 
-using ..OrbitalFrames
+@template (TYPES, CONSTANTS) =
+    """
+    $(TYPEDEF)
+    $(DOCSTRING)
+    """
+
+using ..AstrodynamicalFrames
 
 include(joinpath("Common","ParameterizedLabelledArrays.jl"))
 include(joinpath("States", "StateVectors.jl"))
 include(joinpath("Systems", "ParameterVectors.jl"))
 include(joinpath("Orbits", "OrbitDescriptions.jl"))
+
+function __init__()
+    @require AstrodynamicalModels="4282b555-f590-4262-b575-3e516e1493a7" include(joinpath(@__DIR__, "Hooks", "AstrodynamicalModels.jl"))
+    @require SymbolicUtils="d1185830-fcd6-423d-90d6-eec64667417b" include(joinpath(@__DIR__, "Hooks", "SymbolicUtils.jl"))
+end
 
 end # module
