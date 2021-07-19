@@ -3,7 +3,6 @@
 # which contain parameters to describe astrodynamic systems.
 #
 
-    
 Unitful.@derived_dimension MassParameter Unitful.𝐋^3/Unitful.𝐓^2
 
 @doc """
@@ -117,6 +116,13 @@ Base.convert(::Type{R2BPParameters{F, MU, LU, TU, AU}}, params::R2BPParameters) 
 """
 $(SIGNATURES)
 
+Returns the mass parameter of the R2BP system.
+"""
+massparameter(system::R2BPParameters) = system[1] * massparamunit(system)
+
+"""
+$(SIGNATURES)
+
 Displays `R2BPParameters`.
 """
 function Base.show(io::IO, state::R2BPParameters; showfloats=true, space="")
@@ -140,7 +146,7 @@ struct CR3BPParameters{F, MU, LU, TU, AU, B} <: ParameterVector{F, MU, LU, TU, A
         F = promote_type(typeof(μμ₁), typeof(μμ₂))
         F isa AbstractFloat || (F = Float64)
         B = (Symbol(primary), Symbol(secondary))
-        return new{F, massunit, lengthunit, timeunit, angularunit, B}(SLArray{Tuple{3}, F, 1, 3, (:μ,:μ₁,:μ₂)}((max(μμ₁,μμ₂)/(μμ₁+μμ₂), μμ₁, μμ₂)))
+        return new{F, massunit, lengthunit, timeunit, angularunit, B}(SLArray{Tuple{3}, F, 1, 3, (:μ,:μ₁,:μ₂)}((max(μμ₁,μμ₂)/(μμ₁+μμ₂), max(μμ₁, μμ₂), min(μμ₁, μμ₂))))
     end
 
     function CR3BPParameters(μ::Number; massunit=u"kg", lengthunit=u"km", timeunit=u"s", angularunit=u"°", primary=:Unknown, secondary=:Unknown)
@@ -189,3 +195,31 @@ function Base.show(io::IO, state::CR3BPParameters; showfloats=true, space="")
     println(io, space, "  μ = $(state[1]) $(lengthunit(state)^3/timeunit(state)^2)")
 end
 
+
+"""
+$(SIGNATURES)
+
+Returns the mass parameter of the CR3BP system.
+"""
+normalized_massparameter(system::CR3BPParameters) = system[1]
+
+"""
+$(SIGNATURES)
+
+Returns the mass parameters of the CR3BP system.
+"""
+massparameters(system::CR3BPParameters) = (system[2], system[3]) * massparamunit(system)
+
+"""
+$(SIGNATURES)
+
+Returns the primary mass parameter of the CR3BP system.
+"""
+primary_massparameter(system::CR3BPParameters) = system[2] * massparamunit(system)
+
+"""
+$(SIGNATURES)
+
+Returns the secondary mass parameter of the CR3BP system.
+"""
+secondary_massparameter(system::CR3BPParameters) = system[3] * massparamunit(system)

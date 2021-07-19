@@ -20,9 +20,11 @@ module OrbitalStates
 using StaticArrays: getproperty
 export StateVector, CartesianState, KeplerianState
 export ParameterVector, R2BPParameters, CR3BPParameters
-export AbstractOrbit, Orbit, state, system
+export AbstractOrbit, Orbit, state, system, epoch
 export R2BPOrbit, CR3BPOrbit
-export lengthunit, timeunit, angularunit
+export lengthunit, timeunit, angularunit, massparamunit
+export massparameter, massparameters, normalized_massparameter
+export primary_massparameter, secondary_massparameter
 
 import Dates: now
 import AstroTime
