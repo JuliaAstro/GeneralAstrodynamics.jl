@@ -5,101 +5,38 @@
 #
 
 """
-Returns time scale factor, `Tₛ`.
+Normalizes a CR3BP orbit in the rotating reference frame.
 """
-time_scale_factor(a, μ₁, μ₂) = period(a, μ₁+μ₂)
+function LinearAlgebra.normalize(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, t::Real, a::Real, μs::Tuple{<:Real, <:Real};
+                                 lengthunit = u"km", timeunit = u"s")
+
+    rₙ = r ./ a
+    Tₛ = period(a, sum(μs))
+    vₙ = v ./ (a / Tₛ)
+    tₙ = t / Tₛ
+    μₙ = min(μs) / sum(μs)
+
+    DU = a * lengthunit
+    DT = Tₛ * timeunit
+
+    return rₙ, vₙ, tₙ, μₙ, DU, TU
+
+end
 
 """
-Returns nondimensional length unit, `DU`.
+Redimensionalizes a CR3BP orbit in the rotating reference frame.
 """
-nondimensionalize_length(rᵢ, a) = upreferred.(rᵢ ./ a)
+function redimension(rₙ::AbstractVector{<:Real}, vₙ::AbstractVector{<:Real}, tₙ::Real, μₙ::Real, DU::Number, TU::Number)
 
-"""
-Returns nondimensional velocity unit, `DU/DT`.
-"""
-nondimensionalize_velocity(vᵢ, a, Tₛ) = upreferred.(vᵢ ./ (a / Tₛ))
+    r = rₙ .* DU
+    v = vₙ .* DU ./ TU
+    t = tₙ * TU
 
-"""
-Returns nondimensional time unit, `DT`.
-"""
-nondimensionalize_time(t, a, μ₁, μ₂) = upreferred.(t / time_scale_factor(a, μ₁, μ₂))
+    sum_μs = DU^3 / ((TU / 2π)^2)
+    μ₂ = μₙ * sum_μ
+    μ₁ = sum_μ - μ₂
 
-"""
-Returns nondimensional mass parameter, `μ`.
-"""
-nondimensionalize_mass_parameter(μ₁, μ₂) = min(μ₁,μ₂) / (μ₁+μ₂)
-
-"""
-Returns nondimensional form of (`Unitful`) scalar posiion.
-"""
-nondimensionalize(rᵢ::R, a::A) where {
-        R<:Unitful.Length, A<:Unitful.Length
-    } = nondimensionalize_length(rᵢ, a)
-
-"""
-Returns nondimensional form of (`Unitful`) position vector.
-"""
-nondimensionalize(rᵢ::R, a::A) where {
-        U<:Unitful.Length, R<:AbstractVector{U}, A<:Unitful.Length
-    } = nondimensionalize_length(rᵢ, a)
-
-"""
-Returns nondimensional form of (`Unitful`) scalar velocity.
-"""
-nondimensionalize(vᵢ::V, a::A, Tₛ::T) where {
-        V<:Unitful.Velocity, A<:Unitful.Length, T<:Unitful.Time
-    } = nondimensionalize_velocity(vᵢ, a, Tₛ)
-
-"""
-Returns nondimensional form of (`Unitful`) velocity vector.
-"""
-nondimensionalize(vᵢ::V, a::A, Tₛ::T) where {
-        U<:Unitful.Velocity, V<:AbstractVector{U}, A<:Unitful.Length, T<:Unitful.Time
-    } = nondimensionalize_velocity(vᵢ, a, Tₛ)
-
-"""
-Returns nondimensional form of (`Unitful`) velocity vector.
-"""
-nondimensionalize(vᵢ::V, a::A, μ₁::U1, μ₂::U2) where {
-        U<:Unitful.Velocity, V<:AbstractVector{U}, A<:Unitful.Length, U1<:MassParameter, U2<:MassParameter
-    } = nondimensionalize_velocity(vᵢ, a, time_scale_factor(a, μ₁, μ₂))
-
-"""
-Returns nondimensional form of (`Unitful`) time duration.
-"""
-nondimensionalize(t::T1, Tₛ::T2) where {
-        T1<:Unitful.Time, T2<:Unitful.Time
-    } = t / Tₛ
-
-"""
-Returns nondimensional form of (`Unitful`) time duration.
-"""
-nondimensionalize(t::T1, a::A, μ₁::U1, μ₂::U2) where {
-        T1<:Unitful.Time, A<:Unitful.Length, U1<:MassParameter, U2<:MassParameter
-    } = nondimensionalize(t, time_scale_factor(a, μ₁, μ₂))
-
-"""
-Returns nondimensional form of (`Unitful`) graviational parameters.
-"""
-nondimensionalize(μ₁::U1, μ₂::U2) where {
-        U1<:MassParameter, U2<:MassParameter
-    } = min(μ₁, μ₂) / (μ₁+μ₂)
-
-"""
-Returns nondimensional Circular Restricted Three-body State.
-"""
-function nondimensionalize(r₃::R, v₃::V, Δt::T, μ₁::U1, μ₂::U2, a::A) where {
-        RT<:Unitful.Length, R<:AbstractVector{RT},
-        VT<:Unitful.Velocity, V<:AbstractVector{VT},
-        T<:Unitful.Time, U1<:MassParameter, U2<:MassParameter,
-        A<:Unitful.Length
-    }
-
-    Tₛ = time_scale_factor(a, μ₁, μ₂)
-    return nondimensionalize(r₃, a), 
-           nondimensionalize(v₃, a, Tₛ),
-           nondimensionalize(Δt, Tₛ),
-           nondimensionalize(μ₁, μ₂)
+    return r, v, t, DU, (μ₁,μ₂)
 
 end
 
@@ -156,6 +93,7 @@ Returns the spacecraft's nondimensional position w.r.t. body 1 (or 2).
 """
 nondimensional_radius(r, xᵢ=0) = √( (r[1]-xᵢ)^2 + r[2]^2 + r[3]^2 )
 
+#=
 """
 Returns synodic distance to primary body.
 """
@@ -165,12 +103,14 @@ distance_to_primary(orbit::CR3BPOrbit) = nondimensional_radius((position_vector 
 Returns synodic distance to secondary body.
 """
 distance_to_secondary(orbit::CR3BPOrbit) = nondimensional_radius((position_vector ∘ synodic ∘ normalize)(orbit), 1-normalized_mass_parameter(orbit.system))
+=#
 
 """
 Returns the potential energy `U` in the Synodic frame with Normalized units.
 """
 potential_energy(r, μ) = (r[1]^2 + r[2]^2)/2 + ((1-μ)/nondimensional_radius(r,-μ)) + (μ/nondimensional_radius(r,1-μ))
 
+#=
 """
 Returns the potential energy `U` in the Synodic frame with Normalized units.
 """
@@ -178,12 +118,14 @@ function potential_energy(orbit::CircularRestrictedThreeBodyOrbit)
     orb = (normalize ∘ synodic)(orbit)
     return potential_energy(position_vector(orb), normalized_mass_parameter(orb.system))
 end
+=#
 
 """
 Returns the Jacobi Constant, `C` in the Synodic frame with Normalized units.
 """
 jacobi_constant(r, v, μ) = 2*potential_energy(r, μ) - (v⋅v)
 
+#=
 """
 Returns the Jacobi Constant, `C` in the Synodic frame with Normalized units.
 """
@@ -191,6 +133,7 @@ function jacobi_constant(orbit::CircularRestrictedThreeBodyOrbit)
     orb = (normalize ∘ synodic)(orbit)
     return jacobi_constant(position_vector(orb), velocity_vector(orb), normalized_mass_parameter(orb.system))
 end
+=#
 
 """
 Given the Synodic frame vector, returns the vector in the barycenteric-inertial reference frame.
@@ -208,6 +151,7 @@ function inertial(vecₛ::AbstractVector, t, ω::Unitful.AbstractQuantity=1.0u"r
 
 end
 
+#=
 """
 Given an `InertialCartesianState`, returns the state in the synodic (rotating) reference frame.
 """
@@ -223,7 +167,9 @@ function synodic(state::NormalizedCartesianState{F, Inertial}, ω::Unitful.Abstr
 
     return CartesianState(ˢTᵢ * state.r, ˢTᵢ * state.v, state.t, Synodic; lengthunit = AstrodynamicsCore.lengthunit(state), timeunit = AstrodynamicsCore.timeunit(state))
 end
+=#
 
+#=
 """
 Given an `InertialCartesianState`, returns the state in the synodic (rotating) reference frame.
 """
@@ -359,12 +305,14 @@ function transform_to_secondary(orb::CircularRestrictedThreeBodyOrbit)
                 normalized_length_unit(orb.system),  
             (epoch ∘ redimensionalize)(orb)))
 end
+=#
 
 """
 Returns the position and velocity vectors in the synodic (rotating) reference frame.
 """
 LinearAlgebra.normalize(rᵢ, vᵢ, a, Tₛ) =  nondimensionalize(rᵢ, a), nondimensionalize(vᵢ, a, Tₛ)
 
+#=
 """
 Normalize a `CartesianState`, given a `CircularRestrictedThreeBodySystem`.
 """
@@ -436,6 +384,7 @@ function redimensionalize(orb::CircularRestrictedThreeBodyOrbit)
        )
     end
 end
+=#
 
 """
 Returns the lagrange points for a CR3BP system.
@@ -468,6 +417,7 @@ function lagrange(μ::Real, L=1:5)
 	
 end
 
+#=
 """
 Returns the lagrange points for a CR3BP system.
 
@@ -512,6 +462,7 @@ function accel(rₛ, vₛ, μ)
     return aₛ
 end
 
+=#
 """
 Returns an analytical solution for a Halo orbit about `L`.
 
@@ -618,6 +569,7 @@ function analyticalhalo(μ; Az=0.00, ϕ=0.0, steps=1,
 
 end
 
+#=
 """
 Returns a `Vector` of `Matrix` values.
 Each `Matrix` contains a 3-column nondimensional
@@ -669,3 +621,4 @@ function zerovelocity_curves(orbit::CircularRestrictedThreeBodyOrbit;
     return curves
                          
 end
+=#
