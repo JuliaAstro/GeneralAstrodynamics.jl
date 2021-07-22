@@ -61,6 +61,21 @@ An alias for `Orbit` instances about `R2BP` systems.
 const R2BPOrbit = Orbit{FR, F, MU, LU, TU, AU, E, <:Union{CartesianState, KeplerianState}, <:R2BPParameters} where {FR, F, MU, LU, TU, AU, E}
 
 """
+An alias for `Orbit` instances about `R2BP` systems with `KeplerianState` descriptions.
+"""
+const KeplerianR2BPOrbit = Orbit{FR, F, MU, LU, TU, AU, E, <:KeplerianState, <:R2BPParameters} where {FR, F, MU, LU, TU, AU, E}
+
+"""
+An alias for `Orbit` instances about `R2BP` systems with `CartesianState` descriptions.
+"""
+const CartesianR2BPOrbit = Orbit{FR, F, MU, LU, TU, AU, E, <:CartesianState, <:R2BPParameters} where {FR, F, MU, LU, TU, AU, E}
+
+"""
 An alias for `Orbit` instances about `CR3BP` systems.
 """
 const CR3BPOrbit = Orbit{FR, F, MU, LU, TU, AU, E, <:CartesianState, <:CR3BPParameters} where {FR, F, MU, LU, TU, AU, E}
+
+"""
+An alias for `Orbit` instances about any systems with `CartesianState` descriptions.
+"""
+const CartesianOrbit = Orbit{FR, F, MU, LU, TU, AU, E, <:CartesianState, <:ParameterVector} where {FR, F, MU, LU, TU, AU, E}

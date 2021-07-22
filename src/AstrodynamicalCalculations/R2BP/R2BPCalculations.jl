@@ -29,39 +29,39 @@ Algorithm taught in ENAE601.
 """
 function keplerian(rᵢ, vᵢ, μ)
 
-    safe_acos(unit, num) = isapprox(num, one(num)) ? 
-                            acos(unit, one(num)) : 
+    safe_acos(num) = isapprox(num, one(num)) ? 
+                            acos(one(num)) : 
                                 isapprox(num, -one(num)) ? 
-                                    acos(unit, -one(num)) : 
-                                        acos(unit, num)
+                                    acos(-one(num)) : 
+                                        acos(num)
 
-    î = SVector{3, Float64}([1, 0, 0]) 
-    ĵ = SVector{3, Float64}([0, 1, 0]) 
-    k̂ = SVector{3, Float64}([0, 0, 1])
+    î = SVector{3}(1, 0, 0) 
+    ĵ = SVector{3}(0, 1, 0) 
+    k̂ = SVector{3}(0, 0, 1)
 
     h̅ = specific_angular_momentum_vector(rᵢ, vᵢ)
     a = semimajor_axis(norm(rᵢ), norm(vᵢ), μ)
     n̅ = k̂ × specific_angular_momentum_vector(rᵢ, vᵢ)
     e̅ = eccentricity_vector(rᵢ, vᵢ, μ)
-    e = norm(e̅) |> upreferred
+    e = norm(e̅)
 
-    i = safe_acos(u"rad", (h̅ ⋅ k̂) / norm(h̅))
+    i = safe_acos((h̅ ⋅ k̂) / norm(h̅))
 
     Ω = ustrip(n̅ ⋅ ĵ) > 0 ? 
-            safe_acos(u"rad", (n̅ ⋅ î) / norm(n̅)) :
-            2π * u"rad" - safe_acos(u"rad", (n̅ ⋅ î) / norm(n̅))
+            safe_acos((n̅ ⋅ î) / norm(n̅)) :
+            2π - safe_acos((n̅ ⋅ î) / norm(n̅))
 
     ω = ustrip(e̅ ⋅ k̂) > 0 ?
-            safe_acos(u"rad", (n̅ ⋅ e̅) / (norm(n̅) * e)) :
-            2π * u"rad" - safe_acos(u"rad", (n̅ ⋅ e̅) / (norm(n̅) * e))
+            safe_acos((n̅ ⋅ e̅) / (norm(n̅) * e)) :
+            2π - safe_acos((n̅ ⋅ e̅) / (norm(n̅) * e))
 
     ν = ustrip(rᵢ ⋅  vᵢ) > 0 ? 
-            safe_acos(u"rad", (e̅ ⋅ rᵢ) / (e * norm(rᵢ))) :
-            2π * u"rad" - safe_acos(u"rad", (e̅ ⋅ rᵢ) / (e * norm(rᵢ)))
+            safe_acos((e̅ ⋅ rᵢ) / (e * norm(rᵢ))) :
+            2π - safe_acos((e̅ ⋅ rᵢ) / (e * norm(rᵢ)))
 
-    return e, uconvert(u"km", a), uconvert(u"°", i), 
-           uconvert(u"°", Ω), uconvert(u"°", ω), 
-           uconvert(u"°", ν)
+    return upreferred(e), upreferred(a), upreferred(i), 
+           upreferred(Ω), upreferred(ω), 
+           upreferred(ν)
 
 end
 
@@ -71,15 +71,15 @@ in an inertial frame, centered at the center of mass of the central body.
 Algorithm taught in ENAE601.
 """
 function cartesian(e, a, i, Ω, ω, ν, μ)
-    rᵢ, vᵢ = cartesian(i, Ω, ω, perifocal(a, e, ν, μ)...)
-    return  uconvert.(u"km",    rᵢ), 
-            uconvert.(u"km/s",  vᵢ)
+    rᵢ, vᵢ = spatial(i, Ω, ω, perifocal(a, e, ν, μ)...)
+    return  upreferred.(rᵢ), 
+            upreffered.(vᵢ)
 end
 
 """
-Returns a Cartesian (inertial) representation of the provied Perifocal state.
+Returns a spatial representation of the provied Perifocal state.
 """
-function cartesian(i, Ω, ω, rₚ, vₚ)
+function spatial(i, Ω, ω, rₚ, vₚ)
 
     # Set up Perifocal ⟶ Cartesian conversion
     R_3Ω =  SMatrix{3,3}(
@@ -109,9 +109,9 @@ function perifocal(a, e, ν, μ)
         p = semi_parameter(a, e)
         r = distance(p, e, ν)
         
-        P̂=SVector{3, Float64}([1, 0, 0])
-        Q̂=SVector{3, Float64}([0, 1, 0])
-        Ŵ=SVector{3, Float64}([0, 0, 1])
+        P̂=SVector{3, Float64}(1, 0, 0)
+        Q̂=SVector{3, Float64}(0, 1, 0)
+        # Ŵ=SVector{3, Float64}(0, 0, 1)
         
         rₚ = (r * cos(ν) .* P̂ .+ r * sin(ν) .* Q̂)
         vₚ = √(μ/p) * ((-sin(ν) * P̂) .+ ((e + cos(ν)) .* Q̂))
@@ -211,6 +211,11 @@ Returns instantaneous velocity, v, for any orbital representation.
 speed(r, a, μ) =  upreferred(√( (2 * μ / r) - (μ / a)))
 
 """
+Returns the instantaneous velocity, `v`, for any orbital representation.
+"""
+speed(p, e, ν, a, μ) = speed(distance(p,e,ν), a, μ)
+
+"""
 Returns periapsis distance, rₚ.
 """
 periapsis_radius(a, e) = a * (1 - e)
@@ -230,7 +235,7 @@ Returns true anomoly, ν.
 """
 function true_anomoly(r, h, e, μ)
     val = (h^2 - μ * r) / (μ * r * e)
-    acos(u"rad", isapprox(val, one(val)) ? one(val) : val)
+    acos(isapprox(val, one(val)) ? one(val) : val)
 end
 
 """

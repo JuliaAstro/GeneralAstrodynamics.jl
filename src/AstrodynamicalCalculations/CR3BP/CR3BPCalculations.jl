@@ -7,8 +7,7 @@
 """
 Normalizes a CR3BP orbit in the rotating reference frame.
 """
-function LinearAlgebra.normalize(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, t::Real, a::Real, μs::Tuple{<:Real, <:Real};
-                                 lengthunit = u"km", timeunit = u"s")
+function LinearAlgebra.normalize(r::AbstractVector{<:Real}, v::AbstractVector{<:Real}, t::Real, a::Real, μs::Tuple{<:Real, <:Real}, u"km", u"s")
 
     rₙ = r ./ a
     Tₛ = period(a, sum(μs))
@@ -19,7 +18,7 @@ function LinearAlgebra.normalize(r::AbstractVector{<:Real}, v::AbstractVector{<:
     DU = a * lengthunit
     DT = Tₛ * timeunit
 
-    return rₙ, vₙ, tₙ, μₙ, DU, TU
+    return rₙ, vₙ, tₙ, μₙ, DU, DT
 
 end
 
@@ -33,32 +32,12 @@ function redimension(rₙ::AbstractVector{<:Real}, vₙ::AbstractVector{<:Real},
     t = tₙ * TU
 
     sum_μs = DU^3 / ((TU / 2π)^2)
-    μ₂ = μₙ * sum_μ
+    μ₂ = μₙ * sum_μs
     μ₁ = sum_μ - μ₂
 
     return r, v, t, DU, (μ₁,μ₂)
 
 end
-
-"""
-Returns dimensional length units.
-"""
-redimensionalize_length(rᵢ, a) = rᵢ .* a
-
-"""
-Returns dimensional velocity units.
-"""
-redimensionalize_velocity(vᵢ, a, Tₛ) = vᵢ .* (a / Tₛ)
-
-"""
-Returns dimensional time unit.
-"""
-redimensionalize_time(t, a, μ₁, μ₂) = redimensionalize_time(t, time_scale_factor(a, μ₁, μ₂))
-
-"""
-Returns dimensional time unit.
-"""
-redimensionalize_time(t, Tₛ) = t * Tₛ
 
 """
 Returns dimensional form of (`Unitful`) scalar posiion.
