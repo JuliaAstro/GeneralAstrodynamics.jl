@@ -17,8 +17,8 @@ $(IMPORTS)
 """
 module AstrodynamicalStates
 
-export StateVector, CartesianState, KeplerianState
-export ParameterVector, R2BPParameters, CR3BPParameters
+export CartesianState, KeplerianState
+export R2BPParameters, CR3BPParameters
 export Orbit, state, system, epoch
 export R2BPOrbit, KeplerianR2BPOrbit, CartesianR2BPOrbit, CR3BPOrbit
 export lengthunit, timeunit, angularunit, massparamunit

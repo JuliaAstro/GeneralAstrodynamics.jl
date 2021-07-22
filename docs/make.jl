@@ -3,13 +3,6 @@ using GeneralAstrodynamics
 
 
 makedocs(
-    modules=[
-        GeneralAstrodynamics, 
-        GeneralAstrodynamics.AstrodynamicsCore,
-        GeneralAstrodynamics.Propagators,
-        GeneralAstrodynamics.OrbitPlots,
-        GeneralAstrodynamics.Ephemeris
-    ],
     format=Documenter.HTML(),
     sitename="GeneralAstrodynamics.jl",
     authors = "Joey Carpinelli",

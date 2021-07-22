@@ -29,25 +29,15 @@ accurate enough to be useful.
 
 Several models are provided by 
 [`AstrodynamicalModels.jl`](https://github.com/cadojo/AstrodynamicalModels/jl).
-Each are incorporated into this package, and an overview of each astrodynamical 
-model is provided below!
+Each are incorporated into this package. **This documentation will soon get a lot better!**
 
 ## Restricted Two-body Problem
 _A massless spacecraft orbiting __one__ point mass._
 
-!!! warning
-    To do!
 
 ## Circular Restricted Three-body Problem
 _A massless spacecraft orbiting __two__ point masses which orbit their common center of mass._
 
-!!! warning
-    To do!
 
 ## N-body Problem
 _A collection of __N__ point masses which are each affected by the gravitational pull of the others._
-
-!!! warning
-    To do!
-
-
