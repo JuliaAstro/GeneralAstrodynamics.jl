@@ -8,7 +8,8 @@
 """
 Solves Lambert's problem through the use of univeral variables.
 """
-function lambert_universal(r̅₁, r̅₂, μ, Δt; trajectory=:short, tolerance=1e-12, max_iter=25)
+function lambert_universal(r̅₁::AbstractVector, r̅₂::AbstractVector, μ::Real, Δt::Real; 
+                           trajectory=:short, tolerance=1e-12, max_iter=25)
 
     # Specify short way, or long way trajectory
     if trajectory == :short

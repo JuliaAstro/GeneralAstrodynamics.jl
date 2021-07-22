@@ -1,18 +1,31 @@
 """
-Structures and functions for handling common Astrodynamics problems! 🚀
+A superpackage for handling common astrodynamics 
+problems. See the __Extended Help__ section
+for more information!
+
+# Extended Help
+
+## License
+$(LICENSE)
+
+## Imports
+$(IMPORTS)
+
+## Exports
+$(EXPORTS)
 """
 module GeneralAstrodynamics
 
 using Reexport 
+using DocStringExtensions
 
-include("AstrodynamicsCore/AstrodynamicsCore.jl")
-include("Propagators/Propagators.jl")
-include("OrbitPlots/OrbitPlots.jl")
-include("Ephemeris/Ephemeris.jl")
+include("AstrodynamicalFrames/AstrodynamicalFrames.jl")
+@reexport using .AstrodynamicalFrames
 
-@reexport using .AstrodynamicsCore
-@reexport using .Propagators
-@reexport using .OrbitPlots
-@reexport using .Ephemeris
+include("AstrodynamicalStates/AstrodynamicalStates.jl")
+@reexport using .AstrodynamicalStates
+
+include("AstrodynamicalCalculations/AstrodynamicalCalculations.jl")
+@reexport using .AstrodynamicalCalculations
 
 end # module
