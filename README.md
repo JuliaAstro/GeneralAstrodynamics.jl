@@ -10,7 +10,7 @@ This package is being re-factored! Release `v0.9` has all of the __Features__ li
 2. State vectors and parameter vectors now match `DifferentialEquations`, `ModelingToolkit`, and `AstrodynamicalModels` syntax
 3. Plotting functions are being re-written with `Plots` recipes
 4. Common coordinate frames used within astrodynamics are provided within a new module, `AstrodynamicalFrames`, along with functionality for specifying new coordinate frames
-5. Common transforms between coordinate frames, and user-defined transforms as defined with `CoordinateFrames` are provided in `AstrodynamicalFrames`
+5. Common transforms between coordinate frames, and user-defined transforms as defined with `CoordinateTransformations` are provided in `AstrodynamicalFrames`
 6. Possibly, each new module will be separated into separate packages.
 
 ## Features
