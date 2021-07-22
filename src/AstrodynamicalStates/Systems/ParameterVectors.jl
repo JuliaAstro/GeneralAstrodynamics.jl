@@ -40,12 +40,12 @@ Base.@pure angularunit(::ParameterVector{F, MU, LU, TU, AU, N}) where {F, MU, LU
 """
 Returns the velocity unit of the state vector.
 """
-velocityunit(::ParameterVector{F, LU, TU, AU}) where {F, LU, TU, AU} = LU/TU
+velocityunit(::ParameterVector{F, MU, LU, TU, AU}) where {F, MU, LU, TU, AU} = LU/TU
 
 """
 Returns the mass-parameter unit of the state vector.
 """
-massparamunit(::ParameterVector{F, LU, TU, AU}) where {F, LU, TU, AU} = MU^3/LU^2
+massparamunit(::ParameterVector{F, MU, LU, TU, AU}) where {F, MU, LU, TU, AU} = MU^3/LU^2
 
 """
 Returns the length of the parameter vector.

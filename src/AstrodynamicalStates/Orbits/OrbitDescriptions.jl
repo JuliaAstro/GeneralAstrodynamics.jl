@@ -22,7 +22,7 @@ end
 """
 Outer constructor for `Orbit`s.
 """
-function Orbit(state::StateVector, system::ParameterVector, epoch=AstroTime.UTCEpoch(now()); frame=Inertial) 
+function Orbit(state::StateVector, system::ParameterVector, epoch=UTCEpoch(now()); frame=Inertial) 
     FR = frame
     F  = promote_type(eltype(state), eltype(system))
     MU = massunit(system)
