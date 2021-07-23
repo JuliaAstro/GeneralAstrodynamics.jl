@@ -13,6 +13,12 @@ This package is being re-factored! Release `v0.9` has all of the __Features__ li
 5. Common transforms between coordinate frames, and user-defined transforms as defined with `CoordinateTransformations` are provided in `AstrodynamicalFrames`
 6. Possibly, each new module will be separated into separate packages.
 
+In addition, `v0.10` will include a package restructure. This package, `GeneralAstrodynamics`, will be a _superpackage_ for several astrodynamics packages: [`AstrodynamicalFrames`](https://github.com/cadojo/AstrodynamicalFrames.jl), [`AstrodynamicalStates`](https://github.com/cadojo/AstrodynamicalStates.jl), [`AstrodynamicalCalculations`](https://github.com/cadojo/AstrodynamicalCalculations.jl), [`AstrodynamicalPropagators`](https://github.com/cadojo/AstrodynamicalPropagators.jl), and [`AstrodynamicalPlots`](https://github.com/cadojo/AstrodynamicalPlots.jl). 
+
+### Naming Convention
+
+It _does_ feel a bit pretentious to be calling each package _astrodynamical_, but I _think_ it's gramatically correct? These packages will include maneuvers at some point in 2021, so they really are related to astrodynamics, as opposed to orbital mechanics. `AstrodynamicCalculations` and `AstrodynamicPlots` feels wrong for some reason. So that's why they're all named `Astrodynamical`. 
+
 ## Features
 
 The following features are available in release `v0.9`, and will still be provided in release `v0.10`.
