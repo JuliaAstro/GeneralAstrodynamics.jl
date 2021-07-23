@@ -4,6 +4,16 @@ Check out the `ModelingToolkit` docs to learn how to use these
 systems for orbit propagation with `DifferentialEquations`, or
 see `GeneralAstrodynamics` for some convenient orbit propagation 
 wrappers.
+
+# Extended help
+
+## Exports
+
+$(EXPORTS)
+
+## Imports
+
+$(IMPORTS)
 """
 module AstrodynamicalModels
 
@@ -32,6 +42,21 @@ using StaticArrays
 using RuntimeGeneratedFunctions
 RuntimeGeneratedFunctions.init(@__MODULE__)
 
+# Default docstring formatting
+using DocStringExtensions
+@template (FUNCTIONS, METHODS, MACROS) =
+    """
+    $(SIGNATURES)
+
+    $(DOCSTRING)
+    """
+
+@template (TYPES, CONSTANTS) =
+    """
+    $(TYPEDEF)
+
+    $(DOCSTRING)
+    """
 
 """
 A `ModelingToolkit.ODESystem` for the Restricted Two-body Problem. 
@@ -65,9 +90,11 @@ end
 A `DifferentialEquations`-compatible `ODEFunction` for R2BP dynamics.
 Note that this function has several methods, including an in-place 
 method! Function signatures follow `ModelingToolkit` and `DifferentialEquations`
-conventions.
+conventions. Note that `checkbounds` is __enabled__, so this function 
+is not as fast as it could be! Re-call `ODEFunction` with `checkbounds=false`
+for an unsafe, but faster, version of this function.
 """
-const R2BPVectorField = ODEFunction(R2BP; jac = true, tgrad = false, eval_expression=false, eval_module=@__MODULE__)
+const R2BPVectorField = ODEFunction(R2BP; jac = true, tgrad = false, checkbounds = true, eval_expression=false, eval_module=@__MODULE__)
 
 """
 A `ModelingToolkit.ODESystem` for the Circular Restricted Three-body Problem. 
@@ -87,8 +114,6 @@ CR3BP = let
     δ = Differential(t)
     r = @SVector [x,y,z]
     v = @SVector [ẋ,ẏ,ż]
-    
-    
               
     eqs = vcat(
         δ.(r) .~ v,
@@ -105,9 +130,11 @@ end
 A `DifferentialEquations`-compatible `ODEFunction` for R2BP dynamics.
 Note that this function has several methods, including an in-place 
 method! Function signatures follow `ModelingToolkit` and `DifferentialEquations`
-conventions.
+conventions. Note that `checkbounds` is __enabled__, so this function 
+is not as fast as it could be! Re-call `ODEFunction` with `checkbounds=false`
+for an unsafe, but faster, version of this function.
 """
-const CR3BPVectorField = ODEFunction(CR3BP; jac = true, tgrad = false, eval_expression=false, eval_module=@__MODULE__)
+const CR3BPVectorField = ODEFunction(CR3BP; jac = true, tgrad = false, checkbounds = true, eval_expression=false, eval_module=@__MODULE__)
 
 """
 A `ModelingToolkit.ODESystem` for the Circular Restricted Three-body Problem,
@@ -126,9 +153,7 @@ CR3BPWithSTM = let
 
     eqs = let
 
-        A = let t = NaN # no explicit time dependence!
-            CR3BPVectorField(Val{:jac}, vcat(r, v), [μ], t)
-        end
+        A = calculate_jacobian(CR3BP)
     
         LHS = map(δ, Φ)
         RHS = map(simplify, A * Φ)
@@ -152,8 +177,10 @@ end
 A `DifferentialEquations`-compatible `ODEFunction` for R2BP dynamics.
 Note that this function has several methods, including an in-place 
 method! Function signatures follow `ModelingToolkit` and `DifferentialEquations`
-conventions.
+conventions. Note that `checkbounds` is __enabled__, so this function 
+is not as fast as it could be! Re-call `ODEFunction` with `checkbounds=false`
+for an unsafe, but faster, version of this function.
 """
-const CR3BPWithSTMVectorField = ODEFunction(CR3BPWithSTM; jac = false, tgrad = false, sparse = false, eval_expression = false, eval_module=@__MODULE__)
+const CR3BPWithSTMVectorField = ODEFunction(CR3BPWithSTM; jac = false, tgrad = false, checkbounds = true, sparse = false, eval_expression = false, eval_module=@__MODULE__)
 
 end # module
