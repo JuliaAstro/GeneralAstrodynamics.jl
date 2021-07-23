@@ -19,13 +19,9 @@ module GeneralAstrodynamics
 using Reexport 
 using DocStringExtensions
 
-include("AstrodynamicalFrames/AstrodynamicalFrames.jl")
-@reexport using .AstrodynamicalFrames
-
-include("AstrodynamicalStates/AstrodynamicalStates.jl")
-@reexport using .AstrodynamicalStates
-
-include("AstrodynamicalCalculations/AstrodynamicalCalculations.jl")
-@reexport using .AstrodynamicalCalculations
+@reexport using AstrodynamicalFrames
+@reexport using AstrodynamicalStates
+@reexport using AstrodynamicalCalculations
+@reexport using AstrodynamicalModels
 
 end # module
