@@ -19,8 +19,8 @@ module GeneralAstrodynamics
 using Reexport 
 using DocStringExtensions
 
-@reexport using AstrodynamicalFrames
-@reexport using AstrodynamicalStates
+@reexport using OrbitalFrames
+@reexport using OrbitalStates
 @reexport using AstrodynamicalCalculations
 @reexport using AstrodynamicalModels
 
