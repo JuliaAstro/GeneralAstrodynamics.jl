@@ -69,7 +69,7 @@ small body. This model is commonly used as a simplification to
 descibe our solar systems' planets orbiting our sun, or a 
 spacecraft orbiting Earth. 
 """
-R2BP = let
+const R2BP = let
 
     @parameters t μ 
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
@@ -107,7 +107,7 @@ This may seem like an arbitrary simplification, but this assumption
 holds reasonably well for the Earth-Moon, Sun-Earth, and many other 
 systems in our solar system.
 """
-CR3BP = let
+const CR3BP = let
 
     @parameters t μ 
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
@@ -140,7 +140,7 @@ const CR3BPVectorField = ODEFunction(CR3BP; jac = true, tgrad = false, checkboun
 A `ModelingToolkit.ODESystem` for the Circular Restricted Three-body Problem,
 with the local linearization included in the state vector and dynamics.
 """
-CR3BPWithSTM = let 
+const CR3BPWithSTM = let 
 
     @parameters t μ 
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t) Φ[1:6,1:6](t)
