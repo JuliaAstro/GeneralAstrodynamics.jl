@@ -14,6 +14,10 @@ Please excuse the documentation and test failures above – this package is bein
 
 In addition, `v0.10` will include a package restructure. This package, `GeneralAstrodynamics`, will be a _superpackage_ for several astrodynamics packages: [`OrbitalFrames`](https://github.com/cadojo/OrbitalFrames.jl), [`OrbitalStates`](https://github.com/cadojo/OrbitalStates.jl), [`AstrodynamicalCalculations`](https://github.com/cadojo/AstrodynamicalCalculations.jl), [`AstrodynamicalModels`](https://github.com/cadojo/AstrodynamicalModels.jl), [`OrbitPropagation`](https://github.com/cadojo/OrbitPropagation.jl), and [`OrbitalPlots`](https://github.com/cadojo/OrbitalPlots.jl). 
 
+## JuliaCon Talk
+
+Check out `GeneralAstrodynamics` in action at JuliaCon 2021! The talk [_Going to Jupiter with Julia_](https://www.youtube.com/watch?v=WnvKaUsGv8w) walks through a simple Jupiter mission design while gently introducing astrodynamics, Julia, and `GeneralAstrodynamics`.
+
 ## Features
 
 The following features are available in release `v0.9`, and will still be provided in release `v0.10`.
