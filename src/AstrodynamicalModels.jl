@@ -84,6 +84,7 @@ const R2BP = let
 
     @named R2BP = ODESystem(eqs, t, vcat(r,v), [μ])
 
+    structural_simplify(R2BP)
 end
 
 """
@@ -124,6 +125,7 @@ const CR3BP = let
 
     @named CR3BP = ODESystem(eqs, t, vcat(r,v), [μ])
 
+    structural_simplify(CR3BP)
 end
 
 """
@@ -146,7 +148,9 @@ const CR3BPWithSTM = let
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t) Φ[1:6,1:6](t)
     δ = Differential(t)
 
-    Φ = Matrix(Φ) # this produces a non-symbolic broadcast
+    Φ = [
+        Φ[i,j] for i in 1:6, j in 1:6 # produces a non-symbolic map
+    ]
 
     r = @SVector [x, y, z]
     v = @SVector [ẋ, ẏ, ż]
@@ -171,6 +175,8 @@ const CR3BPWithSTM = let
     end
 
     @named CR3BPWithSTM = ODESystem(eqs, t, vcat(r,v,Φ...), [μ])
+    
+    structural_simplify(CR3BPWithSTM)
 end
 
 """
