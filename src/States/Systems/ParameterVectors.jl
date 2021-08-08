@@ -78,7 +78,7 @@ get_μ(sys::R2BPParameters) = sys[1]
 Displays `R2BPParameters`.
 """
 function Base.show(io::IO, state::R2BPParameters; showfloats=true, space="")
-    println(io, space, "R2BP parameters ", name(state) == "Unknown" ? "" : "for the $(name(state)) system", showfloats ? " with eltype $(eltype(state))" : "", "\n")
+    println(io, space, "R2BP parameters ", name(state) == "Primary" ? "" : "for the $(name(state)) system", showfloats ? " with eltype $(eltype(state))" : "", "\n")
     println(io, space, "  ", "μ = ", get_μ(state), " ", massparamunit(state))
 end
 Base.show(io::IO, ::MIME"text/plain", state::R2BPParameters; kwargs...) = Base.show(io, state; kwargs...)
@@ -87,8 +87,9 @@ Base.show(io::IO, ::MIME"text/plain", state::R2BPParameters; kwargs...) = Base.s
 Converts types and units for a `R2BPParameters`.
 """
 function Base.convert(::Type{R2BPParameters{F, MU, LU, TU, AU}}, system::R2BPParameters) where {F, MU, LU, TU, AU}
+    B = name(system)
     μ = ustrip(LU^3/TU^2, get_μ(system) * massparamunit(system)) |> F
-    return R2BPParameters(μ; massunit=MU, lengthunit=LU, timeunit=TU, angularunit=AU) 
+    return R2BPParameters(μ; massunit=MU, lengthunit=LU, timeunit=TU, angularunit=AU, name=B) 
 end
 
 """
@@ -135,6 +136,7 @@ Base.show(io::IO, ::MIME"text/plain", sys::CR3BPParameters; kwargs...) = Base.sh
 Converts types and units for a `CR3BPParameters`.
 """
 function Base.convert(::Type{CR3BPParameters{F, MU, LU, TU, AU}}, system::CR3BPParameters) where {F, MU, LU, TU, AU}
+    B = name(system)
     μ  = get_μ(system)
     μ₁, μ₂ = let 
         ∑μᵢ = TU^3 / (TU / 2π)^2
@@ -145,5 +147,5 @@ function Base.convert(::Type{CR3BPParameters{F, MU, LU, TU, AU}}, system::CR3BPP
     end
 
     μₙ = min(μ₁, μ₂) / (μ₁ + μ₂)
-    return CR3BPParameters(μₙ; massunit=MU, lengthunit=LU, timeunit=TU, angularunit=AU)
+    return CR3BPParameters(μₙ; massunit=MU, lengthunit=LU, timeunit=TU, angularunit=AU, primary=name[1], secondary=name[2])
 end

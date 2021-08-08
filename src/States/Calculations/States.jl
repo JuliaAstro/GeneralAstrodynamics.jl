@@ -18,38 +18,38 @@ Calculations.cartesian(state::KeplerianState, μ) = cartesian(
     μ
 )
 
-Base.position(state::CartesianStateVector) = OrbitalStates.get_r(state) * lengthunit(state)
+Base.position(state::CartesianStateVector) = States.get_r(state) * lengthunit(state)
 Base.position(orbit::KeplerianR2BPOrbit) = position(CartesianState(cartesian(state(orbit), massparameter(state(orbit)))))
 Base.position(orbit::Orbit) = position(state(orbit))
 
 Calculations.distance(state::CartesianStateVector) = norm(position(state))
 Calculations.distance(orbit::Orbit) = norm(position(orbit))
 
-velocity(state::CartesianStateVector) = OrbitalStates.get_v(state) * velocityunit(state)
+velocity(state::CartesianStateVector) = States.get_v(state) * velocityunit(state)
 velocity(orbit::Orbit) = velocity(state(orbit))
 
 Calculations.speed(state::CartesianStateVector) = norm(velocity(state))
 Calculations.speed(orbit::KeplerianR2BPOrbit) = speed(semi_parameter(semimajor_axis(state(orbit)), eccentricity(state(orbit))), semimajor_axis(state(orbit)), massparameter(system(orbit)))
 Calculations.speed(orbit::Orbit) = norm(velocity(state(orbit)))
 
-Calculations.eccentricity(state::KeplerianState) = OrbitalStates.get_e(state)
+Calculations.eccentricity(state::KeplerianState) = States.get_e(state)
 Calculations.eccentricity(orbit::KeplerianR2BPOrbit) = eccentricity(state(orbit))
 Calculations.eccentricity(orbit::CartesianR2BPOrbit) = eccentricity(position(state(orbit)), velocity(state(orbit)), massparameter(system(orbit)))
 
-Calculations.semimajor_axis(state::KeplerianState) = OrbitalStates.get_a(state) * lengthunit(state)
+Calculations.semimajor_axis(state::KeplerianState) = States.get_a(state) * lengthunit(state)
 Calculations.semimajor_axis(orbit::CartesianR2BPOrbit) = semimajor_axis(distance(state(orbit)), speed(state(orbit)), massparameter(system(orbit)))
 Calculations.semimajor_axis(orbit::KeplerianR2BPOrbit) = semimajor_axis(state(orbit))
 
-inclination(state::KeplerianState) = OrbitalStates.get_i(state) * angularunit(state)
+inclination(state::KeplerianState) = States.get_i(state) * angularunit(state)
 inclination(orbit::KeplerianR2BPOrbit) = inclination(state(orbit))
 
-RAAN(state::KeplerianState) = OrbitalStates.get_Ω(state) * angularunit(state)
+RAAN(state::KeplerianState) = States.get_Ω(state) * angularunit(state)
 RAAN(orbit::KeplerianR2BPOrbit) = RAAN(state(orbit))
 
-argument_of_periapsis(state::KeplerianState) = OrbitalStates.get_ω(state) * angularunit(state)
+argument_of_periapsis(state::KeplerianState) = States.get_ω(state) * angularunit(state)
 argument_of_periapsis(orbit::KeplerianR2BPOrbit) = argument_of_periapsis(state(orbit))
 
-Calculations.true_anomoly(state::KeplerianState) = OrbitalStates.get_ν(state) * angularunit(state)
+Calculations.true_anomoly(state::KeplerianState) = States.get_ν(state) * angularunit(state)
 Calculations.true_anomoly(orbit::KeplerianR2BPOrbit) = true_anomoly(state(orbit))
 Calculations.true_anomoly(orbit::CartesianR2BPOrbit) = true_anomoly(distance(orbit), specific_angular_momentum(orbit), eccentricity(orbit), massparameter(system(orbit)))
 
@@ -93,10 +93,10 @@ Calculations.time_since_periapsis(orbit::R2BPOrbit) = time_since_periapsis(mean_
 
 Calculations.specific_potential_energy(orbit::CartesianR2BPOrbit) = specific_potential_energy(distance(orbit.state), massparameter(system(orbit)))
 
-Calculations.jacobi_constant(orbit::CR3BPOrbit) = jacobi_constant(OrbitalStates.get_r(state(orbit)), OrbitalStates.get_v(state(orbit)), massparameter(system(orbit)))
+Calculations.jacobi_constant(orbit::CR3BPOrbit) = jacobi_constant(States.get_r(state(orbit)), States.get_v(state(orbit)), massparameter(system(orbit)))
 
-Calculations.potential_energy(orbit::CR3BPOrbit) = potential_energy(OrbitalStates.get_r(state(orbit)), massparameter(system(orbit)))
+Calculations.potential_energy(orbit::CR3BPOrbit) = potential_energy(States.get_r(state(orbit)), massparameter(system(orbit)))
 
-distance_to_primary(orbit::CR3BPOrbit) = norm(OrbitalStates.get_r(state(orbit)) .- SVector(-massparameter(orbit), 0, 0)) 
+distance_to_primary(orbit::CR3BPOrbit) = norm(States.get_r(state(orbit)) .- SVector(-massparameter(orbit), 0, 0)) 
 
-distance_to_secondary(orbit::CR3BPOrbit) = norm(OrbitalStates.get_r(state(orbit)) .- SVector(1-massparameter(orbit), 0, 0)) 
+distance_to_secondary(orbit::CR3BPOrbit) = norm(States.get_r(state(orbit)) .- SVector(1-massparameter(orbit), 0, 0)) 

@@ -20,9 +20,22 @@ struct Orbit{FR, F, MU, LU, TU, AU, E, S, P} <: AbstractOrbit{FR, F, MU, LU, TU,
 end
 
 """
+Returns a default frame.
+"""
+function defaultframe(system::ParameterVector)
+    if system isa R2BPParameters
+        return CoordinateFrames.BodycentricInertial
+    elseif system isa CR3BPParameters
+        return CoordinateFrames.BarycentricRotating
+    else
+        return Inertial
+    end
+end
+
+"""
 Outer constructor for `Orbit`s.
 """
-function Orbit(state::AbstractState, system::ParameterVector, epoch=TAIEpoch(now()); frame=Inertial) 
+function Orbit(state::AbstractState, system::ParameterVector, epoch=TAIEpoch(now()); frame = defaultframe(system)) 
 
     S = eval(Base.typename(typeof(state)).name)
     P = eval(Base.typename(typeof(system)).name)
@@ -58,7 +71,7 @@ Shows all `Orbit` instances.
 """
 function Base.show(io::IO, orbit::Orbit)
     if system(orbit) isa R2BPParameters
-        println(io, "Restricted Two-body Orbit with eltype $(typeof(orbit).parameters[2])")
+        println(io, conic(orbit), " Restricted Two-body Orbit with eltype $(typeof(orbit).parameters[2])")
     elseif system(orbit) isa CR3BPParameters
         println(io, "Circular Restricted Three-body Orbit with eltype $(typeof(orbit).parameters[2])")
     end
@@ -85,6 +98,11 @@ state(orbit::Orbit) = orbit.state
 Returns the parameter vector for the `Orbit`.
 """
 system(orbit::Orbit) = orbit.system
+
+"""
+Returns the `OrbitalFrame` for the `Orbit`.
+"""
+Base.@pure frame(::Orbit{FR}) where FR = FR
 
 """
 An alias for `Orbit` instances about `R2BP` systems.

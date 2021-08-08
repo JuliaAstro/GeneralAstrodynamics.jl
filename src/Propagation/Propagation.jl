@@ -1,11 +1,14 @@
 module Propagation
 
-export Trajectory 
+export Trajectory, ODEProblem, propagate
+export initialstate, initialepoch, solution
 
 using ..States
 using ..Calculations
 using ..CoordinateFrames
 
+using Unitful
+using AstroTime
 using DocStringExtensions
 using AstrodynamicalModels
 using DifferentialEquations
@@ -23,8 +26,7 @@ using DifferentialEquations
     $(DOCSTRING)
     """
 
-include(joinpath("Trajectories", "Trajectories.jl"))
-include(joinpath("R2BP", "R2BPPropagators.jl"))
-include(joinpath("CR3BP", "CR3BPPropagators.jl"))
+include("Trajectories.jl")
+include("Propagators.jl")
 
 end # module

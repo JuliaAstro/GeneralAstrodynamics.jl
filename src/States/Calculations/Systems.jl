@@ -5,13 +5,13 @@
 """
 Returns the mass parameter of the R2BP system.
 """
-massparameter(system::R2BPParameters) = OrbitalStates.get_μ(system) * massparamunit(system)
+massparameter(system::R2BPParameters) = States.get_μ(system) * massparamunit(system)
 massparameter(orbit::R2BPOrbit) = massparameter(system(orbit))
 
 """
 Returns the mass parameter of the CR3BP system.
 """
-massparameter(system::CR3BPParameters) = OrbitalStates.get_μ(system)
+massparameter(system::CR3BPParameters) = States.get_μ(system)
 massparameter(orbit::CR3BPOrbit) = massparameter(system(orbit))
 
 """

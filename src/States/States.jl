@@ -19,7 +19,7 @@ module States
 
 export CartesianState, CartesianStateWithSTM, KeplerianState
 export R2BPParameters, CR3BPParameters
-export Orbit, state, system, epoch
+export Orbit, state, system, epoch, frame
 export position, velocity
 export R2BPOrbit, KeplerianR2BPOrbit, CartesianR2BPOrbit, CartesianOrbitWithSTM, CR3BPOrbit
 export lengthunit, timeunit, angularunit, velocityunit, massparamunit, name
