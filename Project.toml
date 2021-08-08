@@ -4,18 +4,22 @@ authors = ["Joe Carpinelli <jdcarpinelli@gmail.com>"]
 version = "0.10.0"
 
 [deps]
-AstrodynamicalCalculations = "87fd4df7-6036-47dd-923b-77dca2603643"
+ArrayInterface = "4fba245c-0d91-5ea0-9b3e-6abc04ee57a9"
+AstroTime = "c61b5328-d09d-5e37-a9a8-0eb41c39009c"
 AstrodynamicalModels = "4282b555-f590-4262-b575-3e516e1493a7"
+Contour = "d38c429a-6771-53c6-b99e-75d170b6e991"
+CoordinateTransformations = "150eb455-5306-5404-9cee-2592286d6298"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
+LabelledArrays = "2ee39098-c373-598a-b85f-a56591580800"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
-OrbitPlots = "26fbe8db-4131-4c7c-86e6-687f8ed43765"
-OrbitPropagation = "2adc300b-a29d-443b-8ec9-150875089307"
-OrbitalFrames = "3cdf07a0-aadb-43b7-b839-d4c3fa3264f4"
-OrbitalStates = "b3d87722-feb5-45df-affe-eeab3e3c6ba5"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
+UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 
 [compat]
 DocStringExtensions = "0.8"
