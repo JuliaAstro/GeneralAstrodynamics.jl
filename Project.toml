@@ -25,6 +25,7 @@ UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 
 [compat]
 DocStringExtensions = "0.8"
+Plots = "1"
 Reexport = "0.2, 1.0"
 StaticArrays = "0.12, 1.0"
 Unitful = "1.4"
