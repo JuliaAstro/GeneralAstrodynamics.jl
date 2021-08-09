@@ -5,11 +5,13 @@
 """
 Returns the Monodromy Matrix for a Halo orbit.
 """
-function monodromy(orbit::CircularRestrictedThreeBodyOrbit, T; reltol = 1e-14, abstol = 1e-14)
-    orb = NormalizedSynodicSTMCR3BPOrbit(normalize(synodic(orbit)))
-    problem = ODEProblem(orb, T)
-
-    final = solve(problem; reltol=reltol, abstol=abstol, save_everystep=false).u[end]
+function monodromy(orbit::CR3BPOrbit, T; verify=true, reltol = 1e-14, abstol = 1e-14)
+    initial = Orbit(CartesianStateWithSTM(state(orbit)), system(orbit), epoch(orbit); frame=frame(orbit))
+    final   = propagate(orbit, T; reltol=reltol, abstol=abstol, save_everystep=true)[end]
+    
+    if verify && !(all(initial[1:6] .≈ final[1:6]))
+        throw(ErrorException("The provided `orbit` is not periodic!"))
+    end
 
     SMatrix{6,6}(final[7:end]...) |> Matrix
 end
@@ -17,13 +19,9 @@ end
 """
 Returns true if a `RestrictedThreeBodySystem` is numerically periodic.
 """
-function isperiodic(orbit::CircularRestrictedThreeBodyOrbit, T; reltol = 1e-14, abstol = 1e-14, atol = 1e-6)
-    orb = NormalizedSynodicSTMCR3BPOrbit(normalize(synodic(orbit)))
-    problem = ODEProblem(orbit, T)
-
-    final = solve(problem; reltol=reltol, abstol=abstol, save_everystep=false).u[end]
-        
-    return all(isapprox.(position_vector(orbit.state), final[1:3]; atol = atol)) && all(isapprox.(velocity_vector(orbit.state), final[4:6]; atol = atol))
+function isperiodic(orbit::CR3BPOrbit, T; reltol = 1e-14, abstol = 1e-14)
+    final = propagate(orbit, T; reltol=reltol, abstol=abstol, save_everystep=true)[end]
+    return all(state(orbit)[1:6] .≈ final[1:6])        
 end
 
 
@@ -142,28 +140,15 @@ end
 A `halo` wrapper! Returns a `CircularRestrictedThreeBodyOrbit`.
 Returns a tuple: `halo_orbit, halo_period`.
 """
-function halo(sys::CircularRestrictedThreeBodySystem; 
-              Az=0.0,
-              L=1, 
-              hemisphere=:northern,
-              tolerance=1e-8, 
-              max_iter=20,
-              reltol=1e-14, 
-              abstol=1e-14,
-              nan_on_fail = true, 
-              disable_warnings = false)
+function halo(sys::CR3BPParameters, epoch=TAIEpoch(now()); Az=0.0, kwargs...)
     
     if Az isa Unitful.Length
-        Az = nondimensionalize_length(Az, normalized_length_unit(sys))
+        Az = Az / lengthunit(sys)
     end
 
-    r,v,T = halo(normalized_mass_parameter(sys); 
-                 Az = Az, L = L, hemisphere = hemisphere, 
-                 tolerance = tolerance, max_iter = max_iter, reltol = reltol, abstol = abstol, 
-                 nan_on_fail = nan_on_fail, disable_warnings = disable_warnings)
-    orbit = CircularRestrictedThreeBodyOrbit(redimensionalize_length.(r, normalized_length_unit(sys)), 
-                                             redimensionalize_velocity.(v, normalized_length_unit(sys), normalized_time_unit(sys)),
-                                             sys) |> normalize
+    r,v,T = halo(massparameter(sys); Az = Az, kwargs...)
+    cart  = CartesianState(vcat(r,v); lengthunit=lengthunit(sys), timeunit=timeunit(sys), angularunit=angularunit(sys))
+    orbit = Orbit(cart, sys)
     return orbit, T
 end
 
@@ -204,18 +189,17 @@ Given a __periodic__ `CircularRestrictedThreeBodyOrbit`,
 returns a nearby `CircularRestrictedThreeBodyOrbit` on the 
 __stable manifold__ of the initial state.
 """
-function manifold(orbit::NormalizedSynodicSTMCR3BPOrbit, V::AbstractVector; eps = 1e-8)
+function manifold(orbit::CR3BPOrbit, V::AbstractVector; eps = 1e-8)
     V = normalize(V)
-    r = orbit.state.cart.r + eps * V[1:3]
-    v = orbit.state.cart.v + eps * V[4:6]
+    r = state(orbit).r + eps * V[1:3]
+    v = state(orbit).v + eps * V[4:6]
 
-    cart = CartesianState(r, v, orbit.state.cart.t, Synodic;
-                          lengthunit = NormalizedLengthUnit(), 
-                          timeunit = NormalizedTimeUnit())
-
-    return CircularRestrictedThreeBodyOrbit(cart, orbit.system)
+    cart = CartesianState(vcat(r,v); lengthunit=lengthunit(orbit), timeunit=timeunit(orbit), angularunit=angularunit(orbit))
+    
+    return Orbit(cart, system(orbit), epoch(orbit))
 end
 
+#=
 """
 Given a __periodic__ `CircularRestrictedThreeBodyOrbit`,
 returns a collection of `Trajectory` instances representing
@@ -274,3 +258,4 @@ function unstable_manifold(orbit::NormalizedSynodicCR3BPOrbit, T::Real;
                           reltol = reltol, abstol = abstol, saveat = saveat)
     return parallel ? pmap(f, traj[ind]) : map(f, traj[ind])
 end
+=#

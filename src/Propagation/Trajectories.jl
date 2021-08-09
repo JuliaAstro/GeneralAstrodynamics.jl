@@ -57,6 +57,13 @@ The `length` of a `Trajectory`.
 Base.length(traj::Trajectory) = length(solution(traj))
 
 """
+Calls the underlying `solution`'s `getindex` function
+to return the `CartesianState` of the `Trajectory`
+at time `t` past the `initialepoch`.
+"""
+Base.getindex(traj::Trajectory, args...) = getindex(solution(traj), args...)
+
+"""
 The `size` of a `Trajectory`.
 """
 Base.size(traj::Trajectory) = size(solution(traj))

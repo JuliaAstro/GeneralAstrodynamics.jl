@@ -9,7 +9,6 @@ function SciMLBase.ODEProblem(orbit::R2BPOrbit, Δt::Number)
     u  = state(orbit)
     Δt = eltype(state(orbit))(Δt)
     ts = Δt isa Unitful.Length ? (zero(ustrip(timeunit(orbit), Δt)), ustrip(timeunit(orbit), Δt)) : (zero(Δt), Δt)
-    ts = (min(ts...), max(ts...))
     p  = system(orbit)
     return ODEProblem(R2BPVectorField, u, ts, p)
 end
@@ -17,13 +16,13 @@ end
 """
 Create's an ODEProblem for a `R2BP` orbit.
 """
-function SciMLBase.ODEProblem(orbit::R2BPOrbit, Δt::Real)
+function SciMLBase.ODEProblem(orbit::CR3BPOrbit, Δt::Real)
     u  = state(orbit)
     Δt = eltype(state(orbit))(Δt)
     ts = (zero(Δt), Δt)
-    ts = (min(ts...), max(ts...))
     p  = system(orbit)
-    return ODEProblem(CR3BPVectorField, u, ts, p)
+    f  = u isa CartesianStateWithSTM ? CR3BPWithSTMVectorField : CR3BPVectorField
+    return ODEProblem(f, u, ts, p)
 end
 
 """
@@ -33,12 +32,14 @@ algorithm, e.g. `algorithm = Tsit5()`. All other `kwargs`
 are passed directly to `DifferentialEquations.solve`.
 """
 function propagate(orbit::Orbit, Δt::Number; algorithm=nothing, kwargs...)
-    problem = ODEProblem(orbit, Δt)
+    defaults = (; reltol=1e-14, abstol=1e-14)
+    options  = merge(defaults, kwargs)
+    problem  = ODEProblem(orbit, Δt)
 
     if isnothing(algorithm)
-        solution = solve(problem; kwargs...)
+        solution = solve(problem; options...)
     else 
-        solution =  solve(problem, algorithm; kwargs...)
+        solution =  solve(problem, algorithm; options...)
     end
 
     return Trajectory{frame(orbit), typeof(epoch(orbit)), typeof(solution)}(epoch(orbit), solution)

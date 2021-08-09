@@ -129,6 +129,11 @@ Outer constructor for `CartesianStateWithSTM`.
 CartesianStateWithSTM(data; lengthunit=u"km", timeunit=u"s", angularunit=u"°") = CartesianStateWithSTM{eltype(data), lengthunit, timeunit, angularunit}(data)
 
 """
+Returns a `CartesianStateWithSTM`, given a `CartesianState`.
+"""
+CartesianStateWithSTM(cart::CartesianState, stm=Matrix{eltype(cart)}(I(6))) = CartesianStateWithSTM{eltype(cart), lengthunit(cart), timeunit(cart), angularunit(cart)}(cart..., stm...)
+
+"""
 All Cartesian state!
 """
 const CartesianStateVector = Union{<:CartesianState, <:CartesianStateWithSTM}
@@ -197,13 +202,15 @@ statevector(state::CartesianStateWithSTM) = MVector{42}(get_x(state), get_y(stat
 Displays a `CartesianState`.
 """
 function Base.show(io::IO, state::CartesianState; showfloats=true, space="")
+    LU = isnormalized(state) ? one(eltype(state)) : lengthunit(state)
+    VU = isnormalized(state) ? one(eltype(state)) : velocityunit(state)
     println(io, space, "Cartesian State", showfloats ? " with eltype $(eltype(state))" : "", "\n")
-    println(io, space, "  ", "x = $(get_x(state) * lengthunit(state))")
-    println(io, space, "  ", "y = $(get_y(state) * lengthunit(state))")
-    println(io, space, "  ", "z = $(get_z(state) * lengthunit(state))")
-    println(io, space, "  ", "ẋ = $(get_ẋ(state) * velocityunit(state))")
-    println(io, space, "  ", "ẏ = $(get_ẏ(state) * velocityunit(state))")
-    println(io, space, "  ", "ż = $(get_ż(state) * velocityunit(state))")
+    println(io, space, "  ", "x = $(get_x(state) * LU)")
+    println(io, space, "  ", "y = $(get_y(state) * LU)")
+    println(io, space, "  ", "z = $(get_z(state) * LU)")
+    println(io, space, "  ", "ẋ = $(get_ẋ(state) * VU)")
+    println(io, space, "  ", "ẏ = $(get_ẏ(state) * VU)")
+    println(io, space, "  ", "ż = $(get_ż(state) * VU)")
 end
 Base.show(io::IO, ::MIME"text/plain", state::CartesianState; showfloats=true, space="") = show(io, state; showfloats=showfloats, space=space)
 
@@ -211,13 +218,15 @@ Base.show(io::IO, ::MIME"text/plain", state::CartesianState; showfloats=true, sp
 Displays a `CartesianStateWithSTM`.
 """
 function Base.show(io::IO, state::CartesianStateWithSTM; showfloats=true, space="")
+    LU = isnormalized(state) ? one(eltype(state)) : lengthunit(state)
+    VU = isnormalized(state) ? one(eltype(state)) : velocityunit(state)
     println(io, space, "Cartesian State with local linearization", showfloats ? " and eltype $(eltype(state))" : "", "\n")
-    println(io, space, "  ", "x = $(get_x(state) * lengthunit(state))")
-    println(io, space, "  ", "y = $(get_y(state) * lengthunit(state))")
-    println(io, space, "  ", "z = $(get_z(state) * lengthunit(state))")
-    println(io, space, "  ", "ẋ = $(get_ẋ(state) * velocityunit(state))")
-    println(io, space, "  ", "ẏ = $(get_ẏ(state) * velocityunit(state))")
-    println(io, space, "  ", "ż = $(get_ż(state) * velocityunit(state))")
+    println(io, space, "  ", "x = $(get_x(state) * LU)")
+    println(io, space, "  ", "y = $(get_y(state) * LU)")
+    println(io, space, "  ", "z = $(get_z(state) * LU)")
+    println(io, space, "  ", "ẋ = $(get_ẋ(state) * VU)")
+    println(io, space, "  ", "ẏ = $(get_ẏ(state) * VU)")
+    println(io, space, "  ", "ż = $(get_ż(state) * VU)")
 end
 Base.show(io::IO, ::MIME"text/plain", state::CartesianStateWithSTM; showfloats=true, space="") = show(io, state; showfloats=showfloats, space=space)
 

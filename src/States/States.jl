@@ -27,10 +27,11 @@ export Sun, Mercury, Venus, Earth, Moon, Luna, Mars, Jupiter, Saturn, Uranus, Ne
 export SunVenus, SunEarth, EarthMoon, SunMars, SunJupiter, SunSaturn
 export model, vectorfield
 
+
 import Dates: now
 import AstroTime: TAIEpoch
 import Requires: @require
-import LinearAlgebra: norm
+import LinearAlgebra: norm, I
 
 using Unitful, UnitfulAstro
 using StaticArrays

@@ -22,7 +22,7 @@ export specific_energy, C3, v_infinity, specific_potential_energy
 export eccentricity_vector, eccentricity, semi_parameter
 export distance, speed, periapsis_radius, apoapsis_radius, period
 export true_anomoly, mean_motion, time_since_periapsis
-export hohmann, SOI, SOA, normalize, redimension
+export hohmann, SOI, SOA, normalize, redimension, analyticalhalo
 
 using DocStringExtensions
 using Unitful
@@ -33,6 +33,7 @@ using AstroTime
 using LinearAlgebra
 
 import Dates
+import Roots: find_zero
 
 @template (FUNCTIONS, METHODS, MACROS) =
     """

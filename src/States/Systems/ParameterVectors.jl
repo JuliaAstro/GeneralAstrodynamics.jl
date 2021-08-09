@@ -147,5 +147,5 @@ function Base.convert(::Type{CR3BPParameters{F, MU, LU, TU, AU}}, system::CR3BPP
     end
 
     μₙ = min(μ₁, μ₂) / (μ₁ + μ₂)
-    return CR3BPParameters(μₙ; massunit=MU, lengthunit=LU, timeunit=TU, angularunit=AU, primary=name[1], secondary=name[2])
+    return CR3BPParameters(μₙ; massunit=MU, lengthunit=LU, timeunit=TU, angularunit=AU, primary=name(system)[1], secondary=name(system)[2])
 end
