@@ -22,6 +22,7 @@ Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 
 [compat]
+Contour = "0.5"
 DocStringExtensions = "0.8"
 Reexport = "0.2, 1.0"
 StaticArrays = "0.12, 1.0"
