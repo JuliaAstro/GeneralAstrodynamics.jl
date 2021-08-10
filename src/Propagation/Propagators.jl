@@ -8,7 +8,7 @@ Create's an ODEProblem for a `R2BP` orbit.
 function SciMLBase.ODEProblem(orbit::R2BPOrbit, Δt::Number)
     u  = state(orbit)
     Δt = eltype(state(orbit))(Δt)
-    ts = Δt isa Unitful.Length ? (zero(ustrip(timeunit(orbit), Δt)), ustrip(timeunit(orbit), Δt)) : (zero(Δt), Δt)
+    ts = Δt isa Unitful.Time ? (zero(ustrip(timeunit(orbit), Δt)), ustrip(timeunit(orbit), Δt)) : (zero(Δt), Δt)
     p  = system(orbit)
     return ODEProblem(R2BPVectorField, u, ts, p)
 end

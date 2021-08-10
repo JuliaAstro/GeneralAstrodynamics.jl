@@ -100,6 +100,36 @@ Returns the parameter vector for the `Orbit`.
 system(orbit::Orbit) = orbit.system
 
 """
+Returns the `lengthunit` for an `Orbit`.
+"""
+Base.@pure lengthunit(::Orbit{FR, F, MU, LU, TU, AU}) where {FR, F, MU, LU, TU, AU} = LU
+
+"""
+Returns the `timeunit` for an `Orbit`.
+"""
+Base.@pure timeunit(::Orbit{FR, F, MU, LU, TU, AU}) where {FR, F, MU, LU, TU, AU} = TU
+
+"""
+Returns the `angularunit` for an `Orbit`.
+"""
+Base.@pure angularunit(::Orbit{FR, F, MU, LU, TU, AU}) where {FR, F, MU, LU, TU, AU} = AU
+
+"""
+Returns the `massunit` for an `Orbit`.
+"""
+Base.@pure massunit(::Orbit{FR, F, MU, LU, TU, AU}) where {FR, F, MU, LU, TU, AU} = MU
+
+"""
+Returns the `velocityunit` for an `Orbit`.
+"""
+velocityunit(orbit::Orbit) = lengthunit(orbit) / timeunit(orbit)
+
+"""
+Returns the `massparamunit` for an `Orbit`.
+"""
+massparamunit(orbit::Orbit) = lengthunit(orbit)^3 / timeunit(orbit)^2
+
+"""
 Returns the `OrbitalFrame` for the `Orbit`.
 """
 Base.@pure frame(::Orbit{FR}) where FR = FR
@@ -107,7 +137,7 @@ Base.@pure frame(::Orbit{FR}) where FR = FR
 """
 An alias for `Orbit` instances about `R2BP` systems.
 """
-const R2BPOrbit = Orbit{FR, F, MU, LU, TU, AU, E, <:Union{CartesianStateVector, KeplerianState}, <:R2BPParameters} where {FR, F, MU, LU, TU, AU, E}
+const R2BPOrbit = Orbit{FR, F, MU, LU, TU, AU, E, S, P} where {FR, F, MU, LU, TU, AU, E, S<:Union{CartesianStateVector, KeplerianState}, P<:R2BPParameters}
 
 """
 An alias for `Orbit` instances about `R2BP` systems with `KeplerianState` descriptions.

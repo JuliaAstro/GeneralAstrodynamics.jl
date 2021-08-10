@@ -7,9 +7,9 @@ Returns the Monodromy Matrix for a Halo orbit.
 """
 function monodromy(orbit::CR3BPOrbit, T; verify=true, reltol = 1e-14, abstol = 1e-14)
     initial = Orbit(CartesianStateWithSTM(state(orbit)), system(orbit), epoch(orbit); frame=frame(orbit))
-    final   = propagate(orbit, T; reltol=reltol, abstol=abstol, save_everystep=true)[end]
+    final   = propagate(orbit, T; reltol=reltol, abstol=abstol, save_everystep=false)[end]
     
-    if verify && !(all(initial[1:6] .≈ final[1:6]))
+    if verify && !(state(initial)[1:6] ≈ final[1:6])
         throw(ErrorException("The provided `orbit` is not periodic!"))
     end
 
@@ -20,8 +20,8 @@ end
 Returns true if a `RestrictedThreeBodySystem` is numerically periodic.
 """
 function isperiodic(orbit::CR3BPOrbit, T; reltol = 1e-14, abstol = 1e-14)
-    final = propagate(orbit, T; reltol=reltol, abstol=abstol, save_everystep=true)[end]
-    return all(state(orbit)[1:6] .≈ final[1:6])        
+    final = propagate(orbit, T; reltol=reltol, abstol=abstol, save_everystep=false)[end]
+    return state(orbit)[1:6] ≈ final[1:6] 
 end
 
 
@@ -156,7 +156,7 @@ end
 Calculates the eigenvector associated with the __stable manifold__
 of a Monodromy matrix.
 """
-function stable_eigenvector(monodromy::AbstractMatrix; check=true)
+function stable_eigenvector(monodromy::AbstractMatrix; verify=true)
     evals, evecs = eigen(monodromy)
     evals = filter(isreal, evals) .|> real
     evecs = filter(x->!isempty(x), map(vec->filter(x->all(isreal.(vec)), vec), eachcol(evecs))) .|> real
@@ -164,7 +164,7 @@ function stable_eigenvector(monodromy::AbstractMatrix; check=true)
     imin = findmin(evals)[2]
     imax = findmax(evals)[2]
 
-    !check || @assert (evals[imin] * evals[imax]) ≈ one(eltype(evals)) "Min and max eigenvalue should be multiplicative inverses. Invalid Monodromy matrix. Product equals $(evals[imin] * evals[imax]), not $(one(eltype(evals)))."
+    !verify || @assert (evals[imin] * evals[imax]) ≈ one(eltype(evals)) "Min and max eigenvalue should be multiplicative inverses. Invalid Monodromy matrix. Product equals $(evals[imin] * evals[imax]), not $(one(eltype(evals)))."
     return evecs[imin]
 end
 
@@ -172,7 +172,7 @@ end
 Calculates the eigenvector associated with the __unstable manifold__
 of a Monodromy matrix.
 """
-function unstable_eigenvector(monodromy::AbstractMatrix; check=true)
+function unstable_eigenvector(monodromy::AbstractMatrix; verify=true)
     evals, evecs = eigen(monodromy)
     evals = filter(isreal, evals) .|> real
     evecs = filter(x->!isempty(x), map(vec->filter(x->all(isreal.(vec)), vec), eachcol(evecs))) .|> real
@@ -180,7 +180,7 @@ function unstable_eigenvector(monodromy::AbstractMatrix; check=true)
     imin = findmin(evals)[2]
     imax = findmax(evals)[2]
 
-    !check || @assert (evals[imin] * evals[imax]) ≈ one(eltype(evals)) "Min and max eigenvalue should be multiplicative inverses. Invalid Monodromy matrix. Product equals $(evals[imin] * evals[imax]), not $(one(eltype(evals)))."
+    !verify || @assert (evals[imin] * evals[imax]) ≈ one(eltype(evals)) "Min and max eigenvalue should be multiplicative inverses. Invalid Monodromy matrix. Product equals $(evals[imin] * evals[imax]), not $(one(eltype(evals)))."
     return evecs[imax]
 end
 
@@ -189,7 +189,7 @@ Given a __periodic__ `CircularRestrictedThreeBodyOrbit`,
 returns a nearby `CircularRestrictedThreeBodyOrbit` on the 
 __stable manifold__ of the initial state.
 """
-function manifold(orbit::CR3BPOrbit, V::AbstractVector; eps = 1e-8)
+function manifold_perturbation(orbit::CR3BPOrbit, V::AbstractVector; eps = 1e-8)
     V = normalize(V)
     r = state(orbit).r + eps * V[1:3]
     v = state(orbit).v + eps * V[4:6]

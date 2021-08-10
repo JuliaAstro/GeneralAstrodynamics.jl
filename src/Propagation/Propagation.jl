@@ -2,7 +2,8 @@ module Propagation
 
 export Trajectory, ODEProblem, propagate
 export initialstate, initialepoch, solution
-export manifold, isperiodic, halo
+export manifold_perturbation, isperiodic, halo
+export manifold, perturb
 export stable_eigenvector, unstable_eigenvector
 
 using ..States
