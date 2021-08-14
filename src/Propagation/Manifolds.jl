@@ -84,7 +84,7 @@ invariant manifold about the provided Halo orbit.
 All `kwargs` arguments are passed directly to `DifferentialEquations`
 solvers.
 """
-function SciMLBase.EnsembleProblem(halo::Trajectory{FR, <:CartesianStateWithSTM} where FR, duration::Number=(solution(halo).t[end] - solution(halo).t[1]); direction=Val{:stable}, distributed=Val{false}, Trajectory=Val{false}, verify=true, eps=1e-8, kwargs...)
+function SciMLBase.EnsembleProblem(halo::Trajectory{FR, <:CartesianStateWithSTM} where FR, duration::Number=(solution(halo).t[end] - solution(halo).t[1]); direction=Val{:unstable}, distributed=Val{false}, Trajectory=Val{false}, verify=true, eps=1e-8, kwargs...)
 
     if verify && halo[1][1:6] ≉ halo[end][1:6]
         throw(ArgumentError("The Halo orbit `Trajectory` provided is not periodic!"))
@@ -190,8 +190,8 @@ Perturbs a periodic orbit `traj` in the direction of the stable or
 unstable eigenvector of its `monodromy` matrix to form a stable
 or unstable `manifold`.
 """
-function manifold(traj::Trajectory{FR, S, P, E}, duration::Number=(solution(traj).t[end] - solution(traj).t[1]); verify=true, algorithm=nothing, ensemble_algorithm=nothing, trajectories=100, kwargs...) where {FR, S<:CartesianStateWithSTM, P, E}
-    problem  = EnsembleProblem(traj, duration; Trajectory=Val{true}, verify=verify)
+function manifold(traj::Trajectory{FR, S, P, E}, duration::Number=(solution(traj).t[end] - solution(traj).t[1]); verify=true, direction=Val{:unstable}, algorithm=nothing, ensemble_algorithm=nothing, trajectories=100, kwargs...) where {FR, S<:CartesianStateWithSTM, P, E}
+    problem  = EnsembleProblem(traj, duration; Trajectory=Val{true}, direction=direction, verify=verify)
     if isnothing(algorithm)
         isnothing(ensemble_algorithm) || @warn "Argument `algorithm` is nothing: `ensemble_algorithm` keyword argument will be ignored."
         solutions = solve(problem; trajectories=trajectories, kwargs...)
