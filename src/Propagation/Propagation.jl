@@ -1,8 +1,9 @@
 module Propagation
 
 export Trajectory, ODEProblem, propagate
+export Manifold, EnsembleProblem
 export initialstate, initialepoch, solution
-export manifold_perturbation, isperiodic, halo
+export isperiodic, halo
 export manifold, perturb
 export stable_eigenvector, unstable_eigenvector
 
@@ -17,7 +18,9 @@ import Roots: find_zero
 using Unitful
 using Requires
 using AstroTime
+using Distributed
 using StaticArrays
+using LinearAlgebra
 using DocStringExtensions
 using AstrodynamicalModels
 using DifferentialEquations
@@ -38,6 +41,7 @@ using DifferentialEquations
 include("Trajectories.jl")
 include("Propagators.jl")
 include("Halos.jl")
+include("Manifolds.jl")
 
 function __init__() 
     @require DataFrames="a93c6f00-e57d-5684-b7b6-d8193f3e46c0" begin

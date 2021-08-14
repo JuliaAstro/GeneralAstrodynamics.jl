@@ -17,6 +17,7 @@ module Calculations
 export Circular, Elliptical, Parabolic, Hyperbolic
 export conic, keplerian, cartesian
 export perifocal, semimajor_axis
+export kepler, lambert, lambert_universal, lambert_lancaster_blanchard
 export specific_angular_momentum_vector, specific_angular_momentum
 export specific_energy, C3, v_infinity, specific_potential_energy
 export eccentricity_vector, eccentricity, semi_parameter
@@ -58,6 +59,8 @@ MassParameter
     
 include(joinpath("R2BP",  "Conics.jl"))
 include(joinpath("R2BP",  "R2BPCalculations.jl"))
+include(joinpath("R2BP",  "Kepler.jl"))
+include(joinpath("R2BP",  "Lambert.jl"))
 include(joinpath("CR3BP", "CR3BPCalculations.jl"))
 
 end # module

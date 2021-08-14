@@ -153,38 +153,6 @@ function halo(sys::CR3BPParameters, epoch=TAIEpoch(now()); Az=0.0, kwargs...)
 end
 
 """
-Calculates the eigenvector associated with the __stable manifold__
-of a Monodromy matrix.
-"""
-function stable_eigenvector(monodromy::AbstractMatrix; verify=true)
-    evals, evecs = eigen(monodromy)
-    evals = filter(isreal, evals) .|> real
-    evecs = filter(x->!isempty(x), map(vec->filter(x->all(isreal.(vec)), vec), eachcol(evecs))) .|> real
-
-    imin = findmin(evals)[2]
-    imax = findmax(evals)[2]
-
-    !verify || @assert (evals[imin] * evals[imax]) ≈ one(eltype(evals)) "Min and max eigenvalue should be multiplicative inverses. Invalid Monodromy matrix. Product equals $(evals[imin] * evals[imax]), not $(one(eltype(evals)))."
-    return evecs[imin]
-end
-
-"""
-Calculates the eigenvector associated with the __unstable manifold__
-of a Monodromy matrix.
-"""
-function unstable_eigenvector(monodromy::AbstractMatrix; verify=true)
-    evals, evecs = eigen(monodromy)
-    evals = filter(isreal, evals) .|> real
-    evecs = filter(x->!isempty(x), map(vec->filter(x->all(isreal.(vec)), vec), eachcol(evecs))) .|> real
-
-    imin = findmin(evals)[2]
-    imax = findmax(evals)[2]
-
-    !verify || @assert (evals[imin] * evals[imax]) ≈ one(eltype(evals)) "Min and max eigenvalue should be multiplicative inverses. Invalid Monodromy matrix. Product equals $(evals[imin] * evals[imax]), not $(one(eltype(evals)))."
-    return evecs[imax]
-end
-
-"""
 Given a __periodic__ `CircularRestrictedThreeBodyOrbit`,
 returns a nearby `CircularRestrictedThreeBodyOrbit` on the 
 __stable manifold__ of the initial state.

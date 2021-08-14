@@ -131,7 +131,12 @@ CartesianStateWithSTM(data; lengthunit=u"km", timeunit=u"s", angularunit=u"°") 
 """
 Returns a `CartesianStateWithSTM`, given a `CartesianState`.
 """
-CartesianStateWithSTM(cart::CartesianState, stm=Matrix{eltype(cart)}(I(6))) = CartesianStateWithSTM{eltype(cart), lengthunit(cart), timeunit(cart), angularunit(cart)}(cart..., stm...)
+CartesianStateWithSTM(cart::CartesianState, stm=Matrix{eltype(cart)}(I(6))) = CartesianStateWithSTM{eltype(cart), lengthunit(cart), timeunit(cart), angularunit(cart)}(MVector{42}(cart..., stm...))
+
+"""
+Returns a `CartesianState`, given a `CartesianStateWithSTM`.
+"""
+CartesianState(cart::CartesianStateWithSTM) = CartesianState(cart[1:6]; lengthunit=lengthunit(cart), timeunit=timeunit(cart), angularunit=angularunit(cart))
 
 """
 All Cartesian state!
@@ -323,11 +328,11 @@ end
 Base.show(io::IO, ::MIME"text/plain", state::KeplerianState; showfloats=true, space="") = show(io, state; showfloats=showfloats, space=space)
 
 """
-Returns `true` if the `StateVector` has `lengthunit` and `timeunit`
+Returns `true` if the `AbstractState` has `lengthunit` and `timeunit`
 parameters of some type `T <: AbstractQuantity`. This is
 intended to be used for normalizing `CartesianState` vectors.
 """
-isnormalized(state::StateVector) = lengthunit(state) isa Unitful.AbstractQuantity && timeunit(state) isa Unitful.AbstractQuantity
+isnormalized(state::AbstractState) = lengthunit(state) isa Unitful.AbstractQuantity && timeunit(state) isa Unitful.AbstractQuantity
 
 """
 Converts types and units for a `CartesianState`.

@@ -7,15 +7,15 @@ An alias for some abstract `ODESolution`
 with `States` state vector and parameter 
 vector types.
 """
-const AbstractOrbitalODESolution = SciMLBase.AbstractODESolution{T,N,<:AbstractVector{U} where U<:States.AbstractState} where {T,N}
+const AbstractOrbitalODESolution = SciMLBase.AbstractODESolution{T,N,<:AbstractVector{U}} where {T,N,U<:States.AbstractState}
 
 """
 An wrapper for a `SciMLBase.ODESolution` with a `GeneralAstrodynamics.States.AbstractState` 
 state vector type. This represents an object's `Trajectory` in space!
 """
-struct Trajectory{FR, E, S<:AbstractOrbitalODESolution}
+struct Trajectory{FR, S, P, E, O<:AbstractOrbitalODESolution}
     epoch::E
-    solution::S
+    solution::O
 end
 
 """

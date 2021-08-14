@@ -42,5 +42,5 @@ function propagate(orbit::Orbit, Δt::Number; algorithm=nothing, kwargs...)
         solution =  solve(problem, algorithm; options...)
     end
 
-    return Trajectory{frame(orbit), typeof(epoch(orbit)), typeof(solution)}(epoch(orbit), solution)
+    return Trajectory{frame(orbit), typeof(solution.prob.u0), typeof(solution.prob.p), typeof(epoch(orbit)), typeof(solution)}(epoch(orbit), solution)
 end
