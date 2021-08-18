@@ -7,6 +7,10 @@ export isperiodic, halo
 export manifold, perturb
 export stable_eigenvector, unstable_eigenvector
 
+using Logging: global_logger
+using TerminalLoggers: TerminalLogger
+global_logger(TerminalLogger())
+
 using ..States
 using ..Calculations
 using ..CoordinateFrames

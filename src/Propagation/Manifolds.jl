@@ -11,10 +11,85 @@ const AbstractOrbitalEnsembleSolution = SciMLBase.AbstractEnsembleSolution{T,N,<
 
 """
 An wrapper for a `SciMLBase.ODESolution` with a `GeneralAstrodynamics.States.AbstractState` 
-state vector type. This represents an object's `Trajectory` in space!
+state vector type. This represents a `Manifold` in space!
 """
 struct Manifold{FR, S, P, E, O<:AbstractOrbitalEnsembleSolution}
     solution::O
+end
+
+"""
+Returns the `solution` for the `Manifold`. Typically, 
+this is a `DifferentialEquations.ODESolution`.
+"""
+solution(man::Manifold) = man.solution
+
+"""
+Returns the system associated with the `Manifold`.
+"""
+States.system(man::Manifold) =  solution(man).u[1].solution.prob.p
+
+"""
+The `length` of a `Manifold`.
+"""
+Base.length(man::Manifold) = length(solution(man).u)
+
+"""
+Returns the last index of a `Manifold`.
+"""
+Base.lastindex(man::Manifold) = length(man)
+
+"""
+Calls the underlying `solution`'s `getindex` function
+to return the `CartesianState` of the `Manifold`
+at time `t` past the `initialepoch`.
+"""
+Base.getindex(man::Manifold, args...) = getindex(solution(man), args...)
+
+"""
+The `size` of a `Manifold`.
+"""
+Base.size(man::Manifold) = size(solution(man))
+
+"""
+Returns the `OrbitalFrame` of the `Manifold`.
+"""
+Base.@pure States.frame(::Manifold{FR}) where FR = FR
+
+"""
+Returns the length unit for the `Trajectory`.
+"""
+States.lengthunit(man::Manifold) = lengthunit(solution(man).u[1])
+
+"""
+Returns the time unit for the `Trajectory`.
+"""
+States.timeunit(man::Manifold) = timeunit(solution(man).u[1])
+
+"""
+Returns the angular unit for the `Trajectory`.
+"""
+States.angularunit(man::Manifold) = angularunit(solution(man).u[1])
+
+"""
+Returns the velocity unit for the `Trajectory`.
+"""
+States.velocityunit(man::Manifold) = velocityunit(solution(man).u[1])
+
+"""
+Returns the mass unit for the `Manifold`.
+"""
+States.massunit(man::Manifold) = massunit(system(man))
+
+"""
+Returns the mass parameter unit for the `Trajectory`.
+"""
+States.massparamunit(man::Manifold) = massparamunit(system(man))
+
+"""
+Show a `Trajectory`.
+"""
+function Base.show(io::IO, man::Manifold)
+    println(io, "Invariant Manifold with $(length(man.solution.u)) trajectories")
 end
 
 """

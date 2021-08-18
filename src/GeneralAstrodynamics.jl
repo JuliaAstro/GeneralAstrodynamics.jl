@@ -45,6 +45,10 @@ function __init__()
         include(joinpath("Propagation", "Propagation.jl"))
         @reexport using .Propagation
     end
+    @require Plots="91a5bcdd-55d7-5caf-9e0b-520d859cae80" begin
+        include(joinpath("Visualizations", "Visualizations.jl"))
+        @reexport using .Visualizations
+    end
 end
 
 end # module

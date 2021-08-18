@@ -34,7 +34,9 @@ solution(traj::Trajectory) = traj.solution
 A wrapper for (::ODESolution-like)(args...). Returns a state 
 of type `initialstate)` at time `t` past `epoch`.
 """
-(traj::Trajectory)(t; continuity=:left) = typeof(initialstate(traj))(traj.solution(t, Val{0}, nothing, continuity))
+(traj::Trajectory)(t::Number; continuity=:left) = typeof(initialstate(traj))(traj.solution(t, Val{0}; idxs=nothing, continuity=continuity))
+(traj::Trajectory)(t::Number; idxs=nothing, continuity=:left) = isnothing(idxs) ? typeof(initialstate(traj))(traj.solution(t, Val{0}; idxs=nothing, continuity=continuity)) : traj.solution(t, Val{0}; idxs=idxs, continuity=continuity)
+(traj::Trajectory)(t::AbstractVector{<:Number}; idxs=nothing, continuity=:left) = traj.solution(t, Val{0}; idxs=idxs, continuity=continuity)
 
 """
 Returns the initial condition associated with the `Trajectory`.
@@ -176,5 +178,5 @@ States.Orbit(traj::Trajectory, t) = Orbit(state(traj, t), system(traj), epoch(tr
 Show a `Trajectory`.
 """
 function Base.show(io::IO, traj::Trajectory)
-    println(io, "Trajectory with $(length(traj)) timesteps and eltype $(eltype(solution(traj)))\n")
+    println(io, "Trajectory with $(length(traj)) timesteps and eltype $(eltype(solution(traj)))")
 end
