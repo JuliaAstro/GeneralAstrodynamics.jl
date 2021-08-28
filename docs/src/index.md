@@ -28,7 +28,7 @@ includes the gravitational affect of _one_ of the two bodies may not be
 accurate enough to be useful. 
 
 Several models are provided by 
-[`AstrodynamicalModels.jl`](https://github.com/cadojo/AstrodynamicalModels/jl).
+[`AstrodynamicalModels.jl`](https://github.com/cadojo/AstrodynamicalModels.jl).
 Each are incorporated into this package. **This documentation will soon get a lot better!**
 
 ## Restricted Two-body Problem
