@@ -7,7 +7,7 @@ Returns the Monodromy Matrix for a Halo orbit.
 """
 function monodromy(orbit::CR3BPOrbit, T; verify=true, reltol = 1e-14, abstol = 1e-14)
     initial = Orbit(CartesianStateWithSTM(state(orbit)), system(orbit), epoch(orbit); frame=frame(orbit))
-    final   = propagate(orbit, T; reltol=reltol, abstol=abstol, save_everystep=false)[end]
+    final   = propagate(initial, T; reltol=reltol, abstol=abstol, save_everystep=false)[end]
     
     if verify && !(state(initial)[1:6] ≈ final[1:6])
         throw(ErrorException("The provided `orbit` is not periodic!"))

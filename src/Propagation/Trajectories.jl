@@ -34,8 +34,7 @@ solution(traj::Trajectory) = traj.solution
 A wrapper for (::ODESolution-like)(args...). Returns a state 
 of type `initialstate)` at time `t` past `epoch`.
 """
-(traj::Trajectory)(t::Number; continuity=:left) = typeof(initialstate(traj))(traj.solution(t, Val{0}; idxs=nothing, continuity=continuity))
-(traj::Trajectory)(t::Number; idxs=nothing, continuity=:left) = isnothing(idxs) ? typeof(initialstate(traj))(traj.solution(t, Val{0}; idxs=nothing, continuity=continuity)) : traj.solution(t, Val{0}; idxs=idxs, continuity=continuity)
+(traj::Trajectory)(t::Number; idxs=nothing, continuity=:left) = traj.solution(t, Val{0}; idxs=idxs, continuity=continuity)
 (traj::Trajectory)(t::AbstractVector{<:Number}; idxs=nothing, continuity=:left) = traj.solution(t, Val{0}; idxs=idxs, continuity=continuity)
 
 """

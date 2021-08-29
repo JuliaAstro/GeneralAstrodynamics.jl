@@ -159,7 +159,7 @@ invariant manifold about the provided Halo orbit.
 All `kwargs` arguments are passed directly to `DifferentialEquations`
 solvers.
 """
-function SciMLBase.EnsembleProblem(halo::Trajectory{FR, <:CartesianStateWithSTM} where FR, duration::Number=(solution(halo).t[end] - solution(halo).t[1]); direction=Val{:unstable}, distributed=Val{false}, Trajectory=Val{false}, verify=true, eps=1e-8, kwargs...)
+function SciMLBase.EnsembleProblem(halo::Trajectory{FR, <:CartesianStateWithSTM} where FR; duration::Number=(solution(halo).t[end] - solution(halo).t[1]), direction=Val{:unstable}, distributed=Val{false}, Trajectory=Val{false}, trajectories=length(traj), verify=true, eps=1e-8, kwargs...)
 
     if verify && halo[1][1:6] ≉ halo[end][1:6]
         throw(ArgumentError("The Halo orbit `Trajectory` provided is not periodic!"))
@@ -172,12 +172,17 @@ function SciMLBase.EnsembleProblem(halo::Trajectory{FR, <:CartesianStateWithSTM}
     T₀      = solution(halo).t[1]
     T       = solution(halo).t[end]
     dur     = duration isa Unitful.Time ? duration / timeunit(halo) : duration
+
+    if direction == Val{:stable}
+        dur *= -1
+    end
+    
     Φ       = monodromy(Orbit(halo, 0), T; verify=verify)
     V       = direction == Val{:stable} ? stable_eigenvector(Φ; verify=verify) : unstable_eigenvector(Φ; verify=verify)
     start   = CartesianState(state(halo, 0))
     nominal = ODEProblem(Orbit(start, system(halo), initialepoch(halo)), dur; kwargs...)
 
-    prob_func   = distributed == Val{true} ? DistributedManifoldIteration(halo, V, dur; verify=verify, eps=eps) : ManifoldIteration(halo, V, dur; verify=verify, eps=eps)
+    prob_func   = distributed == Val{true} ? DistributedManifoldIteration(halo, V, dur; trajectories=trajectories, verify=verify, eps=eps) : ManifoldIteration(halo, V, dur; trajectories=trajectories, verify=verify, eps=eps)
     output_func = Trajectory  == Val{true} ? ManifoldTrajectoryOutput(halo) : ManifoldSolutionOutput(halo)
 
     return EnsembleProblem(
@@ -195,36 +200,50 @@ invariant manifold about the provided Halo orbit.
 All `kwargs` arguments are passed directly to `DifferentialEquations`
 solvers.
 """
-function SciMLBase.EnsembleProblem(orbit::Orbit, period::Number, duration::Number=period; kwargs...)
+function SciMLBase.EnsembleProblem(orbit::Orbit, period::Number; duration::Number=period, trajectories=nothing, kwargs...)
     cart  = state(orbit) isa CartesianStateWithSTM ? CartesianStateWithSTM(CartesianState(state(orbit))) : CartesianStateWithSTM(state(orbit))
     start = Orbit(cart, system(orbit), epoch(orbit); frame=frame(orbit))
     T     = period isa Unitful.Time ? period / timeunit(orbit) : period
-    traj  = propagate(start, T)
-    return EnsembleProblem(traj, duration; kwargs...)
+    traj  = isnothing(trajectories) ? propagate(start, T) : propagate(start, T; saveat=T/trajectories)
+    return EnsembleProblem(traj, duration; trajectories=length(traj), kwargs...)
 end
 
 
 """
 Distributed perturbation for `EnsembleProblem` itration.
 """
-function DistributedManifoldIteration(traj::Trajectory, V::AbstractVector, dur::Real; verify=true, eps=1e-8)
+function DistributedManifoldIteration(traj::Trajectory, V::AbstractVector, dur::Real; trajectories=nothing, verify=true, eps=1e-8)
     T₀ = solution(traj).t[1]
     T  = solution(traj).t[end]
-    return @everywhere function f(prob, i, repeat)
-        t = rand() * T
-        remake(prob, u0 = perturb(state(traj, t), V; verify=verify, eps=eps), tspan = (T₀+t, T₀+t+dur))
+    if isnothing(trajectories)
+        return @everywhere @eval function f(prob, i, repeat)
+            t = rand() * T
+            remake(prob, u0 = perturb(state(traj, t), V; verify=verify, eps=eps), tspan = (T₀+t, T₀+t+dur))
+        end
+    else
+        return @everywhere @eval function g(prob, i, repeat)
+            t = traj.solution.t[i]
+            remake(prob, u0 = perturb(traj[i], V; verify=verify, eps=eps), tspan = (T₀+t, T₀+t+dur))
+        end
     end
 end
 
 """
 Non-distributed perturbation for `EnsembleProblem` itration.
 """
-function ManifoldIteration(traj::Trajectory, V::AbstractVector, dur::Real; verify=true, eps=1e-8)
+function ManifoldIteration(traj::Trajectory, V::AbstractVector, dur::Real; trajectories=nothing, verify=true, eps=1e-8)
     T₀ = solution(traj).t[1]
     T  = solution(traj).t[end]
-    return function f(prob, i, repeat)
-        t = rand() * T
-        remake(prob, u0 = perturb(state(traj, t), V; verify=verify, eps=eps), tspan = (T₀+t, T₀+t+dur))
+    if isnothing(trajectories)
+        return function f(prob, i, repeat)
+            t = rand() * T
+            remake(prob, u0 = perturb(state(traj, t), V; verify=verify, eps=eps), tspan = (T₀+t, T₀+t+dur))
+        end
+    else
+        return function g(prob, i, repeat)
+            t = traj.solution.t[i]
+            remake(prob, u0 = perturb(traj[i], V; verify=verify, eps=eps), tspan = (T₀+t, T₀+t+dur))
+        end
     end
 end
 
@@ -255,9 +274,15 @@ Perturbs a periodic orbit's `Trajectory` in the direction of the stable or
 unstable eigenvector of its `monodromy` matrix to form a stable
 or unstable `manifold`.
 """
-function manifold(orbit::Orbit, period::Number, duration::Number=period; kwargs...)
+function manifold(orbit::Orbit, period::Number; duration::Number=period, trajectories=50, kwargs...)
     start = Orbit(CartesianStateWithSTM(state(orbit)), system(orbit), epoch(orbit); frame=frame(orbit))
-    return manifold(propagate(start, period), duration; kwargs...)
+    if isnothing(trajectories) 
+        traj = propagate(start, period)
+        return manifold(traj; duration=duration, trajectories=trajectories, kwargs...) 
+    else 
+        traj = propagate(start, period; saveat=period/trajectories)
+        return manifold(traj; duration=duration, trajectories=length(traj), kwargs...)
+    end
 end
 
 """
@@ -265,16 +290,16 @@ Perturbs a periodic orbit `traj` in the direction of the stable or
 unstable eigenvector of its `monodromy` matrix to form a stable
 or unstable `manifold`.
 """
-function manifold(traj::Trajectory{FR, S, P, E}, duration::Number=(solution(traj).t[end] - solution(traj).t[1]); verify=true, direction=Val{:unstable}, algorithm=nothing, ensemble_algorithm=nothing, trajectories=100, kwargs...) where {FR, S<:CartesianStateWithSTM, P, E}
-    problem  = EnsembleProblem(traj, duration; Trajectory=Val{true}, direction=direction, verify=verify)
+function manifold(traj::Trajectory{FR, S, P, E}; duration::Number=(solution(traj).t[end] - solution(traj).t[1]), eps=1e-8, verify=true, direction=Val{:unstable}, algorithm=nothing, ensemble_algorithm=nothing, trajectories=length(traj), reltol=1e-14, abstol=1e-14, kwargs...) where {FR, S<:CartesianStateWithSTM, P, E}
+    problem  = EnsembleProblem(traj; duration=duration, Trajectory=Val{true}, trajectories=trajectories, direction=direction, verify=verify, eps=eps)
     if isnothing(algorithm)
         isnothing(ensemble_algorithm) || @warn "Argument `algorithm` is nothing: `ensemble_algorithm` keyword argument will be ignored."
-        solutions = solve(problem; trajectories=trajectories, kwargs...)
+        solutions = solve(problem; trajectories=trajectories, reltol=reltol, abstol=abstol, kwargs...)
     else
         if isnothing(ensemble_algorithm)
-            solutions = solve(problem, algorithm; trajectories=trajectories, kwargs...)
+            solutions = solve(problem, algorithm; trajectories=trajectories, reltol=reltol, abstol=abstol, kwargs...)
         else
-            solutions = solve(problem, algorithm, ensemble_algorithm; trajectories=trajectories, kwargs...)
+            solutions = solve(problem, algorithm, ensemble_algorithm; trajectories=trajectories, reltol=reltol, abstol=abstol, kwargs...)
         end
     end
 

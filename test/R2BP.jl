@@ -7,38 +7,39 @@ using LinearAlgebra, Unitful, GeneralAstrodynamics, Test
 
 @testset verbose=false "R2BP Determination" begin
     
-    @testset "Unitful" begin
-        rᵢ = [0.0, 11681.0, 0.0] * u"km"
-        vᵢ = [5.134, 4.226, 2.787] * u"km/s"
-        corbit = CartesianOrbit(rᵢ, vᵢ, Earth, 0.0u"s")
+    rᵢ = [0.0, 11681.0, 0.0] * u"km"
+    vᵢ = [5.134, 4.226, 2.787] * u"km/s"
+    corbit = Orbit(CartesianState(rᵢ, vᵢ), Earth)
 
-        @test all(
-            keplerian(corbit) .≈ (
-                0.723452708202361, 
-                24509.265399338536u"km", 
-                151.50460766373865u"°", 
-                90.0u"°", 
-                270.0034742609256u"°", 
-                89.99652573907436u"°"
-            )
-        )
-        
-        @test CartesianOrbit(KeplerianOrbit(corbit)) ≈ corbit
-
-        korbit = KeplerianOrbit(
+    @test all(
+        keplerian(corbit) .≈ (
             0.723452708202361, 
             24509.265399338536u"km", 
             151.50460766373865u"°", 
             90.0u"°", 
             270.0034742609256u"°", 
-            89.99652573907436u"°",
-            Earth, 
-            0.0u"s"
+            89.99652573907436u"°"
         )
+    )
+    
+    @test CartesianState(cartesian(KeplerianState(keplerian(corbit)...), massparameter(Earth))...) ≈ state(corbit)
 
-        @test KeplerianOrbit(CartesianOrbit(korbit)) ≈ KeplerianOrbit(corbit)
+    korbit = Orbit(
+        KeplerianState(
+            0.723452708202361, 
+            24509.265399338536u"km", 
+            151.50460766373865u"°", 
+            90.0u"°", 
+            270.0034742609256u"°", 
+            89.99652573907436u"°"
+        ),
+        Earth 
+    )
 
-    end
+    @test all(
+        upreferred.(statevector(KeplerianState(keplerian(cartesian(korbit)..., massparameter(Earth))...))) .≈ 
+        upreferred.(statevector(KeplerianState(keplerian(corbit)...)))
+    )
 
 end
 
@@ -48,9 +49,9 @@ end
         
         rᵢ = [0.0, 11681.0, 0.0] * u"km"
         vᵢ = [5.134, 4.226, 2.787] * u"km/s"
-        corbit = CartesianOrbit(rᵢ, vᵢ, Earth, 0.0u"s")
+        corbit = Orbit(CartesianState(rᵢ, vᵢ), Earth)
 
-        @test kepler(corbit) ≈ corbit
+        @test all(upreferred.(statevector(state(kepler(corbit)))) .≈ upreferred.(statevector(state(corbit))))
 
     end
 
@@ -62,15 +63,15 @@ end
         
         rᵢ = [0.0, 11681.0, 0.0]u"km"
         vᵢ = [5.134, 4.226, 2.787]u"km/s"
-        initial = CartesianOrbit(rᵢ, vᵢ, Earth, 0.0u"s")
+        initial = Orbit(CartesianState(rᵢ, vᵢ), Earth)
     
         Δt = 1000u"s"
         final = kepler(initial, Δt; tol=1e-12)
     
-        v₁, v₂ = lambert_universal(position_vector(initial), position_vector(final), mass_parameter(Earth), Δt; trajectory=:short, tolerance=1e-6, max_iter=1000)
+        v₁, v₂ = lambert_universal(position(initial), position(final), massparameter(Earth), Δt; trajectory=:short, tolerance=1e-6, max_iter=1000)
 
-        @test all(v₁ .≈ velocity_vector(initial))
-        @test all(v₂ .≈ velocity_vector(final))
+        @test all(v₁ .≈ velocity(initial))
+        @test all(v₂ .≈ velocity(final))
 
     end
 
@@ -78,16 +79,16 @@ end
         
         rᵢ = [0.0, 11681.0, 0.0]u"km"
         vᵢ = [5.134, 4.226, 2.787]u"km/s"
-        initial = CartesianOrbit(rᵢ, vᵢ, Earth, 0.0u"s")
+        initial = Orbit(CartesianState(rᵢ, vᵢ), Earth)
     
         Δt = 1000u"s"
         final = kepler(initial, Δt; tol=1e-12)
     
         m = 0
-        v₁, v₂ = lambert(position_vector(initial), position_vector(final), Δt, m, mass_parameter(Earth))
+        v₁, v₂ = lambert(position(initial), position(final), Δt, m, massparameter(Earth))
 
-        @test_skip all(v₁ .≈ velocity_vector(initial))
-        @test_skip all(v₂ .≈ velocity_vector(final))
+        @test_skip all(v₁ .≈ velocity(initial))
+        @test_skip all(v₂ .≈ velocity(final))
 
     end
 

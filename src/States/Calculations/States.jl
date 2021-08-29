@@ -100,3 +100,9 @@ Calculations.potential_energy(orbit::CR3BPOrbit) = potential_energy(States.get_r
 distance_to_primary(orbit::CR3BPOrbit) = norm(States.get_r(state(orbit)) .- SVector(-massparameter(orbit), 0, 0)) 
 
 distance_to_secondary(orbit::CR3BPOrbit) = norm(States.get_r(state(orbit)) .- SVector(1-massparameter(orbit), 0, 0)) 
+
+function Calculations.kepler(orbit::Orbit, Δt = period(orbit); kwargs...) 
+    r, v = kepler(position(orbit), velocity(orbit), massparameter(orbit), Δt; kwargs...)
+    cart = CartesianState(r, v)
+    return Orbit(cart, system(orbit))
+end

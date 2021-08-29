@@ -59,9 +59,7 @@ function keplerian(rᵢ, vᵢ, μ)
             safe_acos((e̅ ⋅ rᵢ) / (e * norm(rᵢ))) :
             2π - safe_acos((e̅ ⋅ rᵢ) / (e * norm(rᵢ)))
 
-    return upreferred(e), upreferred(a), upreferred(i), 
-           upreferred(Ω), upreferred(ω), 
-           upreferred(ν)
+    return upreferred(e), a, i, Ω, ω, ν
 
 end
 
@@ -72,8 +70,7 @@ Algorithm taught in ENAE601.
 """
 function cartesian(e, a, i, Ω, ω, ν, μ)
     rᵢ, vᵢ = spatial(i, Ω, ω, perifocal(a, e, ν, μ)...)
-    return  upreferred.(rᵢ), 
-            upreffered.(vᵢ)
+    return  rᵢ, vᵢ
 end
 
 """

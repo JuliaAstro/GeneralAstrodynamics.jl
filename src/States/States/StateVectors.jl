@@ -82,9 +82,9 @@ Constructs a `CartesianState` from provided position and velocity vectors.
 function CartesianState(r::AbstractArray, v::AbstractArray; 
                         lengthunit=(unit(eltype(r)) isa Unitful.Length ? unit(eltype(r)) : u"km"),
                         timeunit=(unit(eltype(v)) isa Unitful.Velocity ? lengthunit / unit(eltype(v)) : u"s"),
-                        angularunit=u"°")
-    rr = (eltype(r) isa Unitful.Length ? ustrip.(lengthunit, r) : r)
-    vv = (eltype(v) isa Unitful.Velocity ? ustrip.(lengthunit / timeunit, v) : v)
+                        angularunit=u"rad")
+    rr = (eltype(r) <: Unitful.Length ? ustrip.(lengthunit, r) : r)
+    vv = (eltype(v) <: Unitful.Velocity ? ustrip.(lengthunit / timeunit, v) : v)
     F = promote_type(eltype(rr), eltype(vv))
     F isa AbstractFloat || (F = Float64)
     return CartesianState(vcat(rr,vv); lengthunit = lengthunit, timeunit = timeunit, angularunit = angularunit)
@@ -93,7 +93,7 @@ end
 """
 Constructs a `CartesianState`.
 """
-function CartesianState(statevector; lengthunit=u"km", timeunit=u"s", angularunit=u"°")
+function CartesianState(statevector; lengthunit=u"km", timeunit=u"s", angularunit=u"rad")
     F = eltype(statevector)
     F isa AbstractFloat || (F = Float64)
 
@@ -126,7 +126,7 @@ end
 """
 Outer constructor for `CartesianStateWithSTM`.
 """
-CartesianStateWithSTM(data; lengthunit=u"km", timeunit=u"s", angularunit=u"°") = CartesianStateWithSTM{eltype(data), lengthunit, timeunit, angularunit}(data)
+CartesianStateWithSTM(data; lengthunit=u"km", timeunit=u"s", angularunit=u"rad") = CartesianStateWithSTM{eltype(data), lengthunit, timeunit, angularunit}(data)
 
 """
 Returns a `CartesianStateWithSTM`, given a `CartesianState`.
@@ -196,12 +196,12 @@ get_stm(state::CartesianStateWithSTM) = MMatrix{6,6}(state[7:42])
 """
 Returns the whole state vector, without units.
 """
-statevector(state::CartesianState) = MVector{6}(get_x(state), get_y(state), get_z(state), get_ẋ(state), get_ẏ(state), get_ż(state))
+statevector(state::CartesianState) = MVector{6}(get_x(state) * lengthunit(state), get_y(state) * lengthunit(state), get_z(state) * lengthunit(state), get_ẋ(state) * velocityunit(state), get_ẏ(state) * velocityunit(state), get_ż(state) * velocityunit(state))
 
 """
 Returns the whole state vector, without units.
 """
-statevector(state::CartesianStateWithSTM) = MVector{42}(get_x(state), get_y(state), get_z(state), get_ẋ(state), get_ẏ(state), get_ż(state), get_ϕ(state)...)
+statevector(state::CartesianStateWithSTM) = MVector{42}(get_x(state) * lengthunit(state), get_y(state) * lengthunit(state), get_z(state) * lengthunit(state), get_ẋ(state) * velocityunit(state), get_ẏ(state) * velocityunit(state), get_ż(state) * velocityunit(state), get_ϕ(state)...)
 
 """
 Displays a `CartesianState`.
@@ -245,10 +245,10 @@ Data is accessible via labels, which are
 mutable struct KeplerianState{F, LU, TU, AU} <: StateVector{F, LU, TU, AU, (e=1, a=2, i=3, Ω=4, ω=5, ν=6)} 
     __rawdata::LArray{F, 1, MVector{6, F}, (e=1, a=2, i=3, Ω=4, ω=5, ν=6)}
 
-    function KeplerianState(statevector; lengthunit=u"km", timeunit=u"s", angularunit=u"°")
+    function KeplerianState(statevector; lengthunit=u"km", timeunit=u"s", angularunit=u"rad")
         F = eltype(statevector)
         F isa AbstractFloat || (F = Float64)
-
+    
         return new{F, lengthunit, timeunit, angularunit}(
             statevector
         )
@@ -259,7 +259,8 @@ end
 Constructs a `KeplerianState` from any `AbstractVector`.
 """
 KeplerianState{F, LU, TU, AU}(statevector::AbstractVector{<:Real}) where {F, LU, TU, AU} = KeplerianState(
-    convert(LArray{F, 1, MVector{6, F}, (e=1, a=2, i=3, Ω=4, ω=5, ν=6)}, statevector)
+    convert(LArray{F, 1, MVector{6, F}, (e=1, a=2, i=3, Ω=4, ω=5, ν=6)}, statevector);
+    lengthunit = LU, timeunit=TU, angularunit=AU
 )
 
 """
@@ -268,15 +269,15 @@ Constructs a `KeplerianState` from provided position and velocity vectors.
 function KeplerianState(e::Real, a, i, Ω, ω, ν; 
                         lengthunit=(a isa Unitful.Length ? unit(a) : u"km"),
                         timeunit=u"s",
-                        angularunit=(i isa DimensionlessQuantity ? unit(i) : u"°"))
+                        angularunit=(i isa DimensionlessQuantity ? unit(i) : u"rad"))
     aa = (a isa Unitful.Length ? ustrip(lengthunit, a) : a)
     ii = (i isa Unitful.DimensionlessQuantity ? ustrip(angularunit, i) : i)
     ΩΩ = (Ω isa Unitful.DimensionlessQuantity ? ustrip(angularunit, Ω) : Ω)
     ωω = (ω isa Unitful.DimensionlessQuantity ? ustrip(angularunit, ω) : ω)
     νν = (ν isa Unitful.DimensionlessQuantity ? ustrip(angularunit, ν) : ν)
     F = promote_type(typeof(e), typeof(aa), typeof(ii), typeof(ΩΩ), typeof(ωω), typeof(νν))
-    F isa AbstractFloat || (F = Float64)
-    return Keplerian{F, lengthunit, timeunit, angularunit}(@LArray(MVector{6,F}(e,a,i,Ω,ω,ν),(e=1, a=2, i=3, Ω=4, ω=5, ν=6)))
+    F <: AbstractFloat || (F = Float64)
+    return KeplerianState{F, lengthunit, timeunit, angularunit}(@LArray(MVector{6,F}(e,aa,ii,ΩΩ,ωω,νν),(e=1, a=2, i=3, Ω=4, ω=5, ν=6)))
 end
 
 """
@@ -312,7 +313,7 @@ get_ν(state::KeplerianState) = state[6]
 """
 Returns the whole state vector, without units.
 """
-statevector(state::KeplerianState) = MVector{6}(get_e(state), get_a(state), get_i(state), get_Ω(state), get_ω(state), get_ν(state))
+statevector(state::KeplerianState) = MVector{6}(get_e(state), get_a(state) * lengthunit(state), get_i(state) * angularunit(state), get_Ω(state) * angularunit(state), get_ω(state) * angularunit(state), get_ν(state) * angularunit(state))
 
 """
 Displays a `KeplerianState`.

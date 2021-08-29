@@ -40,10 +40,12 @@ include(joinpath("States", "States.jl"))
 @reexport using .CoordinateFrames
 @reexport using .States
 
+include(joinpath("Propagation", "Propagation.jl"))
+@reexport using .Propagation
 function __init__()
     @require DifferentialEquations="0c46a032-eb83-5123-abaf-570d42b7fbaa" begin
-        include(joinpath("Propagation", "Propagation.jl"))
-        @reexport using .Propagation
+        # include(joinpath("Propagation", "Propagation.jl"))
+        # @reexport using .Propagation
     end
     @require Plots="91a5bcdd-55d7-5caf-9e0b-520d859cae80" begin
         include(joinpath("Visualizations", "Visualizations.jl"))

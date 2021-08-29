@@ -7,7 +7,7 @@
 """
 Solves Kepler's Problem for `orbit` and `Δtᵢ`.
 """
-function kepler(r::AbstractVector, v::AbstractVector, μ::Real, Δt::Real = period(semimajor_axis(r,v,μ), μ); tol=1e-6, max_iter=100) 
+function kepler(r::AbstractVector, v::AbstractVector, μ::Number, Δt::Number = period(semimajor_axis(r,v,μ), μ); tol=1e-6, max_iter=100) 
 
     e, a, i, Ω, ω, ν = keplerian(r, v, μ)
     T = period(a, μ)
@@ -27,15 +27,15 @@ function kepler(r::AbstractVector, v::AbstractVector, μ::Real, Δt::Real = peri
     # TODO: Compare loop vs. recursion performance here.
     # There shouldn't be too large of a difference, since this tends
     # to converge with only a few iterations.
-    χₙ, r, ψ, C₂, C₃ = χₖ(χ₀, Δt, r, v, a, μ, tol=tol, max_iter=max_iter)
+    χₙ, rₙ, ψ, C₂, C₃ = χₖ(χ₀, Δt, r, v, a, μ, tol=tol, max_iter=max_iter)
 
     # Convert to a Orbit
     f = 1 - χₙ^2 / norm(r) * C₂
-    ḟ = √(μ) / (norm(r) * r) * χₙ * (ψ * C₃ - 1)
+    ḟ = √(μ) / (norm(r) * rₙ) * χₙ * (ψ * C₃ - 1)
     g = Δt - (χₙ^3 / √(μ)) * C₃
-    ġ = 1 - (χₙ^2 / r) * C₂
+    ġ = 1 - (χₙ^2 / rₙ) * C₂
 
-    return (f * r + g * v, ḟ * r + ġ * v)
+    return ((f * r) .+ (g * v), (ḟ * r) .+ (ġ * v))
 end
 
 

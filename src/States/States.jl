@@ -20,7 +20,7 @@ module States
 export CartesianState, CartesianStateWithSTM, KeplerianState
 export R2BPParameters, CR3BPParameters
 export Orbit, state, system, epoch, frame
-export position, velocity
+export position, velocity, statevector
 export R2BPOrbit, KeplerianR2BPOrbit, CartesianR2BPOrbit, CartesianOrbitWithSTM, CR3BPOrbit
 export lengthunit, timeunit, angularunit, velocityunit, massparamunit, name
 export Sun, Mercury, Venus, Earth, Moon, Luna, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto

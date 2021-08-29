@@ -3,13 +3,9 @@ module Propagation
 export Trajectory, ODEProblem, propagate
 export Manifold, EnsembleProblem
 export initialstate, initialepoch, solution
-export isperiodic, halo
+export isperiodic, halo, monodromy
 export manifold, perturb
 export stable_eigenvector, unstable_eigenvector
-
-using Logging: global_logger
-using TerminalLoggers: TerminalLogger
-global_logger(TerminalLogger())
 
 using ..States
 using ..Calculations
