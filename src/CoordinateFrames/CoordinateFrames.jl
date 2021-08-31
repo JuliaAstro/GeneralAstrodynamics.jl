@@ -35,7 +35,6 @@ using CoordinateTransformations
     """
     $(SIGNATURES)
     $(DOCSTRING)
-    $(METHODLIST)
     """
 
 @template (TYPES, CONSTANTS) =

@@ -40,7 +40,6 @@ import Roots: find_zero
     """
     $(SIGNATURES)
     $(DOCSTRING)
-    $(METHODLIST)
     """
 
 @template (TYPES, CONSTANTS) =

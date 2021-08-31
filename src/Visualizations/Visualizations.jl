@@ -1,9 +1,39 @@
+"""
+A module which provides visualizations 
+for `Trajectory` and `Manifold` 
+instances, as well as other 
+common astrodynamical visualizations.
+
+# Extended Help
+
+**Exports**
+
+$(EXPORTS)
+
+**Imports**
+
+$(IMPORTS)
+"""
 module Visualizations
 
 using Plots, RecipesBase
+using DifferentialEquations
 using ..Calculations
 using ..CoordinateFrames
 using ..States, ..Propagation
+using DocStringExtensions
+
+@template (FUNCTIONS, METHODS, MACROS) =
+    """
+    $(SIGNATURES)
+    $(DOCSTRING)
+    """
+
+@template (TYPES, CONSTANTS) =
+    """
+    $(TYPEDEF)
+    $(DOCSTRING)
+    """
 
 """
 Rather than supply indices, users can use `Symbol` 

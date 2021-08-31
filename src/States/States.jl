@@ -46,7 +46,6 @@ using ..Calculations
     """
     $(SIGNATURES)
     $(DOCSTRING)
-    $(METHODLIST)
     """
 
 @template (TYPES, CONSTANTS) =

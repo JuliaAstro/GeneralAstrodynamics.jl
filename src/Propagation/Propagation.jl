@@ -1,3 +1,20 @@
+"""
+A module which provides wrappers around 
+`DifferentialEquations` solvers and 
+`AstrodynamicalModels` for orbit 
+propagation, iterative Halo orbit solvers,
+and manifold calculations. 
+
+# Extended Help
+
+**Exports**
+
+$(EXPORTS)
+
+**Imports**
+
+$(IMPORTS)
+"""
 module Propagation
 
 export Trajectory, ODEProblem, propagate
@@ -29,7 +46,6 @@ using DifferentialEquations
     """
     $(SIGNATURES)
     $(DOCSTRING)
-    $(METHODLIST)
     """
 
 @template (TYPES, CONSTANTS) =
