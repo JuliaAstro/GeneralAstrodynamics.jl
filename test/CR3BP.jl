@@ -12,12 +12,10 @@ using LinearAlgebra, Unitful, UnitfulAstro, GeneralAstrodynamics, Test
         r  = [1.007988, 0.0, 0.001864]u"AU"
         v  = [0, 0, 0]u"AU/s"
 
-        orbit = CR3BPOrbit(r, v, SunEarth)
-        @test orbit isa CR3BPOrbit
+        orbit = Orbit(CartesianState(r, v), SunEarth)
 
-        orbit = normalize(orbit)
-        @test all(position_vector(orbit) .≈ [1.007988, 0.0, 0.001864])
-        @test all(velocity_vector(orbit) .≈ zeros(3))
+        @test all(orbit.state.r .≈ [1.007988, 0.0, 0.001864])
+        @test all(orbit.state.v .≈ zeros(3))
 
     end
 
@@ -27,9 +25,11 @@ using LinearAlgebra, Unitful, UnitfulAstro, GeneralAstrodynamics, Test
         v = [0, -1.049357509830343, 0]
         μ = 0.012150585609624
 
-        orbit = CR3BPOrbit(r, v, μ)
-
-        @test orbit isa NormalizedSynodicCR3BPOrbit
+        units = (; lengthunit=missing, timeunit=missing, angularunit=missing)
+        @test_broken Orbit(
+            CartesianState(r, v; units...), 
+            CR3BPParameters(μ; massunit=missing, units...)
+        ).state ≈ vcat(r,v)
 
     end
 
@@ -40,7 +40,7 @@ end
     r  = [1.007988, 0.0, 0.001864]u"AU"
     v  = [0, 0, 0]u"AU/s"
 
-    orbit = CR3BPOrbit(r, v, SunEarth) |> normalize
+    orbit = Orbit(CartesianState(r, v), SunEarth) 
 
     @test jacobi_constant(orbit) ≈ 3.000907212196274
 

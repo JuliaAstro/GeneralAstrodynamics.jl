@@ -4,16 +4,25 @@ Circular Restricted Three-body Model tests.
 module PropagationTests 
 
 using LinearAlgebra, Unitful, UnitfulAstro, GeneralAstrodynamics, Test
+using DifferentialEquations
 
 @testset verbose=false "R2BP Propagation" begin
     
-    orbit = KeplerianOrbit(0.4, 10_000, 0, 0, 0, 0, Mars, 0.0) |> CartesianOrbit
-    final = propagate(orbit; save_everystep=false)[end]
+    orbit = let planet = Mars 
+        e = 0.4
+        a = 10_000
+        i = 0
+        Ω = 0
+        ω = 0
+        ν = 0
+        state = KeplerianState(e, a, i, Ω, ω, ν)
+        state = CartesianState(cartesian(state, massparameter(planet))...)
+        Orbit(state, planet) 
+    end
 
-    @test_broken final.state ≈ orbit.state
+    traj = propagate(orbit, period(orbit); save_everystep=false)
 
-    @test all(isapprox.(position_vector(final), position_vector(orbit); atol=1e-8u"km"))
-    @test all(isapprox.(velocity_vector(final), velocity_vector(orbit); atol=1e-8u"km/s"))
+    @test traj[end] ≈ state(orbit)
 
 end
 

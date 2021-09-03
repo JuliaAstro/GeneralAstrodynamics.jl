@@ -93,7 +93,7 @@ Calculations.time_since_periapsis(orbit::R2BPOrbit) = time_since_periapsis(mean_
 
 Calculations.specific_potential_energy(orbit::CartesianR2BPOrbit) = specific_potential_energy(distance(orbit.state), massparameter(system(orbit)))
 
-Calculations.jacobi_constant(orbit::CR3BPOrbit) = jacobi_constant(States.get_r(state(orbit)), States.get_v(state(orbit)), massparameter(system(orbit)))
+Calculations.jacobi_constant(orbit::CR3BPOrbit) = Calculations.jacobi_constant(States.get_r(state(orbit)), States.get_v(state(orbit)), massparameter(system(orbit)))
 
 Calculations.potential_energy(orbit::CR3BPOrbit) = potential_energy(States.get_r(state(orbit)), massparameter(system(orbit)))
 
