@@ -106,3 +106,7 @@ function Calculations.kepler(orbit::Orbit, Δt = period(orbit); kwargs...)
     cart = CartesianState(r, v)
     return Orbit(cart, system(orbit))
 end
+
+function Calculations.zerovelocity_curves(orbit::CR3BPOrbit; kwargs...)
+    return Calculations.zerovelocity_curves(state(orbit).r, state(orbit).v, massparameter(system(orbit)); kwargs...)
+end

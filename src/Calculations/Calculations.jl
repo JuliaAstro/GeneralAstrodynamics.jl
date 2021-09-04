@@ -24,7 +24,7 @@ export eccentricity_vector, eccentricity, semi_parameter
 export distance, speed, periapsis_radius, apoapsis_radius, period
 export true_anomoly, mean_motion, time_since_periapsis
 export hohmann, SOI, SOA, normalize, redimension, analyticalhalo
-export jacobi_constant
+export jacobi_constant, zerovelocity_curves
 
 using DocStringExtensions
 using Unitful
