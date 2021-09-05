@@ -29,4 +29,47 @@ Check out `GeneralAstrodynamics` in action at JuliaCon 2021! The talk [_Going to
 
 ## Usage
 
-Check out the [Getting Started](https://cadojo.github.io/GeneralAstrodynamics.jl/dev/) documentation for code examples, and more detail about using this package. 
+Some quick examples are below!
+
+```julia
+# Construct a R2BP orbit (massless spacecraft 
+# moving due to the gravity of one planet)
+orbit = let e = 0.4, a = 10_000, i = Ω = ω = ν = 0, planet = Earth
+    orbitalstate = KeplerianState(e, a, i, Ω, ω, ν)
+    Orbit(orbitalstate, Earth)
+end
+
+# Alternatively, use a `CartesianState`
+orbit = Orbit(
+    CartesianState(randn(6)), # random state vector, [r..., v...]
+    Earth
+)
+
+# Construct a CR3BP orbit (massless spacecraft moving
+# due to the gravity of two planets, both of which
+# move in a circle about their common center of mass)
+orbit = Orbit(
+    CartesianState(randn(6)), # random state vector (again!)
+    SunEarth
+)
+
+# Propagate any orbit in time (after `using DifferentialEquations`)
+using DifferentialEquations
+trajectory = propagate(orbit, 10u"d") # unitful times are convenient here!
+
+# Constract a periodic orbit within CR3BP dynamics (Halo orbit),
+# and the orbital period `T` (also requires `DifferentialEquations`)
+orbit, T = halo(SunEarth; L=1, Az=75_000u"km")
+
+# Construct a manifold which converges to (stable), or 
+# diverges from (unstable) the Halo orbit
+superslide = manifold(orbit, T; duration=2T, eps=-1e8, direction=Val{:stable})
+
+# Plot any `Trajectory` or `Manifold` (after `using Plots`)
+using Plots
+plot(trajectory; title="R2BP Trajectory")
+plot(propagate(orbit, T); vars=:XY, label="Halo Orbit", aspect_ratio=1)
+plot(superslide; vars=:XY, title="Stable Manifold near Earth")
+```
+
+In the coming months, the [Getting Started](https://cadojo.github.io/GeneralAstrodynamics.jl/dev/) page will have code examples, and other documentation for fundamental astrodynamics concepts, and `GeneralAstrodynamics` usage. Stay tuned and/or submit pull requests!
