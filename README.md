@@ -32,6 +32,10 @@ Check out `GeneralAstrodynamics` in action at JuliaCon 2021! The talk [_Going to
 Some quick examples are below!
 
 ```julia
+# Installation
+import Pkg
+Pkg.add("GeneralAstrodynamics") # or julia> ]install GeneralAstrodynamics
+
 # Construct a R2BP orbit (massless spacecraft 
 # moving due to the gravity of one planet)
 orbit = let e = 0.4, a = 10_000, i = Ω = ω = ν = 0, planet = Earth
