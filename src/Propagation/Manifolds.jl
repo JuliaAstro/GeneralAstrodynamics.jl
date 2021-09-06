@@ -146,8 +146,8 @@ by the provided eigenvector `V`. Only available for `Trajectory` instances with
 `CartesianStateWithSTM` state types.
 """
 function perturb(traj::Trajectory{FR, S}, t, V::AbstractVector; eps=1e-8) where {FR, S<:CartesianStateWithSTM}
-    state = perturb(state(traj, t), V; eps=eps)
-    return Orbit(state, system(traj), epoch(traj,t))
+    cart = perturb(state(traj, t), V; eps=eps)
+    return Orbit(cart, system(traj), epoch(traj,t))
 end
 
 """
