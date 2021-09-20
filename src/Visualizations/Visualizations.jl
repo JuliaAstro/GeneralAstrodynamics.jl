@@ -16,6 +16,8 @@ $(IMPORTS)
 """
 module Visualizations
 
+export zerovelocityplot, zerovelocityplot!
+
 using Plots, RecipesBase
 using DifferentialEquations
 using ..Calculations
@@ -65,5 +67,6 @@ end
 
 include(joinpath("Trajectories", "Trajectories.jl"))
 include(joinpath("Manifolds", "Manifolds.jl"))
+include(joinpath("Energy", "Energy.jl"))
 
 end # module

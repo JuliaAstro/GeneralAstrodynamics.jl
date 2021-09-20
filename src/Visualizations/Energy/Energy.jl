@@ -14,8 +14,8 @@ function zerovelocityplot(orbit::CR3BPOrbit;
     curves = zerovelocity_curves(orbit; nondimensional_range = nondimensional_range)
 
     default = (; title  = "Zero Velocity Curves" * (name(system(orbit)) == (:Primary, :Secondary) ? "" : " for the $(name(system(orbit))[1])-$(name(system(orbit))[2]) System"),
-                 xlabel = "X ($(lengthunit(orbit))",
-                 ylabel = "Y ()",
+                 xlabel = "X ($(lengthunit(orbit)))",
+                 ylabel = "Y ($(lengthunit(orbit)))",
                  labels = :none,
                  formatter = :plain,
                  grid      = :on,
@@ -36,7 +36,7 @@ end
 Plot the zero velocity curves for the Synodic, normalized CR3BP
 system to the last figure.
 """
-function zerovelocityplot!(fig, orbit::CircularRestrictedThreeBodyOrbit;
+function zerovelocityplot!(fig, orbit::CR3BPOrbit;
                           nondimensional_range = range(-2; stop=2, length=1000),
                           kwargs...)
 
