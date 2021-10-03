@@ -20,5 +20,6 @@ makedocs(
 )
 
 deploydocs(
-    repo = "https://github.com/cadojo/AstrodynamicalModels.jl"
+    repo = "https://github.com/cadojo/AstrodynamicalModels.jl",
+    devbranch = "main"
 )
