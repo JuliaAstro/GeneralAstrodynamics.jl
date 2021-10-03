@@ -1,3 +1,7 @@
+[![Tests](https://github.com/cadojo/AstrodynamicalModels.jl/workflows/Tests/badge.svg)](https://github.com/cadojo/AstrodynamicalModels.jl/actions?query=workflow%3ATests)
+[![Docs](https://github.com/cadojo/AstrodynamicalModels.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/AstrodynamicalModels.jl/dev)
+
+
 # AstrodynamicalModels.jl
 _An extension of [ModelingToolkit.jl](https://github.com/SciML/ModelingToolkit.jl) which provides common astrodynamics models._
 
