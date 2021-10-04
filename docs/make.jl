@@ -20,6 +20,9 @@ makedocs(
 )
 
 deploydocs(
-    repo = "https://github.com/cadojo/AstrodynamicalModels.jl",
-    devbranch = "main"
+    target    = "build",
+    repo      = "github.com/cadojo/AstrodynamicalModels.jl.git",
+    branch    = "gh-pages",
+    devbranch = "main",
+    versions  = ["stable" => "v^", "manual", "v#.#", "v#.#.#"],
 )
