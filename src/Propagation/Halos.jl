@@ -68,7 +68,7 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
     for i ∈ 1:max_iter
 
         problem = ODEProblem(
-            AstrodynamicalModels.CR3BPWithSTMVectorField,
+            CR3BPFunction(; stm=true),
             vcat(r₀, v₀, Id...),
             (0.0, τ),
             (μ,)
@@ -80,7 +80,7 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
             sols.retcode, final[1:3], final[4:6], SMatrix{6,6}(final[7:end]...)
         end
 
-        AstrodynamicalModels.CR3BPVectorField(δu, vcat(rₛ, vₛ), (μ,), NaN)
+        CR3BPFunction()(δu, vcat(rₛ, vₛ), (μ,), NaN)
         ∂vₛ = δu[4:6]
         
         # All code in this `if, else, end` block is ported from

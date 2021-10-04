@@ -10,7 +10,7 @@ function SciMLBase.ODEProblem(orbit::R2BPOrbit, Δt::Number)
     Δt = eltype(state(orbit))(Δt)
     ts = Δt isa Unitful.Time ? (zero(ustrip(timeunit(orbit), Δt)), ustrip(timeunit(orbit), Δt)) : (zero(Δt), Δt)
     p  = system(orbit)
-    return ODEProblem(R2BPVectorField, u, ts, p)
+    return ODEProblem(R2BPFunction(), u, ts, p)
 end
 
 """
@@ -21,7 +21,7 @@ function SciMLBase.ODEProblem(orbit::CR3BPOrbit, Δt::Real)
     Δt = eltype(state(orbit))(Δt)
     ts = (zero(Δt), Δt)
     p  = system(orbit)
-    f  = u isa CartesianStateWithSTM ? CR3BPWithSTMVectorField : CR3BPVectorField
+    f  = u isa CartesianStateWithSTM ? CR3BPFunction(; stm=true) : CR3BPFunction()
     return ODEProblem(f, u, ts, p)
 end
 

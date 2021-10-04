@@ -1,7 +1,7 @@
 name = "GeneralAstrodynamics"
 uuid = "8068df5b-8501-4530-bd82-d24d3c9619db"
 authors = ["Joe Carpinelli <jdcarpinelli@gmail.com>"]
-version = "0.10.3"
+version = "0.10.4"
 
 [deps]
 ArrayInterface = "4fba245c-0d91-5ea0-9b3e-6abc04ee57a9"
@@ -30,7 +30,7 @@ UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 [compat]
 ArrayInterface = "3"
 AstroTime = "0.6, 0.7"
-AstrodynamicalModels = "0.3"
+AstrodynamicalModels = "1"
 Contour = "0.5"
 CoordinateTransformations = "0.6"
 DifferentialEquations = "6"
