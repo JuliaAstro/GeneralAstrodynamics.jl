@@ -63,8 +63,8 @@ J = calculate_jacobian(R2BP())
 Finally, let's construct a Julia function which implements these dynamics!
 
 ```@repl main
-f = ODEFunction(R2BP())
-let x = randn(6), p = [3e6], t = 0
-    f(x, p, t)
+f = R2BPFunction()
+let u = randn(6), p = [3e6], t = 0
+    f(u, p, t)
 end
 ```

@@ -51,3 +51,28 @@ systems in our solar system.
 
     return structural_simplify ? ModelingToolkit.structural_simplify(sys) : sys
 end
+
+"""
+Returns an `ODEFunction` for CR3BP dynamics. 
+Results are cached with `Memoize.jl`.
+
+# Extended Help
+
+### Usage
+
+The `stm`, `structural_simplify`, and `name` keyword arguments 
+are passed to `CR3BP`. All other keyword arguments are passed
+directly to `SciMLBase.ODEFunction`.
+
+```julia
+f = CR3BPFunction(; stm=false, jac=true)
+```
+"""
+@memoize function CR3BPFunction(; stm=false, structural_simplify=true, name=:CR3BP, kwargs...)
+    defaults = (; jac=true)
+    options  = merge(defaults, kwargs)
+    return ODEFunction(
+        CR3BP(; stm=stm, structural_simplify=structural_simplify, name=name);
+        options...
+    )
+end

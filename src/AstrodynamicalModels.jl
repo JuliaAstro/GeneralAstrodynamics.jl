@@ -17,14 +17,11 @@ $(IMPORTS)
 """
 module AstrodynamicalModels
 
-# NOTE right at the top. DO NOT CHANGE THE ORDER
-# OF THE VARIABLES IN THE MODELS BELOW. 
-# Downstream users do not have any way to 
-# specify individual states when constructing 
-# an `ODEProblem` from each `ODESystem`.
-
 # Export every model!
 export R2BP, CR3BP
+
+# Export every `ODEFunction`!
+export R2BPFunction, CR3BPFunction
 
 using Symbolics
 using StaticArrays

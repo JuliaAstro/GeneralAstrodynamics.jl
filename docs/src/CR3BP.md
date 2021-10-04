@@ -34,7 +34,7 @@ of a spacecraft within CR3BP dynamics. Let's look at the Jacobian (another
 word for "local linearization") below, evaluated at some random state.
 
 ```@repl main
-f = ODEFunction(CR3BP(); jac=true)
+f = CR3BPFunction(; jac=true)
 let x = randn(6), p = rand((0.0, 0.5)), t = 0
     f(Val{:jac}, x, p, t)
 end
