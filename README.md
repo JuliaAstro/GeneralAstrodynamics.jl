@@ -7,13 +7,14 @@ _An extension of [ModelingToolkit.jl](https://github.com/SciML/ModelingToolkit.j
 
 ## Currently Implemented
 
+Note – for all models below, you can optionally append state transition matrix dynamics.
+
 * Restricted Two-body Problem
 * Circular Restricted Three-body Problem
-* Circular Restricted Three-body Problem with local linearization
+* N-body Problem
 
 ## Soon to be Implemented
 
-* N-body Problem
 * Aspherical Restricted Two-body Problem
 
 ## Way in the Future
