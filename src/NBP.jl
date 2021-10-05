@@ -14,7 +14,7 @@ closely to many celestial bodies moving due to gravity.
 That's about right for a model in a package called
 `AstrodynamicalModels`!
 """
-@memoize function NBP(N::Number; stm=false, structural_simplify=true, name=:NBP)
+@memoize function NBP(N::Int; stm=false, structural_simplify=true, name=:NBP)
 
     N > 0 || throw(ArgumentError("`N` must be a number greater than zero!")) 
     @parameters t G m[1:N]
@@ -39,6 +39,15 @@ That's about right for a model in a package called
     eqs = vcat(poseqs, veleqs)
 
     if stm 
+        if N > 5
+            @warn """
+            You requested state transition matrix dynamics for $N bodies.
+            This will result in $(N*6 + (N*6)^2) states! That may take 
+            a long time! Consider setting `stm=false`, and using
+            `ModelingToolkit.calculate_jacobian` instead.
+            """
+        end
+
         @variables Φ[1:length(eqs),1:length(eqs)](t)
         Φ = Symbolics.scalarize(Φ)
         A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(r...,v...))
@@ -78,7 +87,7 @@ directly to `SciMLBase.ODEFunction`.
 f = NBPFunction(; stm=false, structural_simplify=true, name=:NBP, jac=true, sparse=false)
 ```
 """
-@memoize function NBPFunction(N::Number; stm=false, structural_simplify=true, name=:R2BP, kwargs...)
+@memoize function NBPFunction(N::Int; stm=false, structural_simplify=true, name=:R2BP, kwargs...)
     defaults = (; jac=true, sparse=false)
     options  = merge(defaults, kwargs)
     return ODEFunction(

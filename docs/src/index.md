@@ -92,7 +92,7 @@ print(build_function(R2BP()))
 
 #### Generate Code which Implements the Dynamics
 ```@repl main
-print(ODEFunction(R2BP()))
+print(R2BPFunction())
 ```
 
 #### Generate C/C++ and MATLAB Code
