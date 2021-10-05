@@ -14,7 +14,8 @@ makedocs(
         ],
         "Models" => [
             "R2BP" => "R2BP.md",
-            "CR3BP" => "CR3BP.md"
+            "CR3BP" => "CR3BP.md",
+            "NBP" => "NBP.md"
         ]
     ]
 )

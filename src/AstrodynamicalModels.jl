@@ -18,10 +18,10 @@ $(IMPORTS)
 module AstrodynamicalModels
 
 # Export every model!
-export R2BP, CR3BP
+export R2BP, CR3BP, NBP
 
 # Export every `ODEFunction`!
-export R2BPFunction, CR3BPFunction
+export R2BPFunction, CR3BPFunction, NBPFunction
 
 using Symbolics
 using StaticArrays
@@ -47,5 +47,6 @@ using DocStringExtensions
 
 include("R2BP.jl")
 include("CR3BP.jl")
+include("NBP.jl")
 
 end # module
