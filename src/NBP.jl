@@ -140,7 +140,7 @@ end
 @memoize function NBPFunction(N::Int; stm=false, structural_simplify=true, name=:R2BP, kwargs...)
     defaults = (; jac=false)
     options  = merge(defaults, kwargs)
-    if N ≥ 2 & stm & options.jac
+    if N ≥ 2 && stm && options.jac
         @warn """
         With state transition matrix dynamics appended to the state 
         vector, and Jacobian compuations reqeusted, your system 
