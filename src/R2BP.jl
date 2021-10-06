@@ -5,6 +5,10 @@
 """
 A `ModelingToolkit.ODESystem` for the Restricted Two-body Problem. 
 
+The order of the states follows: `[x, y, z, ẋ, ẏ, ż]`.
+
+The order of the parameters follows: `[μ]`.
+
 # Extended Help
 The Restricted Two-body Problem is a simplified dynamical model 
 describing one small body (spacecraft, etc.) and one celestial 
@@ -12,6 +16,12 @@ body. The gravity of the celestial body exhibits a force on the
 small body. This model is commonly used as a simplification to 
 descibe our solar systems' planets orbiting our sun, or a 
 spacecraft orbiting Earth. 
+
+### Usage
+
+```julia
+model = R2BP() 
+```
 """
 @memoize function R2BP(; stm=false, structural_simplify=true, name=:R2BP)
 
@@ -54,6 +64,10 @@ end
 Returns an `ODEFunction` for R2BP dynamics. 
 Results are cached with `Memoize.jl`.
 
+The order of the states follows: `[x, y, z, ẋ, ẏ, ż]`.
+
+The order of the parameters follows: `[μ]`.
+
 # Extended Help
 
 ### Usage
@@ -64,6 +78,9 @@ directly to `SciMLBase.ODEFunction`.
 
 ```julia
 f = R2BPFunction(; stm=false, structural_simplify=true, name=:R2BP, jac=true)
+let u = randn(6), p = randn(1), t = 0
+    f(u, p, t)
+end
 ```
 """
 @memoize function R2BPFunction(; stm=false, structural_simplify=true, name=:R2BP, kwargs...)

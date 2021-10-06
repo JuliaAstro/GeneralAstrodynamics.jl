@@ -14,7 +14,7 @@ In an astrodynamical context, the N-body problem assumes
 $N$ celestial bodies which move with respect to some common 
 origin. A body $i$ moves due to the cumulative gravity
 of every other body in the system. This problem is notoriously
-difficult because it cannot be solved analytically for $N>3$!
+difficult because it cannot be solved analytically for $N\geq3$!
 
 ## Examples
 
@@ -35,14 +35,14 @@ with state transition matrix dynamics appended is equivalent
 to `N*6 + (N*6)^2`.
 
 ```@repl main
-model = NBP(3; stm=true, structural_simplify=false)
+model = NBP(2; stm=true, structural_simplify=false)
 ```
 
 Like other models, we can compute the Jacobian for these dynamics.
 
 ```@repl main
 using SparseArrays
-J = sparse(calculate_jacobian(NBP(8)))
+J = sparse(calculate_jacobian(NBP(4)))
 ```
 
 Finally, let's construct a Julia function which implements these dynamics!
@@ -51,16 +51,5 @@ Finally, let's construct a Julia function which implements these dynamics!
 f = NBPFunction(2)
 let u = randn(12), m = randn(2), G = rand(), t = 0
     f(u, [G, m...], t)
-end
-```
-
-Note that if you'd like to utilize state transition dynamics, 
-or calculate the system's Jacobian,you may benefit from using 
-sparcity to describe your dynamics more efficiently.
-
-```@repl main
-f = NBPFunction(6; stm=true, jac=true, sparse=true)
-let u = randn(6*6), m = randn(20), G = rand(), t = 0
-    f(Val{:jac}, u, [G, m...], t)
 end
 ```

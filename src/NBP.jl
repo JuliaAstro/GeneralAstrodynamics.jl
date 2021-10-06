@@ -5,6 +5,20 @@
 """
 A `ModelingToolkit.ODESystem` for the Newtonian N-body Problem. 
 
+The order of the states follows: 
+`[x₁, y₁, z₁, ..., xₙ, yₙ, zₙ, ẋ₁, ẏ₁, ż₁, ..., ẋₙ, ẏₙ, żₙ]`.
+
+The order of the parameters follows:
+`[G, m₁, m₂, ..., mₙ]`.
+
+!!! warning
+    Be careful about specifying `stm=true` for systems with 
+    `N ≥ 3`! If state transition matrix dynamics are enabled,
+    you can calculate the total number of system states with
+    `N*6 + (N*6)^2`. Note that this increases exponentially as 
+    `N` grows! For `N == 6`, unless you're using parallelization,
+    your computer may run for several hours. 
+
 # Extended Help
 The N-body problem is a model which describes how `N` bodies 
 will move with respect to a common origin. This problem 
@@ -13,6 +27,13 @@ electromagentism, gravity, etc. This model applies most
 closely to many celestial bodies moving due to gravity.
 That's about right for a model in a package called
 `AstrodynamicalModels`!
+
+### Usage
+
+```julia
+# One body for ALL the planets in our solar system 😎
+model = NBP(9) 
+```
 """
 @memoize function NBP(N::Int; stm=false, structural_simplify=true, name=:NBP)
 
@@ -39,7 +60,7 @@ That's about right for a model in a package called
     eqs = vcat(poseqs, veleqs)
 
     if stm 
-        if N > 5
+        if N ≥ 3
             @warn """
             You requested state transition matrix dynamics for $N bodies.
             This will result in $(N*6 + (N*6)^2) states! That may take 
@@ -74,6 +95,32 @@ end
 """
 Returns an `ODEFunction` for NBP dynamics. 
 Results are cached with `Memoize.jl`.
+The order of states and parameters in the 
+`ODEFunction` arguments are equivalent to the 
+order of states and parameters for the system
+produced with `NBP(N)`. As a general rule, 
+the order of the states follows: `[x₁, y₁, z₁, 
+..., xₙ, yₙ, zₙ, ẋ₁, ẏ₁, ż₁, ..., ẋₙ, ẏₙ, żₙ]`.
+
+!!! note
+    Unlike `R2BP` and `CR3BP`, `jac` is set to 
+    `false` by default. The number of states for `NBP`
+    systems can be very large for relatively small 
+    numbers of bodies (`N`). Enabling `jac=true`
+    by default would cause unnecessarily long 
+    waiting times for this function to return for 
+    `N ≥ 3` or so. If `N=2` and `stm=true`, 
+    setting `jac=true` could still result in several
+    minutes of calculations, depending on the computer
+    you're using.
+
+!!! warning
+    Be careful about specifying `stm=true` for systems with 
+    `N ≥ 3`! If state transition matrix dynamics are enabled,
+    you can calculate the total number of system states with
+    `N*6 + (N*6)^2`. Note that this increases exponentially as 
+    `N` grows! For `N == 6`, unless you're using parallelization,
+    your computer may run for several hours. 
 
 # Extended Help
 
@@ -84,12 +131,23 @@ are passed to `NBP`. All other keyword arguments are passed
 directly to `SciMLBase.ODEFunction`.
 
 ```julia
-f = NBPFunction(; stm=false, structural_simplify=true, name=:NBP, jac=true, sparse=false)
+f = NBPFunction(3; stm=false, structural_simplify=true, name=:NBP, jac=false, sparse=false)
+let u = randn(3*6), p = randn(1 + 3), t = 0
+    f(u, p, t)
+end
 ```
 """
 @memoize function NBPFunction(N::Int; stm=false, structural_simplify=true, name=:R2BP, kwargs...)
-    defaults = (; jac=true, sparse=false)
+    defaults = (; jac=false)
     options  = merge(defaults, kwargs)
+    if N ≥ 2 & stm & options.jac
+        @warn """
+        With state transition matrix dynamics appended to the state 
+        vector, and Jacobian compuations reqeusted, your system 
+        will require $((((N*6) + (N*6)^2) + ((N*6) + (N*6)^2)^2)) scalar 
+        calculations! Consider setting `jac=false`, `stm=false`, or both.
+        """
+    end
     return ODEFunction(
         NBP(N; stm=stm, structural_simplify=structural_simplify, name=name);
         options...

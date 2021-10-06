@@ -5,6 +5,10 @@
 """
 A `ModelingToolkit.ODESystem` for the Circular Restricted Three-body Problem. 
 
+The order of the states follows: `[x, y, z, ẋ, ẏ, ż]`.
+
+The order of the parameters follows: `[μ]`.
+
 # Extended Help
 The Circular Restricted Three-body Problem is a simplified dynamical model 
 describing one small body (spacecraft, etc.) and two celestial 
@@ -12,6 +16,12 @@ bodies moving in a circle about their common center of mass.
 This may seem like an arbitrary simplification, but this assumption
 holds reasonably well for the Earth-Moon, Sun-Earth, and many other 
 systems in our solar system.
+
+### Usage
+
+```julia
+model = CR3BP(; stm=true) 
+```
 """
 @memoize function CR3BP(; stm=false, structural_simplify=true, name=:CR3BP)
 
@@ -56,6 +66,10 @@ end
 Returns an `ODEFunction` for CR3BP dynamics. 
 Results are cached with `Memoize.jl`.
 
+The order of the states follows: `[x, y, z, ẋ, ẏ, ż]`.
+
+The order of the parameters follows: `[μ]`.
+
 # Extended Help
 
 ### Usage
@@ -66,6 +80,9 @@ directly to `SciMLBase.ODEFunction`.
 
 ```julia
 f = CR3BPFunction(; stm=false, jac=true)
+let u = randn(6), p = randn(1), t = 0
+    f(u, p, t)
+end
 ```
 """
 @memoize function CR3BPFunction(; stm=false, structural_simplify=true, name=:CR3BP, kwargs...)
