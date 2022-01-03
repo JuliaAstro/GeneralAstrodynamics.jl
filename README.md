@@ -38,6 +38,7 @@ Pkg.add("GeneralAstrodynamics") # or julia> ]install GeneralAstrodynamics
 
 # Loading
 using GeneralAstrodynamics, Unitful
+
 # Construct a R2BP orbit (massless spacecraft 
 # moving due to the gravity of one planet)
 orbit = let e = 0.4, a = 10_000, i = Ω = ω = ν = 0, planet = Earth
