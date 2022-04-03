@@ -1,7 +1,7 @@
 name = "GeneralAstrodynamics"
 uuid = "8068df5b-8501-4530-bd82-d24d3c9619db"
 authors = ["Joe Carpinelli <jdcarpinelli@gmail.com>"]
-version = "0.10.4"
+version = "0.10.5"
 
 [deps]
 ArrayInterface = "4fba245c-0d91-5ea0-9b3e-6abc04ee57a9"
