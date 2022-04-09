@@ -7,12 +7,13 @@ wrappers.
 
 # Extended help
 
-## Exports
+## License
+$(LICENSE)
 
+## Exports
 $(EXPORTS)
 
 ## Imports
-
 $(IMPORTS)
 """
 module AstrodynamicalModels

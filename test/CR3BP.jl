@@ -12,8 +12,7 @@ module CR3BPTests
     end
 
     @testset "CR3BP Model Calculations" begin
-        model = CR3BP(; stm=false, structural_simplify=true) 
-        vectorfield = ODEFunction(model; jac=true)
+        vectorfield = CR3BPFunction()
         
         r = [0.9253021269565836, 0, 0]
         v = [0.0, 0.05852663414965813, 0.0]

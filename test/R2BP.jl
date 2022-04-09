@@ -12,8 +12,7 @@ module R2BPTests
     end
 
     @testset "R2BP Model Calculations" begin
-        model = R2BP(; stm=false, structural_simplify=true) 
-        vectorfield = ODEFunction(model; jac=true)
+        vectorfield = R2BPFunction()
     
         r = [-11e3, 0, 5e3]
         v = [0.0, 0.0, 0.0]

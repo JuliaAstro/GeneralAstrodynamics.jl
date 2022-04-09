@@ -31,7 +31,7 @@ That's about right for a model in a package called
 ### Usage
 
 ```julia
-# One body for ALL the planets in our solar system 😎
+# One model for ALL the planets in our solar system 😎
 model = NBP(9) 
 ```
 """
