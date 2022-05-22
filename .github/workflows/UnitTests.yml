@@ -1,17 +1,19 @@
-name: Tests 
+name: UnitTests
 on:
   push:
     branches:
       - main
 jobs:
   test:
-    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+    name:
+      Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{
+      github.event_name }}
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: true 
+      fail-fast: true
       matrix:
         version:
-          - '1'
+          - "1"
         os:
           - ubuntu-latest
         arch:
@@ -27,7 +29,9 @@ jobs:
           cache-name: cache-artifacts
         with:
           path: ~/.julia/artifacts
-          key: ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
+          key:
+            ${{ runner.os }}-test-${{ env.cache-name }}-${{
+            hashFiles('**/Project.toml') }}
           restore-keys: |
             ${{ runner.os }}-test-${{ env.cache-name }}-
             ${{ runner.os }}-test-
