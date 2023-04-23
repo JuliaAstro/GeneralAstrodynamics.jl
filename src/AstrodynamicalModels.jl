@@ -1,8 +1,8 @@
 """
-Provides astrodynamical models as `ModelingToolkit.ODESystems`. 
-Check out the `ModelingToolkit` docs to learn how to use these 
+Provides astrodynamical models as `ModelingToolkit.ODESystems`.
+Check out the `ModelingToolkit` docs to learn how to use these
 systems for orbit propagation with `DifferentialEquations`, or
-see `GeneralAstrodynamics` for some convenient orbit propagation 
+see `GeneralAstrodynamics` for some convenient orbit propagation
 wrappers.
 
 # Extended help
@@ -25,26 +25,23 @@ export R2BP, CR3BP, NBP
 export R2BPFunction, CR3BPFunction, NBPFunction
 
 using Symbolics
-using StaticArrays
 using LinearAlgebra
 using ModelingToolkit
 
 import Memoize: @memoize
 
 using DocStringExtensions
-@template (FUNCTIONS, METHODS, MACROS) =
-    """
-    $(SIGNATURES)
+@template (FUNCTIONS, METHODS, MACROS) = """
+                                         $(SIGNATURES)
 
-    $(DOCSTRING)
-    """
+                                         $(DOCSTRING)
+                                         """
 
-@template (TYPES, CONSTANTS) =
-    """
-    $(TYPEDEF)
+@template (TYPES, CONSTANTS) = """
+                               $(TYPEDEF)
 
-    $(DOCSTRING)
-    """
+                               $(DOCSTRING)
+                               """
 
 include("R2BP.jl")
 include("CR3BP.jl")

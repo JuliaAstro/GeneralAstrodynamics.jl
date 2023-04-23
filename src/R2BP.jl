@@ -28,8 +28,8 @@ model = R2BP()
     @parameters t μ
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
     δ = Differential(t)
-    r = @SVector [x, y, z]
-    v = @SVector [ẋ, ẏ, ż]
+    r = [x, y, z]
+    v = [ẋ, ẏ, ż]
 
     eqs = vcat(
         δ.(r) .~ v,
