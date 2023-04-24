@@ -6,6 +6,7 @@ on:
     - cron: '0 16 * * *'
   issues:
     types: [opened, reopened]
+  workflow_dispatch:
 
 jobs:
   build:
