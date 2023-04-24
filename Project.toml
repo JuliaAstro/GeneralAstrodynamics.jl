@@ -10,6 +10,9 @@ Memoize = "c03570c3-d221-55d1-a50c-7939bbd78826"
 ModelingToolkit = "961ee093-0014-501f-94e3-6117800e7a78"
 Symbolics = "0c5d862f-8b57-4792-8d23-62f2024744c7"
 
+[compat]
+Memoize = "0.4"
+
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
