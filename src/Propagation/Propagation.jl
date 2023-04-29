@@ -1,9 +1,9 @@
 """
-A module which provides wrappers around 
-`DifferentialEquations` solvers and 
-`AstrodynamicalModels` for orbit 
+A module which provides wrappers around
+`DifferentialEquations` solvers and
+`AstrodynamicalModels` for orbit
 propagation, iterative Halo orbit solvers,
-and manifold calculations. 
+and manifold calculations.
 
 # Extended Help
 
@@ -38,29 +38,28 @@ using AstroTime
 using Distributed
 using StaticArrays
 using LinearAlgebra
+using ModelingToolkit
 using DocStringExtensions
 using AstrodynamicalModels
 using DifferentialEquations
 
-@template (FUNCTIONS, METHODS, MACROS) =
-    """
-    $(SIGNATURES)
-    $(DOCSTRING)
-    """
+@template (FUNCTIONS, METHODS, MACROS) = """
+                                         $(SIGNATURES)
+                                         $(DOCSTRING)
+                                         """
 
-@template (TYPES, CONSTANTS) =
-    """
-    $(TYPEDEF)
-    $(DOCSTRING)
-    """
+@template (TYPES, CONSTANTS) = """
+                               $(TYPEDEF)
+                               $(DOCSTRING)
+                               """
 
 include("Trajectories.jl")
 include("Propagators.jl")
 include("Halos.jl")
 include("Manifolds.jl")
 
-function __init__() 
-    @require DataFrames="a93c6f00-e57d-5684-b7b6-d8193f3e46c0" begin
+function __init__()
+    @require DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0" begin
         DataFrames.DataFrame(traj::Trajectory) = DataFrames.DataFrame(solution(traj))
     end
 end

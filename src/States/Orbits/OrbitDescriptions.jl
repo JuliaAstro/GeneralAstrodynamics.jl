@@ -13,7 +13,7 @@ abstract type AbstractOrbit{FR, F, MU, LU, TU, AU, E, S<:AbstractState{F, LU, TU
 """
 An orbit, described by a `StateVector`, with parameters described by a `ParameterVector`.
 """
-struct Orbit{FR, F, MU, LU, TU, AU, E, S, P} <: AbstractOrbit{FR, F, MU, LU, TU, AU, E, S, P}
+mutable struct Orbit{FR, F, MU, LU, TU, AU, E, S, P} <: AbstractOrbit{FR, F, MU, LU, TU, AU, E, S, P}
     epoch::E
     state::S
     system::P
@@ -64,6 +64,14 @@ function Orbit(state::AbstractState, system::ParameterVector, epoch=TAIEpoch(now
         convert(S{F, LU, TU, AU}, state),
         convert(P{F, MU, LU, TU, AU}, system)
     )
+end
+
+"""
+Outer constructor for `Orbit`s.
+"""
+function Orbit(r::AbstractVecOrMat, v::AbstractVecOrMat, system::ParameterVector, epoch=TAIEpoch(now()); frame = defaultframe(system))
+    state = CartesianState(vcat(r..., v...))
+    return Orbit(state, system, epoch; frame=frame)
 end
 
 """
