@@ -9,12 +9,14 @@ common astrodynamics models._
 
 ## Currently Implemented
 
-Note – for all models below, you can optionally append state transition matrix
+Note – for all non-entry models below, you can optionally append state transition matrix
 dynamics.
 
 - Restricted Two-body Problem
 - Circular Restricted Three-body Problem
 - N-body Problem
+- Planar Entry
+- Attitude Kinematics & Dynamics
 
 ## Future Additions
 
