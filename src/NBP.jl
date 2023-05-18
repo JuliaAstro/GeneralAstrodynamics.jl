@@ -35,9 +35,10 @@ That's about right for a model in a package called
 model = NBP(9)
 ```
 """
-@memoize function NBP(N::Int; stm=false, name=:NBP)
+function NBP(N::Int; stm=false, name=:NBP)
 
     N > 0 || throw(ArgumentError("`N` must be a number greater than zero!"))
+    T = N * 6 + (N * 6)^2
     @parameters t G m[1:N]
     @variables (x(t))[1:N] (y(t))[1:N] (z(t))[1:N] (ẋ(t))[1:N] (ẏ(t))[1:N] (ż(t))[1:N]
     δ = Differential(t)
@@ -63,20 +64,20 @@ model = NBP(9)
         if N ≥ 3
             @warn """
             You requested state transition matrix dynamics for $N bodies.
-            This will result in $(N*6 + (N*6)^2) states! That may take
+            This will result in $(T) states! That may take
             a long time! Consider setting `stm=false`, and using
             `ModelingToolkit.calculate_jacobian` instead.
             """
         end
 
-        @variables (Φ(t))[1:length(eqs), 1:length(eqs)]
+        @variables (Φ(t))[1:6N, 1:6N] [description = "state transition matrix estimate"]
         Φ = Symbolics.scalarize(Φ)
         A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(r..., v...))
 
         LHS = map(δ, Φ)
         RHS = map(simplify, A * Φ)
 
-        eqs = vcat(eqs, [LHS[i] ~ RHS[i] for i in 1:length(LHS)])
+        eqs = vcat(eqs, [LHS[i] ~ RHS[i] for i in eachindex(LHS)])
     end
 
     if string(name) == "NBP" && stm
@@ -85,16 +86,22 @@ model = NBP(9)
         modelname = name
     end
 
-    sys = ODESystem(
-        eqs, t, stm ? vcat(r..., v..., Φ...) : vcat(r..., v...), vcat(G, m...);
-        name=modelname
-    )
-    return sys
+    if stm
+        return ODESystem(
+            eqs, t, vcat(r..., v..., Φ...), vcat(G, m...);
+            name=modelname,
+            defaults=Dict(vec(Φ .=> I(6N)))
+        )
+    else
+        return ODESystem(
+            eqs, t, vcat(r..., v...), vcat(G, m...);
+            name=modelname
+        )
+    end
 end
 
 """
 Returns an `ODEFunction` for NBP dynamics.
-Results are cached with `Memoize.jl`.
 The order of states and parameters in the
 `ODEFunction` arguments are equivalent to the
 order of states and parameters for the system
@@ -137,7 +144,7 @@ let u = randn(3*6), p = randn(1 + 3), t = 0
 end
 ```
 """
-@memoize function NBPFunction(N::Int; stm=false, name=:R2BP, kwargs...)
+function NBPFunction(N::Int; stm=false, name=:R2BP, kwargs...)
     defaults = (; jac=false)
     options = merge(defaults, kwargs)
     if N ≥ 2 && stm && options.jac

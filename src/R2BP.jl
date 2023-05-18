@@ -23,7 +23,7 @@ spacecraft orbiting Earth.
 model = R2BP()
 ```
 """
-@memoize function R2BP(; stm=false, name=:R2BP)
+function R2BP(; stm=false, name=:R2BP)
 
     @parameters t μ
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
@@ -37,7 +37,7 @@ model = R2BP()
     )
 
     if stm
-        @variables (Φ(t))[1:6, 1:6]
+        @variables (Φ(t))[1:6, 1:6] [description = "state transition matrix estimate"]
         Φ = Symbolics.scalarize(Φ)
         A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(r, v))
 
@@ -53,16 +53,21 @@ model = R2BP()
         modelname = name
     end
 
-    sys = ODESystem(
-        eqs, t, stm ? vcat(r, v, Φ...) : vcat(r, v), [μ];
-        name=modelname
-    )
-    return sys
+    if stm
+        return ODESystem(
+            eqs, t, vcat(r, v, vec(Φ)), [μ];
+            name=modelname,
+            defaults=Dict(vec(Φ .=> I(6)))
+        )
+    else
+        return ODESystem(
+            eqs, t, vcat(r, v), [μ]; name=modelname
+        )
+    end
 end
 
 """
 Returns an `ODEFunction` for R2BP dynamics.
-Results are cached with `Memoize.jl`.
 
 The order of the states follows: `[x, y, z, ẋ, ẏ, ż]`.
 
@@ -83,7 +88,7 @@ let u = randn(6), p = randn(1), t = 0
 end
 ```
 """
-@memoize function R2BPFunction(; stm=false, name=:R2BP, kwargs...)
+function R2BPFunction(; stm=false, name=:R2BP, kwargs...)
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
     return ODEFunction(

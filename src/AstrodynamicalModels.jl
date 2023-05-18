@@ -19,16 +19,14 @@ $(IMPORTS)
 module AstrodynamicalModels
 
 # Export every model!
-export R2BP, CR3BP, NBP
+export R2BP, CR3BP, NBP, PlanarEntry, Attitude
 
 # Export every `ODEFunction`!
-export R2BPFunction, CR3BPFunction, NBPFunction
+export R2BPFunction, CR3BPFunction, NBPFunction, PlanarEntryFunction, AttitudeFunction
 
 using Symbolics
 using LinearAlgebra
 using ModelingToolkit
-
-import Memoize: @memoize
 
 using DocStringExtensions
 @template (FUNCTIONS, METHODS, MACROS) = """
@@ -46,5 +44,7 @@ using DocStringExtensions
 include("R2BP.jl")
 include("CR3BP.jl")
 include("NBP.jl")
+include("Entry.jl")
+include("Attitude.jl")
 
 end # module

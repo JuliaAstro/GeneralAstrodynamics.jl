@@ -23,7 +23,7 @@ systems in our solar system.
 model = CR3BP(; stm=true)
 ```
 """
-@memoize function CR3BP(; stm=false, name=:CR3BP)
+function CR3BP(; stm=false, name=:CR3BP)
 
     @parameters t μ
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
@@ -39,14 +39,14 @@ model = CR3BP(; stm=true)
     )
 
     if stm
-        @variables (Φ(t))[1:6, 1:6]
+        @variables (Φ(t))[1:6, 1:6] [description = "state transition matrix estimate"]
         Φ = Symbolics.scalarize(Φ)
         A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(r, v))
 
         LHS = map(δ, Φ)
         RHS = map(simplify, A * Φ)
 
-        eqs = vcat(eqs, [LHS[i] ~ RHS[i] for i in 1:length(LHS)])
+        eqs = vcat(eqs, [LHS[i] ~ RHS[i] for i in eachindex(LHS)])
     end
 
     if string(name) == "CR3BP" && stm
@@ -54,12 +54,18 @@ model = CR3BP(; stm=true)
     else
         modelname = name
     end
-    sys = ODESystem(
-        eqs, t, stm ? vcat(r, v, Φ...) : vcat(r, v), [μ];
-        name=modelname
-    )
 
-    return sys
+    if stm
+        return ODESystem(
+            eqs, t, vcat(r, v, vec(Φ)), [μ];
+            name=modelname,
+            defaults=Dict(vec(Φ .=> I(6)))
+        )
+    else
+        return ODESystem(
+            eqs, t, vcat(r, v), [μ]; name=modelname
+        )
+    end
 end
 
 """
@@ -85,7 +91,7 @@ let u = randn(6), p = randn(1), t = 0
 end
 ```
 """
-@memoize function CR3BPFunction(; stm=false, name=:CR3BP, kwargs...)
+function CR3BPFunction(; stm=false, name=:CR3BP, kwargs...)
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
     return ODEFunction(
