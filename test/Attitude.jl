@@ -3,7 +3,7 @@ Tests for R2BP dynamics.
 """
 module AttitudeTests
 
-using AstrodynamicalModels, ModelingToolkit, StaticArrays, LinearAlgebra, Test
+using AstrodynamicalModels, ModelingToolkit, LinearAlgebra, Test
 
 @testset "Attitude Model Constructors" begin
     model = Attitude()
