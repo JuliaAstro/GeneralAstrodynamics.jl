@@ -7,6 +7,18 @@ _An extension of
 [ModelingToolkit.jl](https://github.com/SciML/ModelingToolkit.jl) which provides
 common astrodynamics models._
 
+## Installation
+
+Choose one of the two lines below!
+
+```julia
+Pkg.add("AstrodynamicalModels")
+```
+
+```julia
+]add AstrodynamicalModels # in Julia's REPL
+```
+
 ## Currently Implemented
 
 Note – for all non-entry models below, you can optionally append state transition matrix
