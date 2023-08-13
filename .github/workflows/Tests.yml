@@ -1,8 +1,10 @@
-name: UnitTests
+name: Tests
 on:
   push:
     branches:
       - main
+  schedule:
+    - cron: "0 0 * * 4"
 jobs:
   test:
     name:
@@ -29,12 +31,6 @@ jobs:
           cache-name: cache-artifacts
         with:
           path: ~/.julia/artifacts
-          key:
-            ${{ runner.os }}-test-${{ env.cache-name }}-${{
-            hashFiles('**/Project.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-test-${{ env.cache-name }}-
-            ${{ runner.os }}-test-
-            ${{ runner.os }}-
+          key: ${{ runner.os }}-test-${{ env.cache-name }}-${{hashFiles('**/Project.toml') }}
       - uses: julia-actions/julia-buildpkg@latest
       - uses: julia-actions/julia-runtest@latest
