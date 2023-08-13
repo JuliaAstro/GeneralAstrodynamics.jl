@@ -118,17 +118,9 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
         if abs(vₛ[1]) ≤ tolerance && abs(vₛ[3]) ≤ tolerance
             break;
         elseif τ > 5 * one(τ)
-            disable_warnings || @warn "Unreasonably large halo period, $τ, ending iterations."
-            !nan_on_fail || return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN
-            break
+            error("Unreasonably large halo period, $τ, ending iterations.")
         elseif i == max_iter
-            disable_warnings || @warn "Desired tolerance was not reached, and iterations have hit the maximum number of iterations: $max_iter."
-            !nan_on_fail || return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN
-            break
-        elseif retcode != :Success
-            !disable_warnings || @warn "Integrator returned $(string(retcode))."
-            !nan_on_fail || return [NaN, NaN, NaN], [NaN, NaN, NaN], NaN    
-            break        
+            error("Desired tolerance was not reached, and iterations have hit the maximum number of iterations: $max_iter.")
         end
     end
 

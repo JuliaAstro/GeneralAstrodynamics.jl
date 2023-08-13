@@ -96,7 +96,7 @@ end
 Calculates the eigenvector associated with the __stable manifold__
 of a Monodromy matrix.
 """
-function stable_eigenvector(monodromy::AbstractMatrix; verify=true)
+function stable_eigenvector(monodromy::AbstractMatrix; atol=1e-6)
     evals, evecs = eigen(monodromy)
     evals = filter(isreal, evals) .|> real
     evecs = filter(x->!isempty(x), map(vec->filter(x->all(isreal.(vec)), vec), eachcol(evecs))) .|> real
@@ -104,7 +104,7 @@ function stable_eigenvector(monodromy::AbstractMatrix; verify=true)
     imin = findmin(evals)[2]
     imax = findmax(evals)[2]
 
-    !verify || @assert (evals[imin] * evals[imax]) ≈ one(eltype(evals)) "Min and max eigenvalue should be multiplicative inverses. Invalid Monodromy matrix. Product equals $(evals[imin] * evals[imax]), not $(one(eltype(evals)))."
+    @assert isapprox((evals[imin] * evals[imax]), one(eltype(evals)), atol=atol) "Min and max eigenvalue should be multiplicative inverses. Invalid Monodromy matrix. Product equals $(evals[imin] * evals[imax]), not $(one(eltype(evals)))."
     return evecs[imin]
 end
 
@@ -112,7 +112,7 @@ end
 Calculates the eigenvector associated with the __unstable manifold__
 of a Monodromy matrix.
 """
-function unstable_eigenvector(monodromy::AbstractMatrix; verify=true)
+function unstable_eigenvector(monodromy::AbstractMatrix; atol=1e-6)
     evals, evecs = eigen(monodromy)
     evals = filter(isreal, evals) .|> real
     evecs = filter(x->!isempty(x), map(vec->filter(x->all(isreal.(vec)), vec), eachcol(evecs))) .|> real
@@ -120,7 +120,7 @@ function unstable_eigenvector(monodromy::AbstractMatrix; verify=true)
     imin = findmin(evals)[2]
     imax = findmax(evals)[2]
 
-    !verify || @assert (evals[imin] * evals[imax]) ≈ one(eltype(evals)) "Min and max eigenvalue should be multiplicative inverses. Invalid Monodromy matrix. Product equals $(evals[imin] * evals[imax]), not $(one(eltype(evals)))."
+    @assert isapprox((evals[imin] * evals[imax]), one(eltype(evals)), atol=atol) "Min and max eigenvalue should be multiplicative inverses. Invalid Monodromy matrix. Product equals $(evals[imin] * evals[imax]), not $(one(eltype(evals)))."
     return evecs[imax]
 end
 
@@ -128,8 +128,8 @@ end
 Perturbs a `CartesianStateWithSTM` in the direction of an 
 eigenvector `V`.
 """
-function perturb(state::CartesianStateWithSTM, V::AbstractVector; verify=true, eps = 1e-8)
-    if verify && length(V) != 6
+function perturb(state::CartesianStateWithSTM, V::AbstractVector; eps = 1e-8)
+    if length(V) != 6
         throw(ArgumentError("Perturbation vector `V` must have length 6. Vector provided has length $(length(V))"))
     end
 
@@ -159,9 +159,9 @@ invariant manifold about the provided Halo orbit.
 All `kwargs` arguments are passed directly to `DifferentialEquations`
 solvers.
 """
-function SciMLBase.EnsembleProblem(halo::Trajectory{FR, <:CartesianStateWithSTM} where FR; duration::Number=(solution(halo).t[end] - solution(halo).t[1]), direction=Val{:unstable}, distributed=Val{false}, Trajectory=Val{false}, trajectories=length(traj), verify=true, eps=1e-8, kwargs...)
+function SciMLBase.EnsembleProblem(halo::Trajectory{FR, <:CartesianStateWithSTM} where FR; duration::Number=(solution(halo).t[end] - solution(halo).t[1]), direction=Val{:unstable}, distributed=Val{false}, Trajectory=Val{false}, trajectories=length(traj), eps=1e-8, kwargs...)
 
-    if verify && halo[1][1:6] ≉ halo[end][1:6]
+    if halo[1][1:6] ≉ halo[end][1:6]
         throw(ArgumentError("The Halo orbit `Trajectory` provided is not periodic!"))
     end
 
@@ -177,12 +177,12 @@ function SciMLBase.EnsembleProblem(halo::Trajectory{FR, <:CartesianStateWithSTM}
         dur *= -1
     end
     
-    Φ       = monodromy(Orbit(halo, 0), T; verify=verify)
-    V       = direction == Val{:stable} ? stable_eigenvector(Φ; verify=verify) : unstable_eigenvector(Φ; verify=verify)
+    Φ       = monodromy(Orbit(halo, 0), T)
+    V       = direction == Val{:stable} ? stable_eigenvector(Φ) : unstable_eigenvector(Φ)
     start   = CartesianState(state(halo, 0))
     nominal = ODEProblem(Orbit(start, system(halo), initialepoch(halo)), dur; kwargs...)
 
-    prob_func   = distributed == Val{true} ? DistributedManifoldIteration(halo, V, dur; trajectories=trajectories, verify=verify, eps=eps) : ManifoldIteration(halo, V, dur; trajectories=trajectories, verify=verify, eps=eps)
+    prob_func   = distributed == Val{true} ? DistributedManifoldIteration(halo, V, dur; trajectories=trajectories, eps=eps) : ManifoldIteration(halo, V, dur; trajectories=trajectories, eps=eps)
     output_func = Trajectory  == Val{true} ? ManifoldTrajectoryOutput(halo) : ManifoldSolutionOutput(halo)
 
     return EnsembleProblem(
@@ -212,18 +212,18 @@ end
 """
 Distributed perturbation for `EnsembleProblem` itration.
 """
-function DistributedManifoldIteration(traj::Trajectory, V::AbstractVector, dur::Real; trajectories=nothing, verify=true, eps=1e-8)
+function DistributedManifoldIteration(traj::Trajectory, V::AbstractVector, dur::Real; trajectories=nothing, eps=1e-8)
     T₀ = solution(traj).t[1]
     T  = solution(traj).t[end]
     if isnothing(trajectories)
         return @everywhere @eval function f(prob, i, repeat)
             t = rand() * T
-            remake(prob, u0 = perturb(state(traj, t), V; verify=verify, eps=eps), tspan = (T₀+t, T₀+t+dur))
+            remake(prob, u0 = perturb(state(traj, t), V; eps=eps), tspan = (T₀+t, T₀+t+dur))
         end
     else
         return @everywhere @eval function g(prob, i, repeat)
             t = traj.solution.t[i]
-            remake(prob, u0 = perturb(traj[i], V; verify=verify, eps=eps), tspan = (T₀+t, T₀+t+dur))
+            remake(prob, u0 = perturb(traj[i], V; eps=eps), tspan = (T₀+t, T₀+t+dur))
         end
     end
 end
@@ -231,18 +231,18 @@ end
 """
 Non-distributed perturbation for `EnsembleProblem` itration.
 """
-function ManifoldIteration(traj::Trajectory, V::AbstractVector, dur::Real; trajectories=nothing, verify=true, eps=1e-8)
+function ManifoldIteration(traj::Trajectory, V::AbstractVector, dur::Real; trajectories=nothing, eps=1e-8)
     T₀ = solution(traj).t[1]
     T  = solution(traj).t[end]
     if isnothing(trajectories)
         return function f(prob, i, repeat)
             t = rand() * T
-            remake(prob, u0 = perturb(state(traj, t), V; verify=verify, eps=eps), tspan = (T₀+t, T₀+t+dur))
+            remake(prob, u0 = perturb(state(traj, t), V; eps=eps), tspan = (T₀+t, T₀+t+dur))
         end
     else
         return function g(prob, i, repeat)
             t = traj.solution.t[i]
-            remake(prob, u0 = perturb(traj[i], V; verify=verify, eps=eps), tspan = (T₀+t, T₀+t+dur))
+            remake(prob, u0 = perturb(traj[i], V; eps=eps), tspan = (T₀+t, T₀+t+dur))
         end
     end
 end
@@ -290,8 +290,8 @@ Perturbs a periodic orbit `traj` in the direction of the stable or
 unstable eigenvector of its `monodromy` matrix to form a stable
 or unstable `manifold`.
 """
-function manifold(traj::Trajectory{FR, S, P, E}; duration::Number=(solution(traj).t[end] - solution(traj).t[1]), eps=1e-8, verify=true, direction=Val{:unstable}, algorithm=nothing, ensemble_algorithm=nothing, trajectories=length(traj), reltol=1e-14, abstol=1e-14, kwargs...) where {FR, S<:CartesianStateWithSTM, P, E}
-    problem  = EnsembleProblem(traj; duration=duration, Trajectory=Val{true}, trajectories=trajectories, direction=direction, verify=verify, eps=eps)
+function manifold(traj::Trajectory{FR, S, P, E}; duration::Number=(solution(traj).t[end] - solution(traj).t[1]), eps=1e-8, direction=Val{:unstable}, algorithm=nothing, ensemble_algorithm=nothing, trajectories=length(traj), reltol=1e-14, abstol=1e-14, kwargs...) where {FR, S<:CartesianStateWithSTM, P, E}
+    problem  = EnsembleProblem(traj; duration=duration, Trajectory=Val{true}, trajectories=trajectories, direction=direction, eps=eps)
     if isnothing(algorithm)
         isnothing(ensemble_algorithm) || @warn "Argument `algorithm` is nothing: `ensemble_algorithm` keyword argument will be ignored."
         solutions = solve(problem; trajectories=trajectories, reltol=reltol, abstol=abstol, kwargs...)

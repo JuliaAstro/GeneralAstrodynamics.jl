@@ -39,11 +39,9 @@ end
     # CR3BP manifold
     L2Halo = halo(SunEarth; Az = 30_000u"km", L = 2)
 
-    try 
+    @test begin
         plot(manifold(L2Halo...))
-        @test true
-    catch e
-        @test false
+        true
     end
 
     # Close all plots

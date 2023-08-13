@@ -135,9 +135,52 @@ Overrides `similar` for `ParameterizedLabelledArray` instances.
 
 $__LABELLED_ARRAYS_CREDITS
 """
-function Base.similar(x::ParameterizedLabelledArray, ::Type{S}, dims::NTuple{N,Int}) where {S,N}
-    tmp = similar(x.__rawdata, S, dims)
-    return typeof(x)(tmp)
+function Base.similar(x::ParameterizedLabelledArray)
+    return typeof(x)(similar(Vector(x)))
+end
+
+"""
+$(SIGNATURES)
+
+Overrides `similar` for `ParameterizedLabelledArray` instances.
+
+$__LABELLED_ARRAYS_CREDITS
+"""
+function Base.similar(x::ParameterizedLabelledArray, ::Int) 
+    return similar(x)
+end
+
+"""
+$(SIGNATURES)
+
+Overrides `zero` for `ParameterizedLabelledArray` instances.
+
+$__LABELLED_ARRAYS_CREDITS
+"""
+function Base.zero(x::ParameterizedLabelledArray)
+    return typeof(x)(zero(x.__rawdata))
+end
+
+"""
+$(SIGNATURES)
+
+Overrides `one` for `ParameterizedLabelledArray` instances.
+
+$__LABELLED_ARRAYS_CREDITS
+"""
+function Base.one(x::ParameterizedLabelledArray)
+    return typeof(x)(one(x.__rawdata))
+end
+
+"""
+$(SIGNATURES)
+
+Overrides `similar` for `ParameterizedLabelledArray` instances.
+
+$__LABELLED_ARRAYS_CREDITS
+"""
+function Base.similar(x::ParameterizedLabelledArray, dims::NTuple{N,Int}...) where {N}
+    return similar(Vector(x), eltype(x), dims)
 end
 
 """
