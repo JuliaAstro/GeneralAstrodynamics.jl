@@ -21,8 +21,8 @@ using DocStringExtensions
 @template (FUNCTIONS, METHODS, MACROS) = """
                                          $(SIGNATURES)
 
-                                         !!! warning
-                                            This computation is valid for Circular Restricted Three Body Problem dynamics.
+                                         !!! warning "CR3BP Dynamics"
+                                             This computation is valid for Circular Restricted Three Body Problem dynamics.
 
                                          $(DOCSTRING)
                                          """

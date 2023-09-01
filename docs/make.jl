@@ -2,9 +2,15 @@ using Documenter
 using AstrodynamicalCalculations
 
 makedocs(
-    sitename="AstrodynamicalCalculations",
+    sitename="AstrodynamicalCalculations.jl",
     format=Documenter.HTML(),
-    modules=[AstrodynamicalCalculations]
+    modules=[AstrodynamicalCalculations],
+    authors = "Joey Carpinelli",
+    pages=[
+        "Getting Started" => "index.md",
+        "R2BP Equations" => "r2bp.md",
+        "CR3BP Equations" => "cr3bp.md",
+    ]
 )
 
 deploydocs(

@@ -53,8 +53,8 @@ using DocStringExtensions
 @template (FUNCTIONS, METHODS, MACROS) = """
                                          $(SIGNATURES)
 
-                                         !!! warning
-                                            This computation is valid for Restricted Two Body Problem (Keplerian) orbits.
+                                         !!! warning "R2BP Dynamics"
+                                             This computation is valid for Restricted Two Body Problem (Keplerian) orbits.
 
                                          $(DOCSTRING)
                                          """
@@ -95,8 +95,8 @@ function cartesian_to_keplerian(r, v, μ)
                                         acos(num)
 
     î = SVector{3,Int}(1, 0, 0) 
-    ĵ = SVector(0, 1, 0) 
-    k̂ = SVector(0, 0, 1)
+    ĵ = SVector{3,Int}(0, 1, 0) 
+    k̂ = SVector{3,Int}(0, 0, 1)
 
     h̅ = specific_angular_momentum_vector(r, v)
     a = semimajor_axis(norm(r), norm(v), μ)
@@ -183,6 +183,9 @@ function keplerian_to_perifocal(a, e, ν, μ)
 
 end
 
+"""
+Returns the position and velocity vectors in the Perifocal frame.
+"""
 function cartesian_to_perifocal(i, Ω, ω, r, v)
 
     # Set up Cartesian ⟶ Perifocal conversion
@@ -230,7 +233,7 @@ specific_energy(r, v, μ) = (v^2 / 2) - (μ / r)
 """
 Returns C3 value.
 """
-c3(r, v, μ) = 
+c3(r, v, μ) = v^2 - 2μ/r
 
 """
 Returns v∞.
@@ -336,37 +339,6 @@ Solves Kepler's Problem, predicting the orbit's future state geometrically.
 """
 function kepler(r::AbstractVector, v::AbstractVector, μ, Δt; atol=1e-6, maxiter=100) 
 
-
-    function χₖ(χₙ, Δt, rᵢ₀, vᵢ₀, a, μ; iter=1, atol=1e-14, maxiter=100)
-        
-        r₀ = norm(rᵢ₀)
-        ψ = χₙ^2 / a
-
-        if ψ > atol
-            C₂ = (1 - cos(√(ψ))) /  ψ
-            C₃ = (√(ψ) - sin(√(ψ))) / √(ψ^3)
-        elseif ψ < -atol
-            C₂ = (1 - cosh(√(-ψ))) / ψ
-            C₃ = (sinh(√(-ψ)) - √(-ψ)) / √((-ψ)^3)
-        else
-            C₂ = 1.0 / 2.0
-            C₃ = 1.0 / 6.0
-        end
-
-        r = χₙ^2 * C₂ + (rᵢ₀ ⋅ vᵢ₀) * χₙ / √(μ) * (1 - ψ*C₃) + r₀ * (1 - ψ * C₂)
-        χₙ₊₁ = χₙ + ((√(μ) * Δt - χₙ^3 * C₃ - (rᵢ₀ ⋅ vᵢ₀) / √(μ) * χₙ^2 * C₂ - r₀ * χₙ * (1 - ψ * C₃)) / r)
-
-        if iter > maxiter
-            @error "Failed to converge!"
-            return χₙ, r, ψ, C₂, C₃
-        elseif abs(χₙ₊₁ - χₙ) < (oneunit(χₙ) * atol)
-            return  χₙ, r, ψ, C₂, C₃
-        else
-            return χₖ(χₙ₊₁, Δt, rᵢ₀, vᵢ₀, a, μ; iter=iter+1, atol=atol, maxiter=maxiter)
-        end
-        
-    end
-
     e, a, i, Ω, ω, ν = cartesian_to_keplerian(r, v, μ)
     T = orbital_period(a, μ)
     conic_section = conic(e)
@@ -385,7 +357,7 @@ function kepler(r::AbstractVector, v::AbstractVector, μ, Δt; atol=1e-6, maxite
     # TODO: Compare loop vs. recursion performance here.
     # There shouldn't be too large of a difference, since this tends
     # to converge with only a few iterations.
-    χₙ, rₙ, ψ, C₂, C₃ = χₖ(χ₀, Δt, r, v, a, μ, atol=atol, maxiter=maxiter)
+    χₙ, rₙ, ψ, C₂, C₃ = step_kepler(χ₀, Δt, r, v, a, μ, atol=atol, maxiter=maxiter)
 
     # Convert to a Orbit
     f = 1 - χₙ^2 / norm(r) * C₂
@@ -393,9 +365,39 @@ function kepler(r::AbstractVector, v::AbstractVector, μ, Δt; atol=1e-6, maxite
     g = Δt - (χₙ^3 / √(μ)) * C₃
     ġ = 1 - (χₙ^2 / rₙ) * C₂
 
-    return ((f * r) .+ (g * v), (ḟ * r) .+ (ġ * v))
+    return f * r + g * v, ḟ * r + ġ * v
 end
 
+
+function step_kepler(χₙ, Δt, rᵢ₀, vᵢ₀, a, μ; iter=1, atol=1e-14, maxiter=100)
+        
+    r₀ = norm(rᵢ₀)
+    ψ = χₙ^2 / a
+
+    if ψ > atol
+        C₂ = (1 - cos(√(ψ))) /  ψ
+        C₃ = (√(ψ) - sin(√(ψ))) / √(ψ^3)
+    elseif ψ < -atol
+        C₂ = (1 - cosh(√(-ψ))) / ψ
+        C₃ = (sinh(√(-ψ)) - √(-ψ)) / √((-ψ)^3)
+    else
+        C₂ = 1.0 / 2.0
+        C₃ = 1.0 / 6.0
+    end
+
+    r = χₙ^2 * C₂ + (rᵢ₀ ⋅ vᵢ₀) * χₙ / √(μ) * (1 - ψ*C₃) + r₀ * (1 - ψ * C₂)
+    χₙ₊₁ = χₙ + ((√(μ) * Δt - χₙ^3 * C₃ - (rᵢ₀ ⋅ vᵢ₀) / √(μ) * χₙ^2 * C₂ - r₀ * χₙ * (1 - ψ * C₃)) / r)
+
+    if iter > maxiter
+        @error "Failed to converge!"
+        return χₙ, r, ψ, C₂, C₃
+    elseif abs(χₙ₊₁ - χₙ) < (oneunit(χₙ) * atol)
+        return  χₙ, r, ψ, C₂, C₃
+    else
+        return step_kepler(χₙ₊₁, Δt, rᵢ₀, vᵢ₀, a, μ; iter=iter+1, atol=atol, maxiter=maxiter)
+    end
+    
+end
 
 """
 Solves Lambert's problem through the use of univeral variables.
@@ -434,7 +436,7 @@ function lambert(
     Δtₙ = 2Δt
     iter = 0
 
-    while (iter < max_iter) && 
+    while (iter < maxiter) && 
           (abs(Δtₙ - Δt) > (atol * oneunit(Δt))) || (A > 0 *oneunit(A) && yₙ < 0 * oneunit(yₙ))
 
         yₙ = r₁ + r₂ + (A * (ψₙ*C₃ - 1) / √(C₂))
@@ -582,7 +584,7 @@ either expressed or implied, of this project.
 ```
 
 """
-function LancasterBlanchard(x, q, m)
+function lancaster_blanchard(x, q, m)
     
     # Validate input
     if x < -one(x)
@@ -775,8 +777,8 @@ function lambert_lancaster_blanchard(
         revolutions = 0,
         branch=:left, 
         trajectory=:short,
-        tolerance=1e-12, 
-        max_iter=25,
+        atol=1e-12, 
+        maxiter=25,
         output_extrema=Val{false})
     
     m = revolutions
@@ -838,7 +840,7 @@ function lambert_lancaster_blanchard(
     q = √(r₁ * r₂) / s * cos(δₜ/2)	
     
     # Initial values
-    T₀  = first(LancasterBlanchard(0, q, m))
+    T₀  = first(lancaster_blanchard(0, q, m))
     δT  = T₀ - T
     phr = mod(2 * atan(1 - q^2, 2 * q), 2π)
     
@@ -894,11 +896,11 @@ function lambert_lancaster_blanchard(
         ∂T = Inf
         iter = 0
         
-        while abs(∂T) > tolerance
+        while abs(∂T) > atol
             
             iter += 1
             
-            _, ∂T, ∂²T, ∂³T = LancasterBlanchard(xM, q, m)
+            _, ∂T, ∂²T, ∂³T = lancaster_blanchard(xM, q, m)
             
             xMp = xM
             xM = xM - 2 * ∂T .* ∂²T ./ (2 * ∂²T.^2 - ∂T .* ∂³T)
@@ -907,7 +909,7 @@ function lambert_lancaster_blanchard(
                 xM = (xMp + xM)/2
             end
             
-            if iter > max_iter
+            if iter > maxiter
                 @error "Unable to find solution."
                 return error_output
             end
@@ -921,7 +923,7 @@ function lambert_lancaster_blanchard(
         end
         
         # Corresponding time
-        TM = first(LancasterBlanchard(xM, q, m))
+        TM = first(lancaster_blanchard(xM, q, m))
         
         # Check that T > minimum
         if TM > T
@@ -934,7 +936,7 @@ function lambert_lancaster_blanchard(
         # Initial values
         TmTM = T - TM
         T0mTM = T₀ - TM
-        _, ∂T, ∂²T, __ = LancasterBlanchard(xM, q, m)
+        _, ∂T, ∂²T, __ = lancaster_blanchard(xM, q, m)
         
         # First estimate if m > 0
         if branch == :left
@@ -985,11 +987,11 @@ function lambert_lancaster_blanchard(
     Tₓ = Inf
     iter = 0
     
-    while abs(Tₓ) > tolerance
+    while abs(Tₓ) > atol
         
         iter += 1
         
-        Tₓ, ∂T, ∂²T, _ = LancasterBlanchard(x, q, m)
+        Tₓ, ∂T, ∂²T, _ = lancaster_blanchard(x, q, m)
         
         # Find the root of the difference between Tₓ and 
         # required time T
@@ -1003,7 +1005,7 @@ function lambert_lancaster_blanchard(
             x = (xₚ + x) / 2
         end
         
-        if iter > max_iter
+        if iter > maxiter
             @error "Unable to find solution."
             return error_output
         end

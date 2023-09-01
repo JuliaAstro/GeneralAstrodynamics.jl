@@ -17,16 +17,6 @@ module AstrodynamicalCalculations
 using Reexport
 using DocStringExtensions
 
-@template (FUNCTIONS, METHODS, MACROS) = """
-                                         $(SIGNATURES)
-                                         $(DOCSTRING)
-                                         """
-
-@template (TYPES, CONSTANTS) = """
-                               $(TYPEDEF)
-                               $(DOCSTRING)
-                               """
-
 include("R2BPCalculations.jl")
 @reexport using .R2BPCalculations
 

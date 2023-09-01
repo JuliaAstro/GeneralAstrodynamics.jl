@@ -53,7 +53,7 @@ end
         Δt = 1000
         μ = 398600.4354360959
 
-        rₙ, vₙ = kepler(r, v, Δt; atol=1e-3)
+        rₙ, vₙ = kepler(r, v, μ, Δt; atol=1e-3)
     
         v₁, v₂ = lambert(r, rₙ, μ, Δt; trajectory=:short, atol=1e-6)
 
@@ -61,15 +61,14 @@ end
 
     end
 
-    @testset "Oldenhuis" begin
+    @testset "Lancaster / Blanchard" begin
         r = [0.0, 11681.0, 0.0]
         v = [5.134, 4.226, 2.787]
         Δt = 1000
         μ = 398600.4354360959
 
-        rₙ, vₙ = kepler(r, v, Δt; atol=1e-12)
-    
-        v₁, v₂ = lambert_oldenhuis(r, rₙ, μ, Δt; trajectory=:short, atol=1e-6)
+        rₙ, vₙ = kepler(r, v, μ, Δt; atol=1e-12)
+        v₁, v₂ = R2BPCalculations.lambert_lancaster_blanchard(r, rₙ, Δt, μ; trajectory=:short, atol=1e-6)
 
         @test_broken isapprox(vcat(v, vₙ), vcat(v₁, v₂), atol=1e-3)
     end
