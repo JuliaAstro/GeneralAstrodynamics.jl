@@ -1,6 +1,6 @@
 name = "AstrodynamicalCalculations"
 uuid = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
-authors = ["Joe Carpinelli <joey@loopy.codes>"]
+authors = ["Joey Carpinelli <joey@loopy.codes>"]
 version = "0.1.0"
 
 [deps]
