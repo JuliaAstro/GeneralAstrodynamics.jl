@@ -17,6 +17,7 @@ module CR3BPCalculations
 using StaticArrays
 using LinearAlgebra
 using DocStringExtensions
+using Roots
 
 @template (
     FUNCTIONS,
@@ -32,6 +33,7 @@ using DocStringExtensions
     """
 export distance_scaling,
     time_scaling,
+    reduced_mass,
     velocity_scaling,
     nondimensional,
     redimensioned,
@@ -60,6 +62,11 @@ time_scaling(a, μ₁, μ₂) = 2π * √(a^3 / (μ₁ + μ₂))
 The velocity scale factor used to nondimensionalize CR3BP states.
 """
 velocity_scaling(a, μ₁, μ₂) = distance_scaling(a) / time_scaling(a, μ₁, μ₂)
+
+"""
+Return the reduced mass.
+"""
+reduced_mass(μ₁, μ₂) = min(μ₁, μ₂) / (μ₁ + μ₂)
 
 """
 Normalizes a CR3BP orbit in the rotating reference frame.
