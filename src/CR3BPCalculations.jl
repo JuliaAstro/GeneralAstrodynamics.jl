@@ -223,7 +223,7 @@ Returns an analytical solution for a Halo orbit about `L`.
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
-function richardson_halo(μ, L::Int, Z = 0.0, hemisphere = :northern, ϕ = 0.0; steps = 1)
+function richardson_halo(μ, L::Int; Z = 0.0, hemisphere = :northern, ϕ = 0.0, steps = 1)
     if L == 1
         point = first(lagrange_point(μ, 1))
         γ = abs(one(μ) - μ - point)
