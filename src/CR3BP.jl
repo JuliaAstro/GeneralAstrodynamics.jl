@@ -23,7 +23,7 @@ systems in our solar system.
 model = CR3BP(; stm=true)
 ```
 """
-function CR3BP(; stm=false, name=:CR3BP)
+@memoize function CR3BP(; stm=false, name=:CR3BP)
 
     @parameters t μ
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
@@ -90,7 +90,7 @@ let u = randn(6), p = randn(1), t = 0
 end
 ```
 """
-function CR3BPFunction(; stm=false, name=:CR3BP, kwargs...)
+@memoize function CR3BPFunction(; stm=false, name=:CR3BP, kwargs...)
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
     return ODEFunction{true,SciMLBase.FullSpecialize}(

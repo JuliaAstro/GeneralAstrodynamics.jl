@@ -23,7 +23,7 @@ spacecraft orbiting Earth.
 model = R2BP()
 ```
 """
-function R2BP(; stm=false, name=:R2BP)
+@memoize function R2BP(; stm=false, name=:R2BP)
 
     @parameters t μ
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
@@ -88,7 +88,7 @@ let u = randn(6), p = randn(1), t = 0
 end
 ```
 """
-function R2BPFunction(; stm=false, name=:R2BP, kwargs...)
+@memoize function R2BPFunction(; stm=false, name=:R2BP, kwargs...)
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
     return ODEFunction{true,SciMLBase.FullSpecialize}(

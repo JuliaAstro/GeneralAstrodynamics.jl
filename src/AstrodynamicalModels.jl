@@ -26,6 +26,7 @@ export R2BPFunction, CR3BPFunction, NBPFunction, PlanarEntryFunction, AttitudeFu
 
 using Symbolics
 using SciMLBase
+using Memoize
 using LinearAlgebra
 using ModelingToolkit
 

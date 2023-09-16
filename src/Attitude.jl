@@ -30,7 +30,7 @@ spherical planet.
 model = Attitude()
 ```
 """
-function Attitude(; stm=false, name=:Attitude)
+@memoize function Attitude(; stm=false, name=:Attitude)
 
     @variables t
     @variables (q(t))[1:4] [description = "scalar-last attitude quaternion"]
@@ -106,7 +106,7 @@ let u = randn(7), p = randn(15), t = NaN # time invariant
 end
 ```
 """
-function AttitudeFunction(; stm=false, name=:Attitude, kwargs...)
+@memoize function AttitudeFunction(; stm=false, name=:Attitude, kwargs...)
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
     return ODEFunction{true,SciMLBase.FullSpecialize}(

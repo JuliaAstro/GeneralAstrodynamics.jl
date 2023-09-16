@@ -35,7 +35,7 @@ That's about right for a model in a package called
 model = NBP(9)
 ```
 """
-function NBP(N::Int; stm=false, name=:NBP)
+@memoize function NBP(N::Int; stm=false, name=:NBP)
 
     N > 0 || throw(ArgumentError("`N` must be a number greater than zero!"))
     T = N * 6 + (N * 6)^2
@@ -115,7 +115,7 @@ the order of the states follows: `[x₁, y₁, z₁,
     systems can be very large for relatively small
     numbers of bodies (`N`). Enabling `jac=true`
     by default would cause unnecessarily long
-    waiting times for this function to return for
+    waiting times for this @memoize function to return for
     `N ≥ 3` or so. If `N=2` and `stm=true`,
     setting `jac=true` could still result in several
     minutes of calculations, depending on the computer
@@ -144,7 +144,7 @@ let u = randn(3*6), p = randn(1 + 3), t = 0
 end
 ```
 """
-function NBPFunction(N::Int; stm=false, name=:R2BP, kwargs...)
+@memoize function NBPFunction(N::Int; stm=false, name=:R2BP, kwargs...)
     defaults = (; jac=false)
     options = merge(defaults, kwargs)
     if N ≥ 2 && stm && options.jac

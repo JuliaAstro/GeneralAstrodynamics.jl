@@ -18,7 +18,7 @@ spherical planet.
 model = PlanarEntry()
 ```
 """
-function PlanarEntry(; name=:PlanarEntry)
+@memoize function PlanarEntry(; name=:PlanarEntry)
 
     @variables t
 
@@ -81,7 +81,7 @@ let u = randn(4), p = randn(7), t = NaN # time invariant
 end
 ```
 """
-function PlanarEntryFunction(; name=:PlanarEntry, kwargs...)
+@memoize function PlanarEntryFunction(; name=:PlanarEntry, kwargs...)
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
