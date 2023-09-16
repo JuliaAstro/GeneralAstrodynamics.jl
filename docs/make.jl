@@ -8,7 +8,7 @@ makedocs(
     authors="Joey Carpinelli",
     pages=[
         "Getting Started" => "index.md",
-        "CR3BP" => "docstrings.md"
+        "CR3BP" => "cr3bp.md"
     ]
 )
 
