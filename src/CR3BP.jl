@@ -59,7 +59,7 @@ function CR3BP(; stm=false, name=:CR3BP)
         return ODESystem(
             eqs, t, vcat(r, v, vec(Φ)), [μ];
             name=modelname,
-            defaults=Dict(vec(Φ .=> I(6)))
+            defaults=Dict(vec(Φ .=> map(Int, I(6))))
         )
     else
         return ODESystem(
@@ -70,7 +70,6 @@ end
 
 """
 Returns an `ODEFunction` for CR3BP dynamics.
-Results are cached with `Memoize.jl`.
 
 The order of the states follows: `[x, y, z, ẋ, ẏ, ż]`.
 
@@ -94,7 +93,7 @@ end
 function CR3BPFunction(; stm=false, name=:CR3BP, kwargs...)
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
-    return ODEFunction(
+    return ODEFunction{true,SciMLBase.FullSpecialize}(
         CR3BP(; stm=stm, name=name);
         options...
     )

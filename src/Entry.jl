@@ -84,7 +84,7 @@ end
 function PlanarEntryFunction(; name=:PlanarEntry, kwargs...)
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
-    return ODEFunction(
+    return ODEFunction{true,SciMLBase.FullSpecialize}(
         PlanarEntry(; name=name);
         options...
     )

@@ -109,7 +109,7 @@ end
 function AttitudeFunction(; stm=false, name=:Attitude, kwargs...)
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
-    return ODEFunction(
+    return ODEFunction{true,SciMLBase.FullSpecialize}(
         Attitude(; stm=stm, name=name);
         options...
     )

@@ -155,7 +155,7 @@ function NBPFunction(N::Int; stm=false, name=:R2BP, kwargs...)
         calculations! Consider setting `jac=false`, `stm=false`, or both.
         """
     end
-    return ODEFunction(
+    return ODEFunction{true,SciMLBase.FullSpecialize}(
         NBP(N; stm=stm, name=name);
         options...
     )

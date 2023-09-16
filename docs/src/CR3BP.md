@@ -17,14 +17,14 @@ a spacecraft moves nearby the Earth and the Sun, the Earth and the Moon, the Sun
 Jupiter, and other systems in our solar system! The equations of motion 
 are provided below.
 
-$\begin{align*}
+$\begin{aligned}
 \frac{dx(t)}{dt} =& ẋ\left( t \right) \\
 \frac{dy(t)}{dt} =& ẏ\left( t \right) \\
 \frac{dz(t)}{dt} =& ż\left( t \right) \\
 \frac{dẋ(t)}{dt} =& 2 ẏ\left( t \right) - \left( \frac{1}{\sqrt{\left( \mu + x\left( t \right) \right)^{2} + \left( y\left( t \right) \right)^{2} + \left( z\left( t \right) \right)^{2}}} \right)^{3} \left( 1 - \mu \right) \left( \mu + x\left( t \right) \right) - \left( \frac{1}{\sqrt{\left( -1 + \mu + x\left( t \right) \right)^{2} + \left( y\left( t \right) \right)^{2} + \left( z\left( t \right) \right)^{2}}} \right)^{3} \mu \left( -1 + \mu + x\left( t \right) \right) + x\left( t \right) \\
 \frac{dẏ(t)}{dt} =&  - 2 ẋ\left( t \right) - \left( \left( \frac{1}{\sqrt{\left( \mu + x\left( t \right) \right)^{2} + \left( y\left( t \right) \right)^{2} + \left( z\left( t \right) \right)^{2}}} \right)^{3} \left( 1 - \mu \right) + \left( \frac{1}{\sqrt{\left( -1 + \mu + x\left( t \right) \right)^{2} + \left( y\left( t \right) \right)^{2} + \left( z\left( t \right) \right)^{2}}} \right)^{3} \mu \right) y\left( t \right) + y\left( t \right) \\
 \frac{dż(t)}{dt} =& \left(  - \left( \frac{1}{\sqrt{\left( \mu + x\left( t \right) \right)^{2} + \left( y\left( t \right) \right)^{2} + \left( z\left( t \right) \right)^{2}}} \right)^{3} \left( 1 - \mu \right) - \left( \frac{1}{\sqrt{\left( -1 + \mu + x\left( t \right) \right)^{2} + \left( y\left( t \right) \right)^{2} + \left( z\left( t \right) \right)^{2}}} \right)^{3} \mu \right) z\left( t \right)
-\end{align*}$
+\end{aligned}$
 
 ## Examples
 
@@ -36,7 +36,7 @@ word for "local linearization") below, evaluated at some random state.
 ```@repl main
 f = CR3BPFunction(; jac=true)
 let x = randn(6), p = rand((0.0, 0.5)), t = 0
-    f(Val{:jac}, x, p, t)
+    f.jac(x, p, t)
 end
 ```
 

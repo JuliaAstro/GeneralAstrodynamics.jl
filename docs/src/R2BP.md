@@ -16,14 +16,14 @@ due to the gravity of **one** celestial body: one star, or one planet, or one
 moon, or one asteroid. The equations of motion for R2BP dynamics are shown
 below.
 
-$\begin{align*}
+$\begin{aligned}
 \frac{dx(t)}{dt} =& ẋ\left( t \right) \\
 \frac{dy(t)}{dt} =& ẏ\left( t \right) \\
 \frac{dz(t)}{dt} =& ż\left( t \right) \\
 \frac{dẋ(t)}{dt} =& \frac{ - \mu x\left( t \right)}{\left( \sqrt{x^2\left(t\right) + y^2\left(t\right) + z^2\left(t\right)} \right)^{3}} \\
 \frac{dẏ(t)}{dt} =& \frac{ - \mu y\left( t \right)}{\left( \sqrt{x^2\left(t\right) + y^2\left(t\right) + z^2\left(t\right)} \right)^{3}} \\
 \frac{dż(t)}{dt} =& \frac{ - \mu z\left( t \right)}{\left( \sqrt{x^2\left(t\right) + y^2\left(t\right) + z^2\left(t\right)} \right)^{3}}
-\end{align*}$
+\end{aligned}$
 
 ## Examples
 

@@ -91,7 +91,7 @@ end
 function R2BPFunction(; stm=false, name=:R2BP, kwargs...)
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
-    return ODEFunction(
+    return ODEFunction{true,SciMLBase.FullSpecialize}(
         R2BP(; stm=stm, name=name);
         options...
     )

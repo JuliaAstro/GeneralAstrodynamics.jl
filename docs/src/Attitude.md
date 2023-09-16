@@ -13,14 +13,16 @@ Latexify.auto_display(true)
 
 The Attitude model assumes a spacecraft with some orientation described by a
 **scalar-last** quaternion, and body rates which are small enough such that they
-appear constant for small numerical integration tolerance values (high
-tolerances).
+appear constant for small numerical integration tolerance values.
 
 !!! danger 
     You should normalize the quaternion vector at each time step using a
-    `DiscreteCallback` when simulating this model!
+    `ManifoldCallback` or `DiscreteCallback` when simulating this model!
+    Without normalizing, the solution will drift such that the quaternion
+    state vector is no longer a unit quaternion. The dynamics in this 
+    model *assume* a unit quaternion norm!
 
-$\begin{align}
+$\begin{aligned}
     \dot{q} &= \frac{1}{2} \begin{bmatrix}
         0 && \omega_3 && -\omega_2 && \omega_1 \\
         -\omega_3 && 0 && \omega_1 && \omega_2 \\
@@ -28,7 +30,7 @@ $\begin{align}
         -\omega_1 && -\omega_2 && -\omega_3 && 0
     \end{bmatrix} q \\
     \dot{\omega} &= -J^{-1} (\omega\times) J \omega + J^{-1} L + u \\
-\end{align}$
+\end{aligned}$
 
 ## Examples
 
