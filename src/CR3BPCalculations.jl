@@ -52,6 +52,7 @@ export distance_scaling,
 The length scale factor used to nondimensionalize CR3BP states.
 """
 Base.@pure distance_scaling(a) = a
+Base.@pure distance_scaling(a, μ₁, μ₂) = a
 
 """
 The time scale factor used to nondimensionalize CR3BP states.
@@ -222,12 +223,12 @@ __References:__
 """
 function analytical_halo(μ; Az = 0.00, ϕ = 0.0, steps = 1, L = 1, hemisphere = :northern)
     if L == 1
-        point = first(lagrange(μ, 1))
+        point = first(lagrange_point(μ, 1))
         γ = abs(one(μ) - μ - point)
         n = collect(1:4) .* one(μ)
         c = @. (μ + (-one(1))^n * (one(μ) - μ)γ^(n + 1)) / (γ^3 * (one(μ) - γ^(n + 1)))
     elseif L == 2
-        point = first(lagrange(μ, 2))
+        point = first(lagrange_point(μ, 2))
         γ = abs(point - one(μ) + μ)
         n = collect(1:4) .* one(μ)
         c = @. ((-one(μ))^n * μ + (-one(μ))^n * (one(μ) - μ)γ^(n + 1)) /
