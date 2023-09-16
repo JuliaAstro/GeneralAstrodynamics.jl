@@ -18,7 +18,7 @@ AstrodynamicalCalculations = "0.2"
 AstrodynamicalModels = "2"
 DocStringExtensions = "^0.9"
 ModelingToolkit = "^8.69"
-OrdinaryDiffEq = "^6.55
+OrdinaryDiffEq = "^6.55"
 Reexport = "1"
 StaticArrays = "^1.6"
 
