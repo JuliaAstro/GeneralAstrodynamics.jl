@@ -46,7 +46,7 @@ export distance_scaling,
     secondary_synodic_position,
     lagrange_point,
     zero_velocity_curves,
-    analytical_halo
+    richardson_halo
 
 """
 The length scale factor used to nondimensionalize CR3BP states.
@@ -204,24 +204,26 @@ end
 """
 Returns an analytical solution for a Halo orbit about `L`.
 
-__Arguments:__ 
+# Extended Help
+
+## Arguments 
 - `μ`: Non-dimensional mass parameter for the CR3BP system.
-- `Az`: Desired non-dimensional Z-amplitude for Halo orbit.
+- `L`: Lagrange point to orbit (L1 or L2).
+- `Z`: Desired non-dimensional Z-amplitude for Halo orbit.
+- `hemisphere`: Specifies northern or southern Halo orbit.
 - `ϕ`: Desired Halo orbit phase.
 - `steps`: Number of non-dimensional timepoints in returned state.
-- `L`: Lagrange point to orbit (L1 or L2).
-- `hemisphere`: Specifies northern or southern Halo orbit.
 
-__Outputs:__
-- Synodic position vector `r::Array{<:AbstractFloat}`
-- Synodic velocity vector `v::Array{<:Abstractfloat}`.
+## Outputs
+- Synodic position vectors `r::Array{<:AbstractFloat}`
+- Synodic velocity vectors `v::Array{<:Abstractfloat}`.
 - Halo orbit period `Τ`.
 - Throws `ArgumentError` if L is not `1` or `2`.
 
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
-function analytical_halo(μ; Az = 0.00, ϕ = 0.0, steps = 1, L = 1, hemisphere = :northern)
+function richardson_halo(μ, L::Int, Z = 0.0, hemisphere = :northern, ϕ = 0.0; steps = 1)
     if L == 1
         point = first(lagrange_point(μ, 1))
         γ = abs(one(μ) - μ - point)
@@ -278,7 +280,7 @@ function analytical_halo(μ; Az = 0.00, ϕ = 0.0, steps = 1, L = 1, hemisphere =
     l₂ = (3c[3] / 2) * (a₂₄ - 2a₂₂) + (9c[4] / 8) + 2ωₚ^2 * s₂
     Δ = ωₚ^2 - c[2]
 
-    Aᵧ = Az / γ
+    Aᵧ = Z / γ
     Aₓ = √((-l₂ * Aᵧ^2 - Δ) / l₁)
 
     ν = 1 + s₁ * Aₓ^2 + s₂ * Aᵧ^2
