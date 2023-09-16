@@ -21,18 +21,15 @@ finding periodic orbits within Circular Restricted Three Body Problem dynamics.
 ```jldoctest usage
 julia> using AstrodynamicalSolvers
 
-julia> r = [0.0, 11681.0, 0.0];     # km
+julia> μ = 0.012150584395829193
+0.012150584395829193
 
-julia> v = [5.134, 4.226, 2.787];   # km/s
+julia> u, T = halo(μ, 1) # lyapunov (planar) orbit
 
-julia> μ = 398600.4354360959;       # km³ s⁻²
+([0.8567678285004178, 0.0, 0.0, 0.0, -0.14693135696819282, 0.0], 2.7536820160579087)
 
-julia> e, a, i, Ω, ω, ν = cartesian_to_keplerian(r, v, μ) 
-(0.723452708202361, 24509.265399338536, 2.6442542356744734, 1.5707963267948966, 4.712449617676915, 1.5707356895026707)
+julia> 
 
-julia> T = orbital_period(a, μ) 
-38186.19850882009
-
-julia> rₙ, vₙ = kepler(r, v, μ, 2.5T)
-([36872.96963754877, -2574.241491333036, 20016.549742861007], [-0.3141726028666592, -1.6044679459972122, -0.17054909314167882])
+julia> u, T = halo(μ, 2; amplitude=0.005) # halo (non-planar) orbit
+([1.180859455641048, 0.0, -0.006335144846688764, 0.0, -0.15608881601817765, 0.0], 3.415202902714686)
 ```
