@@ -46,7 +46,10 @@ export distance_scaling,
     secondary_synodic_position,
     lagrange_point,
     zero_velocity_curves,
-    richardson_halo
+    richardson_halo,
+    perturb_halo,
+    convergent_direction,
+    divergent_direction
 
 """
 The length scale factor used to nondimensionalize CR3BP states.
@@ -422,15 +425,10 @@ end
 """
 Perturbs a Cartesian state along a halo orbit onto the provided direction of the provided manifold.
 """
-function perturb_halo(
-    r::AbstractVector,
-    v::AbstractVector,
-    perturbation::AbstractVector;
-    eps = 1e-8,
-)
+function perturb_halo(r::AbstractVector, v::AbstractVector, perturbation::AbstractVector;)
     @assert length(perturbation) == 6 "The provided perturbation vector $perturbation has improper length."
-    rₚ = r + eps * perturbation[begin:begin+3]
-    vₚ = v + eps * perturbation[end-3:end]
+    rₚ = r + perturbation[begin:begin+2]
+    vₚ = v + perturbation[end-2:end]
 
     return rₚ, vₚ
 end
