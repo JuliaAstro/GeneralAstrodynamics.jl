@@ -47,7 +47,7 @@ export distance_scaling,
     lagrange_point,
     zero_velocity_curves,
     richardson_halo,
-    perturb_halo,
+    perturbation,
     convergent_direction,
     divergent_direction
 
@@ -387,8 +387,8 @@ end
 """
 Calculates the eigenvector associated with the stable manifold of a Monodromy matrix.
 """
-function convergent_direction(monodromy::AbstractMatrix; atol = 1e-6)
-    evals, evecs = eigen(monodromy)
+function convergent_direction(stm::AbstractMatrix; atol = 1e-6)
+    evals, evecs = eigen(stm)
     evals = filter(isreal, evals) .|> real
     evecs =
         filter(
@@ -406,8 +406,8 @@ end
 """
 Calculates the direction associated with the unstable manifold of a Monodromy matrix.
 """
-function divergent_direction(monodromy::AbstractMatrix; atol = 1e-6)
-    evals, evecs = eigen(monodromy)
+function divergent_direction(stm::AbstractMatrix; atol = 1e-6)
+    evals, evecs = eigen(stm)
     evals = filter(isreal, evals) .|> real
     evecs =
         filter(
@@ -425,23 +425,8 @@ end
 """
 Perturbs a Cartesian state along a halo orbit onto the provided direction of the provided manifold.
 """
-function perturb_halo(r::AbstractVector, v::AbstractVector, perturbation::AbstractVector;)
-    @assert length(perturbation) == 6 "The provided perturbation vector $perturbation has improper length."
-    rₚ = r + perturbation[begin:begin+2]
-    vₚ = v + perturbation[end-2:end]
-
-    return rₚ, vₚ
-end
-
-function perturb_halo(
-    r::AbstractVector,
-    v::AbstractVector,
-    stm::AbstractMatrix,
-    direction::AbstractVector;
-    eps = 1e-8,
-)
-    perturbation = eps * normalize(stm * normalize(direction))
-    return perturb_halo(r, v, perturbation; eps = eps)
+function perturbation(monodromy::AbstractMatrix, direction::AbstractVector; eps = 1e-8)
+    return eps * normalize(stm * normalize(direction))
 end
 
 end
