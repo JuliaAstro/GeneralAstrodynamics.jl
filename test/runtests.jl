@@ -12,7 +12,7 @@ using StaticArrays
     r, v, T = richardson_halo(μ, 1)
     x, _, _ = r
     _, ẏ, _ = v
-    u, T = AstrodynamicalSolvers.CR3BPSolvers.lyapunov_corrector(x, ẏ, μ, T)
+    u, T = AstrodynamicalSolvers.CR3BPSolvers.lyapunov(x, ẏ, μ, T)
 
     @test u ≈ [0.8567678285004178, 0.0, 0.0, 0.0, -0.14693135696819282, 0.0]
     @test T ≈ 2.7536820160579087
@@ -25,7 +25,7 @@ end
     r, v, T = richardson_halo(μ, 2; Z=0.005)
     x, _, z = r
     _, ẏ, _ = v
-    u, T = AstrodynamicalSolvers.CR3BPSolvers.halo_corrector(x, z, ẏ, μ, T)
+    u, T = AstrodynamicalSolvers.CR3BPSolvers.halo(x, z, ẏ, μ, T)
 
     @test u ≈ [1.180859455641048, 0.0, -0.006335144846688764, 0.0, -0.15608881601817765, 0.0]
     @test T ≈ 3.415202902714686
