@@ -116,16 +116,18 @@ function lyapunov(x, ẏ, μ, T; reltol=1e-12, abstol=1e-12, maxiters=10)
         global fc = solution[end]
 
         if abs(fc[4]) <= abstol && abs(fc[6]) <= abstol
-            return [fc[1], 0, 0, 0, fc[5], 0], 2 * solution.t[end]
+            return (; x=x, ẏ=ẏ, T=2τ)
         end
 
         correction = planar_differential(@views(solution[end]), μ)
 
-        @debug "Differential Correction: $correction"
+        _z = z + correction.δz
+        _ẏ = ẏ + correction.δẏ
+        _τ = τ + correction.δτ
 
-        z = @views solution[1][3] + correction.δz
-        ẏ = @views solution[1][5] + correction.δẏ
-        τ = @views solution.t[end] + correction.δτ
+        z = _z
+        ẏ = _ẏ
+        τ = _τ
 
         ic = MVector{42}(x, y, z, ẋ, ẏ, ż, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1)
 
@@ -136,7 +138,7 @@ function lyapunov(x, ẏ, μ, T; reltol=1e-12, abstol=1e-12, maxiters=10)
     end
 
     if abs(fc[4]) <= abstol && abs(fc[6]) <= abstol
-        return (; x=problem.u0[1], ẏ=problem.u0[5], T=2solution.t[end])
+        return (; x=x, ẏ=ẏ, T=2τ)
     else
         error("Iterative solver failed to converge on a periodic orbit. Try another initial condition, or try relieving the provided tolerances.")
     end
@@ -178,16 +180,26 @@ function halo(x, z, ẏ, μ, T; reltol=1e-12, abstol=1e-12, maxiters=10)
         global fc = solution[end]
 
         if abs(fc[4]) <= abstol && abs(fc[6]) <= abstol
-            return [fc[1], 0, fc[3], 0, fc[5], 0], 2 * solution.t[end]
+            return (; x=x, z=z, ẏ=ẏ, T=2τ)
         end
 
         correction = differential(@views(solution[end]), μ)
+        _x = x + correction.δx
+        _ẏ = ẏ + correction.δẏ
+        _τ = τ + correction.δτ
 
-        @debug "Differential Correction: $correction"
+        x = _x
+        ẏ = _ẏ
+        τ = _τ
 
-        x = @views solution[1][1] + correction.δx
-        ẏ = @views solution[1][5] + correction.δẏ
-        τ = @views solution.t[end] + correction.δτ
+        @debug """
+
+               Differential Correction: (x = $x, ẏ = $ẏ, τ = $τ)
+
+                New Initial Conditions: $correction
+
+
+               """
 
         ic = MVector{42}(x, y, z, ẋ, ẏ, ż, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1)
 
@@ -198,7 +210,7 @@ function halo(x, z, ẏ, μ, T; reltol=1e-12, abstol=1e-12, maxiters=10)
     end
 
     if abs(fc[4]) <= abstol && abs(fc[6]) <= abstol
-        return (; x=problem.u0[1], z=problem.u0[3], ẏ=problem.u0[5], T=2solution.t[end])
+        return (; x=x, z=z, ẏ=ẏ, T=2τ)
     else
         error("Iterative solver failed to converge on a periodic orbit. Try another initial condition, or try relieving the provided tolerances.")
     end
@@ -275,7 +287,7 @@ function diverge!(p::AbstractVector, u::AbstractVector, stm::AbstractMatrix, μ,
 
 end
 
-diverge!(p::AbstractVector, u::AbstractVector, stm::AbstractMatrix, Φ::AbstractMatrix; eps=1e-8) = (p .= @views(u[begin:begin+5]) + perturbation(Φ, divergent_direction(stm); eps=eps))
+diverge!(p::AbstractVector, u::AbstractVector, stm::AbstractMatrix, Φ::AbstractMatrix; eps=1e-8) = (p .= @views(u[begin:begin+5]) + perturbation(stm, divergent_direction(Φ); eps=eps))
 
 
 """
@@ -303,6 +315,6 @@ function converge!(p::AbstractVector, u::AbstractVector, stm::AbstractMatrix, μ
 
 end
 
-converge!(p::AbstractVector, u::AbstractVector, stm::AbstractMatrix, Φ::AbstractMatrix; eps=1e-8) = (p .= @views(u[begin:begin+5]) + perturbation(Φ, convergent_direction(Φ); eps=eps))
+converge!(p::AbstractVector, u::AbstractVector, stm::AbstractMatrix, Φ::AbstractMatrix; eps=1e-8) = (p .= @views(u[begin:begin+5]) + perturbation(stm, convergent_direction(Φ); eps=eps))
 
 end # module

@@ -1,9 +1,10 @@
 using OrdinaryDiffEq, AstrodynamicalModels
 using SPICE, SPICEBodies, SPICEKernels
-using AstrodynamicalCalculations
 using LinearAlgebra
 using Plots
-using Revise, AstrodynamicalSolvers
+using StaticArrays
+using Revise, AstrodynamicalSolvers, AstrodynamicalCalculations
+
 
 plotlyjs()
 
@@ -15,17 +16,14 @@ furnsh(
 )
 
 μ = reduced_mass(gm("earth"), gm("moon"))
+ic = halo(μ, 1; amplitude=0.01, abstol=1e-14, reltol=1e-14)
 
-using Logging
-debuglogger = ConsoleLogger(stderr, Logging.Debug)
-
-with_logger(debuglogger) do
-    u, T = halo(μ, 1; amplitude=0.01)
-end
+u = @MVector [ic.x, 0, ic.z, 0, ic.ẏ, 0]
+T = ic.T
 
 halo_ics = let
-    problem = ODEProblem(CR3BPFunction(stm=true), vcat(u, vec(I(6))), (0, T), (μ,))
-    solution = solve(problem, Vern9(), reltol=1e-12, abstol=1e-12, saveat=T / 20)
+    problem = ODEProblem(CR3BPFunction(stm=true), MVector{42}(vcat(u, vec(I(6)))), (0, T), (μ,))
+    solution = solve(problem, Vern9(), reltol=1e-14, abstol=1e-14, saveat=(T / 100))
 
     solution.u
 end
@@ -42,6 +40,6 @@ problem = EnsembleProblem(
     prob_func=(prob, i, repeat) -> remake(prob; u0=manifold_ics[i]),
 )
 
-solution = solve(problem, Vern9(), trajectories=14, reltol=1e-12, abstol=1e-12)
+solution = solve(problem, Vern9(), trajectories=length(manifold_ics), reltol=1e-14, abstol=1e-14)
 
-plot(solution, idxs=(:x, :y))
+plot(solution, idxs=(:x, :y, :z), aspect_ratio=1, palette=:rainbow)
