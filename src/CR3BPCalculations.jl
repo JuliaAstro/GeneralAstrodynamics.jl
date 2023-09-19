@@ -186,7 +186,7 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/)
 """
-function lagrange_point(μ::Real, L = 1:5)
+function lagrange_point(μ::Real, L=1:5)
     if !all(L[i] ∈ (1, 2, 3, 4, 5) for i = 1:length(L))
         throw(ArgumentError("Requested lagrange points must be in range [1,5]"))
     end
@@ -226,7 +226,7 @@ Returns an analytical solution for a Halo orbit about `L`.
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
-function richardson_halo(μ, L::Int; Z = 0.0, hemisphere = :northern, ϕ = 0.0, steps = 1)
+function richardson_halo(μ, L::Int; Z=0.0, hemisphere=:northern, ϕ=0.0, steps=1)
     if L == 1
         point = first(lagrange_point(μ, 1))
         γ = abs(one(μ) - μ - point)
@@ -237,7 +237,7 @@ function richardson_halo(μ, L::Int; Z = 0.0, hemisphere = :northern, ϕ = 0.0, 
         γ = abs(point - one(μ) + μ)
         n = collect(1:4) .* one(μ)
         c = @. ((-one(μ))^n * μ + (-one(μ))^n * (one(μ) - μ)γ^(n + 1)) /
-           (γ^3 * (one(μ) + γ^(n + 1)))
+               (γ^3 * (one(μ) + γ^(n + 1)))
     else
         throw(ArgumentError("Only Halo orbits about L1 or L2 are supported."))
     end
@@ -290,7 +290,7 @@ function richardson_halo(μ, L::Int; Z = 0.0, hemisphere = :northern, ϕ = 0.0, 
     Τ = 2π / (ωₚ * ν)
     τ =
         ν .*
-        (steps > 1 ? range(0, stop = Τ, length = steps) : range(0, stop = Τ, length = 1000))
+        (steps > 1 ? range(0, stop=Τ, length=steps) : range(0, stop=Τ, length=1000))
 
     if hemisphere == :northern
         m = 1.0
@@ -346,7 +346,7 @@ function zero_velocity_curves(
     r::AbstractVector,
     v::AbstractVector,
     μ::Real;
-    nondimensional_range = range(-2; stop = 2, length = 1000),
+    nondimensional_range=range(-2; stop=2, length=1000)
 )
     x = nondimensional_range
     y = nondimensional_range
@@ -387,9 +387,9 @@ end
 """
 Calculates the eigenvector associated with the stable manifold of a Monodromy matrix.
 """
-function convergent_direction(stm::AbstractMatrix; atol = 1e-6)
+function convergent_direction(stm::AbstractMatrix)
     evals, evecs = eigen(stm)
-    evals = filter(isreal, evals) .|> real
+    evals = filter(e -> isreal(e) && isposdef(e), evals) .|> real
     evecs =
         filter(
             x -> !isempty(x),
@@ -399,33 +399,39 @@ function convergent_direction(stm::AbstractMatrix; atol = 1e-6)
     imin = findmin(evals)[2]
     imax = findmax(evals)[2]
 
-    @assert isapprox((evals[imin] * evals[imax]), one(eltype(evals)), atol = atol) "Min and max eigenvalue should be multiplicative inverses. Invalid Monodromy matrix. Product equals $(evals[index_min] * evals[index_max]), not $(one(eltype(evals)))."
+    if (evals[imin] * evals[imax]) ≉ 1
+        @warn "The dynamics appear to be ill-formed; the minimum and maximum real eigenvalues should be multiplicative inverses of one another. Product equals $(evals[imin] * evals[imax]), not 1."
+    end
+
     return evecs[imin]
 end
 
 """
 Calculates the direction associated with the unstable manifold of a Monodromy matrix.
 """
-function divergent_direction(stm::AbstractMatrix; atol = 1e-6)
+function divergent_direction(stm::AbstractMatrix)
     evals, evecs = eigen(stm)
-    evals = filter(isreal, evals) .|> real
+    evals = filter(e -> isreal(e) && isposdef(e), evals) .|> real
     evecs =
         filter(
             x -> !isempty(x),
             map(vec -> filter(x -> all(isreal.(vec)), vec), eachcol(evecs)),
         ) .|> real
 
-    index_min = findmin(evals)[2]
-    index_max = findmax(evals)[2]
+    imin = findmin(evals)[2]
+    imax = findmax(evals)[2]
 
-    @assert isapprox((evals[index_min] * evals[index_max]), one(eltype(evals)), atol = atol) "Min and max eigenvalue should be multiplicative inverses. Invalid Monodromy matrix. Product equals $(evals[index_min] * evals[index_max]), not $(one(eltype(evals)))."
-    return evecs[index_max]
+    if (evals[imin] * evals[imax]) ≉ 1
+        @warn "The dynamics appear to be ill-formed; the minimum and maximum real eigenvalues should be multiplicative inverses of one another. Product equals $(evals[imin] * evals[imax]), not 1."
+    end
+
+    return evecs[imax]
 end
 
 """
 Perturbs a Cartesian state along a halo orbit onto the provided direction of the provided manifold.
 """
-function perturbation(monodromy::AbstractMatrix, direction::AbstractVector; eps = 1e-8)
+function perturbation(stm::AbstractMatrix, direction::AbstractVector; eps=1e-8)
     return eps * normalize(stm * normalize(direction))
 end
 
