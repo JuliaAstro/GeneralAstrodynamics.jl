@@ -11,7 +11,7 @@ $(IMPORTS)
 """
 module CR3BPSolvers
 
-export halo, monodromy, converge, converge!, diverge, diverge!
+export halo, lyapunov, monodromy
 
 using LinearAlgebra
 using StaticArrays
@@ -71,7 +71,7 @@ Given a full state vector for CR3BP dynamics, including vertically concatenated
 columns of the state transition matrix, return the differential correction term
 for a periodic orbit.
 """
-function differential(state::AbstractVector, μ)
+function extraplanar_differential(state::AbstractVector, μ)
 
     f = CR3BPFunction()
     accel = f(state, (μ,), NaN)
@@ -116,7 +116,7 @@ function lyapunov(x, ẏ, μ, T; reltol=1e-12, abstol=1e-12, maxiters=10)
         global fc = solution[end]
 
         if abs(fc[4]) <= abstol && abs(fc[6]) <= abstol
-            return (; x=x, ẏ=ẏ, T=2τ)
+            return (; x=x, ẏ=ẏ), 2τ
         end
 
         correction = planar_differential(@views(solution[end]), μ)
@@ -138,7 +138,7 @@ function lyapunov(x, ẏ, μ, T; reltol=1e-12, abstol=1e-12, maxiters=10)
     end
 
     if abs(fc[4]) <= abstol && abs(fc[6]) <= abstol
-        return (; x=x, ẏ=ẏ, T=2τ)
+        return (; x=x, ẏ=ẏ), 2τ
     else
         error("Iterative solver failed to converge on a periodic orbit. Try another initial condition, or try relieving the provided tolerances.")
     end
@@ -180,10 +180,10 @@ function halo(x, z, ẏ, μ, T; reltol=1e-12, abstol=1e-12, maxiters=10)
         global fc = solution[end]
 
         if abs(fc[4]) <= abstol && abs(fc[6]) <= abstol
-            return (; x=x, z=z, ẏ=ẏ, T=2τ)
+            return (; x=x, z=z, ẏ=ẏ), 2τ
         end
 
-        correction = differential(@views(solution[end]), μ)
+        correction = extraplanar_differential(@views(solution[end]), μ)
         _x = x + correction.δx
         _ẏ = ẏ + correction.δẏ
         _τ = τ + correction.δτ
@@ -210,14 +210,14 @@ function halo(x, z, ẏ, μ, T; reltol=1e-12, abstol=1e-12, maxiters=10)
     end
 
     if abs(fc[4]) <= abstol && abs(fc[6]) <= abstol
-        return (; x=x, z=z, ẏ=ẏ, T=2τ)
+        return (; x=x, z=z, ẏ=ẏ), 2τ
     else
         error("Iterative solver failed to converge on a periodic orbit. Try another initial condition, or try relieving the provided tolerances.")
     end
 end
 
 function halo(u::AbstractVector, μ, T; kwargs...)
-    corrected = halo(
+    corrected, period = halo(
         @views(u[begin]),
         @views(u[begin+2]),
         @views(u[begin+4]),
@@ -225,7 +225,7 @@ function halo(u::AbstractVector, μ, T; kwargs...)
         T
     )
 
-    return typeof(u)(@SVector [corrected.x, 0, corrected.z, 0, corrected.ẏ, 0]), corrected.T
+    return typeof(u)(@SVector [corrected.x, 0, corrected.z, 0, corrected.ẏ, 0]), period
 end
 
 """
@@ -261,60 +261,5 @@ function monodromy(u::AbstractVector, μ, T; algorithm=Vern9(), reltol=1e-12, ab
 
     return reshape((solution[end][begin+6:end]), 6, 6)
 end
-
-"""
-Return conditions which diverge from the periodic orbit along its unstable manifold.
-"""
-function diverge(u::AbstractVector, stm::AbstractMatrix, μ, T; eps=1e-8, algorithm=Vern9(), reltol=1e-12, abstol=1e-12, save_everystep=false, kwargs...)
-
-    Φ = monodromy(u, μ, T; algorithm=algorithm, reltol=reltol, abstol=abstol, save_everystep=save_everystep, kwargs...)
-    return diverge(u, Φ; eps=eps)
-
-end
-
-function diverge(u::AbstractVector, stm::AbstractMatrix, Φ::AbstractMatrix; eps=1e-8)
-    p = similar(u)
-    return diverge!(p, u, stm, Φ; eps=eps)
-end
-
-"""
-Perturb the orbit in-place along its unstable manifold.
-"""
-function diverge!(p::AbstractVector, u::AbstractVector, stm::AbstractMatrix, μ, T; eps=1e-8, algorithm=Vern9(), reltol=1e-12, abstol=1e-12, save_everystep=false, kwargs...)
-
-    Φ = monodromy(u, μ, T; algorithm=algorithm, reltol=reltol, abstol=abstol, save_everystep=save_everystep, kwargs...)
-    return diverge!(p, u, stm, Φ; eps=eps)
-
-end
-
-diverge!(p::AbstractVector, u::AbstractVector, stm::AbstractMatrix, Φ::AbstractMatrix; eps=1e-8) = (p .= @views(u[begin:begin+5]) + perturbation(stm, divergent_direction(Φ); eps=eps))
-
-
-"""
-Return conditions which converts to the periodic orbit along its stable manifold.
-"""
-function converge(u::AbstractVector, stm::AbstractMatrix, μ, T; eps=1e-8, algorithm=Vern9(), reltol=1e-12, abstol=1e-12, save_everystep=false, kwargs...)
-
-    Φ = monodromy(u, μ, T; algorithm=algorithm, reltol=reltol, abstol=abstol, save_everystep=save_everystep, kwargs...)
-    return converge(u, Φ; eps=eps)
-
-end
-
-function converge(u::AbstractVector, stm::AbstractMatrix, Φ::AbstractMatrix; eps=1e-8)
-    p = similar(u)
-    return converge!(p, u, stm, Φ; eps=eps)
-end
-
-"""
-Perturb the orbit in-place along its stable manifold.
-"""
-function converge!(p::AbstractVector, u::AbstractVector, stm::AbstractMatrix, μ, T; eps=1e-8, algorithm=Vern9(), reltol=1e-12, abstol=1e-12, save_everystep=false, kwargs...)
-
-    Φ = monodromy(u, μ, T; algorithm=algorithm, reltol=reltol, abstol=abstol, save_everystep=save_everystep, kwargs...)
-    return converge!(p, u, Φ; eps=eps)
-
-end
-
-converge!(p::AbstractVector, u::AbstractVector, stm::AbstractMatrix, Φ::AbstractMatrix; eps=1e-8) = (p .= @views(u[begin:begin+5]) + perturbation(stm, convergent_direction(Φ); eps=eps))
 
 end # module

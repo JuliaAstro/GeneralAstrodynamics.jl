@@ -8,7 +8,10 @@ makedocs(
     authors="Joey Carpinelli",
     pages=[
         "Getting Started" => "index.md",
-        "CR3BP" => "cr3bp.md"
+        "Reference" => [
+            "`AstrodynamicalSolvers`" => "reference.md",
+            "`CR3BPSolvers`" => "cr3bp.md",
+        ]
     ]
 )
 

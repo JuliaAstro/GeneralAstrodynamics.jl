@@ -14,18 +14,17 @@ Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
-AstrodynamicalCalculations = "0.2"
+AstrodynamicalCalculations = "^0.2.1"
 AstrodynamicalModels = "2"
-DocStringExtensions = "^0.9"
-ModelingToolkit = "^8.69"
-OrdinaryDiffEq = "^6.55"
+DocStringExtensions = "0.9"
+ModelingToolkit = "8.69"
+OrdinaryDiffEq = "6.55"
 Reexport = "1"
-StaticArrays = "^1.6"
-julia = "^1.6"
+StaticArrays = "1.6"
+julia = "1.6"
 
 [extras]
-AstrodynamicalCalculations = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test", "AstrodynamicalCalculations"]
+test = ["Test"]
