@@ -49,7 +49,11 @@ export distance_scaling,
     richardson_halo,
     perturbation,
     convergent_direction,
-    divergent_direction
+    divergent_direction,
+    diverge,
+    diverge!,
+    converge,
+    converge!
 
 """
 The length scale factor used to nondimensionalize CR3BP states.
@@ -186,7 +190,7 @@ __Outputs:__
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/)
 """
-function lagrange_point(μ::Real, L=1:5)
+function lagrange_point(μ::Real, L = 1:5)
     if !all(L[i] ∈ (1, 2, 3, 4, 5) for i = 1:length(L))
         throw(ArgumentError("Requested lagrange points must be in range [1,5]"))
     end
@@ -226,7 +230,7 @@ Returns an analytical solution for a Halo orbit about `L`.
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
-function richardson_halo(μ, L::Int; Z=0.0, hemisphere=:northern, ϕ=0.0, steps=1)
+function richardson_halo(μ, L::Int; Z = 0.0, hemisphere = :northern, ϕ = 0.0, steps = 1)
     if L == 1
         point = first(lagrange_point(μ, 1))
         γ = abs(one(μ) - μ - point)
@@ -237,7 +241,7 @@ function richardson_halo(μ, L::Int; Z=0.0, hemisphere=:northern, ϕ=0.0, steps=
         γ = abs(point - one(μ) + μ)
         n = collect(1:4) .* one(μ)
         c = @. ((-one(μ))^n * μ + (-one(μ))^n * (one(μ) - μ)γ^(n + 1)) /
-               (γ^3 * (one(μ) + γ^(n + 1)))
+           (γ^3 * (one(μ) + γ^(n + 1)))
     else
         throw(ArgumentError("Only Halo orbits about L1 or L2 are supported."))
     end
@@ -290,7 +294,7 @@ function richardson_halo(μ, L::Int; Z=0.0, hemisphere=:northern, ϕ=0.0, steps=
     Τ = 2π / (ωₚ * ν)
     τ =
         ν .*
-        (steps > 1 ? range(0, stop=Τ, length=steps) : range(0, stop=Τ, length=1000))
+        (steps > 1 ? range(0, stop = Τ, length = steps) : range(0, stop = Τ, length = 1000))
 
     if hemisphere == :northern
         m = 1.0
@@ -346,7 +350,7 @@ function zero_velocity_curves(
     r::AbstractVector,
     v::AbstractVector,
     μ::Real;
-    nondimensional_range=range(-2; stop=2, length=1000)
+    nondimensional_range = range(-2; stop = 2, length = 1000),
 )
     x = nondimensional_range
     y = nondimensional_range
@@ -431,8 +435,48 @@ end
 """
 Perturbs a Cartesian state along a halo orbit onto the provided direction of the provided manifold.
 """
-function perturbation(stm::AbstractMatrix, direction::AbstractVector; eps=1e-8)
+function perturbation(stm::AbstractMatrix, direction::AbstractVector; eps = 1e-8)
     return eps * normalize(stm * normalize(direction))
 end
+
+
+"""
+Perturb halo orbit conditions onto the orbit's unstable manifold.
+"""
+function diverge(u::AbstractVector, stm::AbstractMatrix, Φ::AbstractMatrix; eps = 1e-8)
+    p = similar(u)
+    return diverge!(p, u, stm, Φ; eps = eps)
+end
+
+"""
+Perturb halo orbit conditions in-place onto the orbit's unstable manifold.
+"""
+diverge!(
+    p::AbstractVector,
+    u::AbstractVector,
+    stm::AbstractMatrix,
+    Φ::AbstractMatrix;
+    eps = 1e-8,
+) = (p .= @views(u[begin:begin+5]) + perturbation(stm, divergent_direction(Φ); eps = eps))
+
+"""
+Perturb halo orbit conditions onto the orbit's unstable manifold.
+"""
+function converge(u::AbstractVector, stm::AbstractMatrix, Φ::AbstractMatrix; eps = 1e-8)
+    p = similar(u)
+    return converge!(p, u, stm, Φ; eps = eps)
+end
+
+"""
+Perturb halo orbit conditions in-place onto the orbit's stable manifold.
+"""
+converge!(
+    p::AbstractVector,
+    u::AbstractVector,
+    stm::AbstractMatrix,
+    Φ::AbstractMatrix;
+    eps = 1e-8,
+) = (p .= @views(u[begin:begin+5]) + perturbation(stm, convergent_direction(Φ); eps = eps))
+
 
 end
