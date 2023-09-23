@@ -235,15 +235,12 @@ guess using a differential corrector.
 """
 function halo(μ, lagrange::Int; amplitude=0.0, phase=0.0, hemisphere=:northern, kwargs...)
 
-    r, v, T = richardson_halo(μ, lagrange; Z=amplitude, hemisphere=hemisphere, ϕ=phase)
+    u, T = richardson_ic(μ, lagrange; Z=amplitude, hemisphere=hemisphere, ϕ=phase)
 
-    x, y, z = r
-    ẋ, ẏ, ż = v
-
-    if z == zero(z)
-        return lyapunov(x, ẏ, μ, T; kwargs...)
+    if u.z == 0
+        return lyapunov(u.x, u.ẏ, μ, T; kwargs...)
     else
-        return halo(x, z, ẏ, μ, T; kwargs...)
+        return halo(u.x, u.z, u.ẏ, μ, T; kwargs...)
     end
 
 end

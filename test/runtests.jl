@@ -13,10 +13,8 @@ using LinearAlgebra
 @testset "Lyapunov Orbit Correction" begin
 
     μ = 0.012150584395829193
-    r, v, T = richardson_halo(μ, 1)
-    x, _, _ = r
-    _, ẏ, _ = v
-    u, T = AstrodynamicalSolvers.CR3BPSolvers.lyapunov(x, ẏ, μ, T)
+    u, T = richardson_ic(μ, 1)
+    u, T = AstrodynamicalSolvers.CR3BPSolvers.lyapunov(u.x, u.ẏ, μ, T)
 
 
     @test u.x ≈ 0.8222791798525636
@@ -28,10 +26,8 @@ end
 @testset "Halo Orbit Correction" begin
 
     μ = 0.012150584395829193
-    r, v, T = richardson_halo(μ, 2; Z=0.005)
-    x, _, z = r
-    _, ẏ, _ = v
-    u, T = AstrodynamicalSolvers.CR3BPSolvers.halo(x, z, ẏ, μ, T)
+    u, T = richardson_ic(μ, 2; Z=0.005)
+    u, T = AstrodynamicalSolvers.CR3BPSolvers.halo(u.x, u.z, u.ẏ, μ, T)
 
     @test u.x ≈ 1.1202340567932783
     @test u.z ≈ 0.004589679675825104
