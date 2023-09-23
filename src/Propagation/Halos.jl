@@ -5,23 +5,30 @@
 """
 Returns the Monodromy Matrix for a Halo orbit.
 """
-function monodromy(orbit::CR3BPOrbit, T; verify=true, reltol = 1e-14, abstol = 1e-14)
-    initial = Orbit(CartesianStateWithSTM(state(orbit)), system(orbit), epoch(orbit); frame=frame(orbit))
-    final   = propagate(initial, T; reltol=reltol, abstol=abstol, save_everystep=false)[end]
-    
+function monodromy(orbit::CR3BPOrbit, T; verify = true, reltol = 1e-14, abstol = 1e-14)
+    initial = Orbit(
+        CartesianStateWithSTM(state(orbit)),
+        system(orbit),
+        epoch(orbit);
+        frame = frame(orbit),
+    )
+    final =
+        propagate(initial, T; reltol = reltol, abstol = abstol, save_everystep = false)[end]
+
     if verify && !(state(initial)[1:6] ≈ final[1:6])
         throw(ErrorException("The provided `orbit` is not periodic!"))
     end
 
-    SMatrix{6,6}(final[7:end]...) |> Matrix
+    return SMatrix{6,6}(final[7:end]...) |> Matrix
 end
 
 """
 Returns true if a `RestrictedThreeBodySystem` is numerically periodic.
 """
 function isperiodic(orbit::CR3BPOrbit, T; reltol = 1e-14, abstol = 1e-14)
-    final = propagate(orbit, T; reltol=reltol, abstol=abstol, save_everystep=false)[end]
-    return state(orbit)[1:6] ≈ final[1:6] 
+    final =
+        propagate(orbit, T; reltol = reltol, abstol = abstol, save_everystep = false)[end]
+    return state(orbit)[1:6] ≈ final[1:6]
 end
 
 
@@ -53,36 +60,40 @@ available online.
 - [Dr. Mireles Code](http://cosweb1.fau.edu/~jmirelesjames/notes.html)
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
-function halo(μ; Az=0.0, L=1, hemisphere=:northern,
-              tolerance=1e-8, max_iter=100,
-              reltol=1e-14, abstol=1e-14,
-              nan_on_fail = true, disable_warnings = false)
+function halo(
+    μ;
+    Az = 0.0,
+    L = 1,
+    hemisphere = :northern,
+    tolerance = 1e-8,
+    max_iter = 100,
+    reltol = 1e-14,
+    abstol = 1e-14,
+    nan_on_fail = true,
+    disable_warnings = false,
+)
 
-    r₀, v₀, Τ = analyticalhalo(μ; Az=Az, ϕ=0.0, L=L, hemisphere=hemisphere)
-    r₀ = r₀[1,:]
-    v₀ = v₀[1,:]
-    τ  = Τ/2
+    r₀, v₀, Τ = analyticalhalo(μ; Az = Az, ϕ = 0.0, L = L, hemisphere = hemisphere)
+    r₀ = r₀[1, :]
+    v₀ = v₀[1, :]
+    τ = Τ / 2
     δu = Vector{typeof(τ)}(undef, 6)
     Id = Matrix(I(6))
 
     for i ∈ 1:max_iter
 
-        problem = ODEProblem(
-            CR3BPFunction(; stm=true),
-            vcat(r₀, v₀, Id...),
-            (0.0, τ),
-            (μ,)
-        )    
+        problem =
+            ODEProblem(CR3BPFunction(; stm = true), vcat(r₀, v₀, Id...), (0.0, τ), (μ,))
 
-        retcode, rₛ, vₛ, Φ = let 
-            sols  = solve(problem, Vern9(); reltol=reltol, abstol=abstol)
-            final = sols.u[end] 
+        retcode, rₛ, vₛ, Φ = let
+            sols = solve(problem, Vern9(); reltol = reltol, abstol = abstol)
+            final = sols.u[end]
             sols.retcode, final[1:3], final[4:6], SMatrix{6,6}(final[7:end]...)
         end
 
         CR3BPFunction()(δu, vcat(rₛ, vₛ), (μ,), NaN)
         ∂vₛ = δu[4:6]
-        
+
         # All code in this `if, else, end` block is ported from
         # Dr. Mireles' MATLAB code, which is available on his 
         # website: http://cosweb1.fau.edu/~jmirelesjames/notes.html.
@@ -91,36 +102,44 @@ function halo(μ; Az=0.0, L=1, hemisphere=:northern,
         # http://cosweb1.fau.edu/~jmirelesjames/hw5Notes.pdf
         if Az ≉ 0
             F = @SMatrix [
-                Φ[4,1] Φ[4,5] ∂vₛ[1];
-                Φ[6,1] Φ[6,5] ∂vₛ[3];
-                Φ[2,1] Φ[2,5]  vₛ[2]
+                Φ[4, 1] Φ[4, 5] ∂vₛ[1]
+                Φ[6, 1] Φ[6, 5] ∂vₛ[3]
+                Φ[2, 1] Φ[2, 5] vₛ[2]
             ]
 
-            xᵪ = SVector(r₀[1], v₀[2], τ) - inv(F) * SVector(vₛ[1], vₛ[3], rₛ[2])
+            correction = -1 * (inv(F) * SVector(vₛ[1], vₛ[3], rₛ[2]))
+            @debug "Differential Correction: $correction"
+
+            xᵪ = SVector(r₀[1], v₀[2], τ) + correction
 
             r₀[1] = xᵪ[1]
             v₀[2] = xᵪ[2]
-            τ     = xᵪ[3]
+            τ = xᵪ[3]
         else
             F = @SMatrix [
-                Φ[4,3] Φ[4,5] ∂vₛ[1];
-                Φ[6,3] Φ[6,5] ∂vₛ[3];
-                Φ[2,3] Φ[2,5]  vₛ[2]
+                Φ[4, 3] Φ[4, 5] ∂vₛ[1]
+                Φ[6, 3] Φ[6, 5] ∂vₛ[3]
+                Φ[2, 3] Φ[2, 5] vₛ[2]
             ]
 
-            xᵪ = SVector(r₀[3], v₀[2], τ) - inv(F) * SVector(vₛ[1], vₛ[3], rₛ[2])
+            correction = -1 * (inv(F) * SVector(vₛ[1], vₛ[3], rₛ[2]))
+            @debug "Differential Correction: $correction"
+
+            xᵪ = SVector(r₀[3], v₀[2], τ) + correction
 
             r₀[3] = xᵪ[1]
             v₀[2] = xᵪ[2]
-            τ     = xᵪ[3]
+            τ = xᵪ[3]
         end
 
         if abs(vₛ[1]) ≤ tolerance && abs(vₛ[3]) ≤ tolerance
-            break;
+            break
         elseif τ > 5 * one(τ)
             error("Unreasonably large halo period, $τ, ending iterations.")
         elseif i == max_iter
-            error("Desired tolerance was not reached, and iterations have hit the maximum number of iterations: $max_iter.")
+            error(
+                "Desired tolerance was not reached, and iterations have hit the maximum number of iterations: $max_iter.",
+            )
         end
     end
 
@@ -132,14 +151,19 @@ end
 A `halo` wrapper! Returns a `CircularRestrictedThreeBodyOrbit`.
 Returns a tuple: `halo_orbit, halo_period`.
 """
-function halo(sys::CR3BPParameters, epoch=TAIEpoch(now()); Az=0.0, kwargs...)
-    
+function halo(sys::CR3BPParameters, epoch = TAIEpoch(now()); Az = 0.0, kwargs...)
+
     if Az isa Unitful.Length
         Az = Az / lengthunit(sys)
     end
 
-    r,v,T = halo(massparameter(sys); Az = Az, kwargs...)
-    cart  = CartesianState(vcat(r,v); lengthunit=lengthunit(sys), timeunit=timeunit(sys), angularunit=angularunit(sys))
+    r, v, T = halo(massparameter(sys); Az = Az, kwargs...)
+    cart = CartesianState(
+        vcat(r, v);
+        lengthunit = lengthunit(sys),
+        timeunit = timeunit(sys),
+        angularunit = angularunit(sys),
+    )
     orbit = Orbit(cart, sys)
-    return (; orbit=orbit, period=T)
+    return (; orbit = orbit, period = T)
 end
