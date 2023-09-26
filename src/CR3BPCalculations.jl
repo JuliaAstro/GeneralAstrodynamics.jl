@@ -532,7 +532,7 @@ end
 """
 Calculates the eigenvector associated with the stable manifold of a Monodromy matrix.
 """
-function convergent_direction(stm::AbstractMatrix)
+function convergent_direction(stm::AbstractMatrix; atol=1e-3)
     evals, evecs = eigen(stm)
     evals = filter(e -> isreal(e) && isposdef(e), evals) .|> real
     evecs =
@@ -544,7 +544,7 @@ function convergent_direction(stm::AbstractMatrix)
     imin = findmin(evals)[2]
     imax = findmax(evals)[2]
 
-    if (evals[imin] * evals[imax]) ≉ 1
+    if !isapprox(evals[imin] * evals[imax], 1, atol=atol)
         @warn "The dynamics appear to be ill-formed; the minimum and maximum real eigenvalues should be multiplicative inverses of one another. Product equals $(evals[imin] * evals[imax]), not 1."
     end
 
@@ -554,7 +554,7 @@ end
 """
 Calculates the direction associated with the unstable manifold of a Monodromy matrix.
 """
-function divergent_direction(stm::AbstractMatrix)
+function divergent_direction(stm::AbstractMatrix; atol=1e-3)
     evals, evecs = eigen(stm)
     evals = filter(e -> isreal(e) && isposdef(e), evals) .|> real
     evecs =
@@ -566,7 +566,7 @@ function divergent_direction(stm::AbstractMatrix)
     imin = findmin(evals)[2]
     imax = findmax(evals)[2]
 
-    if (evals[imin] * evals[imax]) ≉ 1
+    if !isapprox(evals[imin] * evals[imax], 1, atol=atol)
         @warn "The dynamics appear to be ill-formed; the minimum and maximum real eigenvalues should be multiplicative inverses of one another. Product equals $(evals[imin] * evals[imax]), not 1."
     end
 
