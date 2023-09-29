@@ -50,7 +50,7 @@ the result is known as the Monodromy Matrix! The Monodromy Matrix
 provides stability characteristics for the entire periodic orbit.
 
 ```@repl main
-model = CR3BP(; stm=true)
+model = CR3BSystem(; stm=true)
 ```
 
 Note that periodic orbits are not easy to find within CR3BP dynamics.

@@ -6,10 +6,10 @@ module AttitudeTests
 using AstrodynamicalModels, ModelingToolkit, LinearAlgebra, Test
 
 @testset "Attitude Model Constructors" begin
-    model = Attitude()
+    model = AttitudeSystem()
     @test model isa ODESystem
 
-    model = Attitude(stm=true)
+    model = AttitudeSystem(stm=true)
     @test model isa ODESystem
 end
 

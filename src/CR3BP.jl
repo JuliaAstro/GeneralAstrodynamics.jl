@@ -2,10 +2,30 @@
 # Circular Restricted Three-body Problem models
 #
 
+const CR3BState = CartesianState
+
+struct CR3BParameters{F} <: AstrodynamicalParameters{F,1}
+    μ::F
+
+    CR3BParameters{F}(μ) where {F} = new{F}(convert(F, μ))
+    CR3BParameters(μ) = new{typeof(μ)}(μ)
+    CR3BParameters(; μ) = CR3BParameters(μ)
+    CR3BParameters{F}(; μ) where {F} = CR3BParameters{F}(μ)
+    CR3BParameters(values::NamedTuple) =
+        let (; μ) = values
+            CR3BParameters(μ)
+        end
+
+    CR3BParameters{F}(values::NamedTuple) where {F} =
+        let (; μ) = values
+            CR3BParameters{F}(μ)
+        end
+end
+
 """
 A `ModelingToolkit.ODESystem` for the Circular Restricted Three-body Problem.
 
-The order of the states follows: `[x, y, z, ẋ, ẏ, ż]`.
+The order of the states follows: `[μ]`.
 
 The order of the parameters follows: `[μ]`.
 
@@ -20,10 +40,10 @@ systems in our solar system.
 ### Usage
 
 ```julia
-model = CR3BP(; stm=true)
+model = CR3BSystem(; stm=true)
 ```
 """
-@memoize function CR3BP(; stm=false, name=:CR3BP)
+@memoize function CR3BSystem(; stm=false, name=:CR3B)
 
     @parameters t μ
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
@@ -49,8 +69,8 @@ model = CR3BP(; stm=true)
         eqs = vcat(eqs, [LHS[i] ~ RHS[i] for i in eachindex(LHS)])
     end
 
-    if string(name) == "CR3BP" && stm
-        modelname = Symbol("CR3BPWithSTM")
+    if string(name) == "CR3B" && stm
+        modelname = Symbol("CR3BWithSTM")
     else
         modelname = name
     end
@@ -69,9 +89,9 @@ model = CR3BP(; stm=true)
 end
 
 """
-Returns an `ODEFunction` for CR3BP dynamics.
+Returns an `ODEFunction` for CR3B dynamics.
 
-The order of the states follows: `[x, y, z, ẋ, ẏ, ż]`.
+The order of the states follows: `[μ]`.
 
 The order of the parameters follows: `[μ]`.
 
@@ -80,21 +100,32 @@ The order of the parameters follows: `[μ]`.
 ### Usage
 
 The `stm`, and `name` keyword arguments
-are passed to `CR3BP`. All other keyword arguments are passed
+are passed to `CR3B`. All other keyword arguments are passed
 directly to `SciMLBase.ODEFunction`.
 
 ```julia
-f = CR3BPFunction(; stm=false, jac=true)
+f = CR3BFunction(; stm=false, jac=true)
 let u = randn(6), p = randn(1), t = 0
     f(u, p, t)
 end
 ```
 """
-@memoize function CR3BPFunction(; stm=false, name=:CR3BP, kwargs...)
+@memoize function CR3BFunction(; stm=false, name=:CR3B, kwargs...)
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
-        CR3BP(; stm=stm, name=name);
+        CR3BSystem(; stm=stm, name=name);
         options...
     )
 end
+
+const CR3BOrbit = Orbit{<:CR3BState,<:CR3BParameters}
+AstrodynamicalModels.CR3BOrbit(state::CR3BState, parameters::CR3BParameters) = Orbit(state, parameters)
+AstrodynamicalModels.CR3BOrbit(; state::CR3BState, parameters::CR3BParameters) = Orbit(state, parameters)
+
+"""
+Return an `ODEProblem` for the provided CR3B system.
+"""
+CR3BProblem(u0, tspan, p; kwargs...) = ODEProblem(CR3BFunction(), u0, tspan, p; kwargs...)
+CR3BProblem(orbit::AstrodynamicalOrbit, tspan::Union{<:Tuple,<:AbstractArray}; kwargs...) = ODEProblem(CR3BFunction(), AstrodynamicalModels.state(orbit), tspan, AstrodynamicalModels.parameters(orbit); kwargs...)
+CR3BProblem(orbit::AstrodynamicalOrbit, Δt; kwargs...) = CR3BProblem(orbit, (zero(Δt), δt); kwargs...)

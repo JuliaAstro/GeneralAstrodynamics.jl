@@ -25,13 +25,13 @@ $$\begin{aligned}
 ## Examples
 
 ```@repl main
-model = PlanarEntry()
+model = PlanarEntrySystem()
 ```
 
 Let's compute the Jacobian for these dynamics.
 
 ```@repl main
-J = calculate_jacobian(PlanarEntry())
+J = calculate_jacobian(PlanarEntrySystem())
 ```
 
 Finally, let's construct a Julia function which implements these dynamics!

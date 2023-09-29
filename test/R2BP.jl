@@ -6,13 +6,13 @@ module R2BPTests
 using AstrodynamicalModels, ModelingToolkit, Test
 
 @testset "R2BP Model Constructors" begin
-    model = R2BP(; stm=false)
-    model = R2BP(; stm=true)
+    model = R2BSystem(; stm=false)
+    model = R2BSystem(; stm=true)
     @test true
 end
 
 @testset "R2BP Model Calculations" begin
-    vectorfield = R2BPFunction()
+    vectorfield = R2BFunction()
 
     r = [-11e3, 0, 5e3]
     v = [0.0, 0.0, 0.0]

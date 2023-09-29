@@ -1,7 +1,7 @@
 name = "AstrodynamicalModels"
 uuid = "4282b555-f590-4262-b575-3e516e1493a7"
 authors = ["Joe Carpinelli <jdcarpinelli@gmail.com>"]
-version = "2.0.0"
+version = "3.0.0"
 
 [deps]
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
@@ -9,18 +9,26 @@ LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Memoize = "c03570c3-d221-55d1-a50c-7939bbd78826"
 ModelingToolkit = "961ee093-0014-501f-94e3-6117800e7a78"
 SciMLBase = "0bca4576-84f4-4d90-8ffe-ffa030f20462"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Symbolics = "0c5d862f-8b57-4792-8d23-62f2024744c7"
 
 [compat]
 DocStringExtensions = "0.9"
-Memoize = "^0.4"
+Memoize = "0.4"
 ModelingToolkit = "8"
-SciMLBase = "^1.97, 2"
+SciMLBase = "1.97, 2"
 Symbolics = "5"
-julia = "^1.6"
+julia = "1.6"
+
+[weakdeps]
+SPICEBodies = "19f1efb6-7162-484a-b3a1-b52c391689d7"
+
+[extensions]
+SPICEBodiesExt = "SPICEBodies"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+SPICEBodies = "19f1efb6-7162-484a-b3a1-b52c391689d7"
 
 [targets]
 test = ["Test"]

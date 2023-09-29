@@ -2,6 +2,26 @@
 # Restricted Two-body Problem models
 #
 
+const R2BState = CartesianState
+
+struct R2BParameters{F} <: AstrodynamicalParameters{F,1}
+    μ::F
+
+    R2BParameters{F}(μ) where {F} = new{F}(convert(F, μ))
+    R2BParameters(μ) = new{typeof(μ)}(μ)
+    R2BParameters(; μ) = R2BParameters(μ)
+    R2BParameters{F}(; μ) where {F} = R2BParameters{F}(μ)
+    R2BParameters(values::NamedTuple) =
+        let (; μ) = values
+            R2BParameters(μ)
+        end
+
+    R2BParameters{F}(values::NamedTuple) where {F} =
+        let (; μ) = values
+            R2BParameters{F}(μ)
+        end
+end
+
 """
 A `ModelingToolkit.ODESystem` for the Restricted Two-body Problem.
 
@@ -20,10 +40,10 @@ spacecraft orbiting Earth.
 ### Usage
 
 ```julia
-model = R2BP()
+model = R2BSystem()
 ```
 """
-@memoize function R2BP(; stm=false, name=:R2BP)
+@memoize function R2BSystem(; stm=false, name=:R2B)
 
     @parameters t μ
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
@@ -47,8 +67,8 @@ model = R2BP()
         eqs = vcat(eqs, [LHS[i] ~ RHS[i] for i in 1:length(LHS)])
     end
 
-    if string(name) == "R2BP" && stm
-        modelname = Symbol("R2BPWithSTM")
+    if string(name) == "R2B" && stm
+        modelname = Symbol("R2BWithSTM")
     else
         modelname = name
     end
@@ -67,7 +87,7 @@ model = R2BP()
 end
 
 """
-Returns an `ODEFunction` for R2BP dynamics.
+Returns an `ODEFunction` for R2B dynamics.
 
 The order of the states follows: `[x, y, z, ẋ, ẏ, ż]`.
 
@@ -78,21 +98,32 @@ The order of the parameters follows: `[μ]`.
 ### Usage
 
 The `stm`, and `name` keyword arguments
-are passed to `R2BP`. All other keyword arguments are passed
+are passed to `R2B`. All other keyword arguments are passed
 directly to `SciMLBase.ODEFunction`.
 
 ```julia
-f = R2BPFunction(; stm=false, name=:R2BP, jac=true)
+f = R2BFunction(; stm=false, name=:R2B, jac=true)
 let u = randn(6), p = randn(1), t = 0
     f(u, p, t)
 end
 ```
 """
-@memoize function R2BPFunction(; stm=false, name=:R2BP, kwargs...)
+@memoize function R2BFunction(; stm=false, name=:R2B, kwargs...)
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
-        R2BP(; stm=stm, name=name);
+        R2BSystem(; stm=stm, name=name);
         options...
     )
 end
+
+const R2BOrbit = Orbit{<:R2BState,<:R2BParameters}
+AstrodynamicalModels.R2BOrbit(state::R2BState, parameters::R2BParameters) = Orbit(state, parameters)
+AstrodynamicalModels.R2BOrbit(; state::R2BState, parameters::R2BParameters) = Orbit(state, parameters)
+
+"""
+Return an `ODEProblem` for the provided R2B system.
+"""
+R2BProblem(u0, tspan, p; kwargs...) = ODEProblem(R2BFunction(), u0, tspan, p; kwargs...)
+R2BProblem(orbit::AstrodynamicalOrbit, tspan::Union{<:Tuple,<:AbstractArray}; kwargs...) = ODEProblem(R2BFunction(), AstrodynamicalModels.state(orbit), tspan, AstrodynamicalModels.parameters(orbit); kwargs...)
+R2BProblem(orbit::AstrodynamicalOrbit, Δt; kwargs...) = R2BProblem(orbit, (zero(Δt), δt); kwargs...)

@@ -69,39 +69,39 @@ shown below.
 #### Check the Equations of Motion
 
 ```@repl main
-eqs = equations(R2BP())
+eqs = equations(R2BSystem())
 ```
 
 #### List the States and Parameters
 
 ```@repl main
-x = states(R2BP())
-p = parameters(R2BP())
+x = states(R2BSystem())
+p = parameters(R2BSystem())
 ```
 
 #### Calculate the Jacobian
 
 ```@repl main
-J = calculate_jacobian(R2BP())
+J = calculate_jacobian(R2BSystem())
 ```
 
 #### Generate Code to Replicate the Model
 
 ```@repl main
-print(build_function(R2BP()))
+print(build_function(R2BSystem()))
 ```
 
 #### Generate Code which Implements the Dynamics
 
 ```@repl main
-print(R2BPFunction())
+print(R2BFunction())
 ```
 
 #### Generate C/C++ and MATLAB Code
 
 ```@repl main
-print(build_function([eq.rhs for eq in equations(R2BP())], states(R2BP()), parameters(R2BP()); target=Symbolics.CTarget()))
-print(build_function([eq.rhs for eq in equations(R2BP())], states(R2BP()), parameters(R2BP()); target=Symbolics.MATLABTarget()))
+print(build_function([eq.rhs for eq in equations(R2BSystem())], states(R2BSystem()), parameters(R2BSystem()); target=Symbolics.CTarget()))
+print(build_function([eq.rhs for eq in equations(R2BSystem())], states(R2BSystem()), parameters(R2BSystem()); target=Symbolics.MATLABTarget()))
 ```
 
 If you're interested in learning a bit about each astrodynamical model, or you'd

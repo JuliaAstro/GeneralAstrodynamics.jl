@@ -28,7 +28,7 @@ $\begin{aligned}
 ## Examples
 
 ```@repl main
-model = R2BP()
+model = R2BSystem()
 ```
 
 Every model also offers _optional_ state transition matrix dynamics. Use
@@ -36,27 +36,28 @@ Every model also offers _optional_ state transition matrix dynamics. Use
 equations of motion. State transition dynamics can also be thought of the
 model's _local linearization_.
 
-!!! note The state transition dynamics for `R2BP` systems are not _nearly_ as
-useful as the state transition dynamics within [`CR3BP`](CR3BP.md) models.
-Within CR3BP dynamics, a spacecraft's local linearization offers stability
-characteristics for periodic orbits, and provides stable and unstable directions
-(in state-space) for invariant manifolds about periodic orbits and Lagrange
-points.
+!!! note 
+    The state transition dynamics for `R2BSystem` are not _nearly_ as
+    useful as the state transition dynamics within [`CR3BP`](CR3BP.md) models.
+    Within CR3BP dynamics, a spacecraft's local linearization offers stability
+    characteristics for periodic orbits, and provides stable and unstable directions
+    (in state-space) for invariant manifolds about periodic orbits and Lagrange
+    points.
 
 ```@repl main
-model = R2BP(; stm=true)
+model = R2BSystem(; stm=true)
 ```
 
 Let's compute the Jacobian for these dynamics.
 
 ```@repl main
-J = calculate_jacobian(R2BP())
+J = calculate_jacobian(R2BSystem())
 ```
 
 Finally, let's construct a Julia function which implements these dynamics!
 
 ```@repl main
-f = R2BPFunction()
+f = R2BFunction()
 let u = randn(6), p = [3e6], t = 0
     f(u, p, t)
 end

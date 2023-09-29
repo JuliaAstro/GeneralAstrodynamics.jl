@@ -35,13 +35,13 @@ $\begin{aligned}
 ## Examples
 
 ```@repl main
-model = Attitude()
+model = AttitudeSystem()
 ```
 
 Let's compute the Jacobian for these dynamics.
 
 ```@repl main
-J = calculate_jacobian(Attitude())
+J = calculate_jacobian(AttitudeSystem())
 ```
 
 Finally, let's construct a Julia function which implements these dynamics!

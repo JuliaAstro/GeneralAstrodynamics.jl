@@ -6,13 +6,13 @@ module CR3BPTests
 using AstrodynamicalModels, ModelingToolkit, Test
 
 @testset "CR3BP Model Constructors" begin
-    model = CR3BP(; stm=false)
-    model = CR3BP(; stm=true)
+    model = CR3BSystem(; stm=false)
+    model = CR3BSystem(; stm=true)
     @test true
 end
 
 @testset "CR3BP Model Calculations" begin
-    vectorfield = CR3BPFunction()
+    vectorfield = CR3BFunction()
 
     r = [0.9253021269565836, 0, 0]
     v = [0.0, 0.05852663414965813, 0.0]

@@ -6,7 +6,7 @@ module EntryTests
 using AstrodynamicalModels, ModelingToolkit, Test
 
 @testset "Entry Model Constructors" begin
-    model = PlanarEntry()
+    model = PlanarEntrySystem()
     @test model isa ODESystem
 end
 

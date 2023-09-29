@@ -32,10 +32,10 @@ That's about right for a model in a package called
 
 ```julia
 # One model for ALL the planets in our solar system 😎
-model = NBP(9)
+model = NBSystem(9)
 ```
 """
-@memoize function NBP(N::Int; stm=false, name=:NBP)
+@memoize function NBSystem(N::Int; stm=false, name=:NBP)
 
     N > 0 || throw(ArgumentError("`N` must be a number greater than zero!"))
     T = N * 6 + (N * 6)^2
@@ -138,13 +138,13 @@ are passed to `NBP`. All other keyword arguments are passed
 directly to `SciMLBase.ODEFunction`.
 
 ```julia
-f = NBPFunction(3; stm=false, name=:NBP, jac=false, sparse=false)
+f = NBFunction(3; stm=false, name=:NBP, jac=false, sparse=false)
 let u = randn(3*6), p = randn(1 + 3), t = 0
     f(u, p, t)
 end
 ```
 """
-@memoize function NBPFunction(N::Int; stm=false, name=:R2BP, kwargs...)
+@memoize function NBFunction(N::Int; stm=false, name=:R2BP, kwargs...)
     defaults = (; jac=false)
     options = merge(defaults, kwargs)
     if N ≥ 2 && stm && options.jac
@@ -156,7 +156,7 @@ end
         """
     end
     return ODEFunction{true,SciMLBase.FullSpecialize}(
-        NBP(N; stm=stm, name=name);
+        NBSystem(N; stm=stm, name=name);
         options...
     )
 end
