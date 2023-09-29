@@ -16,15 +16,15 @@ mutable struct AttitudeState{F} <: AstrodynamicalState{F,7}
 
     AttitudeState{F}(q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃) where {F} = new{F}(q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃)
     AttitudeState(q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃) = new{promote_type(typeof(q₁), typeof(q₂), typeof(q₃), typeof(q₄), typeof(ω₁), typeof(ω₂), typeof(ω₃))}(q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃)
-    AttitudeState(; q₁=0, q₂=0, q₃=0, q₄=1, ω₁=0, ω₂=0, ω₃=0) = AttitudeState(q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃)
-    AttitudeState{F}(; q₁=0, q₂=0, q₃=0, q₄=1, ω₁=0, ω₂=0, ω₃=0) where {F} = AttitudeState{F}(q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃)
-    AttitudeState(values::NamedTuple) =
-        let (; q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃) = merge((; q₁=0, q₂=0, q₃=0, q₄=1, ω₁=0, ω₂=0, ω₃=0), values)
-            AttitudeState(q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃)
-        end
+    AttitudeState(; q₁=0.0, q₂=0.0, q₃=0.0, q₄=1.0, ω₁=0.0, ω₂=0.0, ω₃=0.0) = AttitudeState(q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃)
+    AttitudeState{F}(; q₁=zero(F), q₂=zero(F), q₃=zero(F), q₄=one(F), ω₁=zero(F), ω₂=zero(F), ω₃=zero(F)) where {F} = AttitudeState{F}(q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃)
     AttitudeState{F}(values::NamedTuple) where {F} =
-        let (; q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃) = merge((; q₁=0, q₂=0, q₃=0, q₄=1, ω₁=0, ω₂=0, ω₃=0), values)
+        let (; q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃) = merge((; q₁=zero(F), q₂=zero(F), q₃=zero(F), q₄=one(F), ω₁=zero(F), ω₂=zero(F), ω₃=zero(F)), values)
             AttitudeState{F}(q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃)
+        end
+    AttitudeState(values::NamedTuple) =
+        let F = Float64, (; q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃) = merge((; q₁=zero(F), q₂=zero(F), q₃=zero(F), q₄=one(F), ω₁=zero(F), ω₂=zero(F), ω₃=zero(F)), values)
+            AttitudeState(q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃)
         end
 end
 
@@ -50,14 +50,14 @@ struct AttitudeParameters{F} <: AstrodynamicalParameters{F,15}
 
     AttitudeParameters{F}(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃) where {F} = new{F}(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃)
     AttitudeParameters(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃) = new{promote_type(typeof(J₁₁), typeof(J₂₁), typeof(J₃₁), typeof(J₁₂), typeof(J₂₂), typeof(J₃₂), typeof(J₁₃), typeof(J₂₃), typeof(J₃₃), typeof(L₁), typeof(L₂), typeof(L₃), typeof(f₁), typeof(f₂), typeof(f₃))}(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₂)
-    AttitudeParameters(; J₁₁=1, J₂₁=0, J₃₁=0, J₁₂=0, J₂₂=1, J₃₂=0, J₁₃=0, J₂₃=0, J₃₃=1, L₁=0, L₂=0, L₃=0, f₁=0, f₂=0, f₃=0) = AttitudeParameters(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃)
-    AttitudeParameters{F}(; J₁₁=1, J₂₁=0, J₃₁=0, J₁₂=0, J₂₂=1, J₃₂=0, J₁₃=0, J₂₃=0, J₃₃=1, L₁=0, L₂=0, L₃=0, f₁=0, f₂=0, f₃=0) where {F} = AttitudeParameters{F}(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃)
+    AttitudeParameters(; J₁₁=one(F), J₂₁=zero(F), J₃₁=zero(F), J₁₂=zero(F), J₂₂=one(F), J₃₂=zero(F), J₁₃=zero(F), J₂₃=zero(F), J₃₃=one(F), L₁=zero(F), L₂=zero(F), L₃=zero(F), f₁=zero(F), f₂=zero(F), f₃=zero(F)) = AttitudeParameters(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃)
+    AttitudeParameters{F}(; J₁₁=one(F), J₂₁=zero(F), J₃₁=zero(F), J₁₂=zero(F), J₂₂=one(F), J₃₂=zero(F), J₁₃=zero(F), J₂₃=zero(F), J₃₃=one(F), L₁=zero(F), L₂=zero(F), L₃=zero(F), f₁=zero(F), f₂=zero(F), f₃=zero(F)) where {F} = AttitudeParameters{F}(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃)
     AttitudeParameters(values::NamedTuple) =
-        let (; J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃) = merge((; J₁₁=1, J₂₁=0, J₃₁=0, J₁₂=0, J₂₂=1, J₃₂=0, J₁₃=0, J₂₃=0, J₃₃=1, L₁=0, L₂=0, L₃=0, f₁=0, f₂=0, f₃=0), values)
+        let (; J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃) = merge((; J₁₁=one(F), J₂₁=zero(F), J₃₁=zero(F), J₁₂=zero(F), J₂₂=one(F), J₃₂=zero(F), J₁₃=zero(F), J₂₃=zero(F), J₃₃=one(F), L₁=zero(F), L₂=zero(F), L₃=zero(F), f₁=zero(F), f₂=zero(F), f₃=zero(F)), values)
             AttitudeParameters(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃)
         end
     AttitudeParameters{F}(values::NamedTuple) where {F} =
-        let (; J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃) = merge((; J₁₁=1, J₂₁=0, J₃₁=0, J₁₂=0, J₂₂=1, J₃₂=0, J₁₃=0, J₂₃=0, J₃₃=1, L₁=0, L₂=0, L₃=0, f₁=0, f₂=0, f₃=0), values)
+        let (; J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃) = merge((; J₁₁=one(F), J₂₁=zero(F), J₃₁=zero(F), J₁₂=zero(F), J₂₂=one(F), J₃₂=zero(F), J₁₃=zero(F), J₂₃=zero(F), J₃₃=one(F), L₁=zero(F), L₂=zero(F), L₃=zero(F), f₁=zero(F), f₂=zero(F), f₃=zero(F)), values)
             AttitudeParameters{F}(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃)
         end
 end
