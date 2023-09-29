@@ -4,6 +4,9 @@
 
 const R2BState = CartesianState
 
+"""
+A parameter vector for R2BP dynamics.
+"""
 struct R2BParameters{F} <: AstrodynamicalParameters{F,1}
     μ::F
 

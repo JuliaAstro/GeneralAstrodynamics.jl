@@ -4,6 +4,9 @@
 
 const CR3BState = CartesianState
 
+"""
+A paremeter vector for CR3BP dynamics.
+"""
 struct CR3BParameters{F} <: AstrodynamicalParameters{F,1}
     μ::F
 
