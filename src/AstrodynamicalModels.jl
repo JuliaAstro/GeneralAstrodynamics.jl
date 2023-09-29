@@ -79,15 +79,15 @@ mutable struct CartesianState{F} <: AstrodynamicalState{F,6}
 
     CartesianState{F}(x, y, z, ẋ, ẏ, ż) where {F} = new{F}(convert(F, x), convert(F, y), convert(F, z), convert(F, ẋ), convert(F, ẏ), convert(F, ż))
     CartesianState(x, y, z, ẋ, ẏ, ż) = new{promote_type(typeof(x), typeof(y), typeof(z), typeof(ẋ), typeof(ẏ), typeof(ż))}(x, y, z, ẋ, ẏ, ż)
-    CartesianState(; x=0, y=0, z=0, ẋ=0, ẏ=0, ż=0) = CartesianState(x, y, z, ẋ, ẏ, ż)
-    CartesianState{F}(; x=0, y=0, z=0, ẋ=0, ẏ=0, ż=0) where {F} = CartesianState{F}(x, y, z, ẋ, ẏ, ż)
-    CartesianState(values::NamedTuple) =
-        let (; x, y, z, ẋ, ẏ, ż) = merge((; x=0, y=0, z=0, ẋ=0, ẏ=0, ż=0), values)
-            CartesianState(x, y, z, ẋ, ẏ, ż)
-        end
+    CartesianState{F}(; x=zero(F), y=zero(F), z=zero(F), ẋ=zero(F), ẏ=zero(F), ż=zero(F)) where {F} = CartesianState{F}(x, y, z, ẋ, ẏ, ż)
+    CartesianState(; x=0.0, y=0.0, z=0.0, ẋ=0.0, ẏ=0.0, ż=0.0) = CartesianState(x, y, z, ẋ, ẏ, ż)
     CartesianState{F}(values::NamedTuple) where {F} =
-        let (; x, y, z, ẋ, ẏ, ż) = merge((; x=0, y=0, z=0, ẋ=0, ẏ=0, ż=0), values)
+        let (; x, y, z, ẋ, ẏ, ż) = merge((; x=zero(F), y=zero(F), z=zero(F), ẋ=zero(F), ẏ=zero(F), ż=zero(F)), values)
             CartesianState{F}(x, y, z, ẋ, ẏ, ż)
+        end
+    CartesianState(values::NamedTuple) =
+        let F = Float64, (; x, y, z, ẋ, ẏ, ż) = merge((; x=zero(F), y=zero(F), z=zero(F), ẋ=zero(F), ẏ=zero(F), ż=zero(F)), values)
+            CartesianState(x, y, z, ẋ, ẏ, ż)
         end
 end
 
@@ -137,15 +137,15 @@ mutable struct CartesianSTM{F} <: FieldMatrix{6,6,F}
 
     CartesianSTM{F}(xx, xy, xz, xẋ, xẏ, xż, yx, yy, yz, yẋ, yẏ, yż, zx, zy, zz, zẋ, zẏ, zż, ẋx, ẋy, ẋz, ẋẋ, ẋẏ, ẋż, ẏx, ẏy, ẏz, ẏẋ, ẏẏ, ẏż, żx, ży, żz, żẋ, żẏ, żż) where {F} = new{F}(xx, xy, xz, xẋ, xẏ, xż, yx, yy, yz, yẋ, yẏ, yż, zx, zy, zz, zẋ, zẏ, zż, ẋx, ẋy, ẋz, ẋẋ, ẋẏ, ẋż, ẏx, ẏy, ẏz, ẏẋ, ẏẏ, ẏż, żx, ży, żz, żẋ, żẏ, żż)
     CartesianSTM(xx, xy, xz, xẋ, xẏ, xż, yx, yy, yz, yẋ, yẏ, yż, zx, zy, zz, zẋ, zẏ, zż, ẋx, ẋy, ẋz, ẋẋ, ẋẏ, ẋż, ẏx, ẏy, ẏz, ẏẋ, ẏẏ, ẏż, żx, ży, żz, żẋ, żẏ, żż) = new{promote_type(typeof(xx), typeof(xy), typeof(xz), typeof(xẋ), typeof(xẏ), typeof(xż), typeof(yx), typeof(yy), typeof(yz), typeof(yẋ), typeof(yẏ), typeof(yż), typeof(zx), typeof(zy), typeof(zz), typeof(zẋ), typeof(zẏ), typeof(zż), typeof(ẋx), typeof(ẋy), typeof(ẋz), typeof(ẋẋ), typeof(ẋẏ), typeof(ẋż), typeof(ẏx), typeof(ẏy), typeof(ẏz), typeof(ẏẋ), typeof(ẏẏ), typeof(ẏż), typeof(żx), typeof(ży), typeof(żz), typeof(żẋ), typeof(żẏ), typeof(żż))}(xx, xy, xz, xẋ, xẏ, xż, yx, yy, yz, yẋ, yẏ, yż, zx, zy, zz, zẋ, zẏ, zż, ẋx, ẋy, ẋz, ẋẋ, ẋẏ, ẋż, ẏx, ẏy, ẏz, ẏẋ, ẏẏ, ẏż, żx, ży, żz, żẋ, żẏ, żż)
-    CartesianSTM(; xx=1, xy=0, xz=0, xẋ=0, xẏ=0, xż=0, yx=0, yy=1, yz=0, yẋ=0, yẏ=0, yż=0, zx=0, zy=0, zz=1, zẋ=0, zẏ=0, zż=0, ẋx=0, ẋy=0, ẋz=0, ẋẋ=1, ẋẏ=0, ẋż=0, ẏx=0, ẏy=0, ẏz=0, ẏẋ=0, ẏẏ=1, ẏż=0, żx=0, ży=0, żz=0, żẋ=0, żẏ=0, żż=1) = CartesianSTM(xx, xy, xz, xẋ, xẏ, xż, yx, yy, yz, yẋ, yẏ, yż, zx, zy, zz, zẋ, zẏ, zż, ẋx, ẋy, ẋz, ẋẋ, ẋẏ, ẋż, ẏx, ẏy, ẏz, ẏẋ, ẏẏ, ẏż, żx, ży, żz, żẋ, żẏ, żż)
-    CartesianSTM{F}(; xx=1, xy=0, xz=0, xẋ=0, xẏ=0, xż=0, yx=0, yy=1, yz=0, yẋ=0, yẏ=0, yż=0, zx=0, zy=0, zz=1, zẋ=0, zẏ=0, zż=0, ẋx=0, ẋy=0, ẋz=0, ẋẋ=1, ẋẏ=0, ẋż=0, ẏx=0, ẏy=0, ẏz=0, ẏẋ=0, ẏẏ=1, ẏż=0, żx=0, ży=0, żz=0, żẋ=0, żẏ=0, żż=1) where {F} = CartesianSTM{F}(xx, xy, xz, xẋ, xẏ, xż, yx, yy, yz, yẋ, yẏ, yż, zx, zy, zz, zẋ, zẏ, zż, ẋx, ẋy, ẋz, ẋẋ, ẋẏ, ẋż, ẏx, ẏy, ẏz, ẏẋ, ẏẏ, ẏż, żx, ży, żz, żẋ, żẏ, żż)
-    CartesianSTM(values::NamedTuple) =
-        let (; xx, xy, xz, xẋ, xẏ, xż, yx, yy, yz, yẋ, yẏ, yż, zx, zy, zz, zẋ, zẏ, zż, ẋx, ẋy, ẋz, ẋẋ, ẋẏ, ẋż, ẏx, ẏy, ẏz, ẏẋ, ẏẏ, ẏż, żx, ży, żz, żẋ, żẏ, żż) = merge((; xx=1, xy=0, xz=0, xẋ=0, xẏ=0, xż=0, yx=0, yy=1, yz=0, yẋ=0, yẏ=0, yż=0, zx=0, zy=0, zz=1, zẋ=0, zẏ=0, zż=0, ẋx=0, ẋy=0, ẋz=0, ẋẋ=1, ẋẏ=0, ẋż=0, ẏx=0, ẏy=0, ẏz=0, ẏẋ=0, ẏẏ=1, ẏż=0, żx=0, ży=0, żz=0, żẋ=0, żẏ=0, żż=1), values)
-            CartesianSTM(xx, xy, xz, xẋ, xẏ, xż, yx, yy, yz, yẋ, yẏ, yż, zx, zy, zz, zẋ, zẏ, zż, ẋx, ẋy, ẋz, ẋẋ, ẋẏ, ẋż, ẏx, ẏy, ẏz, ẏẋ, ẏẏ, ẏż, żx, ży, żz, żẋ, żẏ, żż)
-        end
+    CartesianSTM{F}(; xx=one(F), xy=zero(F), xz=zero(F), xẋ=zero(F), xẏ=zero(F), xż=zero(F), yx=zero(F), yy=one(F), yz=zero(F), yẋ=zero(F), yẏ=zero(F), yż=zero(F), zx=zero(F), zy=zero(F), zz=one(F), zẋ=zero(F), zẏ=zero(F), zż=zero(F), ẋx=zero(F), ẋy=zero(F), ẋz=zero(F), ẋẋ=one(F), ẋẏ=zero(F), ẋż=zero(F), ẏx=zero(F), ẏy=zero(F), ẏz=zero(F), ẏẋ=zero(F), ẏẏ=one(F), ẏż=zero(F), żx=zero(F), ży=zero(F), żz=zero(F), żẋ=zero(F), żẏ=zero(F), żż=one(F)) where {F} = CartesianSTM{F}(xx, xy, xz, xẋ, xẏ, xż, yx, yy, yz, yẋ, yẏ, yż, zx, zy, zz, zẋ, zẏ, zż, ẋx, ẋy, ẋz, ẋẋ, ẋẏ, ẋż, ẏx, ẏy, ẏz, ẏẋ, ẏẏ, ẏż, żx, ży, żz, żẋ, żẏ, żż)
+    CartesianSTM(; xx=1.0, xy=0.0, xz=0.0, xẋ=0.0, xẏ=0.0, xż=0.0, yx=0.0, yy=1.0, yz=0.0, yẋ=0.0, yẏ=0.0, yż=0.0, zx=0.0, zy=0.0, zz=1.0, zẋ=0.0, zẏ=0.0, zż=0.0, ẋx=0.0, ẋy=0.0, ẋz=0.0, ẋẋ=1.0, ẋẏ=0.0, ẋż=0.0, ẏx=0.0, ẏy=0.0, ẏz=0.0, ẏẋ=0.0, ẏẏ=1.0, ẏż=0.0, żx=0.0, ży=0.0, żz=0.0, żẋ=0.0, żẏ=0.0, żż=1.0) = CartesianSTM(xx, xy, xz, xẋ, xẏ, xż, yx, yy, yz, yẋ, yẏ, yż, zx, zy, zz, zẋ, zẏ, zż, ẋx, ẋy, ẋz, ẋẋ, ẋẏ, ẋż, ẏx, ẏy, ẏz, ẏẋ, ẏẏ, ẏż, żx, ży, żz, żẋ, żẏ, żż)
     CartesianSTM{F}(values::NamedTuple) where {F} =
-        let (; xx, xy, xz, xẋ, xẏ, xż, yx, yy, yz, yẋ, yẏ, yż, zx, zy, zz, zẋ, zẏ, zż, ẋx, ẋy, ẋz, ẋẋ, ẋẏ, ẋż, ẏx, ẏy, ẏz, ẏẋ, ẏẏ, ẏż, żx, ży, żz, żẋ, żẏ, żż) = merge((; xx=1, xy=0, xz=0, xẋ=0, xẏ=0, xż=0, yx=0, yy=1, yz=0, yẋ=0, yẏ=0, yż=0, zx=0, zy=0, zz=1, zẋ=0, zẏ=0, zż=0, ẋx=0, ẋy=0, ẋz=0, ẋẋ=1, ẋẏ=0, ẋż=0, ẏx=0, ẏy=0, ẏz=0, ẏẋ=0, ẏẏ=1, ẏż=0, żx=0, ży=0, żz=0, żẋ=0, żẏ=0, żż=1), values)
+        let (; xx, xy, xz, xẋ, xẏ, xż, yx, yy, yz, yẋ, yẏ, yż, zx, zy, zz, zẋ, zẏ, zż, ẋx, ẋy, ẋz, ẋẋ, ẋẏ, ẋż, ẏx, ẏy, ẏz, ẏẋ, ẏẏ, ẏż, żx, ży, żz, żẋ, żẏ, żż) = merge((; xx=one(F), xy=zero(F), xz=zero(F), xẋ=zero(F), xẏ=zero(F), xż=zero(F), yx=zero(F), yy=one(F), yz=zero(F), yẋ=zero(F), yẏ=zero(F), yż=zero(F), zx=zero(F), zy=zero(F), zz=one(F), zẋ=zero(F), zẏ=zero(F), zż=zero(F), ẋx=zero(F), ẋy=zero(F), ẋz=zero(F), ẋẋ=one(F), ẋẏ=zero(F), ẋż=zero(F), ẏx=zero(F), ẏy=zero(F), ẏz=zero(F), ẏẋ=zero(F), ẏẏ=one(F), ẏż=zero(F), żx=zero(F), ży=zero(F), żz=zero(F), żẋ=zero(F), żẏ=zero(F), żż=one(F)), values)
             CartesianSTM{F}(xx, xy, xz, xẋ, xẏ, xż, yx, yy, yz, yẋ, yẏ, yż, zx, zy, zz, zẋ, zẏ, zż, ẋx, ẋy, ẋz, ẋẋ, ẋẏ, ẋż, ẏx, ẏy, ẏz, ẏẋ, ẏẏ, ẏż, żx, ży, żz, żẋ, żẏ, żż)
+        end
+    CartesianSTM(values::NamedTuple) =
+        let F = Float64, (; xx, xy, xz, xẋ, xẏ, xż, yx, yy, yz, yẋ, yẏ, yż, zx, zy, zz, zẋ, zẏ, zż, ẋx, ẋy, ẋz, ẋẋ, ẋẏ, ẋż, ẏx, ẏy, ẏz, ẏẋ, ẏẏ, ẏż, żx, ży, żz, żẋ, żẏ, żż) = merge((; xx=one(F), xy=zero(F), xz=zero(F), xẋ=zero(F), xẏ=zero(F), xż=zero(F), yx=zero(F), yy=one(F), yz=zero(F), yẋ=zero(F), yẏ=zero(F), yż=zero(F), zx=zero(F), zy=zero(F), zz=one(F), zẋ=zero(F), zẏ=zero(F), zż=zero(F), ẋx=zero(F), ẋy=zero(F), ẋz=zero(F), ẋẋ=one(F), ẋẏ=zero(F), ẋż=zero(F), ẏx=zero(F), ẏy=zero(F), ẏz=zero(F), ẏẋ=zero(F), ẏẏ=one(F), ẏż=zero(F), żx=zero(F), ży=zero(F), żz=zero(F), żẋ=zero(F), żẏ=zero(F), żż=one(F)), values)
+            CartesianSTM(xx, xy, xz, xẋ, xẏ, xż, yx, yy, yz, yẋ, yẏ, yż, zx, zy, zz, zẋ, zẏ, zż, ẋx, ẋy, ẋz, ẋẋ, ẋẏ, ẋż, ẏx, ẏy, ẏz, ẏẋ, ẏẏ, ẏż, żx, ży, żz, żẋ, żẏ, żż)
         end
 end
 
