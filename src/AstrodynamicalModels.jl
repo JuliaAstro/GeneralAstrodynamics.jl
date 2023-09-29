@@ -28,7 +28,7 @@ export R2BFunction, CR3BFunction, NBFunction, PlanarEntryFunction, AttitudeFunct
 export CartesianState, R2BParameters, CR3BParameters, AttitudeState, AttitudeParameters, PlanarEntryState, PlanarEntryParameters
 
 # Export every orbit type
-export Orbit, R2BOrbit, CR3BOrbit
+export R2BOrbit, CR3BOrbit
 
 using Symbolics
 using SciMLBase

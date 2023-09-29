@@ -11,7 +11,6 @@ AstrodynamicalModels.R2BParameters(body::SPICEBodies.BodyLike) = R2BParameters(g
 Return a R2BP orbit with parameters associated with the provided body (KM^3/S^2).
 """
 AstrodynamicalModels.R2BOrbit(state, body::SPICEBodies.BodyLike) = Orbit(state, R2BParameters(body))
-AstrodynamicalModels.R2BOrbit(; state, body::SPICEBodies.BodyLike) = R2BOrbit(state, body)
 
 """
 Return a R2BP `ODEProblem` with parameters associated with the provided body (KM^3/S^2).
@@ -34,7 +33,6 @@ AstrodynamicalModels.CR3BParameters(primary::SPICEBodies.BodyLike, secondary::SP
 Return a CR3BP orbit with parameters associated with the provided body in nondimensional units.
 """
 AstrodynamicalModels.CR3BOrbit(state, primary::SPICEBodies.BodyLike, secondary::SPICEBodies.BodyLike) = Orbit(state, CR3BParameters(primary, secondary))
-AstrodynamicalModels.CR3BOrbit(; state, primary::SPICEBodies.BodyLike, secondary::SPICEBodies.BodyLike) = CR3BOrbit(state, primary, secondary)
 
 """
 Return a CR3BP `ODEProblem` with parameters associated with the provided bodies in nondimensional units.
