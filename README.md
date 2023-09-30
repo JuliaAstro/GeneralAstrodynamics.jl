@@ -12,11 +12,11 @@ common astrodynamics models._
 Choose one of the two lines below!
 
 ```julia
-Pkg.add("AstrodynamicalModels")
+Pkg.add("AstrodynamicalModels")  # in Julia code
 ```
 
 ```julia
-]add AstrodynamicalModels # in Julia's REPL
+pkg> add AstrodynamicalModels    # in Julia's REPL
 ```
 
 ## Currently Implemented
