@@ -122,9 +122,12 @@ end
     )
 end
 
+"""
+An `Orbit` which exists within CR3BP dynamics.
+"""
 const CR3BOrbit = Orbit{<:CR3BState,<:CR3BParameters}
-AstrodynamicalModels.CR3BOrbit(state::CR3BState, parameters::CR3BParameters) = Orbit(state, parameters)
-AstrodynamicalModels.CR3BOrbit(; state::CR3BState, parameters::CR3BParameters) = Orbit(state, parameters)
+AstrodynamicalModels.CR3BOrbit(state::AbstractVector, parameters::AbstractVector) = Orbit(CR3BState(state), CR3BParameters(parameters))
+AstrodynamicalModels.CR3BOrbit(; state::AbstractVector, parameters::AbstractVector) = Orbit(CR3BState(state), CR3BParameters(parameters))
 
 """
 Return an `ODEProblem` for the provided CR3B system.

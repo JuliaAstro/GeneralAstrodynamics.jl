@@ -120,9 +120,12 @@ end
     )
 end
 
+"""
+An `Orbit` which exists within R2BP dynamics.
+"""
 const R2BOrbit = Orbit{<:R2BState,<:R2BParameters}
-AstrodynamicalModels.R2BOrbit(state::R2BState, parameters::R2BParameters) = Orbit(state, parameters)
-AstrodynamicalModels.R2BOrbit(; state::R2BState, parameters::R2BParameters) = Orbit(state, parameters)
+AstrodynamicalModels.R2BOrbit(state::AbstractVector, parameters::AbstractVector) = Orbit(R2BState(state), R2BParameters(parameters))
+AstrodynamicalModels.R2BOrbit(; state::AbstractVector, parameters::AbstractVector) = Orbit(R2BState(state), R2BParameters(parameters))
 
 """
 Return an `ODEProblem` for the provided R2B system.

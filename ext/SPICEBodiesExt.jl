@@ -32,7 +32,7 @@ AstrodynamicalModels.CR3BParameters(primary::SPICEBodies.BodyLike, secondary::SP
 """
 Return a CR3BP orbit with parameters associated with the provided body in nondimensional units.
 """
-AstrodynamicalModels.CR3BOrbit(state, primary::SPICEBodies.BodyLike, secondary::SPICEBodies.BodyLike) = Orbit(state, CR3BParameters(primary, secondary))
+AstrodynamicalModels.CR3BOrbit(state, primary::SPICEBodies.BodyLike, secondary::SPICEBodies.BodyLike) = AstrodynamicalModels.Orbit(state, CR3BParameters(primary, secondary))
 
 """
 Return a CR3BP `ODEProblem` with parameters associated with the provided bodies in nondimensional units.
