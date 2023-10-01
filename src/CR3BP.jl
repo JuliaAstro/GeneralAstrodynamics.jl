@@ -7,22 +7,10 @@ const CR3BState = CartesianState
 """
 A paremeter vector for CR3BP dynamics.
 """
-struct CR3BParameters{F} <: AstrodynamicalParameters{F,1}
+Base.@kwdef struct CR3BParameters{F} <: AstrodynamicalParameters{F,1}
     μ::F
 
-    CR3BParameters{F}(μ) where {F} = new{F}(convert(F, μ))
     CR3BParameters(μ) = new{typeof(μ)}(μ)
-    CR3BParameters(; μ) = CR3BParameters(μ)
-    CR3BParameters{F}(; μ) where {F} = CR3BParameters{F}(μ)
-    CR3BParameters(values::NamedTuple) =
-        let (; μ) = values
-            CR3BParameters(μ)
-        end
-
-    CR3BParameters{F}(values::NamedTuple) where {F} =
-        let (; μ) = values
-            CR3BParameters{F}(μ)
-        end
 end
 
 """

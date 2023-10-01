@@ -1,33 +1,23 @@
 """
 A state vector for planar entry dynamics.
 """
-mutable struct PlanarEntryState{F} <: AstrodynamicalState{F,4}
-    γ::F
-    v::F
-    r::F
-    θ::F
+Base.@kwdef mutable struct PlanarEntryState{F} <: AstrodynamicalState{F,4}
+    γ::F = 0.0
+    v::F = 0.0
+    r::F = 0.0
+    θ::F = 0.0
 
     PlanarEntryState{F}(::UndefInitializer) where {F} = new{F}()
     PlanarEntryState(::UndefInitializer) = PlanarEntryState{Float64}(undef)
 
-    PlanarEntryState{F}(γ, v, r, θ) where {F} = new{F}(convert(F, γ), convert(F, v), convert(F, r), convert(F, θ))
+    PlanarEntryState{F}(γ, v, r, θ) where {F} = new{F}(γ, v, r, θ)
     PlanarEntryState(γ, v, r, θ) = new{promote_type(typeof(γ), typeof(v), typeof(r), typeof(θ))}(γ, v, r, θ)
-    PlanarEntryState(; γ=0.0, v=0.0, r=0.0, θ=0.0) = PlanarEntryState(γ, v, r, θ)
-    PlanarEntryState{F}(; γ=zero(F), v=zero(F), r=zero(F), θ=zero(F)) where {F} = PlanarEntryState{F}(γ, v, r, θ)
-    PlanarEntryState{F}(values::NamedTuple) where {F} =
-        let (; γ, v, r, θ) = merge((; γ=zero(F), v=zero(F), r=zero(F), θ=zero(F)), values)
-            PlanarEntryState{F}(γ, v, r, θ)
-        end
-    PlanarEntryState(values::NamedTuple) =
-        let F = Float64, (; γ, v, r, θ) = merge((; γ=zero(F), v=zero(F), r=zero(F), θ=zero(F)), values)
-            PlanarEntryState(γ, v, r, θ)
-        end
 end
 
 """
 A parameter vector for planar entry dynamics.
 """
-struct PlanarEntryParameters{F} <: AstrodynamicalParameters{F,4}
+Base.@kwdef struct PlanarEntryParameters{F} <: AstrodynamicalParameters{F,4}
     R::F
     P::F
     H::F
@@ -36,21 +26,9 @@ struct PlanarEntryParameters{F} <: AstrodynamicalParameters{F,4}
     C::F
     μ::F
 
-    PlanarEntryParameters{F}(::UndefInitializer) where {F} = new{F}()
-    PlanarEntryParameters(::UndefInitializer) = PlanarEntryParameters{Float64}(undef)
-
-    PlanarEntryParameters{F}(R, P, H, m, A, C, μ) where {F} = new{F}(convert(F, γ), convert(F, v), convert(F, r), convert(F, θ))
+    PlanarEntryParameters{F}(R, P, H, m, A, C, μ) where {F} = new{F}(R, P, H, m, A, C, μ)
     PlanarEntryParameters(R, P, H, m, A, C, μ) = new{promote_type(typeof(R), typeof(P), typeof(H), typeof(m), typeof(A), typeof(C), typeof(μ))}(R, P, H, m, A, C, μ)
-    PlanarEntryParameters(; R=zero(F), P=zero(F), H=zero(F), m=zero(F), A=zero(F), C=zero(F), μ=zero(F)) = PlanarEntryParameters(R, P, H, m, A, C, μ)
-    PlanarEntryParameters{F}(; R=zero(F), P=zero(F), H=zero(F), m=zero(F), A=zero(F), C=zero(F), μ=zero(F)) where {F} = PlanarEntryParameters{F}(R, P, H, m, A, C, μ)
-    PlanarEntryParameters(values::NamedTuple) =
-        let (; R, P, H, m, A, C, μ) = merge((; R=zero(F), P=zero(F), H=zero(F), m=zero(F), A=zero(F), C=zero(F), μ=zero(F)), values)
-            PlanarEntryParameters(R, P, H, m, A, C, μ)
-        end
-    PlanarEntryParameters{F}(values::NamedTuple) where {F} =
-        let (; R, P, H, m, A, C, μ) = merge((; R=zero(F), P=zero(F), H=zero(F), m=zero(F), A=zero(F), C=zero(F), μ=zero(F)), values)
-            PlanarEntryParameters{F}(R, P, H, m, A, C, μ)
-        end
+
 end
 
 """

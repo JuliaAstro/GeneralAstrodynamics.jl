@@ -7,22 +7,10 @@ const R2BState = CartesianState
 """
 A parameter vector for R2BP dynamics.
 """
-struct R2BParameters{F} <: AstrodynamicalParameters{F,1}
+Base.@kwdef struct R2BParameters{F} <: AstrodynamicalParameters{F,1}
     μ::F
 
-    R2BParameters{F}(μ) where {F} = new{F}(convert(F, μ))
     R2BParameters(μ) = new{typeof(μ)}(μ)
-    R2BParameters(; μ) = R2BParameters(μ)
-    R2BParameters{F}(; μ) where {F} = R2BParameters{F}(μ)
-    R2BParameters(values::NamedTuple) =
-        let (; μ) = values
-            R2BParameters(μ)
-        end
-
-    R2BParameters{F}(values::NamedTuple) where {F} =
-        let (; μ) = values
-            R2BParameters{F}(μ)
-        end
 end
 
 """
