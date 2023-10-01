@@ -9,7 +9,7 @@ $(EXPORTS)
 ## Imports
 $(IMPORTS)
 """
-module CR3BPSolvers
+module CR3BSolvers
 
 export halo, lyapunov, monodromy
 
@@ -47,7 +47,7 @@ for a planar periodic orbit.
 """
 function planar_differential(state::AbstractVector, μ)
 
-    f = CR3BPFunction()
+    f = CR3BFunction()
     accel = f(state, (μ,), NaN)
 
     F = @views [
@@ -73,7 +73,7 @@ for a periodic orbit.
 """
 function extraplanar_differential(state::AbstractVector, μ)
 
-    f = CR3BPFunction()
+    f = CR3BFunction()
     accel = f(state, (μ,), NaN)
 
     F = @views [
@@ -107,8 +107,8 @@ function lyapunov(x, ẏ, μ, T; reltol=1e-12, abstol=1e-12, maxiters=10)
     p = (μ,)
     tspan = (zero(τ), τ)
 
-    f = CR3BPFunction()
-    problem = ODEProblem(CR3BPFunction(stm=true), ic, tspan, p)
+    f = CR3BFunction()
+    problem = ODEProblem(CR3BFunction(stm=true), ic, tspan, p)
 
     for _ in 1:maxiters
 
@@ -171,8 +171,8 @@ function halo(x, z, ẏ, μ, T; reltol=1e-12, abstol=1e-12, maxiters=10)
     p = (μ,)
     tspan = (zero(τ), τ)
 
-    f = CR3BPFunction()
-    problem = ODEProblem(CR3BPFunction(stm=true), ic, tspan, p)
+    f = CR3BFunction()
+    problem = ODEProblem(CR3BFunction(stm=true), ic, tspan, p)
 
     for _ in 1:maxiters
 
@@ -249,7 +249,7 @@ end
 Solve for the monodromy matrix of the periodic orbit.
 """
 function monodromy(u::AbstractVector, μ, T; algorithm=Vern9(), reltol=1e-12, abstol=1e-12, save_everystep=false, kwargs...)
-    problem = ODEProblem(CR3BPFunction(stm=true), MVector{42}(u[begin], u[begin+1], u[begin+2], u[begin+3], u[begin+4], u[begin+5], 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1), (zero(T), T), (μ,))
+    problem = ODEProblem(CR3BFunction(stm=true), MVector{42}(u[begin], u[begin+1], u[begin+2], u[begin+3], u[begin+4], u[begin+5], 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1), (zero(T), T), (μ,))
     solution = solve(problem, algorithm; reltol=reltol, abstol=abstol, save_everystep=save_everystep, kwargs...)
 
     if solution[begin][begin:begin+5] ≉ solution[end][begin:begin+5]

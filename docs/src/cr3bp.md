@@ -4,7 +4,7 @@ _All three-body solvers!_
 
 ```@autodocs
 Modules = [
-    AstrodynamicalSolvers.CR3BPSolvers,
+    AstrodynamicalSolvers.CR3BSolvers,
 ]
 Order = [:module, :type, :function, :constant]
 ```

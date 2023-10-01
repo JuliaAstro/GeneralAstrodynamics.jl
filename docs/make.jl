@@ -10,7 +10,7 @@ makedocs(
         "Getting Started" => "index.md",
         "Reference" => [
             "`AstrodynamicalSolvers`" => "reference.md",
-            "`CR3BPSolvers`" => "cr3bp.md",
+            "`CR3BSolvers`" => "cr3bp.md",
         ]
     ]
 )

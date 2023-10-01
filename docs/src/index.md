@@ -29,7 +29,7 @@ using Plots
 planar = let
     u, T = halo(μ, 1) # lyapunov (planar) orbit
     u = [u.x, 0, 0, 0, u.ẏ, 0]
-    problem = ODEProblem(CR3BPFunction(), u, (0, T), (μ,))
+    problem = ODEProblem(CR3BFunction(), u, (0, T), (μ,))
     solution = solve(problem, Vern9(), reltol=1e-14, abstol=1e-14)
     plot(solution, idxs=(:x,:y,:z), title = "Lyapunov Orbit", label=:none, size=(1600,900), dpi=400, aspect_ratio=1)
 end
@@ -37,7 +37,7 @@ end
 extraplanar = let
     u, T = halo(μ, 2; amplitude=0.01) # halo (non-planar) orbit
     u = [u.x, 0, u.z, 0, u.ẏ, 0]
-    problem = ODEProblem(CR3BPFunction(), u, (0, T), (μ,))
+    problem = ODEProblem(CR3BFunction(), u, (0, T), (μ,))
     solution = solve(problem, Vern9(), reltol=1e-14, abstol=1e-14)
     plot(solution, idxs=(:x,:y,:z), title = "Halo Orbit", label=:none, size=(1600,900), dpi=400, aspect_ratio=1)
 end
@@ -67,7 +67,7 @@ unstable = let
     Φ = monodromy(u, μ, T)
 
     ics = let
-        problem = ODEProblem(CR3BPFunction(stm=true), vcat(u, vec(I(6))), (0, T), (μ,))
+        problem = ODEProblem(CR3BFunction(stm=true), vcat(u, vec(I(6))), (0, T), (μ,))
         solution = solve(problem, Vern9(), reltol=1e-12, abstol=1e-12, saveat=(T / 10))
 
         solution.u
@@ -79,7 +79,7 @@ unstable = let
     ]
 
     problem = EnsembleProblem(
-        ODEProblem(CR3BPFunction(), u, (0.0, 2T), (μ,)),
+        ODEProblem(CR3BFunction(), u, (0.0, 2T), (μ,)),
         prob_func=(prob, i, repeat) -> remake(prob; u0=perturbations[i]),
     )
 
@@ -93,7 +93,7 @@ stable = let
     Φ = monodromy(u, μ, T)
 
     ics = let
-        problem = ODEProblem(CR3BPFunction(stm=true), vcat(u, vec(I(6))), (0, T), (μ,))
+        problem = ODEProblem(CR3BFunction(stm=true), vcat(u, vec(I(6))), (0, T), (μ,))
         solution = solve(problem, Vern9(), reltol=1e-12, abstol=1e-12, saveat=(T / 10))
 
         solution.u
@@ -105,7 +105,7 @@ stable = let
     ]
 
     problem = EnsembleProblem(
-        ODEProblem(CR3BPFunction(), u, (0.0, -2.1T), (μ,)),
+        ODEProblem(CR3BFunction(), u, (0.0, -2.1T), (μ,)),
         prob_func=(prob, i, repeat) -> remake(prob; u0=perturbations[i]),
     )
 

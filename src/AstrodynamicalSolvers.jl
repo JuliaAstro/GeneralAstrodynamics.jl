@@ -30,7 +30,7 @@ using DocStringExtensions
                                """
 
 
-include("CR3BPSolvers.jl")
-@reexport using .CR3BPSolvers
+include("CR3BSolvers.jl")
+@reexport using .CR3BSolvers
 
 end
