@@ -15,7 +15,6 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
 AstrodynamicalCalculations = "0.3"
-AstrodynamicalModels = "3"
 DocStringExtensions = "0.9"
 ModelingToolkit = "8.69"
 OrdinaryDiffEq = "6.55"
