@@ -9,14 +9,14 @@ _Common astrodynamics calculations, with units!_
 > 
 > This package is being split into constituent packages, including
 > [`AstrodynamicalModels.jl`](https://github.com/cadojo/AstrodynamicalModels.jl,)
-> [`AstrodynamicalModels.jl`](https://github.com/cadojo/AstrodynamicalModels.jl),
+> [`AstrodynamicalCalculations.jl`](https://github.com/cadojo/AstrodynamicalCalculations.jl),
 > [`AstrodynamicalSolvers.jl`](https://github.com/cadojo/AstrodynamicalModels.jl),
 > and more. Eventually `GeneralAstrodynamics.jl` will be a super-package, which 
 > re-exports all of the functionality in its constituent packages. For now, this
 > package passes tests, but is really slow. By using the constituent packages
 > directly, you may find a 1000x speedup! Eventually the slow interfaces in this
 > package will be replaced by the fast interfaces in the constituent packages.
-> Look out for `v1.0`!
+> Look out for `v2.0`!
 
 ## JuliaCon Talk
 
