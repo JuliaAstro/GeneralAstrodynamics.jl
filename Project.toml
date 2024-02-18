@@ -1,7 +1,7 @@
 name = "AstrodynamicalModels"
 uuid = "4282b555-f590-4262-b575-3e516e1493a7"
 authors = ["Joseph D Carpinelli <joey@loopy.codes>"]
-version = "3.0.0"
+version = "3.1.0"
 
 [deps]
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
@@ -30,8 +30,7 @@ Symbolics = "5"
 julia = "1.6"
 
 [extras]
-SPICEBodies = "19f1efb6-7162-484a-b3a1-b52c391689d7"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test"]
+test = ["Test", "SPICEBodies", "AstrodynamicalCalculations"]

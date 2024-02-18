@@ -172,7 +172,7 @@ Base.@kwdef mutable struct KeplerianState{F} <: AstrodynamicalState{F,6}
     KeplerianState(::UndefInitializer) = KeplerianState{Float64}(undef)
 
     KeplerianState{F}(e, a, i, Ω, ω, ν) where {F} = new{F}(e, a, i, Ω, ω, ν)
-    KeplerianState(e, a, i, Ω, ω, ν) = new{promote_type(typeof(x), typeof(y), typeof(z), typeof(ẋ), typeof(ẏ), typeof(ż))}(e, a, i, Ω, ω, ν)
+    KeplerianState(e, a, i, Ω, ω, ν) = new{promote_type(typeof(e), typeof(a), typeof(i), typeof(Ω), typeof(ω), typeof(ν))}(e, a, i, Ω, ω, ν)
     KeplerianState{F}(state::NamedTuple) where {F} =
         let
             (; e, a, i, Ω, ω, ν) = merge((; e=zero(F), a=zero(F), i=zero(F), Ω=zero(F), ω=zero(F), ν=zero(F)), state)
