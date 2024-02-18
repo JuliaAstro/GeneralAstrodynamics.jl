@@ -113,13 +113,13 @@ function lyapunov(x, ẏ, μ, T; reltol=1e-12, abstol=1e-12, maxiters=10)
     for _ in 1:maxiters
 
         solution = solve(problem, Vern9(), reltol=reltol, abstol=abstol, save_everystep=false)
-        global fc = solution[end]
+        global fc = solution.u[end]
 
         if abs(fc[4]) <= abstol && abs(fc[6]) <= abstol
             return (; x=x, ẏ=ẏ), 2τ
         end
 
-        correction = planar_differential(@views(solution[end]), μ)
+        correction = planar_differential(@views(solution.u[end]), μ)
 
         _z = z + correction.δz
         _ẏ = ẏ + correction.δẏ
@@ -177,13 +177,13 @@ function halo(x, z, ẏ, μ, T; reltol=1e-12, abstol=1e-12, maxiters=10)
     for _ in 1:maxiters
 
         solution = solve(problem, Vern9(), reltol=reltol, abstol=abstol, save_everystep=false)
-        global fc = solution[end]
+        global fc = solution.u[end]
 
         if abs(fc[4]) <= abstol && abs(fc[6]) <= abstol
             return (; x=x, z=z, ẏ=ẏ), 2τ
         end
 
-        correction = extraplanar_differential(@views(solution[end]), μ)
+        correction = extraplanar_differential(@views(solution.u[end]), μ)
         _x = x + correction.δx
         _ẏ = ẏ + correction.δẏ
         _τ = τ + correction.δτ
@@ -252,11 +252,11 @@ function monodromy(u::AbstractVector, μ, T; algorithm=Vern9(), reltol=1e-12, ab
     problem = ODEProblem(CR3BFunction(stm=true), MVector{42}(u[begin], u[begin+1], u[begin+2], u[begin+3], u[begin+4], u[begin+5], 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1), (zero(T), T), (μ,))
     solution = solve(problem, algorithm; reltol=reltol, abstol=abstol, save_everystep=save_everystep, kwargs...)
 
-    if solution[begin][begin:begin+5] ≉ solution[end][begin:begin+5]
+    if solution.u[begin][begin:begin+5] ≉ solution.u[end][begin:begin+5]
         @warn "The orbit does not appear to be periodic!"
     end
 
-    return reshape((solution[end][begin+6:end]), 6, 6)
+    return reshape((solution.u[end][begin+6:end]), 6, 6)
 end
 
 end # module
