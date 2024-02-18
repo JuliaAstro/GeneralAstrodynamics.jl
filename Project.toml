@@ -15,13 +15,13 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
 AstrodynamicalCalculations = "0.4"
-AstrodynamicalModels = "3.1"
+AstrodynamicalModels = "3.2"
 DocStringExtensions = "0.9"
 ModelingToolkit = "8.69"
 OrdinaryDiffEq = "6.55"
 Reexport = "1"
 StaticArrays = "1.6"
-julia = "1.6"
+julia = "1.7"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
