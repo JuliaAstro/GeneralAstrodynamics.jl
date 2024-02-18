@@ -14,8 +14,7 @@ SPICEBodies = "19f1efb6-7162-484a-b3a1-b52c391689d7"
 SPICEKernels = "8e9d28ce-e483-4ef7-bfd9-45b8fef6369c"
 
 [compat]
-julia = "1.6"
-AstrodynamicalCalculations = "0.3"
+AstrodynamicalCalculations = "0.3, 0.4"
 AstrodynamicalModels = "3"
 AstrodynamicalSolvers = "0.2"
 DocStringExtensions = "0.9"
@@ -23,6 +22,7 @@ Reexport = "1.2"
 SPICE = "0.2"
 SPICEBodies = "0.1"
 SPICEKernels = "1.2"
+julia = "1.6"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
