@@ -25,10 +25,10 @@ export R2BSystem, CR3BSystem, NBSystem, PlanarEntrySystem, AttitudeSystem
 export R2BFunction, CR3BFunction, NBFunction, PlanarEntryFunction, AttitudeFunction
 
 # Export every array type
-export CartesianState, R2BParameters, CR3BParameters, AttitudeState, AttitudeParameters, PlanarEntryState, PlanarEntryParameters
+export CartesianState, KeplerianState, R2BParameters, CR3BParameters, AttitudeState, AttitudeParameters, PlanarEntryState, PlanarEntryParameters
 
 # Export every orbit type
-export R2BOrbit, CR3BOrbit
+export Orbit, R2BOrbit, CR3BOrbit, CartesianOrbit, KeplerianOrbit
 
 using Symbolics
 using SciMLBase
@@ -55,10 +55,35 @@ An abstract supertype for all astrodynamical state vectors.
 """
 abstract type AstrodynamicalState{F,N} <: FieldVector{N,F} end
 
+function Base.show(io::IO, ::MIME"text/plain", state::S) where {S<:AstrodynamicalState}
+    name = nameof(S)
+    println(io, "$name with eltype $(eltype(state))\n")
+    for symbol in fieldnames(S)
+        value = getproperty(state, symbol)
+        println(io, "  $symbol: $value")
+    end
+end
+
+Base.show(io::IO, state::AstrodynamicalState) = Base.show(io, MIME"text/plain"(), state)
+
 """
 An abstract supertype for all astrodynamical parameter vectors.
 """
 abstract type AstrodynamicalParameters{F,N} <: FieldVector{N,F} end
+
+function Base.show(io::IO, ::MIME"text/plain", params::S) where {S<:AstrodynamicalParameters}
+    name = nameof(S)
+    println(io, "$name with eltype $(eltype(params))\n")
+    for symbol in fieldnames(S)
+        value = getproperty(params, symbol)
+        println(io, "  $symbol: $value")
+    end
+end
+
+Base.show(io::IO, state::AstrodynamicalParameters) = Base.show(io, MIME"text/plain"(), state)
+
+# Resolves method ambiguity errors. TODO: should x be copied?
+(::Type{T})(x::T) where {T<:Union{<:AstrodynamicalState,<:AstrodynamicalParameters}} = x
 
 Base.similar(state::AstrodynamicalState) = typeof(state)(undef)
 Base.similar(parameters::AstrodynamicalParameters) = typeof(parameters)(undef)
@@ -79,6 +104,12 @@ Base.@kwdef mutable struct CartesianState{F} <: AstrodynamicalState{F,6}
 
     CartesianState{F}(x, y, z, ẋ, ẏ, ż) where {F} = new{F}(x, y, z, ẋ, ẏ, ż)
     CartesianState(x, y, z, ẋ, ẏ, ż) = new{promote_type(typeof(x), typeof(y), typeof(z), typeof(ẋ), typeof(ẏ), typeof(ż))}(x, y, z, ẋ, ẏ, ż)
+    CartesianState{F}(state::NamedTuple) where {F} =
+        let
+            (; x, y, z, ẋ, ẏ, ż) = merge((; x=zero(F), y=zero(F), z=zero(F), ẋ=zero(F), ẏ=zero(F), ż=zero(F)), state)
+            CartesianState{F}(x, y, z, ẋ, ẏ, ż)
+        end
+    CartesianState(state::NamedTuple) = CartesianState{Float64}(state)
 end
 
 """
@@ -127,6 +158,30 @@ Base.@kwdef mutable struct CartesianSTM{F} <: FieldMatrix{6,6,F}
 end
 
 """
+A mutable vector, with labels, for 6DOF Keplerian states.
+"""
+Base.@kwdef mutable struct KeplerianState{F} <: AstrodynamicalState{F,6}
+    e::F = 0.0
+    a::F = 0.0
+    i::F = 0.0
+    Ω::F = 0.0
+    ω::F = 0.0
+    ν::F = 0.0
+
+    KeplerianState{F}(::UndefInitializer) where {F} = new{F}()
+    KeplerianState(::UndefInitializer) = KeplerianState{Float64}(undef)
+
+    KeplerianState{F}(e, a, i, Ω, ω, ν) where {F} = new{F}(e, a, i, Ω, ω, ν)
+    KeplerianState(e, a, i, Ω, ω, ν) = new{promote_type(typeof(x), typeof(y), typeof(z), typeof(ẋ), typeof(ẏ), typeof(ż))}(e, a, i, Ω, ω, ν)
+    KeplerianState{F}(state::NamedTuple) where {F} =
+        let
+            (; e, a, i, Ω, ω, ν) = merge((; e=zero(F), a=zero(F), i=zero(F), Ω=zero(F), ω=zero(F), ν=zero(F)), state)
+            KeplerianState{F}(e, a, i, Ω, ω, ν)
+        end
+    KeplerianState(state::NamedTuple) = KeplerianState{Float64}(state)
+end
+
+"""
 An abstract supertype for all orbits. 
 
 # Extended Help
@@ -150,6 +205,30 @@ struct Orbit{U<:AbstractVector,P<:AbstractVector} <: AstrodynamicalOrbit{U,P}
     Orbit(; state, parameters) = Orbit(state, parameters)
     Orbit(orbit::Orbit; state=orbit.state, parameters=orbit.parameters) = Orbit(state, parameters)
 end
+
+function Base.show(io::IO, ::MIME"text/plain", orbit::Orbit)
+    println(io, "Orbit in $(paradigm(orbit.parameters))\n")
+
+    for line in eachline(IOBuffer(string(orbit.state)))
+        println(io, "  ", line)
+    end
+
+    println(io)
+
+    for line in eachline(IOBuffer(string(orbit.parameters)))
+        println(io, "  ", line)
+    end
+end
+
+"""
+Any orbit with a Cartesian state.
+"""
+const CartesianOrbit = Orbit{<:CartesianState}
+
+"""
+Any orbit with a Keplerianstate.
+"""
+const KeplerianOrbit = Orbit{<:KeplerianState}
 
 """
 Return the state vector for an `Orbit`.

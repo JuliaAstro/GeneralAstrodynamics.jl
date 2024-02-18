@@ -2,7 +2,7 @@
 # Restricted Two-body Problem models
 #
 
-const R2BState = CartesianState
+const R2BState = Union{<:CartesianState,<:KeplerianState}
 
 """
 A parameter vector for R2BP dynamics.
@@ -12,6 +12,8 @@ Base.@kwdef struct R2BParameters{F} <: AstrodynamicalParameters{F,1}
 
     R2BParameters(μ) = new{typeof(μ)}(μ)
 end
+
+Base.@pure paradigm(::R2BParameters) = "Restricted Two Body Dynamics"
 
 """
 A `ModelingToolkit.ODESystem` for the Restricted Two-body Problem.
@@ -112,12 +114,12 @@ end
 An `Orbit` which exists within R2BP dynamics.
 """
 const R2BOrbit = Orbit{<:R2BState,<:R2BParameters}
-AstrodynamicalModels.R2BOrbit(state::AbstractVector, parameters::AbstractVector) = Orbit(R2BState(state), R2BParameters(parameters))
-AstrodynamicalModels.R2BOrbit(; state::AbstractVector, parameters::AbstractVector) = Orbit(R2BState(state), R2BParameters(parameters))
+AstrodynamicalModels.R2BOrbit(state::AbstractVector, parameters::AbstractVector) = Orbit(state isa AstrodynamicalState ? state : CartesianState(state), R2BParameters(parameters))
+AstrodynamicalModels.R2BOrbit(; state::AbstractVector, parameters::AbstractVector) = Orbit(state isa AstrodynamicalState ? state : CartesianState(state), R2BParameters(parameters))
 
 """
 Return an `ODEProblem` for the provided R2B system.
 """
 R2BProblem(u0, tspan, p; kwargs...) = ODEProblem(R2BFunction(), u0, tspan, p; kwargs...)
-R2BProblem(orbit::AstrodynamicalOrbit, tspan::Union{<:Tuple,<:AbstractArray}; kwargs...) = ODEProblem(R2BFunction(), AstrodynamicalModels.state(orbit), tspan, AstrodynamicalModels.parameters(orbit); kwargs...)
-R2BProblem(orbit::AstrodynamicalOrbit, Δt; kwargs...) = R2BProblem(orbit, (zero(Δt), δt); kwargs...)
+R2BProblem(orbit::AstrodynamicalOrbit{<:CartesianState}, tspan::Union{<:Tuple,<:AbstractArray}; kwargs...) = ODEProblem(R2BFunction(), AstrodynamicalModels.state(orbit), tspan, AstrodynamicalModels.parameters(orbit); kwargs...)
+R2BProblem(orbit::AstrodynamicalOrbit{<:CartesianState}, Δt; kwargs...) = R2BProblem(orbit, (zero(Δt), δt); kwargs...)

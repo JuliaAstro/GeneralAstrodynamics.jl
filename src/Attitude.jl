@@ -42,6 +42,8 @@ Base.@kwdef struct AttitudeParameters{F} <: AstrodynamicalParameters{F,15}
     AttitudeParameters(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃) = new{promote_type(typeof(J₁₁), typeof(J₂₁), typeof(J₃₁), typeof(J₁₂), typeof(J₂₂), typeof(J₃₂), typeof(J₁₃), typeof(J₂₃), typeof(J₃₃), typeof(L₁), typeof(L₂), typeof(L₃), typeof(f₁), typeof(f₂), typeof(f₃))}(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₂)
 end
 
+Base.@pure paradigm(::AttitudeParameters) = "Newton-Euler Attitude Dynamics"
+
 """
 A `ModelingToolkit.ODESystem` for atmospheric entry. Currently, only exponential atmosphere
 models are provided! The output model is cached with `Memoize.jl`. Planet-specific

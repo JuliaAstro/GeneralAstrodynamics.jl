@@ -31,6 +31,8 @@ Base.@kwdef struct PlanarEntryParameters{F} <: AstrodynamicalParameters{F,4}
 
 end
 
+Base.@pure paradigm(::PlanarEntryParameters) = "Planar Entry Dynamics"
+
 """
 A `ModelingToolkit.ODESystem` for atmospheric entry. Currently, only exponential atmosphere
 models are provided! The output model is cached with `Memoize.jl`. Planet-specific

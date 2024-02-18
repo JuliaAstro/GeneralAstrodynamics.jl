@@ -13,6 +13,9 @@ Base.@kwdef struct CR3BParameters{F} <: AstrodynamicalParameters{F,1}
     CR3BParameters(μ) = new{typeof(μ)}(μ)
 end
 
+Base.@pure paradigm(::CR3BParameters) = "Circular Restricted Three Body Dynamics"
+
+
 """
 A `ModelingToolkit.ODESystem` for the Circular Restricted Three-body Problem.
 
