@@ -220,18 +220,20 @@ end
 Returns semimajor axis parameter, a.
 """
 semimajor_axis(r, v, μ) = inv((2 / r) - (v^2 / μ))
-semimajor_axis(r::AbstractVector, v::AbstractVector, μ) =
-    semimajor_axis(norm(r), norm(v), μ)
+semimajor_axis(r::AbstractVector, v::AbstractVector, μ) = semimajor_axis(norm(r), norm(v), μ)
+semimajor_axis(x, y, z, ẋ, ẏ, ż, μ) = semimajor_axis(SVector(x, y, z), SVector(ẋ, ẏ, ż), μ)
 
 """
 Returns specific angular momentum vector, h̅.
 """
-specific_angular_momentum_vector(r, v) = r × v
+specific_angular_momentum_vector(r::AbstractVector, v::AbstractVector) = r × v
+specific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż) = specific_angular_momentum_vector(SVector(x, y, z), SVector(ẋ, ẏ, ż))
 
 """
 Returns scalar specific angular momentum vector, h.
 """
-specific_angular_momentum(r, v) = norm(specific_angular_momentum_vector(r, v))
+specific_angular_momentum(r::AbstractVector, v::AbstractVector) = norm(specific_angular_momentum_vector(r, v))
+specific_angular_momentum(x, y, z, ẋ, ẏ, ż) = norm(specific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż))
 
 """
 Returns specific orbital energy, ϵ.
@@ -259,17 +261,20 @@ specific_potential_energy(r, μ, R, J₂, ϕ) =
 """
 Returns orbital eccentricity vector e̅.
 """
-function eccentricity_vector(r, v, μ)
+function eccentricity_vector(r::AbstractVector, v::AbstractVector, μ)
 
     h̄ = specific_angular_momentum_vector(r, v)
     return (1 / μ) * ((v × h̄) - μ * r / norm(r))
 
 end
 
+eccentricity_vector(x, y, z, ẋ, ẏ, ż, μ) = eccentricity_vector(SVector(x, y, z), SVector(ẋ, ẏ, ż), μ)
+
 """
 Returns orbital eccentricity, e.
 """
-eccentricity(r, v, μ) = norm(eccentricity_vector(r, v, μ))
+eccentricity(r::AbstractVector, v::AbstractVector, μ) = norm(eccentricity_vector(r, v, μ))
+eccentricity(x, y, z, ẋ, ẏ, ż, μ) = eccentricity(SVector(x, y, z), SVector(ẋ, ẏ, ż), μ)
 
 """
 Returns semilatus parameter, p.
