@@ -82,36 +82,43 @@ reduced_mass(μ₁, μ₂) = min(μ₁, μ₂) / (μ₁ + μ₂)
 """
 Normalizes a CR3BP orbit in the rotating reference frame.
 """
-function nondimensional(r::AbstractVector, v::AbstractVector, t, a, μ₁, μ₂)
-    rₙ = r ./ a
+function nondimensional(x, y, z, ẋ, ẏ, ż, t, a, μ₁, μ₂)
+    r = SVector(x, y, z)
+    v = SVector(ẋ, ẏ, ż)
+
+    x, y, z = r / a
     μₜ = μ₁ + μ₂
     Tₛ = 2π * √(a^3 / μₜ)
-    vₙ = v ./ (a / Tₛ)
-    tₙ = t / Tₛ
-    μₙ = min(μ₁, μ₂) / μₜ
+    ẋ, ẏ, ż = v / (a / Tₛ)
+    t = t / Tₛ
+    μ = min(μ₁, μ₂) / μₜ
 
-    return rₙ, vₙ, tₙ, μₙ, a, Tₛ
+    return (; x, y, z, ẋ, ẏ, ż, t, μ, L=a, T=Tₛ)
 end
 
 """
 Redimensionalizes a CR3BP orbit in the rotating reference frame.
 """
-function redimensioned(rₙ::AbstractVector, vₙ::AbstractVector, tₙ, μ, a, Tₛ)
-    r = rₙ .* a
-    v = vₙ .* a ./ Tₛ
-    t = tₙ * Tₛ
+function redimensioned(x, y, z, ẋ, ẏ, ż, t, μ, a, T)
+    rₙ = SVector(x, y, z)
+    vₙ = SVector(ẋ, ẏ, ż)
 
-    sum_μs = a^3 / ((Tₛ / 2π)^2)
-    μ₂ = μₙ * sum_μs
+    x, y, z = rₙ * a
+    ẋ, ẏ, ż = vₙ * a / T
+    t = t * T
+
+    sum_μs = a^3 / ((T / 2π)^2)
+    μ₂ = μ * sum_μs
     μ₁ = sum_μ - μ₂
 
-    return r, v, t, a, (μ₁, μ₂)
+    return (; x, y, z, ẋ, ẏ, ż, t, μ₁, μ₂, L=a, T)
+
 end
 
 """
 Returns the spacecraft's nondimensional position w.r.t. body 1 (or 2).
 """
-nondimensional_radii(r::AbstractVector, xᵢ) = sqrt((r[1] - xᵢ)^2 + r[2]^2 + r[3]^2)
+nondimensional_radii(x, y, z, xᵢ) = sqrt((x - xᵢ)^2 + y^2 + z^2)
 
 """
 Returns synodic distance to primary body.
@@ -126,34 +133,42 @@ distance_to_secondary(r, μ) = r - (one(μ) - μ)
 """
 Returns the potential energy `U` in the Synodic frame with Normalized units.
 """
-function potential_energy(r, μ)
-    return (r[1]^2 + r[2]^2) / 2 +
-           ((1 - μ) / nondimensional_radii(r, -μ)) +
-           (μ / nondimensional_radii(r, 1 - μ))
+function potential_energy(x, y, z, μ)
+    return (x^2 + y^2) / 2 +
+           ((1 - μ) / nondimensional_radii(x, y, z, -μ)) +
+           (μ / nondimensional_radii(x, y, z, 1 - μ))
 end
 
 """
 Returns the Jacobi Constant, `C` in the Synodic frame with Normalized units.
 """
-jacobi_constant(r, v, μ) = 2 * potential_energy(r, μ) - (v ⋅ v)
+function jacobi_constant(x, y, z, ẋ, ẏ, ż, μ)
+    v = SVector(ẋ, ẏ, ż)
+    return 2 * potential_energy(x, y, z, μ) - (v ⋅ v)
+end
 
 """
 Given the Synodic frame vector, returns the vector in the barycentric-inertial reference frame.
 """
-function synodic_to_inertial(rₛ::AbstractVector, t, ω)
+function synodic_to_inertial(x, y, z, t, ω)
+    rₛ = SVector(x, y, z)
+
     θ = ω * t
     O = zero(θ)
     l = one(θ)
 
     ᴵTₛ = SMatrix{3,3}(cos(θ), -sin(θ), O, sin(θ), cos(θ), O, O, O, l)
 
-    return ᴵTₛ * rₛ
+    x, y, z = ᴵTₛ * rₛ
+    return (; x, y, z)
 end
 
 """
 Given a barycentric-inertial Cartesian state, returns the state in the synodic (rotating) reference frame.
 """
-function inertial_to_synodic(rᵢ::AbstractVector, t, ω)
+function inertial_to_synodic(x, y, z, t, ω)
+
+    rᵢ = SVector(x, y, z)
     θ = ω * t
     O = zero(θ)
     l = one(θ)
@@ -162,7 +177,9 @@ function inertial_to_synodic(rᵢ::AbstractVector, t, ω)
 
     ˢTᵢ = inv(ᴵTₛ)
 
-    return ˢTᵢ * rᵢ
+    x, y, z = ˢTᵢ * rᵢ
+
+    return (; x, y, z)
 end
 
 """

@@ -11,7 +11,7 @@ using StaticArrays
     v = [5.134, 4.226, 2.787]
     μ = 398600.4354360959
 
-    e, a, i, Ω, ω, ν = cartesian_to_keplerian(r, v, μ)
+    e, a, i, Ω, ω, ν = cartesian_to_keplerian(r..., v..., μ)
     @test isapprox(SVector(e, a, i, Ω, ω, ν),
         SVector(0.723452708202361,
             24509.265399338536,
@@ -21,8 +21,8 @@ using StaticArrays
             deg2rad(89.99652573907436)),
         atol=1e-6)
 
-    rₙ, vₙ = keplerian_to_cartesian(e, a, i, Ω, ω, ν, μ)
-    @test isapprox(vcat(r, v), vcat(rₙ, vₙ), atol=1e-3)
+    x, y, z, ẋ, ẏ, ż = keplerian_to_cartesian(e, a, i, Ω, ω, ν, μ)
+    @test isapprox(vcat(r, v), vcat(x, y, z, ẋ, ẏ, ż), atol=1e-3)
 end
 
 @testset verbose = false "Kepler's Algorithm" begin
@@ -32,9 +32,9 @@ end
     a = semimajor_axis(r, v, μ)
     T = orbital_period(a, μ)
 
-    rₙ, vₙ = kepler(r, v, μ, T)
+    (; x, y, z, ẋ, ẏ, ż) = kepler(r..., v..., μ, T)
 
-    @test isapprox(vcat(r, v), vcat(rₙ, vₙ), atol=1e-3)
+    @test isapprox(vcat(r, v), vcat(x, y, z, ẋ, ẏ, ż), atol=1e-3)
 end
 
 @testset verbose = true "Lambert Solvers" begin
@@ -44,11 +44,11 @@ end
         Δt = 1000
         μ = 398600.4354360959
 
-        rₙ, vₙ = kepler(r, v, μ, Δt; atol=1e-3)
+        K = kepler(r..., v..., μ, Δt; atol=1e-3)
 
-        v₁, v₂ = lambert(r, rₙ, μ, Δt; trajectory=:short, atol=1e-6)
+        V1, V2 = lambert(r..., K.x, K.y, K.z, μ, Δt; trajectory=:short, atol=1e-6)
 
-        @test isapprox(vcat(v, vₙ), vcat(v₁, v₂), atol=1e-3)
+        @test isapprox(vcat(v, K.ẋ, K.ẏ, K.ż), vcat(V1.ẋ, V1.ẏ, V1.ż, V2.ẋ, V2.ẏ, V2.ż), atol=1e-3)
     end
 
     @testset "Lancaster / Blanchard" begin
@@ -57,15 +57,16 @@ end
         Δt = 1000
         μ = 398600.4354360959
 
-        rₙ, vₙ = kepler(r, v, μ, Δt; atol=1e-12)
-        v₁, v₂ = R2BPCalculations.lambert_lancaster_blanchard(r,
-            rₙ,
+        K = kepler(r..., v..., μ, Δt; atol=1e-12)
+        V1, V2 = R2BPCalculations.lambert_lancaster_blanchard(
+            r,
+            SVector(K.x, K.y, K.z),
             Δt,
             μ;
             trajectory=:short,
             atol=1e-6)
 
-        @test_broken isapprox(vcat(v, vₙ), vcat(v₁, v₂), atol=1e-3)
+        @test_broken isapprox(vcat(v, K.ẋ, K.ẏ, K.ż), vcat(V1.ẋ, V1.ẏ, V1.ż, V2.ẋ, V2.ẏ, V2.ż), atol=1e-3)
     end
 end
 
@@ -78,7 +79,7 @@ end
 
     μ = 3.003480593992993e-6
 
-    @test jacobi_constant(r, v, μ) ≈ 3.000907212196274
+    @test jacobi_constant(r..., v..., μ) ≈ 3.000907212196274
 end
 
 @testset "Near-periodic Orbits" begin

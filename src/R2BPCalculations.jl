@@ -93,7 +93,7 @@ end
 Returns a Keplarian representation of a Cartesian orbital state.
 Algorithm taught in ENAE601.
 """
-function cartesian_to_keplerian(r, v, μ)
+function cartesian_to_keplerian(x, y, z, ẋ, ẏ, ż, μ)
 
     safe_acos(num) =
         isapprox(num, one(num)) ? acos(one(num)) :
@@ -102,6 +102,9 @@ function cartesian_to_keplerian(r, v, μ)
     î = SVector{3,Int}(1, 0, 0)
     ĵ = SVector{3,Int}(0, 1, 0)
     k̂ = SVector{3,Int}(0, 0, 1)
+
+    r = SVector(x, y, z)
+    v = SVector(ẋ, ẏ, ż)
 
     h̅ = specific_angular_momentum_vector(r, v)
     a = semimajor_axis(norm(r), norm(v), μ)
@@ -125,7 +128,7 @@ function cartesian_to_keplerian(r, v, μ)
         (r ⋅ v) > O ? safe_acos((e̅ ⋅ r) / (e * norm(r))) :
         2π - safe_acos((e̅ ⋅ r) / (e * norm(r)))
 
-    return e, a, i, Ω, ω, ν
+    return (; e, a, i, Ω, ω, ν)
 
 end
 
@@ -135,14 +138,15 @@ in an inertial frame, centered at the center of mass of the central body.
 Algorithm taught in ENAE601.
 """
 function keplerian_to_cartesian(e, a, i, Ω, ω, ν, μ)
-    r, v = perifocal_to_cartesian(i, Ω, ω, keplerian_to_perifocal(a, e, ν, μ)...)
-    return r, v
+    x, y, z, ẋ, ẏ, ż = keplerian_to_perifocal(a, e, ν, μ)
+    x, y, z, ẋ, ẏ, ż = perifocal_to_cartesian(i, Ω, ω, x, y, z, ẋ, ẏ, ż)
+    return (; x, y, z, ẋ, ẏ, ż)
 end
 
 """
 Returns a spatial representation of the provied Perifocal state.
 """
-function perifocal_to_cartesian(i, Ω, ω, r, v)
+function perifocal_to_cartesian(i, Ω, ω, x, y, z, ẋ, ẏ, ż)
 
     # Set up Perifocal ⟶ Cartesian conversion
     R_3Ω = SMatrix{3,3}(cos(Ω), sin(Ω), 0, -sin(Ω), cos(ω), 0, 0, 0, 1)
@@ -153,8 +157,10 @@ function perifocal_to_cartesian(i, Ω, ω, r, v)
 
     ᴵTₚ = R_3Ω * R_1i * R_3ω
 
-    return ᴵTₚ * r, ᴵTₚ * v
+    x, y, z = ᴵTₚ * SVector(x, y, z)
+    ẋ, ẏ, ż = ᴵTₚ * SVector(ẋ, ẏ, ż)
 
+    return (; x, y, z, ẋ, ẏ, ż)
 end
 
 """
@@ -169,17 +175,17 @@ function keplerian_to_perifocal(a, e, ν, μ)
     Q̂ = SVector{3,Float64}(0, 1, 0)
     # Ŵ=SVector{3, Float64}(0, 0, 1)
 
-    r = (r * cos(ν) .* P̂ .+ r * sin(ν) .* Q̂)
-    v = √(μ / p) * ((-sin(ν) * P̂) .+ ((e + cos(ν)) .* Q̂))
+    x, y, z = (r * cos(ν) .* P̂ .+ r * sin(ν) .* Q̂)
+    ẋ, ẏ, ż = √(μ / p) * ((-sin(ν) * P̂) .+ ((e + cos(ν)) .* Q̂))
 
-    return r, v
+    return (; x, y, z, ẋ, ẏ, ż)
 
 end
 
 """
 Returns the position and velocity vectors in the Perifocal frame.
 """
-function cartesian_to_perifocal(i, Ω, ω, r, v)
+function cartesian_to_perifocal(i, Ω, ω, x, y, z, ẋ, ẏ, ż)
 
     # Set up Cartesian ⟶ Perifocal conversion
     R_3Ω = SMatrix{3,3}([
@@ -200,8 +206,14 @@ function cartesian_to_perifocal(i, Ω, ω, r, v)
 
     ᵖTᵢ = inv(R_3Ω * R_1i * R_3ω)
 
-    return ᵖTᵢ * r, ᵖTᵢ * v
+    r = SVector(x, y, z)
+    v = SVector(ẋ, ẏ, ż)
 
+
+    x, y, z = ᵖTᵢ * r
+    ẋ, ẏ, ż = ᵖTᵢ * v
+
+    return (; x, y, z, ẋ, ẏ, ż)
 end
 
 """
@@ -335,11 +347,14 @@ end
 """
 Solves Kepler's Problem, predicting the orbit's future state geometrically.
 """
-function kepler(r::AbstractVector, v::AbstractVector, μ, Δt; atol = 1e-6, maxiter = 100)
+function kepler(x, y, z, ẋ, ẏ, ż, μ, Δt; atol=1e-6, maxiter=100)
 
-    e, a, i, Ω, ω, ν = cartesian_to_keplerian(r, v, μ)
+    e, a, i, Ω, ω, ν = cartesian_to_keplerian(x, y, z, ẋ, ẏ, ż, μ)
     T = orbital_period(a, μ)
     conic_section = conic(e)
+
+    r = SVector(x, y, z)
+    v = SVector(ẋ, ẏ, ż)
 
     # Guess χ₀
     if conic_section == :Hyperbolic
@@ -358,7 +373,7 @@ function kepler(r::AbstractVector, v::AbstractVector, μ, Δt; atol = 1e-6, maxi
     # TODO: Compare loop vs. recursion performance here.
     # There shouldn't be too large of a difference, since this tends
     # to converge with only a few iterations.
-    χₙ, rₙ, ψ, C₂, C₃ = step_kepler(χ₀, Δt, r, v, a, μ, atol = atol, maxiter = maxiter)
+    χₙ, rₙ, ψ, C₂, C₃ = step_kepler(χ₀, Δt, r, v, a, μ, atol=atol, maxiter=maxiter)
 
     # Convert to a Orbit
     f = 1 - χₙ^2 / norm(r) * C₂
@@ -366,11 +381,14 @@ function kepler(r::AbstractVector, v::AbstractVector, μ, Δt; atol = 1e-6, maxi
     g = Δt - (χₙ^3 / √(μ)) * C₃
     ġ = 1 - (χₙ^2 / rₙ) * C₂
 
-    return f * r + g * v, ḟ * r + ġ * v
+    x, y, z = f * r + g * v
+    ẋ, ẏ, ż = ḟ * r + ġ * v
+
+    return (; x, y, z, ẋ, ẏ, ż)
 end
 
 
-function step_kepler(χₙ, Δt, rᵢ₀, vᵢ₀, a, μ; iter = 1, atol = 1e-14, maxiter = 100)
+function step_kepler(χₙ, Δt, rᵢ₀, vᵢ₀, a, μ; iter=1, atol=1e-14, maxiter=100)
 
     r₀ = norm(rᵢ₀)
     ψ = χₙ^2 / a
@@ -408,9 +426,9 @@ function step_kepler(χₙ, Δt, rᵢ₀, vᵢ₀, a, μ; iter = 1, atol = 1e-14
             vᵢ₀,
             a,
             μ;
-            iter = iter + 1,
-            atol = atol,
-            maxiter = maxiter,
+            iter=iter + 1,
+            atol=atol,
+            maxiter=maxiter,
         )
     end
 
@@ -420,14 +438,17 @@ end
 Solves Lambert's problem through the use of univeral variables.
 """
 function lambert(
-    r̅₁::AbstractVector,
-    r̅₂::AbstractVector,
+    x₁, y₁, z₁,
+    x₂, y₂, z₂,
     μ,
     Δt;
-    trajectory = :short,
-    atol = 1e-12,
-    maxiter = 25,
+    trajectory=:short,
+    atol=1e-12,
+    maxiter=25,
 )
+
+    r̅₁ = SVector(x₁, y₁, z₁)
+    r̅₂ = SVector(x₂, y₂, z₂)
 
     # Specify short way, or long way trajectory
     if trajectory == :short
@@ -491,10 +512,10 @@ function lambert(
     ġ = 1 - yₙ / r₂
     g = A * √(yₙ / μ)
 
-    v̅₁ = (r̅₂ .- (f .* r̅₁)) ./ g
-    v̅₂ = ((ġ .* r̅₂) .- r̅₁) ./ g
+    ẋ₁, ẏ₁, ż₁ = (r̅₂ .- (f .* r̅₁)) ./ g
+    ẋ₂, ẏ₂, ż₂ = ((ġ .* r̅₂) .- r̅₁) ./ g
 
-    return v̅₁, v̅₂
+    return (; ẋ=ẋ₁, ẏ=ẏ₁, ż=ż₁), (; ẋ=ẋ₂, ẏ=ẏ₂, ż=ż₂)
 
 end
 
@@ -799,12 +820,12 @@ function lambert_lancaster_blanchard(
     r̲₂::AbstractVector,
     μ::Number,
     Δt::Number;
-    revolutions = 0,
-    branch = :left,
-    trajectory = :short,
-    atol = 1e-12,
-    maxiter = 25,
-    output_extrema = Val{false},
+    revolutions=0,
+    branch=:left,
+    trajectory=:short,
+    atol=1e-12,
+    maxiter=25,
+    output_extrema=Val{false},
 )
 
     m = revolutions
@@ -1362,10 +1383,10 @@ function lambert_oldenhuis(r1vec, r2vec, tf, m, muC)
             r2vec * r1,
             tf * T,
             muC;
-            revolutions = _m,
-            branch = _branch,
-            trajectory = _traj,
-            output_extrema = Val{true},
+            revolutions=_m,
+            branch=_branch,
+            trajectory=_traj,
+            output_extrema=Val{true},
         )
         return V1, V2, extremal_distances, 1
     end
