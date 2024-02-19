@@ -1,6 +1,7 @@
 module AstrodynamicalCalculationsExt
 
 using AstrodynamicalModels
+using AstrodynamicalCalculations
 import AstrodynamicalCalculations as AC
 
 gm(μ) = μ
@@ -8,30 +9,30 @@ gm(μ::R2BParameters) = μ.μ
 
 function AC.keplerian_to_cartesian(state::KeplerianState, μ)
     p = μ isa Number ? R2BParameters(μ) : μ
-    u = keplerian_to_cartesian(state.e, state.a, state.i, state.Ω, state.ω, state.ν, p.μ)
+    u = AC.keplerian_to_cartesian(state.e, state.a, state.i, state.Ω, state.ω, state.ν, p.μ)
 
     return CartesianState(u)
 end
 
 function AC.cartesian_to_keplerian(state::CartesianState, μ)
     p = μ isa Number ? R2BParameters(μ) : μ
-    u = cartesian_to_keplerian(state.x, state.y, state.z, state.ẋ, state.ẏ, state.ż, p.μ)
+    u = AC.cartesian_to_keplerian(state.x, state.y, state.z, state.ẋ, state.ẏ, state.ż, p.μ)
 
     return KeplerianState(u)
 end
 
 AC.eccentricity(state::KeplerianState) = state.e
 AC.eccentricity(state::KeplerianState, μ) = AC.eccentricity(state)
-AC.eccentricity(state::CartesianState, μ) = AC.eccentricity(state.x, state.y, state.z, state.ẋ, state.ẏ, state.ż, μ)
+AC.eccentricity(state::CartesianState, μ) = AC.eccentricity(state.x, state.y, state.z, state.ẋ, state.ẏ, state.ż, gm(μ))
 AC.eccentricity(orbit::R2BOrbit) = AC.eccentricity(orbit.state, orbit.parameters)
 
-AC.eccentricity_vector(state::CartesianState, μ) = AC.eccentricity_vector(state.x, state.y, state.z, state.ẋ, state.ẏ, state.ż, μ)
+AC.eccentricity_vector(state::CartesianState, μ) = AC.eccentricity_vector(state.x, state.y, state.z, state.ẋ, state.ẏ, state.ż, gm(μ))
 AC.eccentricity_vector(state::KeplerianState, μ) = AC.eccentricity_vector(keplerian_to_cartesian(state, μ), μ)
 AC.eccentricity_vector(orbit::R2BOrbit) = AC.eccentricity_vector(orbit.state, orbit.parameters)
 
 AC.semimajor_axis(state::KeplerianState) = state.a
 AC.semimajor_axis(state::KeplerianState, μ) = AC.semimajor_axis(state)
-AC.semimajor_axis(state::CartesianState, μ) = AC.semimajor_axis(state.x, state.y, state.z, state.ẋ, state.ẏ, state.ż, μ)
+AC.semimajor_axis(state::CartesianState, μ) = AC.semimajor_axis(state.x, state.y, state.z, state.ẋ, state.ẏ, state.ż, gm(μ))
 AC.semimajor_axis(orbit::R2BOrbit) = AC.semimajor_axis(orbit.state, orbit.parameters)
 
 AC.inclination(state::KeplerianState) = state.i
@@ -41,12 +42,12 @@ AC.inclination(orbit::R2BOrbit) = AC.inclination(orbit.state, orbit.parameters)
 
 AC.right_ascension_ascending_node(state::KeplerianState) = state.Ω
 AC.right_ascension_ascending_node(state::KeplerianState, μ) = AC.right_ascension_ascending_node(state)
-AC.right_ascension_ascending_node(state::CartesianState, μ) = AC.right_ascension_ascending_node(cartesian_to_keplerian(state, μ), μ)
+AC.right_ascension_ascending_node(state::CartesianState, μ) = AC.right_ascension_ascending_node(cartesian_to_keplerian(state, μ), gm(μ))
 AC.right_ascension_ascending_node(orbit::R2BOrbit) = AC.right_ascension_ascending_node(orbit.state, orbit.parameters)
 
 AC.argument_of_periapsis(state::KeplerianState) = state.ω
 AC.argument_of_periapsis(state::KeplerianState, μ) = AC.argument_of_periapsis(state)
-AC.argument_of_periapsis(state::CartesianState, μ) = AC.argument_of_periapsis(cartesian_to_keplerian(state, μ), μ)
+AC.argument_of_periapsis(state::CartesianState, μ) = AC.argument_of_periapsis(cartesian_to_keplerian(state, μ), gm(μ))
 AC.argument_of_periapsis(orbit::R2BOrbit) = AC.argument_of_periapsis(orbit.state, orbit.parameters)
 
 AC.true_anomaly(state::KeplerianState) = state.ω
@@ -115,8 +116,8 @@ AC.conic(state::KeplerianState, μ) = AC.conic(state)
 AC.conic(state::CartesianState, μ) = AC.conic(AC.eccentricity(state, μ))
 AC.conic(orbit::R2BOrbit) = AC.conic(orbit.state, orbit.parameters)
 
-Base.convert(::Type{CartesianOrbit}, orbit::KeplerianOrbit) = Orbit(keplerian_to_cartesian(orbit.state, orbit.parameters), orbit.parameters)
-Base.convert(::Type{KeplerianOrbit}, orbit::CartesianOrbit) = Orbit(cartesian_to_keplerian(orbit.state, orbit.parameters), orbit.parameters)
+Base.convert(::Type{CartesianOrbit}, orbit::KeplerianOrbit) = Orbit(AC.keplerian_to_cartesian(orbit.state, orbit.parameters), orbit.parameters)
+Base.convert(::Type{KeplerianOrbit}, orbit::CartesianOrbit) = Orbit(AC.cartesian_to_keplerian(orbit.state, orbit.parameters), orbit.parameters)
 
 AstrodynamicalModels.CartesianOrbit(orbit::KeplerianOrbit) = convert(CartesianOrbit, orbit)
 AstrodynamicalModels.KeplerianOrbit(orbit::CartesianOrbit) = convert(KeplerianOrbit, orbit)
