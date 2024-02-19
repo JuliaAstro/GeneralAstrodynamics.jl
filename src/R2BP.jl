@@ -2,7 +2,7 @@
 # Restricted Two-body Problem models
 #
 
-const R2BState = Union{<:CartesianState,<:KeplerianState}
+const R2BState = CartesianState
 
 """
 A parameter vector for R2BP dynamics.
@@ -11,6 +11,9 @@ Base.@kwdef struct R2BParameters{F} <: AstrodynamicalParameters{F,1}
     μ::F
 
     R2BParameters(μ) = new{typeof(μ)}(μ)
+    R2BParameters{F}(μ) where {F} = new{F}(μ)
+    R2BParameters(p::R2BParameters) = R2BParameters(p.μ)
+    R2BParameters{F}(p::R2BParameters) where {F} = new{F}(p.μ)
 end
 
 Base.@pure paradigm(::R2BParameters) = "Restricted Two Body Dynamics"
@@ -113,7 +116,7 @@ end
 """
 An `Orbit` which exists within R2BP dynamics.
 """
-const R2BOrbit = Orbit{<:R2BState,<:R2BParameters}
+const R2BOrbit = Orbit{<:CartesianState,<:R2BParameters}
 AstrodynamicalModels.R2BOrbit(state::AbstractVector, parameters::AbstractVector) = Orbit(state isa AstrodynamicalState ? state : CartesianState(state), R2BParameters(parameters))
 AstrodynamicalModels.R2BOrbit(; state::AbstractVector, parameters::AbstractVector) = Orbit(state isa AstrodynamicalState ? state : CartesianState(state), R2BParameters(parameters))
 

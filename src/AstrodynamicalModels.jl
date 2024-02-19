@@ -25,7 +25,7 @@ export R2BSystem, CR3BSystem, NBSystem, PlanarEntrySystem, AttitudeSystem
 export R2BFunction, CR3BFunction, NBFunction, PlanarEntryFunction, AttitudeFunction
 
 # Export every array type
-export CartesianState, KeplerianState, R2BParameters, CR3BParameters, AttitudeState, AttitudeParameters, PlanarEntryState, PlanarEntryParameters
+export CartesianState, KeplerianState, OrbitalElements, KeplerianParameters, R2BParameters, CR3BParameters, AttitudeState, AttitudeParameters, PlanarEntryState, PlanarEntryParameters
 
 # Export every orbit type
 export Orbit, R2BOrbit, CR3BOrbit, CartesianOrbit, KeplerianOrbit
@@ -158,30 +158,6 @@ Base.@kwdef mutable struct CartesianSTM{F} <: FieldMatrix{6,6,F}
 end
 
 """
-A mutable vector, with labels, for 6DOF Keplerian states.
-"""
-Base.@kwdef mutable struct KeplerianState{F} <: AstrodynamicalState{F,6}
-    e::F = 0.0
-    a::F = 0.0
-    i::F = 0.0
-    Ω::F = 0.0
-    ω::F = 0.0
-    ν::F = 0.0
-
-    KeplerianState{F}(::UndefInitializer) where {F} = new{F}()
-    KeplerianState(::UndefInitializer) = KeplerianState{Float64}(undef)
-
-    KeplerianState{F}(e, a, i, Ω, ω, ν) where {F} = new{F}(e, a, i, Ω, ω, ν)
-    KeplerianState(e, a, i, Ω, ω, ν) = new{promote_type(typeof(e), typeof(a), typeof(i), typeof(Ω), typeof(ω), typeof(ν))}(e, a, i, Ω, ω, ν)
-    KeplerianState{F}(state::NamedTuple) where {F} =
-        let
-            (; e, a, i, Ω, ω, ν) = merge((; e=zero(F), a=zero(F), i=zero(F), Ω=zero(F), ω=zero(F), ν=zero(F)), state)
-            KeplerianState{F}(e, a, i, Ω, ω, ν)
-        end
-    KeplerianState(state::NamedTuple) = KeplerianState{Float64}(state)
-end
-
-"""
 An abstract supertype for all orbits. 
 
 # Extended Help
@@ -201,7 +177,7 @@ struct Orbit{U<:AbstractVector,P<:AbstractVector} <: AstrodynamicalOrbit{U,P}
     state::U
     parameters::P
 
-    Orbit(state, parameters) = new{typeof(state),typeof(parameters)}(state, parameters)
+    Orbit(state::AbstractVector, parameters::AbstractVector) = new{typeof(state),typeof(parameters)}(state, parameters)
     Orbit(; state, parameters) = Orbit(state, parameters)
     Orbit(orbit::Orbit; state=orbit.state, parameters=orbit.parameters) = Orbit(state, parameters)
 end
@@ -221,16 +197,6 @@ function Base.show(io::IO, ::MIME"text/plain", orbit::Orbit)
 end
 
 """
-Any orbit with a Cartesian state.
-"""
-const CartesianOrbit = Orbit{<:CartesianState}
-
-"""
-Any orbit with a Keplerianstate.
-"""
-const KeplerianOrbit = Orbit{<:KeplerianState}
-
-"""
 Return the state vector for an `Orbit`.
 """
 state(orbit::Orbit) = orbit.state
@@ -244,6 +210,7 @@ Base.getindex(orbit::Orbit, args...) = Base.getindex(state(orbit), args...)
 Base.setindex!(orbit::Orbit, args...) = Base.setindex!(state(orbit), args...)
 
 include("R2BP.jl")
+include("Kepler.jl")
 include("CR3BP.jl")
 include("NBP.jl")
 include("Entry.jl")

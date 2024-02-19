@@ -1,7 +1,7 @@
 name = "AstrodynamicalModels"
 uuid = "4282b555-f590-4262-b575-3e516e1493a7"
 authors = ["Joseph D Carpinelli <joey@loopy.codes>"]
-version = "3.3.1"
+version = "3.4.0"
 
 [deps]
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
@@ -17,15 +17,15 @@ AstrodynamicalCalculations = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
 SPICEBodies = "19f1efb6-7162-484a-b3a1-b52c391689d7"
 
 [extensions]
-SPICEBodiesExt = "SPICEBodies"
 AstrodynamicalCalculationsExt = "AstrodynamicalCalculations"
+SPICEBodiesExt = "SPICEBodies"
 
 [compat]
 AstrodynamicalCalculations = "^0.5.1"
 DocStringExtensions = "0.9"
 Memoize = "0.4"
 ModelingToolkit = "8"
-SciMLBase = "1.97, 2"
+SciMLBase = "2"
 StaticArrays = "1"
 Symbolics = "5"
 julia = "1.7"

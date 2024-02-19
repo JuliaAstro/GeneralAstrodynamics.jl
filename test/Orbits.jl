@@ -21,17 +21,16 @@ end
 @testset "Orbit Constructors" begin
 
     u = rand(KeplerianState)
-    p = R2BParameters(1e5)
+    p = KeplerianParameters(1e5)
 
     @test Orbit(u, p) isa Orbit
-    @test Orbit(u, p) isa R2BOrbit
     @test Orbit(u, p) isa KeplerianOrbit
 
     u = rand(CartesianState)
+    p = R2BParameters(p)
 
     @test Orbit(u, p) isa Orbit
     @test Orbit(u, p) isa R2BOrbit
-    @test Orbit(u, p) isa CartesianOrbit
 end
 
 end
