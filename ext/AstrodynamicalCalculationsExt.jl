@@ -93,7 +93,7 @@ AC.orbital_radius(state::KeplerianState, μ) = AC.orbital_radius(AC.semi_paramet
 AC.orbital_radius(state::CartesianState, μ) = AC.orbital_radius(state.x, state.y, state.z, state.ẋ, state.ẏ, state.ż, gm(μ))
 AC.orbital_radius(orbit::R2BOrbit) = AC.orbital_radius(orbit.state, orbit.parameters)
 
-AC.orbital_speed(state::KeplerianState, μ) = AC.orbital_speed(AC.orbital_radius(state), state.a, gm(μ))
+AC.orbital_speed(state::KeplerianState, μ) = AC.orbital_speed(AC.orbital_radius(state, μ), state.a, gm(μ))
 AC.orbital_speed(state::CartesianState, μ) = AC.orbital_speed(state.x, state.y, state.z, state.ẋ, state.ẏ, state.ż, gm(μ))
 AC.orbital_speed(orbit::R2BOrbit) = AC.orbital_speed(orbit.state, orbit.parameters)
 
