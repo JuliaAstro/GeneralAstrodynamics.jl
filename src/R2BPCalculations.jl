@@ -65,7 +65,7 @@ using DocStringExtensions
 """
 Returns the conic section, as specified by eccentricity `e`.
 """
-function conic(e)
+function conic(e::Number)
 
     !isnan(e) || throw(ArgumentError("Provided eccentricity is not a number (NaN)."))
 
@@ -88,6 +88,8 @@ function conic(e)
     end
 
 end
+
+conic(x, y, z, ẋ, ẏ, ż, μ) = conic(eccentricity(x, y, z, ẋ, ẏ, ż, μ))
 
 """
 Returns a Keplarian representation of a Cartesian orbital state.
