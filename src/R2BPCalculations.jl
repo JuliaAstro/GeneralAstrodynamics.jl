@@ -106,10 +106,10 @@ function cartesian_to_keplerian(x, y, z, ẋ, ẏ, ż, μ)
     r = SVector(x, y, z)
     v = SVector(ẋ, ẏ, ż)
 
-    h̅ = specific_angular_momentum_vector(r, v)
+    h̅ = specific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż)
     a = semimajor_axis(norm(r), norm(v), μ)
-    n̅ = k̂ × specific_angular_momentum_vector(r, v)
-    e̅ = eccentricity_vector(r, v, μ)
+    n̅ = k̂ × h̅
+    e̅ = eccentricity_vector(x, y, z, ẋ, ẏ, ż, μ)
     e = norm(e̅)
 
     i = safe_acos((h̅ ⋅ k̂) / norm(h̅))
@@ -138,8 +138,8 @@ in an inertial frame, centered at the center of mass of the central body.
 Algorithm taught in ENAE601.
 """
 function keplerian_to_cartesian(e, a, i, Ω, ω, ν, μ)
-    x, y, z, ẋ, ẏ, ż = keplerian_to_perifocal(a, e, ν, μ)
-    x, y, z, ẋ, ẏ, ż = perifocal_to_cartesian(i, Ω, ω, x, y, z, ẋ, ẏ, ż)
+    (; x, y, z, ẋ, ẏ, ż) = keplerian_to_perifocal(a, e, ν, μ)
+    (; x, y, z, ẋ, ẏ, ż) = perifocal_to_cartesian(i, Ω, ω, x, y, z, ẋ, ẏ, ż)
     return (; x, y, z, ẋ, ẏ, ż)
 end
 
@@ -219,112 +219,150 @@ end
 """
 Returns semimajor axis parameter, a.
 """
-semimajor_axis(r, v, μ) = inv((2 / r) - (v^2 / μ))
-semimajor_axis(r::AbstractVector, v::AbstractVector, μ) = semimajor_axis(norm(r), norm(v), μ)
-semimajor_axis(x, y, z, ẋ, ẏ, ż, μ) = semimajor_axis(SVector(x, y, z), SVector(ẋ, ẏ, ż), μ)
+semimajor_axis(r::Number, v::Number, μ) = inv((2 / r) - (v^2 / μ))
+semimajor_axis(r, v, μ) = semimajor_axis(norm(r), norm(v), μ)
+semimajor_axis(x, y, z, ẋ, ẏ, ż, μ) = semimajor_axis((x, y, z), (ẋ, ẏ, ż), μ)
+
+"""
+Returns the orbital inclination.
+"""
+inclination(x, y, z, ẋ, ẏ, ż, μ) = cartesian_to_keplerian(x, y, z, ẋ, ẏ, ż, μ).i
+
+"""
+Returns the right ascension of the ascending node.
+"""
+right_ascension_ascending_node(x, y, z, ẋ, ẏ, ż, μ) = cartesian_to_keplerian(x, y, z, ẋ, ẏ, ż, μ).Ω
+const raan = right_ascension_ascending_node
+
+"""
+Returns the argument of periapsis.
+"""
+argument_of_periapsis(x, y, z, ẋ, ẏ, ż, μ) = cartesian_to_keplerian(x, y, z, ẋ, ẏ, ż, μ).ω
+
+"""
+Return the cross product between two splatted three-vectors.
+"""
+_cross(x, y, z, ẋ, ẏ, ż) = SVector(y * ż - z * ẏ, -x * ż + z * ẋ, x * ẏ - y * ẋ)
 
 """
 Returns specific angular momentum vector, h̅.
 """
-specific_angular_momentum_vector(r::AbstractVector, v::AbstractVector) = r × v
-specific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż) = specific_angular_momentum_vector(SVector(x, y, z), SVector(ẋ, ẏ, ż))
+specific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż) = _cross(x, y, z, ẋ, ẏ, ż)
+specific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż, μ) = specific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż)
 
 """
 Returns scalar specific angular momentum vector, h.
 """
-specific_angular_momentum(r::AbstractVector, v::AbstractVector) = norm(specific_angular_momentum_vector(r, v))
 specific_angular_momentum(x, y, z, ẋ, ẏ, ż) = norm(specific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż))
+specific_angular_momentum(x, y, z, ẋ, ẏ, ż, μ) = specific_angular_momentum(x, y, z, ẋ, ẏ, ż)
 
 """
 Returns specific orbital energy, ϵ.
 """
 specific_energy(a, μ) = (-μ / (2 * a))
 specific_energy(r, v, μ) = (v^2 / 2) - (μ / r)
+specific_energy(x, y, z, ẋ, ẏ, ż, μ) = specific_energy(norm((x, y, z)), norm((ẋ, ẏ, ż)), μ)
 
 """
 Returns C3 value.
 """
 c3(r, v, μ) = v^2 - 2μ / r
+c3(x, y, z, ẋ, ẏ, ż, μ) = c3(norm((x, y, z)), norm((ẋ, ẏ, ż)), μ)
 
 """
 Returns v∞.
 """
 v_infinity(r, v, μ) = sqrt(c3(r, v, μ))
+v_infinity(x, y, z, ẋ, ẏ, ż, μ) = v_infinity(norm((x, y, z)), norm((ẋ, ẏ, ż)), μ)
 
 """
-Returns potential energy for an orbit about a `RestrictedTwoBodySystem`.
+Returns the specific potential energy: the energy per unit mass. 
 """
 specific_potential_energy(r, μ) = (μ / r)
-specific_potential_energy(r, μ, R, J₂, ϕ) =
-    (μ / r) * (1 - J₂ * (R / r)^2 * ((3 / 2) * (sin(ϕ))^2 - (1 / 2)))
+specific_potential_energy(x, y, z, ẋ, ẏ, ż, μ) = specific_potential_energy(norm((x, y, z)), μ)
+specific_potential_energy(r, μ, R, J₂, ϕ) = (μ / r) * (1 - J₂ * (R / r)^2 * ((3 / 2) * (sin(ϕ))^2 - (1 / 2)))
 
 """
 Returns orbital eccentricity vector e̅.
 """
-function eccentricity_vector(r::AbstractVector, v::AbstractVector, μ)
-
-    h̄ = specific_angular_momentum_vector(r, v)
-    return (1 / μ) * ((v × h̄) - μ * r / norm(r))
+function eccentricity_vector(x, y, z, ẋ, ẏ, ż, μ)
+    h₁, h₂, h₃ = specific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż)
+    return (1 / μ) * (_cross(ẋ, ẏ, ż, h₁, h₂, h₃) - μ * SVector(x, y, z) / norm((x, y, z)))
 
 end
-
-eccentricity_vector(x, y, z, ẋ, ẏ, ż, μ) = eccentricity_vector(SVector(x, y, z), SVector(ẋ, ẏ, ż), μ)
 
 """
 Returns orbital eccentricity, e.
 """
-eccentricity(r::AbstractVector, v::AbstractVector, μ) = norm(eccentricity_vector(r, v, μ))
-eccentricity(x, y, z, ẋ, ẏ, ż, μ) = eccentricity(SVector(x, y, z), SVector(ẋ, ẏ, ż), μ)
+eccentricity(x, y, z, ẋ, ẏ, ż, μ) = norm(eccentricity_vector(x, y, z, ẋ, ẏ, ż, μ))
 
 """
 Returns semilatus parameter, p.
 """
 semi_parameter(a, e) = a * (1 - e^2)
+semi_parameter(x, y, z, ẋ, ẏ, ż, μ) = semi_parameter(semimajor_axis(x, y, z, ẋ, ẏ, ż, μ), eccentricity(x, y, z, ẋ, ẏ, ż, μ))
 
 """
 Returns distance, r.
 """
 orbital_radius(p, e, ν) = p / (1 + e * cos(ν))
+orbital_radius(x, y, z, ẋ, ẏ, ż, μ) = orbital_radius(semi_parameter(x, y, z, ẋ, ẏ, ż, μ), eccentricity(x, y, z, ẋ, ẏ, ż, μ), true_anomaly(x, y, z, ẋ, ẏ, ż, μ))
 
 """
-Returns instantaneous velocity, v, for any orbital representation.
+Returns the instantaneous velocity, v, for any orbital representation.
 """
+function orbital_speed(x, y, z, ẋ, ẏ, ż, μ)
+    r = norm((x, y, z))
+    v = norm((ẋ, ẏ, ż))
+    return orbital_speed(r, semimajor_axis(r, v, μ), μ)
+end
+
 orbital_speed(r, a, μ) = √((2 * μ / r) - (μ / a))
-
-"""
-Returns the instantaneous velocity, `v`, for any orbital representation.
-"""
-keplerian_speed(p, e, ν, a, μ) = keplerian_speed(orbital_radius(p, e, ν), a, μ)
+orbital_speed(p, e, ν, a, μ) = orbital_speed(orbital_radius(p, e, ν), a, μ)
 
 """
 Returns periapsis distance, rₚ.
 """
 periapsis_radius(a, e) = a * (1 - e)
+periapsis_radius(x, y, z, ẋ, ẏ, ż, μ) = periapsis_radius(semimajor_axis(x, y, z, ẋ, ẏ, ż, μ), eccentricity(x, y, z, ẋ, ẏ, ż, μ))
 
 """
 Returns apoapsis distance, rₐ.
 """
 apoapsis_radius(a, e) = a * (1 + e)
+apoapsis_radius(x, y, z, ẋ, ẏ, ż, μ) = apoapsis_radius(semimajor_axis(x, y, z, ẋ, ẏ, ż, μ), eccentricity(x, y, z, ẋ, ẏ, ż, μ))
 
 """
 Returns the orbital period.
 """
 orbital_period(a, μ) = 2π * √(a^3 / μ)
+orbital_period(x, y, z, ẋ, ẏ, ż, μ) = orbital_period(semimajor_axis(x, y, z, ẋ, ẏ, ż, μ), μ)
 
 """
 Returns true anomoly, ν.
 """
+function true_anomaly(x, y, z, ẋ, ẏ, ż, μ)
+    r = (x, y, z)
+
+    e = eccentricity(x, y, z, ẋ, ẏ, ż, μ)
+    h = specific_angular_momentum(x, y, z, ẋ, ẏ, ż)
+
+    return true_anomaly(r, h, e, μ)
+end
+
 true_anomaly(r, h, e, μ) = (h^2 - μ * r) / (μ * r * e)
 
 """
 Returns mean motion, n.
 """
 mean_motion(a, μ) = √(μ / a^3)
+mean_motion(x, y, z, ẋ, ẏ, ż, μ) = mean_motion(semimajor_axis(x, y, z, ẋ, ẏ, ż, μ), μ)
 
 """
 Returns time since periapsis, t.
 """
 time_since_periapsis(n, e, E) = (E - e * sin(E)) / (n)
+
 
 """
 Sphere of influence.
