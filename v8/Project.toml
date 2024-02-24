@@ -1,0 +1,7 @@
+[deps]
+AstrodynamicalModels = "4282b555-f590-4262-b575-3e516e1493a7"
+ModelingToolkit = "961ee093-0014-501f-94e3-6117800e7a78"
+Symbolics = "0c5d862f-8b57-4792-8d23-62f2024744c7"
+
+[compat]
+ModelingToolkit = "8"
