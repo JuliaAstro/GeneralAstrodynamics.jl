@@ -120,7 +120,7 @@ end
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
-        PlanarEntrySystem(; name=name);
+        complete(PlanarEntrySystem(; name=name));
         options...
     )
 end

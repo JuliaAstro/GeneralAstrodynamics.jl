@@ -108,7 +108,7 @@ end
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
-        CR3BSystem(; stm=stm, name=name);
+        complete(CR3BSystem(; stm=stm, name=name));
         options...
     )
 end

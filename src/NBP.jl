@@ -156,7 +156,7 @@ end
         """
     end
     return ODEFunction{true,SciMLBase.FullSpecialize}(
-        NBSystem(N; stm=stm, name=name);
+        complete(NBSystem(N; stm=stm, name=name));
         options...
     )
 end

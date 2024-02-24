@@ -40,8 +40,10 @@ Base.@kwdef struct KeplerianParameters{F} <: AstrodynamicalParameters{F,1}
     KeplerianParameters{F}(p::KeplerianParameters) where {F} = KeplerianParameters{F}(p.μ)
 end
 
-Base.convert(::Type{R2BParameters{A}}, kepler::KeplerianParameters) where {A} = R2BParameters{A}(kepler.μ)
-Base.convert(::Type{KeplerianParameters{A}}, kepler::R2BParameters) where {A} = KeplerianParameters{A}(kepler.μ)
+Base.convert(::Type{R2BParameters}, kepler::KeplerianParameters{B}) where {B} = R2BParameters{B}(kepler.μ)
+Base.convert(::Type{R2BParameters{A}}, kepler::KeplerianParameters{B}) where {A,B} = R2BParameters{A}(kepler.μ)
+Base.convert(::Type{KeplerianParameters}, kepler::R2BParameters{B}) where {B} = KeplerianParameters{B}(kepler.μ)
+Base.convert(::Type{KeplerianParameters{A}}, kepler::R2BParameters{B}) where {A,B} = KeplerianParameters{A}(kepler.μ)
 
 R2BParameters(k::KeplerianParameters) = R2BParameters{eltype(k)}(k.μ)
 KeplerianParameters(r::R2BParameters) = KeplerianParameters{eltype(r)}(r.μ)

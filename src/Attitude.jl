@@ -156,7 +156,7 @@ end
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
-        AttitudeSystem(; stm=stm, name=name);
+        complete(AttitudeSystem(; stm=stm, name=name));
         options...
     )
 end

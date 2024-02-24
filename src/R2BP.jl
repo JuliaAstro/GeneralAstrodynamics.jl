@@ -108,7 +108,7 @@ end
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
-        R2BSystem(; stm=stm, name=name);
+        complete(R2BSystem(; stm=stm, name=name));
         options...
     )
 end
@@ -117,8 +117,6 @@ end
 An `Orbit` which exists within R2BP dynamics.
 """
 const R2BOrbit = Orbit{<:CartesianState,<:R2BParameters}
-AstrodynamicalModels.R2BOrbit(state::AbstractVector, parameters::AbstractVector) = Orbit(state isa AstrodynamicalState ? state : CartesianState(state), R2BParameters(parameters))
-AstrodynamicalModels.R2BOrbit(; state::AbstractVector, parameters::AbstractVector) = Orbit(state isa AstrodynamicalState ? state : CartesianState(state), R2BParameters(parameters))
 
 """
 Return an `ODEProblem` for the provided R2B system.
