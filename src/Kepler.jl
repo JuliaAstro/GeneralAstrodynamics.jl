@@ -26,6 +26,7 @@ Base.@kwdef mutable struct OrbitalElements{F} <: AstrodynamicalState{F,6}
     OrbitalElements(state::NamedTuple) = OrbitalElements{Float64}(state)
 end
 
+@doc OrbitalElements
 const KeplerianState = OrbitalElements
 
 """
