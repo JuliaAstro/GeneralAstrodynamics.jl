@@ -209,6 +209,11 @@ parameters(orbit::Orbit) = orbit.parameters
 Base.getindex(orbit::Orbit, args...) = Base.getindex(state(orbit), args...)
 Base.setindex!(orbit::Orbit, args...) = Base.setindex!(state(orbit), args...)
 
+"""
+An `Orbit` which exists within R2BP dynamics.
+"""
+const CartesianOrbit = Orbit{<:CartesianState}
+
 include("R2BP.jl")
 include("Kepler.jl")
 include("CR3BP.jl")

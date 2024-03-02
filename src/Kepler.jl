@@ -52,7 +52,7 @@ KeplerianParameters(r::R2BParameters) = KeplerianParameters{eltype(r)}(r.μ)
 Base.@pure paradigm(::KeplerianParameters) = "Idealized Keplerian Dynamics"
 
 """
-An `Orbit` which exists within R2BP dynamics.
+An `Orbit` which exists within Keplerian dynamics.
 """
 const KeplerianOrbit = Orbit{<:KeplerianState,<:KeplerianParameters}
 AstrodynamicalModels.KeplerianOrbit(state::AbstractVector, parameters::AbstractVector) = Orbit(state isa AstrodynamicalState ? state : KeplerianState(state), KeplerianParameters(parameters))
