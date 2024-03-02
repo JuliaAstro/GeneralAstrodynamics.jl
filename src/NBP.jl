@@ -155,8 +155,9 @@ end
         calculations! Consider setting `jac=false`, `stm=false`, or both.
         """
     end
+    sys = complete(NBSystem(N; stm=stm, name=name); split=false)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
-        complete(NBSystem(N; stm=stm, name=name));
+        sys, ModelingToolkit.unknowns(sys), ModelingToolkit.parameters(sys);
         options...
     )
 end

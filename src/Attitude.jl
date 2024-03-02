@@ -155,8 +155,9 @@ end
 @memoize function AttitudeFunction(; stm=false, name=:Attitude, kwargs...)
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
+    sys = complete(AttitudeSystem(; stm=stm, name=name); split=false)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
-        complete(AttitudeSystem(; stm=stm, name=name));
+        sys, ModelingToolkit.unknowns(sys), ModelingToolkit.parameters(sys);
         options...
     )
 end

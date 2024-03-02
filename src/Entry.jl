@@ -119,8 +119,9 @@ end
 @memoize function PlanarEntryFunction(; name=:PlanarEntry, kwargs...)
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
+    sys = complete(PlanarEntrySystem(; name=name); split=false)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
-        complete(PlanarEntrySystem(; name=name));
+        sys, ModelingToolkit.unknowns(sys), ModelingToolkit.parameters(sys);
         options...
     )
 end

@@ -107,8 +107,9 @@ end
 @memoize function R2BFunction(; stm=false, name=:R2B, kwargs...)
     defaults = (; jac=true)
     options = merge(defaults, kwargs)
+    sys = complete(R2BSystem(; stm=stm, name=name); split=false)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
-        complete(R2BSystem(; stm=stm, name=name));
+        sys, ModelingToolkit.unknowns(sys), ModelingToolkit.parameters(sys);
         options...
     )
 end
