@@ -2,6 +2,7 @@
 # Circular Restricted Three-body Problem models
 #
 
+@doc CartesianState
 const CR3BState = CartesianState
 
 """

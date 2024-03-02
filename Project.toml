@@ -1,7 +1,7 @@
 name = "AstrodynamicalModels"
 uuid = "4282b555-f590-4262-b575-3e516e1493a7"
 authors = ["Joseph D Carpinelli <joey@loopy.codes>"]
-version = "3.5.1"
+version = "3.5.2"
 
 [deps]
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"

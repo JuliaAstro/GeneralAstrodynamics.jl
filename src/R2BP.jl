@@ -2,6 +2,7 @@
 # Restricted Two-body Problem models
 #
 
+@doc CartesianState
 const R2BState = CartesianState
 
 """
