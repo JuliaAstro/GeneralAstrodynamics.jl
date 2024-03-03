@@ -1,7 +1,7 @@
 name = "AstrodynamicalSolvers"
 uuid = "636ee813-9c9e-4a0a-af07-88b3043dcb77"
-authors = ["Joey Carpinelli <joey@loopy.codes>"]
-version = "0.4.0"
+authors = ["Joseph Carpinelli <joseph.d.carpinelli@loopy.codes>"]
+version = "0.5.0"
 
 [deps]
 AstrodynamicalCalculations = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
@@ -15,9 +15,9 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
 AstrodynamicalCalculations = "^0.5.1"
-AstrodynamicalModels = "3.3"
+AstrodynamicalModels = "3.5"
 DocStringExtensions = "0.9"
-ModelingToolkit = "8.69"
+ModelingToolkit = "9"
 OrdinaryDiffEq = "6.55"
 Reexport = "1"
 StaticArrays = "1.6"
