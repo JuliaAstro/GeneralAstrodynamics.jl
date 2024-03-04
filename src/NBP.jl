@@ -35,7 +35,7 @@ That's about right for a model in a package called
 model = NBSystem(9)
 ```
 """
-@memoize function NBSystem(N::Int; stm=false, name=:NBP)
+@memoize function NBSystem(N::Int; stm=false, name=:NBP, defaults=Pair{ModelingToolkit.Num,<:Number}[], kwargs...)
 
     N > 0 || throw(ArgumentError("`N` must be a number greater than zero!"))
     T = N * 6 + (N * 6)^2
@@ -87,15 +87,19 @@ model = NBSystem(9)
     end
 
     if stm
+        append!(defaults, vec(Φ .=> I(6N)))
         return ODESystem(
             eqs, t, vcat(r..., v..., Φ...), vcat(G, m...);
             name=modelname,
-            defaults=Dict(vec(Φ .=> I(6N)))
+            defaults=defaults,
+            kwargs...
         )
     else
         return ODESystem(
             eqs, t, vcat(r..., v...), vcat(G, m...);
-            name=modelname
+            name=modelname,
+            defaults=defaults,
+            kwargs...
         )
     end
 end

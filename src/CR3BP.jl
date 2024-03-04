@@ -11,16 +11,21 @@ A paremeter vector for CR3BP dynamics.
 Base.@kwdef struct CR3BParameters{F} <: AstrodynamicalParameters{F,1}
     μ::F
 
-    CR3BParameters(μ) = new{typeof(μ)}(μ)
+    CR3BParameters{F}(μ::Number) where {F} = new{F}(μ)
+    CR3BParameters(μ::Number) = new{typeof(μ)}(μ)
+    CR3BParameters{F}(μ::Tuple) where {F} = CR3BParameters{F}(μ...)
+    CR3BParameters(μ::Tuple) = CR3BParameters(μ...)
+
 end
 
+dynamics(::CR3BParameters, args...; kwargs...) = CR3BSystem(args...; kwargs...)
 Base.@pure paradigm(::CR3BParameters) = "Circular Restricted Three Body Dynamics"
 
 
 """
 A `ModelingToolkit.ODESystem` for the Circular Restricted Three-body Problem.
 
-The order of the states follows: `[μ]`.
+The order of the states follows: `[x, y, z, ẋ, ẏ, ż]`.
 
 The order of the parameters follows: `[μ]`.
 
@@ -38,7 +43,7 @@ systems in our solar system.
 model = CR3BSystem(; stm=true)
 ```
 """
-@memoize function CR3BSystem(; stm=false, name=:CR3B)
+@memoize function CR3BSystem(; stm=false, name=:CR3B, defaults=Pair{ModelingToolkit.Num,<:Number}[], kwargs...)
 
     @parameters t μ
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
@@ -71,14 +76,16 @@ model = CR3BSystem(; stm=true)
     end
 
     if stm
+        append!(defaults, vec(Φ .=> I(6)))
         return ODESystem(
             eqs, t, vcat(r, v, vec(Φ)), [μ];
             name=modelname,
-            defaults=Dict(vec(Φ .=> map(Int, I(6))))
+            defaults=defaults,
+            kwargs...
         )
     else
         return ODESystem(
-            eqs, t, vcat(r, v), [μ]; name=modelname
+            eqs, t, vcat(r, v), [μ]; name=modelname, defaults=defaults, kwargs...
         )
     end
 end

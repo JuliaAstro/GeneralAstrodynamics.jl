@@ -11,6 +11,10 @@ using AstrodynamicalModels, ModelingToolkit, LinearAlgebra, Test
 
     model = AttitudeSystem(stm=true)
     @test model isa ODESystem
+
+    @test rand(AttitudeState) isa AttitudeState
+    @test rand(AttitudeParameters) isa AttitudeParameters
+    @test dynamics(rand(AttitudeParameters)) isa ModelingToolkit.ODESystem
 end
 
 @testset "Attitude Model Calculations" begin

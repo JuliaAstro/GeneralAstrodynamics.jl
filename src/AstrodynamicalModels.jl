@@ -25,10 +25,13 @@ export R2BSystem, CR3BSystem, NBSystem, PlanarEntrySystem, AttitudeSystem
 export R2BFunction, CR3BFunction, NBFunction, PlanarEntryFunction, AttitudeFunction
 
 # Export every array type
-export CartesianState, KeplerianState, OrbitalElements, KeplerianParameters, R2BParameters, CR3BParameters, AttitudeState, AttitudeParameters, PlanarEntryState, PlanarEntryParameters
+export CartesianState, R2BState, KeplerianState, OrbitalElements, KeplerianParameters, R2BParameters, CR3BState, CR3BParameters, AttitudeState, AttitudeParameters, PlanarEntryState, PlanarEntryParameters
 
 # Export every orbit type
 export Orbit, R2BOrbit, CR3BOrbit, CartesianOrbit, KeplerianOrbit
+
+# Export every method
+export state, parameters, dynamics
 
 using Symbolics
 using SciMLBase
@@ -206,8 +209,13 @@ Return the parameter vector for an `Orbit`.
 """
 parameters(orbit::Orbit) = orbit.parameters
 
-Base.getindex(orbit::Orbit, args...) = Base.getindex(state(orbit), args...)
-Base.setindex!(orbit::Orbit, args...) = Base.setindex!(state(orbit), args...)
+Base.getindex(orbit::AstrodynamicalOrbit, args...) = Base.getindex(state(orbit), args...)
+Base.setindex!(orbit::AstrodynamicalOrbit, args...) = Base.setindex!(state(orbit), args...)
+
+"""
+Return the underlying dynamics of the system.
+"""
+dynamics(orbit::AstrodynamicalOrbit, args...; kwargs...) = dynamics(parameters(orbit), args...; kwargs...)
 
 """
 An `Orbit` which exists within R2BP dynamics.
@@ -220,5 +228,7 @@ include("CR3BP.jl")
 include("NBP.jl")
 include("Entry.jl")
 include("Attitude.jl")
+
+ModelingToolkit.ODESystem(orbit::AstrodynamicalOrbit, args...; kwargs...) = dynamics(orbit, args...; kwargs...)
 
 end # module

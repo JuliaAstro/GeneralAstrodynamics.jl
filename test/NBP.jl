@@ -6,9 +6,8 @@ module NBPTests
 using AstrodynamicalModels, ModelingToolkit, Test
 
 @testset "NBP Model Constructors" begin
-    NBSystem(10; stm=false)
-    NBSystem(2; stm=true)
-    @test true
+    @test NBSystem(10; stm=false) isa ODESystem
+    @test NBSystem(2; stm=true) isa ODESystem
 end
 
 @testset "NBP Function Constructors" begin

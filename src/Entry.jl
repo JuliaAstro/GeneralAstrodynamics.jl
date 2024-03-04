@@ -17,7 +17,7 @@ end
 """
 A parameter vector for planar entry dynamics.
 """
-Base.@kwdef struct PlanarEntryParameters{F} <: AstrodynamicalParameters{F,4}
+Base.@kwdef struct PlanarEntryParameters{F} <: AstrodynamicalParameters{F,7}
     R::F
     P::F
     H::F
@@ -31,6 +31,7 @@ Base.@kwdef struct PlanarEntryParameters{F} <: AstrodynamicalParameters{F,4}
 
 end
 
+dynamics(::PlanarEntryParameters, args...; kwargs...) = PlanarEntrySystem(args...; kwargs...)
 Base.@pure paradigm(::PlanarEntryParameters) = "Planar Entry Dynamics"
 
 """
@@ -53,7 +54,7 @@ spherical planet.
 model = PlanarEntrySystem()
 ```
 """
-@memoize function PlanarEntrySystem(; name=:PlanarEntry)
+@memoize function PlanarEntrySystem(; name=:PlanarEntry, defaults=Pair{ModelingToolkit.Num,<:Number}[], kwargs...)
 
     @variables t
 
@@ -87,7 +88,7 @@ model = PlanarEntrySystem()
     ]
 
     model = ODESystem(
-        eqs, t, [γ, v, r, θ], [R, P, H, m, A, C, μ]; name=name
+        eqs, t, [γ, v, r, θ], [R, P, H, m, A, C, μ]; name=name, defaults=defaults, kwargs...
     )
 
     return model

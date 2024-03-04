@@ -8,6 +8,11 @@ using AstrodynamicalModels, ModelingToolkit, Test
 @testset "Entry Model Constructors" begin
     model = PlanarEntrySystem()
     @test model isa ODESystem
+
+    @test rand(PlanarEntryState) isa PlanarEntryState
+    @test rand(PlanarEntryParameters) isa PlanarEntryParameters
+    @test dynamics(rand(PlanarEntryParameters)) isa ODESystem
+
 end
 
 @testset "Entry Model Calculations" begin

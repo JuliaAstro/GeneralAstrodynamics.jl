@@ -15,8 +15,12 @@ Base.@kwdef struct R2BParameters{F} <: AstrodynamicalParameters{F,1}
     R2BParameters{F}(μ) where {F} = new{F}(μ)
     R2BParameters(p::R2BParameters) = R2BParameters(p.μ)
     R2BParameters{F}(p::R2BParameters) where {F} = new{F}(p.μ)
+    R2BParameters{F}(μ::Tuple) where {F} = R2BParameters{F}(μ...)
+    R2BParameters(μ::Tuple) = R2BParameters(μ...)
 end
 
+
+dynamics(::R2BParameters, args...; kwargs...) = R2BSystem(args...; kwargs...)
 Base.@pure paradigm(::R2BParameters) = "Restricted Two Body Dynamics"
 
 """
@@ -40,7 +44,7 @@ spacecraft orbiting Earth.
 model = R2BSystem()
 ```
 """
-@memoize function R2BSystem(; stm=false, name=:R2B)
+@memoize function R2BSystem(; stm=false, name=:R2B, defaults=Pair{ModelingToolkit.Num,<:Number}[], kwargs...)
 
     @parameters t μ
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
@@ -71,14 +75,16 @@ model = R2BSystem()
     end
 
     if stm
+        append!(defaults, vec(Φ .=> I(6)))
         return ODESystem(
             eqs, t, vcat(r, v, vec(Φ)), [μ];
             name=modelname,
-            defaults=Dict(vec(Φ .=> I(6)))
+            defaults=defaults,
+            kwargs...
         )
     else
         return ODESystem(
-            eqs, t, vcat(r, v), [μ]; name=modelname
+            eqs, t, vcat(r, v), [μ]; name=modelname, defaults=defaults, kwargs...
         )
     end
 end

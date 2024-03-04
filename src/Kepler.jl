@@ -39,6 +39,8 @@ Base.@kwdef struct KeplerianParameters{F} <: AstrodynamicalParameters{F,1}
     KeplerianParameters{F}(μ) where {F} = new{F}(μ)
     KeplerianParameters(p::KeplerianParameters) = KeplerianParameters(p.μ)
     KeplerianParameters{F}(p::KeplerianParameters) where {F} = KeplerianParameters{F}(p.μ)
+    KeplerianParameters{F}(μ::Tuple) where {F} = KeplerianParameters{F}(μ...)
+    KeplerianParameters(μ::Tuple) = KeplerianParameters(μ...)
 end
 
 Base.convert(::Type{R2BParameters}, kepler::KeplerianParameters{B}) where {B} = R2BParameters{B}(kepler.μ)

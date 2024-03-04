@@ -6,9 +6,12 @@ module CR3BPTests
 using AstrodynamicalModels, ModelingToolkit, Test
 
 @testset "CR3BP Model Constructors" begin
-    model = CR3BSystem(; stm=false)
-    model = CR3BSystem(; stm=true)
-    @test true
+    @test CR3BSystem(; stm=false) isa ODESystem
+    @test CR3BSystem(; stm=true) isa ODESystem
+
+    @test rand(CR3BState) isa CR3BState
+    @test rand(CR3BParameters) isa CR3BParameters
+    @test dynamics(rand(CR3BParameters)) isa ODESystem
 end
 
 @testset "CR3BP Model Calculations" begin

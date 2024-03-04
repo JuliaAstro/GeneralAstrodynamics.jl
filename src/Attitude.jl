@@ -42,6 +42,7 @@ Base.@kwdef struct AttitudeParameters{F} <: AstrodynamicalParameters{F,15}
     AttitudeParameters(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃) = new{promote_type(typeof(J₁₁), typeof(J₂₁), typeof(J₃₁), typeof(J₁₂), typeof(J₂₂), typeof(J₃₂), typeof(J₁₃), typeof(J₂₃), typeof(J₃₃), typeof(L₁), typeof(L₂), typeof(L₃), typeof(f₁), typeof(f₂), typeof(f₃))}(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₂)
 end
 
+dynamics(::AttitudeParameters, args...; kwargs...) = AttitudeSystem(args...; kwargs...)
 Base.@pure paradigm(::AttitudeParameters) = "Newton-Euler Attitude Dynamics"
 
 """
@@ -76,7 +77,7 @@ spherical planet.
 model = Attitude()
 ```
 """
-@memoize function AttitudeSystem(; stm=false, name=:Attitude)
+@memoize function AttitudeSystem(; stm=false, name=:Attitude, defaults=Pair{ModelingToolkit.Num,<:Number}[], kwargs...)
 
     @variables t
     @variables (q(t))[1:4] [description = "scalar-last attitude quaternion"]
@@ -128,9 +129,10 @@ model = Attitude()
     end
 
     if stm
-        return ODESystem(eqs, t, vcat(q, ω, vec(Φ)), vcat(vec(J), L, f); name=name, defaults=Dict(vec(Φ .=> I(7))))
+        append!(defaults, vec(Φ .=> I(7)))
+        return ODESystem(eqs, t, vcat(q, ω, vec(Φ)), vcat(vec(J), L, f); name=name, defaults=defaults, kwargs...)
     else
-        return ODESystem(eqs, t, vcat(q, ω), vcat(vec(J), L, f); name=name)
+        return ODESystem(eqs, t, vcat(q, ω), vcat(vec(J), L, f); name=name, defaults=defaults, kwargs...)
     end
 end
 
