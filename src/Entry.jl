@@ -31,7 +31,8 @@ Base.@kwdef struct PlanarEntryParameters{F} <: AstrodynamicalParameters{F,7}
 
 end
 
-dynamics(::PlanarEntryParameters, args...; kwargs...) = PlanarEntrySystem(args...; kwargs...)
+system(::PlanarEntryParameters, args...; kwargs...) = PlanarEntrySystem(args...; kwargs...)
+dynamics(::PlanarEntryParameters, args...; kwargs...) = PlanarEntryFunction(args...; kwargs...)
 Base.@pure paradigm(::PlanarEntryParameters) = "Planar Entry Dynamics"
 
 """

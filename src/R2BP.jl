@@ -20,7 +20,8 @@ Base.@kwdef struct R2BParameters{F} <: AstrodynamicalParameters{F,1}
 end
 
 
-dynamics(::R2BParameters, args...; kwargs...) = R2BSystem(args...; kwargs...)
+system(::R2BParameters, args...; kwargs...) = R2BSystem(args...; kwargs...)
+dynamics(::R2BParameters, args...; kwargs...) = R2BFunction(args...; kwargs...)
 Base.@pure paradigm(::R2BParameters) = "Restricted Two Body Dynamics"
 
 """

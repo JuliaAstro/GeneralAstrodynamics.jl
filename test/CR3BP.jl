@@ -11,7 +11,8 @@ using AstrodynamicalModels, ModelingToolkit, Test
 
     @test rand(CR3BState) isa CR3BState
     @test rand(CR3BParameters) isa CR3BParameters
-    @test dynamics(rand(CR3BParameters)) isa ODESystem
+    @test system(rand(CR3BParameters)) isa ODESystem
+    @test dynamics(rand(CR3BParameters)) isa ODEFunction
 end
 
 @testset "CR3BP Model Calculations" begin

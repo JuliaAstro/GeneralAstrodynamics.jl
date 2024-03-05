@@ -11,7 +11,8 @@ using AstrodynamicalModels, ModelingToolkit, Test
 
     @test rand(PlanarEntryState) isa PlanarEntryState
     @test rand(PlanarEntryParameters) isa PlanarEntryParameters
-    @test dynamics(rand(PlanarEntryParameters)) isa ODESystem
+    @test system(rand(PlanarEntryParameters)) isa ODESystem
+    @test dynamics(rand(PlanarEntryParameters)) isa ODEFunction
 
 end
 

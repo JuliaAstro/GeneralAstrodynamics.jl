@@ -31,7 +31,7 @@ export CartesianState, R2BState, KeplerianState, OrbitalElements, KeplerianParam
 export Orbit, R2BOrbit, CR3BOrbit, CartesianOrbit, KeplerianOrbit
 
 # Export every method
-export state, parameters, dynamics
+export state, parameters, dynamics, system
 
 using Symbolics
 using SciMLBase
@@ -212,8 +212,15 @@ parameters(orbit::Orbit) = orbit.parameters
 Base.getindex(orbit::AstrodynamicalOrbit, args...) = Base.getindex(state(orbit), args...)
 Base.setindex!(orbit::AstrodynamicalOrbit, args...) = Base.setindex!(state(orbit), args...)
 
+
 """
-Return the underlying dynamics of the system.
+Return the underlying dynamics of the system in the form of a `ModelingToolkit.ODESystem`.
+"""
+system(orbit::AstrodynamicalOrbit, args...; kwargs...) = system(parameters(orbit), args...; kwargs...)
+
+
+"""
+Return the underlying dynamics of the system in the form of a `ModelingToolkit.ODEFunction`.
 """
 dynamics(orbit::AstrodynamicalOrbit, args...; kwargs...) = dynamics(parameters(orbit), args...; kwargs...)
 
@@ -229,6 +236,7 @@ include("NBP.jl")
 include("Entry.jl")
 include("Attitude.jl")
 
-ModelingToolkit.ODESystem(orbit::AstrodynamicalOrbit, args...; kwargs...) = dynamics(orbit, args...; kwargs...)
+ModelingToolkit.ODESystem(orbit::AstrodynamicalOrbit, args...; kwargs...) = system(orbit, args...; kwargs...)
+ModelingToolkit.ODEFunction(orbit::AstrodynamicalOrbit, args...; kwargs...) = dynamics(orbit, args...; kwargs...)
 
 end # module

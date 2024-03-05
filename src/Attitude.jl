@@ -42,7 +42,8 @@ Base.@kwdef struct AttitudeParameters{F} <: AstrodynamicalParameters{F,15}
     AttitudeParameters(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃) = new{promote_type(typeof(J₁₁), typeof(J₂₁), typeof(J₃₁), typeof(J₁₂), typeof(J₂₂), typeof(J₃₂), typeof(J₁₃), typeof(J₂₃), typeof(J₃₃), typeof(L₁), typeof(L₂), typeof(L₃), typeof(f₁), typeof(f₂), typeof(f₃))}(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₂)
 end
 
-dynamics(::AttitudeParameters, args...; kwargs...) = AttitudeSystem(args...; kwargs...)
+system(::AttitudeParameters, args...; kwargs...) = AttitudeSystem(args...; kwargs...)
+dynamics(::AttitudeParameters, args...; kwargs...) = AttitudeFunction(args...; kwargs...)
 Base.@pure paradigm(::AttitudeParameters) = "Newton-Euler Attitude Dynamics"
 
 """
@@ -67,7 +68,7 @@ spherical planet.
 ## Parameters
 
 1. `J`: inertial matrix
-2. `L`: TODO: what the hell is this?
+2. `L`: lever arm where input torque is applied
 3. `f`: torques on the vehicle body (Newton-meters)
 
 

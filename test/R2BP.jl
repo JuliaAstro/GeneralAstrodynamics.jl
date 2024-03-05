@@ -11,7 +11,8 @@ using AstrodynamicalModels, ModelingToolkit, Test
 
     @test rand(R2BState) isa R2BState
     @test rand(R2BParameters) isa R2BParameters
-    @test dynamics(rand(R2BParameters)) isa ODESystem
+    @test system(rand(R2BParameters)) isa ODESystem
+    @test dynamics(rand(R2BParameters)) isa ODEFunction
 end
 
 @testset "R2BP Model Calculations" begin

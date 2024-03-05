@@ -18,7 +18,8 @@ Base.@kwdef struct CR3BParameters{F} <: AstrodynamicalParameters{F,1}
 
 end
 
-dynamics(::CR3BParameters, args...; kwargs...) = CR3BSystem(args...; kwargs...)
+system(::CR3BParameters, args...; kwargs...) = CR3BSystem(args...; kwargs...)
+dynamics(::CR3BParameters, args...; kwargs...) = CR3BFunction(args...; kwargs...)
 Base.@pure paradigm(::CR3BParameters) = "Circular Restricted Three Body Dynamics"
 
 

@@ -40,9 +40,12 @@ end
     p = rand(CR3BParameters)
     orbit = Orbit(u, p)
 
-    @test dynamics(AstrodynamicalModels.parameters(orbit)) isa ModelingToolkit.ODESystem
-    @test dynamics(orbit) isa ModelingToolkit.ODESystem
-    @test ODESystem(orbit) isa ModelingToolkit.ODESystem
+    @test system(AstrodynamicalModels.parameters(orbit)) isa ModelingToolkit.ODESystem
+    @test dynamics(AstrodynamicalModels.parameters(orbit)) isa ModelingToolkit.ODEFunction
+    @test system(orbit) isa ModelingToolkit.ODESystem
+    @test dynamics(orbit) isa ModelingToolkit.ODEFunction
+    @test ModelingToolkit.ODESystem(orbit) isa ModelingToolkit.ODESystem
+    @test ModelingToolkit.ODEFunction(orbit) isa ModelingToolkit.ODEFunction
 end
 
 end
