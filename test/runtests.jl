@@ -10,6 +10,17 @@ using OrdinaryDiffEq
 using AstrodynamicalModels
 using LinearAlgebra
 
+@testset "Orbit Propagation" begin
+
+    orbit = Orbit(rand(CartesianState), rand(R2BParameters))
+    @test propagate(orbit, 1.0) isa ODESolution
+
+    state = copy(orbit.state)
+    @test isnothing(propagate!(orbit, 100.0))
+    @test orbit.state != state
+
+end
+
 @testset "Lyapunov Orbit Correction" begin
 
     μ = 0.012150584395829193

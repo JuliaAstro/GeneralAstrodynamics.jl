@@ -31,6 +31,9 @@ using DocStringExtensions
 
 
 include("CR3BSolvers.jl")
+include("Propagation.jl")
+
 @reexport using .CR3BSolvers
+@reexport using .Propagation
 
 end
