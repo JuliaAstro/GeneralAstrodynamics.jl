@@ -9,6 +9,7 @@ using AstrodynamicalModels, ModelingToolkit, AstrodynamicalCalculations, Test
     @test rand(CartesianState) isa CartesianState
     @test CartesianState(undef) isa CartesianState
     @test CartesianState() isa CartesianState
+    @test CartesianState(randn(3), randn(3)) isa CartesianState
 end
 
 

@@ -105,14 +105,17 @@ Base.@kwdef mutable struct CartesianState{F} <: AstrodynamicalState{F,6}
     CartesianState{F}(::UndefInitializer) where {F} = new{F}()
     CartesianState(::UndefInitializer) = CartesianState{Float64}(undef)
 
+    CartesianState{F}(r, v) where {F} = new{F}(r..., v...)
+    CartesianState(r, v) = CartesianState{Base.promote_type(Base.promote_eltype(r), Base.promote_eltype(v))}(r, v)
     CartesianState{F}(x, y, z, ẋ, ẏ, ż) where {F} = new{F}(x, y, z, ẋ, ẏ, ż)
     CartesianState(x, y, z, ẋ, ẏ, ż) = new{promote_type(typeof(x), typeof(y), typeof(z), typeof(ẋ), typeof(ẏ), typeof(ż))}(x, y, z, ẋ, ẏ, ż)
+
     CartesianState{F}(state::NamedTuple) where {F} =
         let
             (; x, y, z, ẋ, ẏ, ż) = merge((; x=zero(F), y=zero(F), z=zero(F), ẋ=zero(F), ẏ=zero(F), ż=zero(F)), state)
             CartesianState{F}(x, y, z, ẋ, ẏ, ż)
         end
-    CartesianState(state::NamedTuple) = CartesianState{Float64}(state)
+    CartesianState(state::NamedTuple) = CartesianState{Base.promote_eltype(values(state))}(state)
 end
 
 """
@@ -211,7 +214,6 @@ parameters(orbit::Orbit) = orbit.parameters
 
 Base.getindex(orbit::AstrodynamicalOrbit, args...) = Base.getindex(state(orbit), args...)
 Base.setindex!(orbit::AstrodynamicalOrbit, args...) = Base.setindex!(state(orbit), args...)
-
 
 """
 Return the underlying dynamics of the system in the form of a `ModelingToolkit.ODESystem`.
