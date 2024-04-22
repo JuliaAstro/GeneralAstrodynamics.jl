@@ -20,7 +20,7 @@ AstrodynamicalSolvers = "0.4, 0.5"
 DocStringExtensions = "0.9"
 Reexport = "1.2"
 SPICE = "0.2"
-SPICEBodies = "0.1"
+SPICEBodies = "0.1, 0.2"
 SPICEKernels = "1.2"
 julia = "1.7"
 
