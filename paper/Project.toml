@@ -1,0 +1,13 @@
+[deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+GeneralAstrodynamics = "8068df5b-8501-4530-bd82-d24d3c9619db"
+HorizonsAPI = "c15253bb-5e94-4b8b-9a02-579bb6c8e3ce"
+HorizonsEphemeris = "05ee1981-f730-42d8-b713-4f42d99733dc"
+IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+SPICE = "5bab7191-041a-5c2e-a744-024b9c3a5062"
+SPICEApplications = "e12e0822-0612-48d4-a4bb-92984dd6b6ec"
+SPICEBodies = "19f1efb6-7162-484a-b3a1-b52c391689d7"
+SPICEKernels = "8e9d28ce-e483-4ef7-bfd9-45b8fef6369c"

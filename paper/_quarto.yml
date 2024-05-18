@@ -1,0 +1,27 @@
+project:
+  type: manuscript
+  output-dir: _manuscript
+  post-render: ./post.sh
+
+manuscript:
+  article: paper.md
+
+format:
+  html:
+    include-before-body:
+      text: |
+        :::{.callout-important appearance="simple"}
+        This page is a **pre-print**! The published paper is available at 
+        the [Journal of Open Source Software](https://joss.theoj.org). 
+        :::
+
+    comments:
+      hypothesis: true
+    theme:
+      light: flatly
+      dark: darkly
+
+execute:
+  cache: false
+  freeze: false
+  echo: true
