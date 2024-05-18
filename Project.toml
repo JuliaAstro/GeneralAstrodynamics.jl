@@ -1,0 +1,24 @@
+name = "AstrodynamicalCalculations"
+uuid = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
+authors = ["Joey Carpinelli <joey@loopy.codes>"]
+version = "0.5.1"
+
+[deps]
+DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
+Roots = "f2b01f46-fcfa-551c-844a-d8ac1e96c665"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+
+[compat]
+DocStringExtensions = "0.9"
+Reexport = "1.2"
+StaticArrays = "1.6"
+Roots = "2.0"
+julia = "1.6"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
