@@ -25,7 +25,19 @@ export R2BSystem, CR3BSystem, NBSystem, PlanarEntrySystem, AttitudeSystem
 export R2BFunction, CR3BFunction, NBFunction, PlanarEntryFunction, AttitudeFunction
 
 # Export every array type
-export CartesianState, R2BState, KeplerianState, OrbitalElements, KeplerianParameters, R2BParameters, CR3BState, CR3BParameters, AttitudeState, AttitudeParameters, PlanarEntryState, PlanarEntryParameters
+export CartesianState,
+    CartesianSTM,
+    R2BState,
+    KeplerianState,
+    OrbitalElements,
+    KeplerianParameters,
+    R2BParameters,
+    CR3BState,
+    CR3BParameters,
+    AttitudeState,
+    AttitudeParameters,
+    PlanarEntryState,
+    PlanarEntryParameters
 
 # Export every orbit type
 export Orbit, R2BOrbit, CR3BOrbit, CartesianOrbit, KeplerianOrbit
@@ -74,7 +86,11 @@ An abstract supertype for all astrodynamical parameter vectors.
 """
 abstract type AstrodynamicalParameters{F,N} <: FieldVector{N,F} end
 
-function Base.show(io::IO, ::MIME"text/plain", params::S) where {S<:AstrodynamicalParameters}
+function Base.show(
+    io::IO,
+    ::MIME"text/plain",
+    params::S,
+) where {S<:AstrodynamicalParameters}
     name = nameof(S)
     println(io, "$name with eltype $(eltype(params))\n")
     for symbol in fieldnames(S)
@@ -83,7 +99,8 @@ function Base.show(io::IO, ::MIME"text/plain", params::S) where {S<:Astrodynamic
     end
 end
 
-Base.show(io::IO, state::AstrodynamicalParameters) = Base.show(io, MIME"text/plain"(), state)
+Base.show(io::IO, state::AstrodynamicalParameters) =
+    Base.show(io, MIME"text/plain"(), state)
 
 # Resolves method ambiguity errors. TODO: should x be copied?
 (::Type{T})(x::T) where {T<:Union{<:AstrodynamicalState,<:AstrodynamicalParameters}} = x
@@ -106,16 +123,40 @@ Base.@kwdef mutable struct CartesianState{F} <: AstrodynamicalState{F,6}
     CartesianState(::UndefInitializer) = CartesianState{Float64}(undef)
 
     CartesianState{F}(r, v) where {F} = new{F}(r..., v...)
-    CartesianState(r, v) = CartesianState{Base.promote_type(Base.promote_eltype(r), Base.promote_eltype(v))}(r, v)
+    CartesianState(r, v) =
+        CartesianState{Base.promote_type(Base.promote_eltype(r), Base.promote_eltype(v))}(
+            r,
+            v,
+        )
     CartesianState{F}(x, y, z, ẋ, ẏ, ż) where {F} = new{F}(x, y, z, ẋ, ẏ, ż)
-    CartesianState(x, y, z, ẋ, ẏ, ż) = new{promote_type(typeof(x), typeof(y), typeof(z), typeof(ẋ), typeof(ẏ), typeof(ż))}(x, y, z, ẋ, ẏ, ż)
+    CartesianState(x, y, z, ẋ, ẏ, ż) = new{
+        promote_type(typeof(x), typeof(y), typeof(z), typeof(ẋ), typeof(ẏ), typeof(ż)),
+    }(
+        x,
+        y,
+        z,
+        ẋ,
+        ẏ,
+        ż,
+    )
 
     CartesianState{F}(state::NamedTuple) where {F} =
         let
-            (; x, y, z, ẋ, ẏ, ż) = merge((; x=zero(F), y=zero(F), z=zero(F), ẋ=zero(F), ẏ=zero(F), ż=zero(F)), state)
+            (; x, y, z, ẋ, ẏ, ż) = merge(
+                (;
+                    x = zero(F),
+                    y = zero(F),
+                    z = zero(F),
+                    ẋ = zero(F),
+                    ẏ = zero(F),
+                    ż = zero(F),
+                ),
+                state,
+            )
             CartesianState{F}(x, y, z, ẋ, ẏ, ż)
         end
-    CartesianState(state::NamedTuple) = CartesianState{Base.promote_eltype(values(state))}(state)
+    CartesianState(state::NamedTuple) =
+        CartesianState{Base.promote_eltype(values(state))}(state)
 end
 
 """
@@ -161,6 +202,319 @@ Base.@kwdef mutable struct CartesianSTM{F} <: FieldMatrix{6,6,F}
 
     CartesianSTM{F}(::UndefInitializer) where {F} = new{F}()
     CartesianSTM(::UndefInitializer) = CartesianSTM{Float64}(undef)
+
+    CartesianSTM{F}(
+        xx,
+        xy,
+        xz,
+        xẋ,
+        xẏ,
+        xż,
+        yx,
+        yy,
+        yz,
+        yẋ,
+        yẏ,
+        yż,
+        zx,
+        zy,
+        zz,
+        zẋ,
+        zẏ,
+        zż,
+        ẋx,
+        ẋy,
+        ẋz,
+        ẋẋ,
+        ẋẏ,
+        ẋż,
+        ẏx,
+        ẏy,
+        ẏz,
+        ẏẋ,
+        ẏẏ,
+        ẏż,
+        żx,
+        ży,
+        żz,
+        żẋ,
+        żẏ,
+        żż,
+    ) where {F} = new{F}(
+        xx,
+        xy,
+        xz,
+        xẋ,
+        xẏ,
+        xż,
+        yx,
+        yy,
+        yz,
+        yẋ,
+        yẏ,
+        yż,
+        zx,
+        zy,
+        zz,
+        zẋ,
+        zẏ,
+        zż,
+        ẋx,
+        ẋy,
+        ẋz,
+        ẋẋ,
+        ẋẏ,
+        ẋż,
+        ẏx,
+        ẏy,
+        ẏz,
+        ẏẋ,
+        ẏẏ,
+        ẏż,
+        żx,
+        ży,
+        żz,
+        żẋ,
+        żẏ,
+        żż,
+    )
+
+    CartesianSTM(
+        xx,
+        xy,
+        xz,
+        xẋ,
+        xẏ,
+        xż,
+        yx,
+        yy,
+        yz,
+        yẋ,
+        yẏ,
+        yż,
+        zx,
+        zy,
+        zz,
+        zẋ,
+        zẏ,
+        zż,
+        ẋx,
+        ẋy,
+        ẋz,
+        ẋẋ,
+        ẋẏ,
+        ẋż,
+        ẏx,
+        ẏy,
+        ẏz,
+        ẏẋ,
+        ẏẏ,
+        ẏż,
+        żx,
+        ży,
+        żz,
+        żẋ,
+        żẏ,
+        żż,
+    ) = new{
+        promote_type(
+            typeof(xx),
+            typeof(xy),
+            typeof(xz),
+            typeof(xẋ),
+            typeof(xẏ),
+            typeof(xż),
+            typeof(yx),
+            typeof(yy),
+            typeof(yz),
+            typeof(yẋ),
+            typeof(yẏ),
+            typeof(yż),
+            typeof(zx),
+            typeof(zy),
+            typeof(zz),
+            typeof(zẋ),
+            typeof(zẏ),
+            typeof(zż),
+            typeof(ẋx),
+            typeof(ẋy),
+            typeof(ẋz),
+            typeof(ẋẋ),
+            typeof(ẋẏ),
+            typeof(ẋż),
+            typeof(ẏx),
+            typeof(ẏy),
+            typeof(ẏz),
+            typeof(ẏẋ),
+            typeof(ẏẏ),
+            typeof(ẏż),
+            typeof(żx),
+            typeof(ży),
+            typeof(żz),
+            typeof(żẋ),
+            typeof(żẏ),
+            typeof(żż),
+        ),
+    }(
+        xx,
+        xy,
+        xz,
+        xẋ,
+        xẏ,
+        xż,
+        yx,
+        yy,
+        yz,
+        yẋ,
+        yẏ,
+        yż,
+        zx,
+        zy,
+        zz,
+        zẋ,
+        zẏ,
+        zż,
+        ẋx,
+        ẋy,
+        ẋz,
+        ẋẋ,
+        ẋẏ,
+        ẋż,
+        ẏx,
+        ẏy,
+        ẏz,
+        ẏẋ,
+        ẏẏ,
+        ẏż,
+        żx,
+        ży,
+        żz,
+        żẋ,
+        żẏ,
+        żż,
+    )
+
+    CartesianSTM{F}(state::NamedTuple) where {F} =
+        let
+            (;
+                xx,
+                xy,
+                xz,
+                xẋ,
+                xẏ,
+                xż,
+                yx,
+                yy,
+                yz,
+                yẋ,
+                yẏ,
+                yż,
+                zx,
+                zy,
+                zz,
+                zẋ,
+                zẏ,
+                zż,
+                ẋx,
+                ẋy,
+                ẋz,
+                ẋẋ,
+                ẋẏ,
+                ẋż,
+                ẏx,
+                ẏy,
+                ẏz,
+                ẏẋ,
+                ẏẏ,
+                ẏż,
+                żx,
+                ży,
+                żz,
+                żẋ,
+                żẏ,
+                żż,
+            ) = merge(
+                (;
+                    xx = zero(F),
+                    xy = zero(F),
+                    xz = zero(F),
+                    xẋ = zero(F),
+                    xẏ = zero(F),
+                    xż = zero(F),
+                    yx = zero(F),
+                    yy = zero(F),
+                    yz = zero(F),
+                    yẋ = zero(F),
+                    yẏ = zero(F),
+                    yż = zero(F),
+                    zx = zero(F),
+                    zy = zero(F),
+                    zz = zero(F),
+                    zẋ = zero(F),
+                    zẏ = zero(F),
+                    zż = zero(F),
+                    ẋx = zero(F),
+                    ẋy = zero(F),
+                    ẋz = zero(F),
+                    ẋẋ = zero(F),
+                    ẋẏ = zero(F),
+                    ẋż = zero(F),
+                    ẏx = zero(F),
+                    ẏy = zero(F),
+                    ẏz = zero(F),
+                    ẏẋ = zero(F),
+                    ẏẏ = zero(F),
+                    ẏż = zero(F),
+                    żx = zero(F),
+                    ży = zero(F),
+                    żz = zero(F),
+                    żẋ = zero(F),
+                    żẏ = zero(F),
+                    żż = zero(F),
+                ),
+                state,
+            )
+            CartesianSTM{F}(
+                xx,
+                xy,
+                xz,
+                xẋ,
+                xẏ,
+                xż,
+                yx,
+                yy,
+                yz,
+                yẋ,
+                yẏ,
+                yż,
+                zx,
+                zy,
+                zz,
+                zẋ,
+                zẏ,
+                zż,
+                ẋx,
+                ẋy,
+                ẋz,
+                ẋẋ,
+                ẋẏ,
+                ẋż,
+                ẏx,
+                ẏy,
+                ẏz,
+                ẏẋ,
+                ẏẏ,
+                ẏż,
+                żx,
+                ży,
+                żz,
+                żẋ,
+                żẏ,
+                żż,
+            )
+        end
+    CartesianSTM(state::NamedTuple) =
+        CartesianSTM{Base.promote_eltype(values(state))}(state)
 end
 
 """
@@ -183,9 +537,11 @@ struct Orbit{U<:AbstractVector,P<:AbstractVector} <: AstrodynamicalOrbit{U,P}
     state::U
     parameters::P
 
-    Orbit(state::AbstractVector, parameters::AbstractVector) = new{typeof(state),typeof(parameters)}(state, parameters)
+    Orbit(state::AbstractVector, parameters::AbstractVector) =
+        new{typeof(state),typeof(parameters)}(state, parameters)
     Orbit(; state, parameters) = Orbit(state, parameters)
-    Orbit(orbit::Orbit; state=orbit.state, parameters=orbit.parameters) = Orbit(state, parameters)
+    Orbit(orbit::Orbit; state = orbit.state, parameters = orbit.parameters) =
+        Orbit(state, parameters)
 end
 
 function Base.show(io::IO, ::MIME"text/plain", orbit::Orbit)
@@ -218,13 +574,15 @@ Base.setindex!(orbit::AstrodynamicalOrbit, args...) = Base.setindex!(state(orbit
 """
 Return the underlying dynamics of the system in the form of a `ModelingToolkit.ODESystem`.
 """
-system(orbit::AstrodynamicalOrbit, args...; kwargs...) = system(parameters(orbit), args...; kwargs...)
+system(orbit::AstrodynamicalOrbit, args...; kwargs...) =
+    system(parameters(orbit), args...; kwargs...)
 
 
 """
 Return the underlying dynamics of the system in the form of a `ModelingToolkit.ODEFunction`.
 """
-dynamics(orbit::AstrodynamicalOrbit, args...; kwargs...) = dynamics(parameters(orbit), args...; kwargs...)
+dynamics(orbit::AstrodynamicalOrbit, args...; kwargs...) =
+    dynamics(parameters(orbit), args...; kwargs...)
 
 """
 An `Orbit` which exists within R2BP dynamics.
@@ -238,7 +596,9 @@ include("NBP.jl")
 include("Entry.jl")
 include("Attitude.jl")
 
-ModelingToolkit.ODESystem(orbit::AstrodynamicalOrbit, args...; kwargs...) = system(orbit, args...; kwargs...)
-ModelingToolkit.ODEFunction(orbit::AstrodynamicalOrbit, args...; kwargs...) = dynamics(orbit, args...; kwargs...)
+ModelingToolkit.ODESystem(orbit::AstrodynamicalOrbit, args...; kwargs...) =
+    system(orbit, args...; kwargs...)
+ModelingToolkit.ODEFunction(orbit::AstrodynamicalOrbit, args...; kwargs...) =
+    dynamics(orbit, args...; kwargs...)
 
 end # module
