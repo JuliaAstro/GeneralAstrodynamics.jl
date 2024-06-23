@@ -16,7 +16,7 @@ SPICEKernels = "8e9d28ce-e483-4ef7-bfd9-45b8fef6369c"
 [compat]
 AstrodynamicalCalculations = "1"
 AstrodynamicalModels = "3.4"
-AstrodynamicalSolvers = "1"
+AstrodynamicalSolvers = "1, 0.5"
 DocStringExtensions = "0.9"
 Reexport = "1.2"
 SPICE = "0.2"
