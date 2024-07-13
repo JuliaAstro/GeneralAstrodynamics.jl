@@ -14,8 +14,27 @@ Base.@kwdef mutable struct AttitudeState{F} <: AstrodynamicalState{F,7}
     AttitudeState{F}(::UndefInitializer) where {F} = new{F}()
     AttitudeState(::UndefInitializer) = AttitudeState{Float64}(undef)
 
-    AttitudeState{F}(q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃) where {F} = new{F}(q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃)
-    AttitudeState(q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃) = new{promote_type(typeof(q₁), typeof(q₂), typeof(q₃), typeof(q₄), typeof(ω₁), typeof(ω₂), typeof(ω₃))}(q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃)
+    AttitudeState{F}(q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃) where {F} =
+        new{F}(q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃)
+    AttitudeState(q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃) = new{
+        promote_type(
+            typeof(q₁),
+            typeof(q₂),
+            typeof(q₃),
+            typeof(q₄),
+            typeof(ω₁),
+            typeof(ω₂),
+            typeof(ω₃),
+        ),
+    }(
+        q₁,
+        q₂,
+        q₃,
+        q₄,
+        ω₁,
+        ω₂,
+        ω₃,
+    )
 end
 
 """
@@ -38,8 +57,75 @@ Base.@kwdef struct AttitudeParameters{F} <: AstrodynamicalParameters{F,15}
     f₂::F = 0.0
     f₃::F = 0.0
 
-    AttitudeParameters{F}(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃) where {F} = new{F}(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃)
-    AttitudeParameters(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃) = new{promote_type(typeof(J₁₁), typeof(J₂₁), typeof(J₃₁), typeof(J₁₂), typeof(J₂₂), typeof(J₃₂), typeof(J₁₃), typeof(J₂₃), typeof(J₃₃), typeof(L₁), typeof(L₂), typeof(L₃), typeof(f₁), typeof(f₂), typeof(f₃))}(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₂)
+    AttitudeParameters{F}(
+        J₁₁,
+        J₂₁,
+        J₃₁,
+        J₁₂,
+        J₂₂,
+        J₃₂,
+        J₁₃,
+        J₂₃,
+        J₃₃,
+        L₁,
+        L₂,
+        L₃,
+        f₁,
+        f₂,
+        f₃,
+    ) where {F} =
+        new{F}(J₁₁, J₂₁, J₃₁, J₁₂, J₂₂, J₃₂, J₁₃, J₂₃, J₃₃, L₁, L₂, L₃, f₁, f₂, f₃)
+    AttitudeParameters(
+        J₁₁,
+        J₂₁,
+        J₃₁,
+        J₁₂,
+        J₂₂,
+        J₃₂,
+        J₁₃,
+        J₂₃,
+        J₃₃,
+        L₁,
+        L₂,
+        L₃,
+        f₁,
+        f₂,
+        f₃,
+    ) = new{
+        promote_type(
+            typeof(J₁₁),
+            typeof(J₂₁),
+            typeof(J₃₁),
+            typeof(J₁₂),
+            typeof(J₂₂),
+            typeof(J₃₂),
+            typeof(J₁₃),
+            typeof(J₂₃),
+            typeof(J₃₃),
+            typeof(L₁),
+            typeof(L₂),
+            typeof(L₃),
+            typeof(f₁),
+            typeof(f₂),
+            typeof(f₃),
+        ),
+    }(
+        J₁₁,
+        J₂₁,
+        J₃₁,
+        J₁₂,
+        J₂₂,
+        J₃₂,
+        J₁₃,
+        J₂₃,
+        J₃₃,
+        L₁,
+        L₂,
+        L₃,
+        f₁,
+        f₂,
+        f₂,
+    )
 end
 
 system(::AttitudeParameters, args...; kwargs...) = AttitudeSystem(args...; kwargs...)
@@ -78,7 +164,12 @@ spherical planet.
 model = Attitude()
 ```
 """
-@memoize function AttitudeSystem(; stm=false, name=:Attitude, defaults=Pair{ModelingToolkit.Num,<:Number}[], kwargs...)
+@memoize function AttitudeSystem(;
+    stm = false,
+    name = :Attitude,
+    defaults = Pair{ModelingToolkit.Num,<:Number}[],
+    kwargs...,
+)
 
     @variables t
     @variables (q(t))[1:4] [description = "scalar-last attitude quaternion"]
@@ -107,20 +198,17 @@ model = Attitude()
         -ω[2] ω[1] 0
     ]
 
-    eqs = vcat(
-        δ.(q) .~ (1 // 2) * (A * q),
-        δ.(ω) .~ (-inv(J) * ωx * J * ω + inv(J) * L + f)
-    )
+    eqs =
+        vcat(δ.(q) .~ (1 // 2) * (A * q), δ.(ω) .~ (-inv(J) * ωx * J * ω + inv(J) * L + f))
 
     if stm
-        @variables (Φ(t))[1:7, 1:7]
-        Φ = Symbolics.scalarize(Φ)
-        M = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(q, ω))
+        @variables (Φ(t))[1:7, 1:7] [description = "state transition matrix estimate"]
+        A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(r, v))
 
-        LHS = map(δ, Φ)
-        RHS = M * Φ
+        LHS = δ.(Φ)
+        RHS = A * Φ
 
-        eqs = vcat(eqs, [LHS[i] ~ RHS[i] for i in eachindex(LHS)])
+        eqs = vcat(eqs, vec([LHS[i] ~ RHS[i] for i in eachindex(LHS)]))
     end
 
     if string(name) == "Attitude" && stm
@@ -131,9 +219,25 @@ model = Attitude()
 
     if stm
         append!(defaults, vec(Φ .=> I(7)))
-        return ODESystem(eqs, t, vcat(q, ω, vec(Φ)), vcat(vec(J), L, f); name=name, defaults=defaults, kwargs...)
+        return ODESystem(
+            eqs,
+            t,
+            vcat(q, ω, vec(Φ)),
+            vcat(vec(J), L, f);
+            name = name,
+            defaults = defaults,
+            kwargs...,
+        )
     else
-        return ODESystem(eqs, t, vcat(q, ω), vcat(vec(J), L, f); name=name, defaults=defaults, kwargs...)
+        return ODESystem(
+            eqs,
+            t,
+            vcat(q, ω),
+            vcat(vec(J), L, f);
+            name = name,
+            defaults = defaults,
+            kwargs...,
+        )
     end
 end
 
@@ -155,12 +259,14 @@ let u = randn(7), p = randn(15), t = NaN # time invariant
 end
 ```
 """
-@memoize function AttitudeFunction(; stm=false, name=:Attitude, kwargs...)
-    defaults = (; jac=true)
+@memoize function AttitudeFunction(; stm = false, name = :Attitude, kwargs...)
+    defaults = (; jac = true)
     options = merge(defaults, kwargs)
-    sys = complete(AttitudeSystem(; stm=stm, name=name); split=false)
+    sys = complete(AttitudeSystem(; stm = stm, name = name); split = false)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
-        sys, ModelingToolkit.unknowns(sys), ModelingToolkit.parameters(sys);
-        options...
+        sys,
+        ModelingToolkit.unknowns(sys),
+        ModelingToolkit.parameters(sys);
+        options...,
     )
 end

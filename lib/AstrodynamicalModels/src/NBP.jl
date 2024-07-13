@@ -35,7 +35,13 @@ That's about right for a model in a package called
 model = NBSystem(9)
 ```
 """
-@memoize function NBSystem(N::Int; stm=false, name=:NBP, defaults=Pair{ModelingToolkit.Num,<:Number}[], kwargs...)
+@memoize function NBSystem(
+    N::Int;
+    stm = false,
+    name = :NBP,
+    defaults = Pair{ModelingToolkit.Num,<:Number}[],
+    kwargs...,
+)
 
     N > 0 || throw(ArgumentError("`N` must be a number greater than zero!"))
     T = N * 6 + (N * 6)^2
@@ -43,20 +49,20 @@ model = NBSystem(9)
     @variables (x(t))[1:N] (y(t))[1:N] (z(t))[1:N] (ẋ(t))[1:N] (ẏ(t))[1:N] (ż(t))[1:N]
     δ = Differential(t)
 
-    r = [[x[i], y[i], z[i]] for i in 1:N]
-    v = [[ẋ[i], ẏ[i], ż[i]] for i in 1:N]
+    r = [[x[i], y[i], z[i]] for i = 1:N]
+    v = [[ẋ[i], ẏ[i], ż[i]] for i = 1:N]
 
-    poseqs = reduce(vcat, [
-        δ.(r[i]) .~ v[i]
-        for i ∈ 1:N
-    ])
+    poseqs = reduce(vcat, [δ.(r[i]) .~ v[i] for i ∈ 1:N])
 
-    veleqs = reduce(vcat, [
-        δ.(v[i]) .~ sum((
-            ((m[i] * m[j]) / norm(r[j] .- r[i])^3 * (r[j] .- r[i])) .* (j == N ? G / m[i] : 1)
-            for j ∈ 1:N if j ≢ i
-        )) for i ∈ 1:N
-    ])
+    veleqs = reduce(
+        vcat,
+        [
+            δ.(v[i]) .~ sum((
+                ((m[i] * m[j]) / norm(r[j] .- r[i])^3 * (r[j] .- r[i])) .*
+                (j == N ? G / m[i] : 1) for j ∈ 1:N if j ≢ i
+            )) for i ∈ 1:N
+        ],
+    )
 
     eqs = vcat(poseqs, veleqs)
 
@@ -70,14 +76,13 @@ model = NBSystem(9)
             """
         end
 
-        @variables (Φ(t))[1:6N, 1:6N] [description = "state transition matrix estimate"]
-        Φ = Symbolics.scalarize(Φ)
-        A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(r..., v...))
+        @variables (Φ(t))[1:6, 1:6] [description = "state transition matrix estimate"]
+        A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(r, v))
 
-        LHS = map(δ, Φ)
-        RHS = map(simplify, A * Φ)
+        LHS = δ.(Φ)
+        RHS = A * Φ
 
-        eqs = vcat(eqs, [LHS[i] ~ RHS[i] for i in eachindex(LHS)])
+        eqs = vcat(eqs, vec([LHS[i] ~ RHS[i] for i in eachindex(LHS)]))
     end
 
     if string(name) == "NBP" && stm
@@ -89,17 +94,23 @@ model = NBSystem(9)
     if stm
         append!(defaults, vec(Φ .=> I(6N)))
         return ODESystem(
-            eqs, t, vcat(r..., v..., Φ...), vcat(G, m...);
-            name=modelname,
-            defaults=defaults,
-            kwargs...
+            eqs,
+            t,
+            vcat(r..., v..., Φ...),
+            vcat(G, m...);
+            name = modelname,
+            defaults = defaults,
+            kwargs...,
         )
     else
         return ODESystem(
-            eqs, t, vcat(r..., v...), vcat(G, m...);
-            name=modelname,
-            defaults=defaults,
-            kwargs...
+            eqs,
+            t,
+            vcat(r..., v...),
+            vcat(G, m...);
+            name = modelname,
+            defaults = defaults,
+            kwargs...,
         )
     end
 end
@@ -148,8 +159,8 @@ let u = randn(3*6), p = randn(1 + 3), t = 0
 end
 ```
 """
-@memoize function NBFunction(N::Int; stm=false, name=:R2BP, kwargs...)
-    defaults = (; jac=false)
+@memoize function NBFunction(N::Int; stm = false, name = :R2BP, kwargs...)
+    defaults = (; jac = false)
     options = merge(defaults, kwargs)
     if N ≥ 2 && stm && options.jac
         @warn """
@@ -159,9 +170,11 @@ end
         calculations! Consider setting `jac=false`, `stm=false`, or both.
         """
     end
-    sys = complete(NBSystem(N; stm=stm, name=name); split=false)
+    sys = complete(NBSystem(N; stm = stm, name = name); split = false)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
-        sys, ModelingToolkit.unknowns(sys), ModelingToolkit.parameters(sys);
-        options...
+        sys,
+        ModelingToolkit.unknowns(sys),
+        ModelingToolkit.parameters(sys);
+        options...,
     )
 end
