@@ -205,6 +205,8 @@ model = Attitude()
         @variables (Φ(t))[1:7, 1:7] [description = "state transition matrix estimate"]
         A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(r, v))
 
+        Φ = Symbolics.scalarize(Φ)
+
         LHS = δ.(Φ)
         RHS = A * Φ
 
@@ -218,7 +220,7 @@ model = Attitude()
     end
 
     if stm
-        append!(defaults, vec(Φ .=> I(7)))
+        defaults = vcat(defaults, vec(Φ .=> Float64.(I(7))))
         return ODESystem(
             eqs,
             t,

@@ -79,6 +79,8 @@ model = NBSystem(9)
         @variables (Φ(t))[1:6, 1:6] [description = "state transition matrix estimate"]
         A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(r, v))
 
+        Φ = Symbolics.scalarize(Φ)
+
         LHS = δ.(Φ)
         RHS = A * Φ
 
@@ -92,7 +94,7 @@ model = NBSystem(9)
     end
 
     if stm
-        append!(defaults, vec(Φ .=> I(6N)))
+        defaults = vcat(defaults, vec(Φ .=> Float64.(I(6N))))
         return ODESystem(
             eqs,
             t,
