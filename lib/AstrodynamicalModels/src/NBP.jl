@@ -65,6 +65,7 @@ model = NBSystem(9)
     )
 
     eqs = vcat(poseqs, veleqs)
+    u = vcat(r..., v...)
 
     if stm
         if N ≥ 3
@@ -76,8 +77,10 @@ model = NBSystem(9)
             """
         end
 
-        @variables (Φ(t))[1:6, 1:6] [description = "state transition matrix estimate"]
-        A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(r, v))
+        @variables (Φ(t))[1:length(eqs), 1:length(eqs)] [
+            description = "state transition matrix estimate",
+        ]
+        A = Symbolics.jacobian(map(el -> el.rhs, eqs), u)
 
         Φ = Symbolics.scalarize(Φ)
 
@@ -98,7 +101,7 @@ model = NBSystem(9)
         return ODESystem(
             eqs,
             t,
-            vcat(r..., v..., Φ...),
+            vcat(u, Φ...),
             vcat(G, m...);
             name = modelname,
             defaults = defaults,
@@ -108,7 +111,7 @@ model = NBSystem(9)
         return ODESystem(
             eqs,
             t,
-            vcat(r..., v...),
+            u,
             vcat(G, m...);
             name = modelname,
             defaults = defaults,

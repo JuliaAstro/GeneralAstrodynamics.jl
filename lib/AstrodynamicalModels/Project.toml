@@ -4,7 +4,6 @@ authors = ["Joseph D Carpinelli <joey@loopy.codes>"]
 version = "3.8.0"
 
 [deps]
-AstrodynamicalCalculations = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Memoize = "c03570c3-d221-55d1-a50c-7939bbd78826"
@@ -22,7 +21,7 @@ AstrodynamicalCalculationsExt = "AstrodynamicalCalculations"
 SPICEBodiesExt = "SPICEBodies"
 
 [compat]
-AstrodynamicalCalculations = "1"
+AstrodynamicalCalculations = "0.5, 1"
 DocStringExtensions = "0.9"
 Memoize = "0.4"
 ModelingToolkit = "9.3"

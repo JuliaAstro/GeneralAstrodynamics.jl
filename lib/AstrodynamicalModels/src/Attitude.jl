@@ -201,9 +201,11 @@ model = Attitude()
     eqs =
         vcat(δ.(q) .~ (1 // 2) * (A * q), δ.(ω) .~ (-inv(J) * ωx * J * ω + inv(J) * L + f))
 
+    u = vcat(q, ω)
+
     if stm
         @variables (Φ(t))[1:7, 1:7] [description = "state transition matrix estimate"]
-        A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(r, v))
+        A = Symbolics.jacobian(map(el -> el.rhs, eqs), u)
 
         Φ = Symbolics.scalarize(Φ)
 
@@ -224,7 +226,7 @@ model = Attitude()
         return ODESystem(
             eqs,
             t,
-            vcat(q, ω, vec(Φ)),
+            vcat(u, vec(Φ)),
             vcat(vec(J), L, f);
             name = name,
             defaults = defaults,
@@ -234,7 +236,7 @@ model = Attitude()
         return ODESystem(
             eqs,
             t,
-            vcat(q, ω),
+            u,
             vcat(vec(J), L, f);
             name = name,
             defaults = defaults,

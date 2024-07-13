@@ -11,7 +11,7 @@ $(IMPORTS)
 """
 module CR3BSolvers
 
-export halo, lyapunov, monodromy
+export halo, lyapunov
 
 using LinearAlgebra
 using StaticArrays
@@ -433,84 +433,6 @@ function halo(
         return halo(u.x, u.z, u.ẏ, μ, u.Δt; kwargs...)
     end
 
-end
-
-"""
-Solve for the monodromy matrix of the periodic orbit.
-"""
-function monodromy(
-    u::AbstractVector,
-    μ,
-    T;
-    algorithm = Vern9(),
-    reltol = 1e-12,
-    abstol = 1e-12,
-    save_everystep = false,
-    kwargs...,
-)
-    problem = ODEProblem(
-        CR3BFunction(stm = true),
-        MVector{42}(
-            u[begin],
-            u[begin+1],
-            u[begin+2],
-            u[begin+3],
-            u[begin+4],
-            u[begin+5],
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-        ),
-        (zero(T), T),
-        (μ,),
-    )
-    solution = solve(
-        problem,
-        algorithm;
-        reltol = reltol,
-        abstol = abstol,
-        save_everystep = save_everystep,
-        kwargs...,
-    )
-
-    if solution.u[begin][begin:begin+5] ≉ solution.u[end][begin:begin+5]
-        @warn "The orbit does not appear to be periodic!"
-    end
-
-    return reshape((solution.u[end][begin+6:end]), 6, 6)
 end
 
 end # module
