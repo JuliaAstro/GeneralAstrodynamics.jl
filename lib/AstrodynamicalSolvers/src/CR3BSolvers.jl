@@ -59,7 +59,9 @@ function planar_differential(state::AbstractVector, μ)
     δz, δẏ, δτ = -1 * (inv(F) * @SVector [state[4], state[6], state[2]])
 
     if isnan(δz) || isnan(δẏ) || isnan(δτ)
-        error("The correction matrix does not have full rank, and thus cannot be applied. Try another initial condition, and if that does not work, please open an issue.")
+        error(
+            "The correction matrix does not have full rank, and thus cannot be applied. Try another initial condition, and if that does not work, please open an issue.",
+        )
     else
         return (; δz, δẏ, δτ)
     end
@@ -85,7 +87,9 @@ function extraplanar_differential(state::AbstractVector, μ)
     δx, δẏ, δτ = -1 * (inv(F) * @SVector [state[4], state[6], state[2]])
 
     if isnan(δx) || isnan(δẏ) || isnan(δτ)
-        error("The correction matrix does not have full rank, and thus cannot be applied. Try another initial condition, and if that does not work, please open an issue.")
+        error(
+            "The correction matrix does not have full rank, and thus cannot be applied. Try another initial condition, and if that does not work, please open an issue.",
+        )
     else
         return (; δx, δẏ, δτ)
     end
@@ -95,7 +99,7 @@ end
 """
 Iterate on an initial guess for Lyapunov orbit conditions.
 """
-function lyapunov(x, ẏ, μ, T; reltol=1e-12, abstol=1e-12, maxiters=10)
+function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
 
     z = zero(x)
     y = zero(x)
@@ -103,20 +107,69 @@ function lyapunov(x, ẏ, μ, T; reltol=1e-12, abstol=1e-12, maxiters=10)
     ż = zero(ẏ)
     τ = T / 2
 
-    ic = MVector{42}(x, y, z, ẋ, ẏ, ż, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1)
+    ic = MVector{42}(
+        x,
+        y,
+        z,
+        ẋ,
+        ẏ,
+        ż,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+    )
     p = (μ,)
     tspan = (zero(τ), τ)
 
     f = CR3BFunction()
-    problem = ODEProblem(CR3BFunction(stm=true), ic, tspan, p)
+    problem = ODEProblem(CR3BFunction(stm = true), ic, tspan, p)
 
-    for _ in 1:maxiters
+    for _ = 1:maxiters
 
-        solution = solve(problem, Vern9(), reltol=reltol, abstol=abstol, save_everystep=false)
+        solution = solve(
+            problem,
+            Vern9(),
+            reltol = reltol,
+            abstol = abstol,
+            save_everystep = false,
+        )
         global fc = solution.u[end]
 
         if abs(fc[4]) <= abstol && abs(fc[6]) <= abstol
-            return (; x=x, ẏ=ẏ), 2τ
+            return (; x = x, ẏ = ẏ, Δt = 2τ)
         end
 
         correction = planar_differential(@views(solution.u[end]), μ)
@@ -129,29 +182,69 @@ function lyapunov(x, ẏ, μ, T; reltol=1e-12, abstol=1e-12, maxiters=10)
         ẏ = _ẏ
         τ = _τ
 
-        ic = MVector{42}(x, y, z, ẋ, ẏ, ż, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1)
+        ic = MVector{42}(
+            x,
+            y,
+            z,
+            ẋ,
+            ẏ,
+            ż,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+        )
 
         tspan = (zero(τ), τ)
-        _problem = remake(problem; u0=ic, tspan, p)
+        _problem = remake(problem; u0 = ic, tspan, p)
         problem = _problem
 
     end
 
     if abs(fc[4]) <= abstol && abs(fc[6]) <= abstol
-        return (; x=x, ẏ=ẏ), 2τ
+        return (; x = x, ẏ = ẏ, Δt = 2τ)
     else
-        error("Iterative solver failed to converge on a periodic orbit. Try another initial condition, or try relieving the provided tolerances.")
+        error(
+            "Iterative solver failed to converge on a periodic orbit. Try another initial condition, or try relieving the provided tolerances.",
+        )
     end
 
 end
 
 function lyapunov(u::AbstractVector, μ, T; kwargs...)
-    corrected = lyapunov(
-        @views(u[begin]),
-        @views(u[begin+4]),
-        μ,
-        T
-    )
+    corrected = lyapunov(@views(u[begin]), @views(u[begin+4]), μ, T)
 
     return typeof(u)(@SVector [corrected.x, 0, 0, 0, corrected.ẏ, 0]), corrected.T
 end
@@ -159,7 +252,7 @@ end
 """
 Iterate on an initial guess for halo orbit conditions.
 """
-function halo(x, z, ẏ, μ, T; reltol=1e-12, abstol=1e-12, maxiters=10)
+function halo(x, z, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
 
     y = zero(x)
     ẋ = zero(ẏ)
@@ -167,20 +260,69 @@ function halo(x, z, ẏ, μ, T; reltol=1e-12, abstol=1e-12, maxiters=10)
     τ = T / 2
 
 
-    ic = MVector{42}(x, y, z, ẋ, ẏ, ż, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1)
+    ic = MVector{42}(
+        x,
+        y,
+        z,
+        ẋ,
+        ẏ,
+        ż,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+    )
     p = (μ,)
     tspan = (zero(τ), τ)
 
     f = CR3BFunction()
-    problem = ODEProblem(CR3BFunction(stm=true), ic, tspan, p)
+    problem = ODEProblem(CR3BFunction(stm = true), ic, tspan, p)
 
-    for _ in 1:maxiters
+    for _ = 1:maxiters
 
-        solution = solve(problem, Vern9(), reltol=reltol, abstol=abstol, save_everystep=false)
+        solution = solve(
+            problem,
+            Vern9(),
+            reltol = reltol,
+            abstol = abstol,
+            save_everystep = false,
+        )
         global fc = solution.u[end]
 
         if abs(fc[4]) <= abstol && abs(fc[6]) <= abstol
-            return (; x=x, z=z, ẏ=ẏ), 2τ
+            return (; x = x, z = z, ẏ = ẏ, Δt = 2τ)
         end
 
         correction = extraplanar_differential(@views(solution.u[end]), μ)
@@ -201,31 +343,72 @@ function halo(x, z, ẏ, μ, T; reltol=1e-12, abstol=1e-12, maxiters=10)
 
                """
 
-        ic = MVector{42}(x, y, z, ẋ, ẏ, ż, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1)
+        ic = MVector{42}(
+            x,
+            y,
+            z,
+            ẋ,
+            ẏ,
+            ż,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+        )
 
         tspan = (zero(τ), τ)
-        _problem = remake(problem; u0=ic, tspan, p)
+        _problem = remake(problem; u0 = ic, tspan, p)
         problem = _problem
 
     end
 
     if abs(fc[4]) <= abstol && abs(fc[6]) <= abstol
-        return (; x=x, z=z, ẏ=ẏ), 2τ
+        return (; x = x, z = z, ẏ = ẏ, Δt = 2τ)
     else
-        error("Iterative solver failed to converge on a periodic orbit. Try another initial condition, or try relieving the provided tolerances.")
+        error(
+            "Iterative solver failed to converge on a periodic orbit. Try another initial condition, or try relieving the provided tolerances.",
+        )
     end
 end
 
 function halo(u::AbstractVector, μ, T; kwargs...)
-    corrected, period = halo(
-        @views(u[begin]),
-        @views(u[begin+2]),
-        @views(u[begin+4]),
-        μ,
-        T
-    )
+    corrected = halo(u[begin], u[begin+2], u[begin+4], μ, T)
 
-    return typeof(u)(@SVector [corrected.x, 0, corrected.z, 0, corrected.ẏ, 0]), period
+    return typeof(u)(@SVector [corrected.x, 0, corrected.z, 0, corrected.ẏ, 0]),
+    corrected.Δt
+
 end
 
 """
@@ -233,14 +416,21 @@ Given a nondimensional mass parameter `μ`, and orbit characteristics, construct
 an initial guess using Richardson's analytical solution, and iterate on that
 guess using a differential corrector. 
 """
-function halo(μ, lagrange::Int; amplitude=0.0, phase=0.0, hemisphere=:northern, kwargs...)
+function halo(
+    μ,
+    lagrange::Int;
+    amplitude = 0.0,
+    phase = 0.0,
+    hemisphere = :northern,
+    kwargs...,
+)
 
-    u, T = richardson_ic(μ, lagrange; Z=amplitude, hemisphere=hemisphere, ϕ=phase)
+    u = richardson_ic(μ, lagrange; Z = amplitude, hemisphere = hemisphere, ϕ = phase)
 
     if u.z == 0
-        return lyapunov(u.x, u.ẏ, μ, T; kwargs...)
+        return lyapunov(u.x, u.ẏ, μ, u.Δt; kwargs...)
     else
-        return halo(u.x, u.z, u.ẏ, μ, T; kwargs...)
+        return halo(u.x, u.z, u.ẏ, μ, u.Δt; kwargs...)
     end
 
 end
@@ -248,9 +438,73 @@ end
 """
 Solve for the monodromy matrix of the periodic orbit.
 """
-function monodromy(u::AbstractVector, μ, T; algorithm=Vern9(), reltol=1e-12, abstol=1e-12, save_everystep=false, kwargs...)
-    problem = ODEProblem(CR3BFunction(stm=true), MVector{42}(u[begin], u[begin+1], u[begin+2], u[begin+3], u[begin+4], u[begin+5], 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1), (zero(T), T), (μ,))
-    solution = solve(problem, algorithm; reltol=reltol, abstol=abstol, save_everystep=save_everystep, kwargs...)
+function monodromy(
+    u::AbstractVector,
+    μ,
+    T;
+    algorithm = Vern9(),
+    reltol = 1e-12,
+    abstol = 1e-12,
+    save_everystep = false,
+    kwargs...,
+)
+    problem = ODEProblem(
+        CR3BFunction(stm = true),
+        MVector{42}(
+            u[begin],
+            u[begin+1],
+            u[begin+2],
+            u[begin+3],
+            u[begin+4],
+            u[begin+5],
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+        ),
+        (zero(T), T),
+        (μ,),
+    )
+    solution = solve(
+        problem,
+        algorithm;
+        reltol = reltol,
+        abstol = abstol,
+        save_everystep = save_everystep,
+        kwargs...,
+    )
 
     if solution.u[begin][begin:begin+5] ≉ solution.u[end][begin:begin+5]
         @warn "The orbit does not appear to be periodic!"

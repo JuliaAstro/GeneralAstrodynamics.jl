@@ -93,7 +93,7 @@ function nondimensional(x, y, z, ẋ, ẏ, ż, t, a, μ₁, μ₂)
     t = t / Tₛ
     μ = min(μ₁, μ₂) / μₜ
 
-    return (; x, y, z, ẋ, ẏ, ż, t, μ, L=a, T=Tₛ)
+    return (; x, y, z, ẋ, ẏ, ż, t, μ, L = a, T = Tₛ)
 end
 
 """
@@ -111,7 +111,7 @@ function redimensioned(x, y, z, ẋ, ẏ, ż, t, μ, a, T)
     μ₂ = μ * sum_μs
     μ₁ = sum_μ - μ₂
 
-    return (; x, y, z, ẋ, ẏ, ż, t, μ₁, μ₂, L=a, T)
+    return (; x, y, z, ẋ, ẏ, ż, t, μ₁, μ₂, L = a, T)
 
 end
 
@@ -212,7 +212,9 @@ __References:__
 """
 function lagrange_point(μ::Real, L::Int)
     if L < 1 || L > 5
-        error("Lagrange point index must be a value between 1 and 5 (inclusive). You provided: $L.")
+        error(
+            "Lagrange point index must be a value between 1 and 5 (inclusive). You provided: $L.",
+        )
     end
 
     expressions = SVector{3}(
@@ -249,7 +251,7 @@ Returns an analytical solution for a Halo orbit about `L`.
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
-function richardson_ic(μ, L::Int; Z=0.0, hemisphere=:northern, ϕ=0.0)
+function richardson_ic(μ, L::Int; Z = 0.0, hemisphere = :northern, ϕ = 0.0)
     if L == 1
         point = first(lagrange_point(μ, 1))
         γ = abs(one(μ) - μ - point)
@@ -260,7 +262,7 @@ function richardson_ic(μ, L::Int; Z=0.0, hemisphere=:northern, ϕ=0.0)
         γ = abs(point - one(μ) + μ)
         n = collect(1:4) .* one(μ)
         c = @. ((-one(μ))^n * μ + (-one(μ))^n * (one(μ) - μ)γ^(n + 1)) /
-               (γ^3 * (one(μ) + γ^(n + 1)))
+           (γ^3 * (one(μ) + γ^(n + 1)))
     else
         throw(ArgumentError("Only Halo orbits about L1 or L2 are supported."))
     end
@@ -354,7 +356,7 @@ function richardson_ic(μ, L::Int; Z=0.0, hemisphere=:northern, ϕ=0.0)
         3ωₚ * ν * δₘ * (d₃₂ * Aᵧ * Aₓ^2 - d₃₁ * Aᵧ^2) * sin(3τ₁)
     )
 
-    return (; x=X, y=Y, z=Z, ẋ=Ẋ, ẏ=Ẏ, ż=Ż), T
+    return (; x = X, y = Y, z = Z, ẋ = Ẋ, ẏ = Ẏ, ż = Ż, Δt = T)
 
 end
 
@@ -381,7 +383,7 @@ Returns an analytical solution for a Halo orbit about `L`.
 __References:__
 - [Rund, 2018](https://digitalcommons.calpoly.edu/theses/1853/).
 """
-function richardson_halo(μ, L::Int; Z=0.0, hemisphere=:northern, ϕ=0.0, length=10)
+function richardson_halo(μ, L::Int; Z = 0.0, hemisphere = :northern, ϕ = 0.0, length = 10)
     if L == 1
         point = first(lagrange_point(μ, 1))
         γ = abs(one(μ) - μ - point)
@@ -392,13 +394,17 @@ function richardson_halo(μ, L::Int; Z=0.0, hemisphere=:northern, ϕ=0.0, length
         γ = abs(point - one(μ) + μ)
         n = collect(1:4) .* one(μ)
         c = @. ((-one(μ))^n * μ + (-one(μ))^n * (one(μ) - μ)γ^(n + 1)) /
-               (γ^3 * (one(μ) + γ^(n + 1)))
+           (γ^3 * (one(μ) + γ^(n + 1)))
     else
         throw(ArgumentError("Only Halo orbits about L1 or L2 are supported."))
     end
 
     if length < 2
-        throw(ArgumentError("The trajectory lenth must be two or greater. You provided: $length."))
+        throw(
+            ArgumentError(
+                "The trajectory lenth must be two or greater. You provided: $length.",
+            ),
+        )
     end
 
     ωₚ = √((2 - c[2] + √((9c[2]^2 - 8c[2]))) / 2)
@@ -447,7 +453,7 @@ function richardson_halo(μ, L::Int; Z=0.0, hemisphere=:northern, ϕ=0.0, length
 
     ν = 1 + s₁ * Aₓ^2 + s₂ * Aᵧ^2
     T = 2π / (ωₚ * ν)
-    τ = ν .* range(0, stop=T, length=length)
+    τ = ν .* range(0, stop = T, length = length)
 
     if hemisphere == :northern
         m = 1
@@ -491,9 +497,9 @@ function richardson_halo(μ, L::Int; Z=0.0, hemisphere=:northern, ϕ=0.0, length
     )
 
     return [
-        (; x=x, y=y, z=z, ẋ=ẋ, ẏ=ẏ, ż=ż)
-        for (x, y, z, ẋ, ẏ, ż) in zip(X, Y, Z, Ẋ, Ẏ, Ż)
-    ], T
+        (; x = x, y = y, z = z, ẋ = ẋ, ẏ = ẏ, ż = ż, Δt = T) for
+        (x, y, z, ẋ, ẏ, ż, Δt) in zip(X, Y, Z, Ẋ, Ẏ, Ż, T)
+    ]
 
 end
 
@@ -508,7 +514,7 @@ function zero_velocity_curves(
     r::AbstractVector,
     v::AbstractVector,
     μ::Real;
-    nondimensional_range=range(-2; stop=2, length=1000)
+    nondimensional_range = range(-2; stop = 2, length = 1000),
 )
     x = nondimensional_range
     y = nondimensional_range
@@ -549,7 +555,7 @@ end
 """
 Calculates the eigenvector associated with the stable manifold of a Monodromy matrix.
 """
-function convergent_direction(stm::AbstractMatrix; atol=1e-3)
+function convergent_direction(stm::AbstractMatrix; atol = 1e-3)
     evals, evecs = eigen(stm)
     evals = filter(e -> isreal(e) && isposdef(e), evals) .|> real
     evecs =
@@ -561,7 +567,7 @@ function convergent_direction(stm::AbstractMatrix; atol=1e-3)
     imin = findmin(evals)[2]
     imax = findmax(evals)[2]
 
-    if !isapprox(evals[imin] * evals[imax], 1, atol=atol)
+    if !isapprox(evals[imin] * evals[imax], 1, atol = atol)
         @warn "The dynamics appear to be ill-formed; the minimum and maximum real eigenvalues should be multiplicative inverses of one another. Product equals $(evals[imin] * evals[imax]), not 1."
     end
 
@@ -571,7 +577,7 @@ end
 """
 Calculates the direction associated with the unstable manifold of a Monodromy matrix.
 """
-function divergent_direction(stm::AbstractMatrix; atol=1e-3)
+function divergent_direction(stm::AbstractMatrix; atol = 1e-3)
     evals, evecs = eigen(stm)
     evals = filter(e -> isreal(e) && isposdef(e), evals) .|> real
     evecs =
@@ -583,7 +589,7 @@ function divergent_direction(stm::AbstractMatrix; atol=1e-3)
     imin = findmin(evals)[2]
     imax = findmax(evals)[2]
 
-    if !isapprox(evals[imin] * evals[imax], 1, atol=atol)
+    if !isapprox(evals[imin] * evals[imax], 1, atol = atol)
         @warn "The dynamics appear to be ill-formed; the minimum and maximum real eigenvalues should be multiplicative inverses of one another. Product equals $(evals[imin] * evals[imax]), not 1."
     end
 
@@ -593,31 +599,42 @@ end
 """
 Return the perturbation in Cartesian state space along a halo orbit onto the provided direction of the provided manifold.
 """
-function perturbation(stm::AbstractMatrix, direction::AbstractVector; eps=1e-8)
+function perturbation(stm::AbstractMatrix, direction::AbstractVector; eps = 1e-8)
     return eps * normalize(stm * normalize(direction))
 end
 
 """
 Perturb a Cartesian state along a halo orbit onto a stable or unstable manifold.
 """
-function perturb(u::AbstractVector, stm::AbstractMatrix, direction::AbstractVector; eps=1e-8)
+function perturb(
+    u::AbstractVector,
+    stm::AbstractMatrix,
+    direction::AbstractVector;
+    eps = 1e-8,
+)
     p = similar(u)
-    perturb!(p, u, stm, direction; eps=eps)
+    return perturb!(p, u, stm, direction; eps = eps)
 end
 
 """
 Perturb a Cartesian state in-place along a halo orbit onto a stable or unstable manifold.
 """
-function perturb!(p::AbstractVector, u::AbstractVector, stm::AbstractMatrix, direction::AbstractVector; eps=1e-8)
-    p .= @views(u[begin:begin+5]) + perturbation(stm, direction; eps=eps)
+function perturb!(
+    p::AbstractVector,
+    u::AbstractVector,
+    stm::AbstractMatrix,
+    direction::AbstractVector;
+    eps = 1e-8,
+)
+    return p .= @views(u[begin:begin+5]) + perturbation(stm, direction; eps = eps)
 end
 
 """
 Perturb halo orbit conditions onto the orbit's unstable manifold.
 """
-function diverge(u::AbstractVector, stm::AbstractMatrix, Φ::AbstractMatrix; eps=1e-8)
+function diverge(u::AbstractVector, stm::AbstractMatrix, Φ::AbstractMatrix; eps = 1e-8)
     p = similar(u)
-    return diverge!(p, u, stm, Φ; eps=eps)
+    return diverge!(p, u, stm, Φ; eps = eps)
 end
 
 """
@@ -628,15 +645,15 @@ diverge!(
     u::AbstractVector,
     stm::AbstractMatrix,
     Φ::AbstractMatrix;
-    eps=1e-8
-) = (p .= @views(u[begin:begin+5]) + perturbation(stm, divergent_direction(Φ); eps=eps))
+    eps = 1e-8,
+) = (p .= @views(u[begin:begin+5]) + perturbation(stm, divergent_direction(Φ); eps = eps))
 
 """
 Perturb halo orbit conditions onto the orbit's unstable manifold.
 """
-function converge(u::AbstractVector, stm::AbstractMatrix, Φ::AbstractMatrix; eps=1e-8)
+function converge(u::AbstractVector, stm::AbstractMatrix, Φ::AbstractMatrix; eps = 1e-8)
     p = similar(u)
-    return converge!(p, u, stm, Φ; eps=eps)
+    return converge!(p, u, stm, Φ; eps = eps)
 end
 
 """
@@ -647,7 +664,7 @@ converge!(
     u::AbstractVector,
     stm::AbstractMatrix,
     Φ::AbstractMatrix;
-    eps=1e-8
-) = (p .= @views(u[begin:begin+5]) + perturbation(stm, convergent_direction(Φ); eps=eps))
+    eps = 1e-8,
+) = (p .= @views(u[begin:begin+5]) + perturbation(stm, convergent_direction(Φ); eps = eps))
 
 end
