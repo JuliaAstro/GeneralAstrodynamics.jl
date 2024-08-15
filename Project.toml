@@ -21,12 +21,12 @@ DocStringExtensions = "0.9"
 Reexport = "1.2"
 SPICE = "0.2"
 SPICEBodies = "0.1, 0.2"
-SPICEKernels = "1.2"
+SPICEKernels = "1.2, 2"
 julia = "1.7"
 
 [extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
 test = ["Test", "Pkg"]
