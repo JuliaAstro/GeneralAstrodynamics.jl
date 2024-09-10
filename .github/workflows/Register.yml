@@ -10,7 +10,6 @@ jobs:
     strategy:
       matrix:
         group:
-          - GeneralAstrodynamics
           - AstrodynamicalCalculations
           - AstrodynamicalModels
           - AstrodynamicalSolvers
