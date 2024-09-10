@@ -10,11 +10,10 @@ jobs:
     strategy:
       matrix:
         group:
-          - EphemerisSourcesBase
-          - HorizonsAPI
-          - HorizonsEphemeris
-          - SPICEKernels
-          - SPICEBodies
+          - GeneralAstrodynamics
+          - AstrodynamicalCalculations
+          - AstrodynamicalModels
+          - AstrodynamicalSolvers
     steps:
       - uses: peter-evans/commit-comment@v3
         with:
