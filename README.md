@@ -1,19 +1,19 @@
 [![Tests](https://github.com/cadojo/GeneralAstrodynamics.jl/workflows/Tests/badge.svg)](https://github.com/cadojo/GeneralAstrodynamics.jl/actions?query=workflow%3ATests)
 [![Docs](https://github.com/cadojo/GeneralAstrodynamics.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/GeneralAstrodynamics.jl/)
 
-# GeneralAstrodynamics.jl
+# `GeneralAstrodynamics.jl`
 
-_Common astrodynamics calculations, with units!_
+_Common astrodynamics calculations, with hooks into the SciML ecosystem._
 
 > **Warning**
 > 
 > The functionality in this package has being split into constituent packages, including
-> [`AstrodynamicalModels.jl`](https://github.com/cadojo/AstrodynamicalModels.jl,)
-> [`AstrodynamicalCalculations.jl`](https://github.com/cadojo/AstrodynamicalCalculations.jl),
-> [`AstrodynamicalSolvers.jl`](https://github.com/cadojo/AstrodynamicalModels.jl),
-> and more. `GeneralAstrodynamics.jl` is currently being refactored into a super-package, which 
+> [`AstrodynamicalModels.jl`](https://github.com/cadojo/GeneralAstrodynamics/blob/main/lib/AstrodynamicalModels.jl,)
+> [`AstrodynamicalCalculations.jl`](https://github.com/cadojo/GeneralAstrodynamics/blob/main/lib/AstrodynamicalCalculations.jl),
+> [`AstrodynamicalSolvers.jl`](https://github.com/cadojo/GeneralAstrodynamics/blob/main/lib/AstrodynamicalModels.jl),
+> and more. `GeneralAstrodynamics.jl` is now a super-package, which 
 > re-exports the functionality in its constituent packages. 
-> Look out for `v1.0`!
+> Look out for the `v1.0` release!
 
 ## JuliaCon Talk
 
