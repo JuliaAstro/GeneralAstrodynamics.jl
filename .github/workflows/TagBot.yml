@@ -28,27 +28,38 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || github.actor == 'JuliaTagBot'
     runs-on: ubuntu-latest
     steps:
-      - name: Tag AstrodynamicalCalculations.jl
+      - name: Tag EphemerisSourcesBase.jl
         uses: JuliaRegistries/TagBot@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ssh: ${{ secrets.DOCUMENTER_KEY }}
-          subdir: lib/AstrodynamicalCalculations
-      - name: Tag AstrodynamicalModels.jl
+          subdir: lib/EphemerisSourcesBase
+      - name: Tag HorizonsAPI.jl
         uses: JuliaRegistries/TagBot@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ssh: ${{ secrets.DOCUMENTER_KEY }}
-          subdir: lib/AstrodynamicalModels
-      - name: Tag AstrodynamicalSolvers.jl
+          subdir: lib/HorizonsAPI
+      - name: Tag HorizonsEphemeris.jl
         uses: JuliaRegistries/TagBot@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ssh: ${{ secrets.DOCUMENTER_KEY }}
-          subdir: lib/AstrodynamicalSolvers
-      - name: Tag AstrodynamicalModels.jl
+          subdir: lib/HorizonsEphemeris
+      - name: Tag SPICEKernels.jl
         uses: JuliaRegistries/TagBot@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ssh: ${{ secrets.DOCUMENTER_KEY }}
-          subdir: lib/AstrodynamicalModels
+          subdir: lib/SPICEKernels
+      - name: Tag SPICEBodies.jl
+        uses: JuliaRegistries/TagBot@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ssh: ${{ secrets.DOCUMENTER_KEY }}
+          subdir: lib/SPICEBodies
+      - name: Tag EphemerisSources.jl
+        uses: JuliaRegistries/TagBot@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ssh: ${{ secrets.DOCUMENTER_KEY }}

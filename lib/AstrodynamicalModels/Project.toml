@@ -21,7 +21,7 @@ AstrodynamicalCalculationsExt = "AstrodynamicalCalculations"
 SPICEBodiesExt = "SPICEBodies"
 
 [compat]
-AstrodynamicalCalculations = "0.5, 1"
+AstrodynamicalCalculations = "1"
 DocStringExtensions = "0.9"
 Memoize = "0.4"
 ModelingToolkit = "9.3"

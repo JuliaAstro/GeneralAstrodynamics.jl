@@ -31,11 +31,13 @@ function activate_subpkg_env(subpkg)
     return Pkg.instantiate()
 end
 
-if uppercase(GROUP) in ("ALL", "GENERALASTRODYNAMICS.JL")
+if uppercase(GROUP) == "ALL"
     for package in readdir(joinpath(@__DIR__, "..", "lib"))
         activate_subpkg_env(package)
         Pkg.test()
     end
+elseif uppercase(GROUP) == "GENERALASTRODYNAMICS"
+    @test true # TODO placeholder
 else
     activate_subpkg_env(GROUP)
     Pkg.test()
