@@ -10,11 +10,9 @@ jobs:
     strategy:
       matrix:
         group:
-          - EphemerisSourcesBase
-          - HorizonsAPI
-          - HorizonsEphemeris
-          - SPICEKernels
-          - SPICEBodies
+          - AstrodynamicalCalculations
+          - AstrodynamicalModels
+          - AstrodynamicalSolvers
     steps:
       - uses: peter-evans/commit-comment@v3
         with:
@@ -30,6 +28,6 @@ jobs:
       - uses: peter-evans/commit-comment@v3
         with:
           body: |
-            @JuliaRegistrator register"
+            @JuliaRegistrator register
 
             This comment was generated with `commit-comment` and [`Register.yml`](/.github/workflows/Register.yml).
