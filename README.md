@@ -5,16 +5,6 @@
 
 _Common astrodynamics calculations, with hooks into the SciML ecosystem._
 
-> **Warning**
-> 
-> The functionality in this package has being split into constituent packages, including
-> [`AstrodynamicalModels.jl`](https://github.com/cadojo/GeneralAstrodynamics/blob/main/lib/AstrodynamicalModels.jl,)
-> [`AstrodynamicalCalculations.jl`](https://github.com/cadojo/GeneralAstrodynamics/blob/main/lib/AstrodynamicalCalculations.jl),
-> [`AstrodynamicalSolvers.jl`](https://github.com/cadojo/GeneralAstrodynamics/blob/main/lib/AstrodynamicalModels.jl),
-> and more. `GeneralAstrodynamics.jl` is now a super-package, which 
-> re-exports the functionality in its constituent packages. 
-> Look out for the `v1.0` release!
-
 ## JuliaCon Talk
 
 Check out `GeneralAstrodynamics` in action at JuliaCon 2021! The talk
@@ -46,7 +36,7 @@ astrodynamics, Julia, and `GeneralAstrodynamics`.
 - This was implemented in a previous package version, and is currently being
   refactored
 
-## Envisioned Usage
+## Usage
 
 ```julia
 using GeneralAstrodynamics

@@ -41,14 +41,9 @@ format:
         </div>
 
     theme: 
-      light: 
-        - _style/light.scss
-        - _style/common.scss
-        - _style/latte.scss
-      dark: 
-        - _style/dark.scss
-        - _style/common.scss
-        - _style/frappe.scss
+      - _style/light.scss
+      - _style/common.scss
+      - _style/latte.scss
 
 
 execute:
