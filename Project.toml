@@ -8,25 +8,23 @@ AstrodynamicalCalculations = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
 AstrodynamicalModels = "4282b555-f590-4262-b575-3e516e1493a7"
 AstrodynamicalSolvers = "636ee813-9c9e-4a0a-af07-88b3043dcb77"
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
+EphemerisSources = "858900df-f7ae-402a-aa8c-3e4ef85aa271"
 Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 SPICE = "5bab7191-041a-5c2e-a744-024b9c3a5062"
-SPICEBodies = "19f1efb6-7162-484a-b3a1-b52c391689d7"
-SPICEKernels = "8e9d28ce-e483-4ef7-bfd9-45b8fef6369c"
 
 [compat]
-AstrodynamicalCalculations = "0.5"
+AstrodynamicalCalculations = "0.5, 1"
 AstrodynamicalModels = "3.4"
 AstrodynamicalSolvers = "0.5, 1"
 DocStringExtensions = "0.9"
+EphemerisSources = "1.0.0"
 Reexport = "1.2"
 SPICE = "0.2"
-SPICEBodies = "0.1, 0.2"
-SPICEKernels = "1.2"
 julia = "1.7"
 
 [extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
 test = ["Test", "Pkg"]

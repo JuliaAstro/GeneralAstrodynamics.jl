@@ -56,7 +56,6 @@ end
 @reexport using AstrodynamicalModels
 @reexport using AstrodynamicalSolvers
 @reexport using SPICE: furnsh
-@reexport using SPICEKernels
-@reexport using SPICEBodies
+@reexport using EphemerisSources
 
 end # module
