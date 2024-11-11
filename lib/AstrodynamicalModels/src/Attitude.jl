@@ -171,7 +171,7 @@ model = Attitude()
     kwargs...,
 )
 
-    @variables t
+    @independent_variables t
     @variables (q(t))[1:4] [description = "scalar-last attitude quaternion"]
     @variables (ω(t))[1:3] [description = "body rates in radians per second"]
     @parameters J[1:3, 1:3] [description = "moment of inertial matrix"]

@@ -28,6 +28,7 @@ const GROUP = get(ENV, "GROUP", "ALL")
 function activate_subpkg_env(subpkg)
     subpkg_path = joinpath(dirname(@__DIR__), "lib", subpkg)
     Pkg.activate(subpkg_path)
+    haskey(ENV, "UPGRADE") && Pkg.update()
     return Pkg.instantiate()
 end
 

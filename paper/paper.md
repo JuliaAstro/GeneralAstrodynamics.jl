@@ -1,47 +1,38 @@
 ---
-title: "GeneralAstrodynamics.jl: Orbit Representations and Solvers in Julia"
+title: "GeneraolAstrodynamics.jl: Orbit Modeling & Exploration in Julia"
 
 tags:
-  - astrodynamics
-  - astronomy
-  - astrophysics
+  - Astrodynamics
+  - Astronomy
   - Julia
+  - Simulation
+  - Ephemeris
 
 authors:
-  - name: Joseph D Carpinelli
+  - name: Joseph D. Carpinelli
     orcid: 0000-0001-8655-8125
     email: joseph.d.carpinelli@loopy.codes
     affiliations:
-      - ref: 1
-    affiliation: 1
+    - name: Independent Researcher, USA
 
-affiliations:
-  - name: Independent Researcher, USA
-    index: 1
-    id: 1
-date: 18 May 2024
+date: today
 bibliography: references.bib
 ---
 
 # Summary
 
-`GeneralAstrodynamics.jl` and its constituent packages ---
-`AstrodynamicalCalculations.jl`, `AstrodynamicalModels.jl`, and
-`AstrodynamicalSolvers.jl` --- provides the capability to solve for,
-inspect, and propagate orbits in astrodynamical systems. The design of
-`GeneralAstrodynamics` is deliberately compatible with the [SciML](https://sciml.ai)
-software ecosystem.
+`GeneralAstrodynamics.jl` and its constituent packages — `AstrodynamicalCalculations.jl`, `AstrodynamicalModels.jl`, and `AstrodynamicalSolvers.jl` — provides convenient orbit modeling
 
 # Statement of Need
 
-The Python package ecosystem includes utilities which are well known in the
-astronomy community, including [`astropy`](https://astropy.org) and
-[`poliastro`](https://poliastro.org).
+# Usage
 
-# Design
+For detailed usage examples, consult the common [documentation site](https://juliaastro.org/GeneralAstrodynamics.jl).
 
 # External Packages
 
-# Acknowledgements {#sec-acknowledgements}
+# Acknowledgements
+
+# Disclaimers
 
 # References

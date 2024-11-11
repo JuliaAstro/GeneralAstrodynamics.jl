@@ -49,8 +49,8 @@ model = CR3BSystem(; stm=true)
     defaults = Pair{ModelingToolkit.Num,<:Number}[],
     kwargs...,
 )
-
-    @parameters t μ
+    @independent_variables t
+    @parameters μ
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
     δ = Differential(t)
     r = [x, y, z]

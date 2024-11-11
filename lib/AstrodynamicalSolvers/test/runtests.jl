@@ -6,7 +6,7 @@ module AstrodynamicalSolversTests
 using Test, AstrodynamicalSolvers
 using AstrodynamicalCalculations
 using StaticArrays
-using OrdinaryDiffEq
+using OrdinaryDiffEqVerner
 using AstrodynamicalModels
 using LinearAlgebra
 
@@ -47,7 +47,7 @@ end
 
 end
 
-@testset "Dynamic Orbit Correction" begin
+@testset "Semantic Orbit Correction" begin
 
     μ = 0.012150584395829193
     u = halo(μ, 2)
@@ -104,12 +104,7 @@ end
     ]
 
     ics = let
-        problem = ODEProblem(
-            CR3BFunction(stm = true),
-            MVector{42}(vcat(u, vec(I(6)))),
-            (0, T),
-            (μ,),
-        )
+        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, T), (μ,))
         solution =
             solve(problem, Vern9(), reltol = 1e-12, abstol = 1e-12, saveat = (T / 10))
 

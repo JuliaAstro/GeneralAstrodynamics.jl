@@ -11,7 +11,8 @@ Base.@kwdef mutable struct PlanarEntryState{F} <: AstrodynamicalState{F,4}
     PlanarEntryState(::UndefInitializer) = PlanarEntryState{Float64}(undef)
 
     PlanarEntryState{F}(γ, v, r, θ) where {F} = new{F}(γ, v, r, θ)
-    PlanarEntryState(γ, v, r, θ) = new{promote_type(typeof(γ), typeof(v), typeof(r), typeof(θ))}(γ, v, r, θ)
+    PlanarEntryState(γ, v, r, θ) =
+        new{promote_type(typeof(γ), typeof(v), typeof(r), typeof(θ))}(γ, v, r, θ)
 end
 
 """
@@ -27,12 +28,31 @@ Base.@kwdef struct PlanarEntryParameters{F} <: AstrodynamicalParameters{F,7}
     μ::F
 
     PlanarEntryParameters{F}(R, P, H, m, A, C, μ) where {F} = new{F}(R, P, H, m, A, C, μ)
-    PlanarEntryParameters(R, P, H, m, A, C, μ) = new{promote_type(typeof(R), typeof(P), typeof(H), typeof(m), typeof(A), typeof(C), typeof(μ))}(R, P, H, m, A, C, μ)
+    PlanarEntryParameters(R, P, H, m, A, C, μ) = new{
+        promote_type(
+            typeof(R),
+            typeof(P),
+            typeof(H),
+            typeof(m),
+            typeof(A),
+            typeof(C),
+            typeof(μ),
+        ),
+    }(
+        R,
+        P,
+        H,
+        m,
+        A,
+        C,
+        μ,
+    )
 
 end
 
 system(::PlanarEntryParameters, args...; kwargs...) = PlanarEntrySystem(args...; kwargs...)
-dynamics(::PlanarEntryParameters, args...; kwargs...) = PlanarEntryFunction(args...; kwargs...)
+dynamics(::PlanarEntryParameters, args...; kwargs...) =
+    PlanarEntryFunction(args...; kwargs...)
 Base.@pure paradigm(::PlanarEntryParameters) = "Planar Entry Dynamics"
 
 """
@@ -55,16 +75,22 @@ spherical planet.
 model = PlanarEntrySystem()
 ```
 """
-@memoize function PlanarEntrySystem(; name=:PlanarEntry, defaults=Pair{ModelingToolkit.Num,<:Number}[], kwargs...)
+@memoize function PlanarEntrySystem(;
+    name = :PlanarEntry,
+    defaults = Pair{ModelingToolkit.Num,<:Number}[],
+    kwargs...,
+)
 
-    @variables t
+    @independent_variables t
 
     @variables γ(t) [description = "flight path angle in degrees"]
     @variables v(t) [description = "airspeed in meters per second"]
     @variables r(t) [description = "polar distance relative to planet center in meters"]
     @variables θ(t) [description = "polar angle relative to planet horizontal in degrees"]
     @parameters R [description = "spherical planet radius"]
-    @parameters P [description = "atmospheric density at sea level in kilograms per meter cubed"]
+    @parameters P [
+        description = "atmospheric density at sea level in kilograms per meter cubed",
+    ]
     @parameters H [description = "scale factor for exponential atmosphere in meters"]
     @parameters m [description = "entry vehicle mass in kilograms"]
     @parameters A [description = "entry vehicle surface area in square meters"]
@@ -85,11 +111,17 @@ model = PlanarEntrySystem()
         δ(γ) ~ (one(v) / v) * (Lₘ - (1 - (v / vc)^2) * g * cos(γ)),
         δ(v) ~ -Dₘ - g * sin(γ),
         δ(r) ~ v * sin(γ),
-        δ(θ) ~ (v / r) * cos(γ)
+        δ(θ) ~ (v / r) * cos(γ),
     ]
 
     model = ODESystem(
-        eqs, t, [γ, v, r, θ], [R, P, H, m, A, C, μ]; name=name, defaults=defaults, kwargs...
+        eqs,
+        t,
+        [γ, v, r, θ],
+        [R, P, H, m, A, C, μ];
+        name = name,
+        defaults = defaults,
+        kwargs...,
     )
 
     return model
@@ -118,12 +150,14 @@ let u = randn(4), p = randn(7), t = NaN # time invariant
 end
 ```
 """
-@memoize function PlanarEntryFunction(; name=:PlanarEntry, kwargs...)
-    defaults = (; jac=true)
+@memoize function PlanarEntryFunction(; name = :PlanarEntry, kwargs...)
+    defaults = (; jac = true)
     options = merge(defaults, kwargs)
-    sys = complete(PlanarEntrySystem(; name=name); split=false)
+    sys = complete(PlanarEntrySystem(; name = name); split = false)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
-        sys, ModelingToolkit.unknowns(sys), ModelingToolkit.parameters(sys);
-        options...
+        sys,
+        ModelingToolkit.unknowns(sys),
+        ModelingToolkit.parameters(sys);
+        options...,
     )
 end

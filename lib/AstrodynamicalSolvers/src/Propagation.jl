@@ -27,12 +27,12 @@ using DocStringExtensions
                                """
 
 using AstrodynamicalModels
-using ModelingToolkit, OrdinaryDiffEq
+using ModelingToolkit, OrdinaryDiffEqVerner, SciMLBase
 using StaticArrays
 
 export propagate, propagate!, monodromy
 
-function OrdinaryDiffEq.ODEProblem(
+function SciMLBase.ODEProblem(
     orbit::AstrodynamicalModels.AstrodynamicalOrbit,
     Δt;
     stm = false,

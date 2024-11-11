@@ -18,7 +18,7 @@ using StaticArrays
 using ModelingToolkit
 using AstrodynamicalModels
 using AstrodynamicalCalculations
-using OrdinaryDiffEq
+using OrdinaryDiffEqVerner
 using DocStringExtensions
 
 @template (
@@ -107,7 +107,7 @@ function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
     ż = zero(ẏ)
     τ = T / 2
 
-    ic = MVector{42}(
+    ic = [
         x,
         y,
         z,
@@ -150,11 +150,10 @@ function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
         0,
         0,
         1,
-    )
+    ]
     p = (μ,)
     tspan = (zero(τ), τ)
 
-    f = CR3BFunction()
     problem = ODEProblem(CR3BFunction(stm = true), ic, tspan, p)
 
     for _ = 1:maxiters
@@ -182,7 +181,7 @@ function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
         ẏ = _ẏ
         τ = _τ
 
-        ic = MVector{42}(
+        ic = [
             x,
             y,
             z,
@@ -225,7 +224,7 @@ function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
             0,
             0,
             1,
-        )
+        ]
 
         tspan = (zero(τ), τ)
         _problem = remake(problem; u0 = ic, tspan, p)
@@ -260,7 +259,7 @@ function halo(x, z, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
     τ = T / 2
 
 
-    ic = MVector{42}(
+    ic = [
         x,
         y,
         z,
@@ -303,7 +302,8 @@ function halo(x, z, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
         0,
         0,
         1,
-    )
+    ]
+
     p = (μ,)
     tspan = (zero(τ), τ)
 
@@ -343,7 +343,7 @@ function halo(x, z, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
 
                """
 
-        ic = MVector{42}(
+        ic = [
             x,
             y,
             z,
@@ -386,7 +386,7 @@ function halo(x, z, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
             0,
             0,
             1,
-        )
+        ]
 
         tspan = (zero(τ), τ)
         _problem = remake(problem; u0 = ic, tspan, p)
