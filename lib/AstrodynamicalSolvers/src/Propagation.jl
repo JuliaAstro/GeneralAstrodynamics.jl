@@ -127,7 +127,7 @@ function monodromy(
         options...,
     )
 
-    N = length(AstrodynamicalModels.AstrodynamicalState(orbit))
+    N = length(AstrodynamicalModels.state(orbit))
 
     return AstrodynamicalModels.CartesianSTM(solution.u[end][begin+N:end])
 end
@@ -149,7 +149,7 @@ function monodromy(
 )
     problem = ODEProblem(
         f,
-        MVector{42}(
+        [
             u[begin],
             u[begin+1],
             u[begin+2],
@@ -192,7 +192,7 @@ function monodromy(
             0,
             0,
             1,
-        ),
+        ],
         (zero(T), T),
         (μ,),
     )
