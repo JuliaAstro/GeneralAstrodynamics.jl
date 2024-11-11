@@ -5,7 +5,7 @@ using DifferentialEquations
 using Plots
 
 makedocs(
-    format = Documenter.HTML(),
+    format = Documenter.HTML(size_threshold = nothing),
     sitename = "GeneralAstrodynamics.jl",
     authors = "Joey Carpinelli",
     pages = [
