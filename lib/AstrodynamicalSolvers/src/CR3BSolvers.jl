@@ -78,7 +78,7 @@ function extraplanar_differential(state::AbstractVector, μ)
     f = CR3BFunction()
     accel = f(state, (μ,), NaN)
 
-    F = @views [
+    F = [
         state[10] state[34] accel[4]
         state[12] state[36] accel[6]
         state[8] state[32] state[5]
@@ -171,7 +171,7 @@ function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
             return (; x = x, ẏ = ẏ, Δt = 2τ)
         end
 
-        correction = planar_differential(@views(solution.u[end]), μ)
+        correction = planar_differential(solution.u[end], μ)
 
         _z = z + correction.δz
         _ẏ = ẏ + correction.δẏ
@@ -243,7 +243,7 @@ function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
 end
 
 function lyapunov(u::AbstractVector, μ, T; kwargs...)
-    corrected = lyapunov(@views(u[begin]), @views(u[begin+4]), μ, T)
+    corrected = lyapunov(u[begin], u[begin+4], μ, T)
 
     return typeof(u)(@SVector [corrected.x, 0, 0, 0, corrected.ẏ, 0]), corrected.T
 end
