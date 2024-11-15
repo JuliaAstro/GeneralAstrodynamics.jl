@@ -140,7 +140,7 @@ function monodromy(
     u::AbstractVector,
     μ,
     T,
-    f;
+    f::Function;
     algorithm = Vern9(),
     reltol = 1e-12,
     abstol = 1e-12,

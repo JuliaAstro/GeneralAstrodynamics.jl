@@ -64,7 +64,7 @@ unstable = let
     ic = halo(μ, 1; amplitude=0.005)
 
     u = CartesianState(ic)
-    Φ = monodromy(u, μ, ic.Δt)
+    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm=true))
 
     ics = let
         problem = ODEProblem(CR3BFunction(stm=true), vcat(u, vec(I(6))), (0, ic.Δt), (μ,))
