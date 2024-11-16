@@ -205,6 +205,10 @@ function monodromy(
     return reshape((solution.u[end][begin+6:end]), 6, 6)
 end
 
+"""
+Return a vector of orbits along the manifold which diverges from the provided 
+halo orbit.
+"""
 function divergent_manifold(u, μ, Δt; eps = 1e-8, trajectories = nothing, kwargs...)
     orbit = Orbit(u, CR3BParameters(μ))
     Φ = monodromy(orbit, Δt)
@@ -236,7 +240,10 @@ function divergent_manifold(u, μ, Δt; eps = 1e-8, trajectories = nothing, kwar
 
 end
 
-
+"""
+Return a vector of orbits along the manifold which converges to the provided 
+halo orbit.
+"""
 function convergent_manifold(u, μ, Δt; eps = 1e-8, trajectories = nothing, kwargs...)
     orbit = Orbit(u, CR3BParameters(μ))
     Φ = monodromy(orbit, Δt)
