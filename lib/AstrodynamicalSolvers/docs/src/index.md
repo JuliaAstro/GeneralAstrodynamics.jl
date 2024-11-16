@@ -90,7 +90,7 @@ stable = let
     ic = halo(μ, 2; amplitude=0.005)
 
     u = CartesianState(ic)
-    Φ = monodromy(u, μ, ic.Δt)
+    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm=true))
 
     ics = let
         problem = ODEProblem(CR3BFunction(stm=true), vcat(u, vec(I(6))), (0, ic.Δt), (μ,))
@@ -117,8 +117,6 @@ figure = plot(;
     background = :transparent,
     grid = true,
     title = "Unstable and Stable Invariant Manifolds",
-    size = (1600,900),
-    dpi = 400,
 )
 
 plot!(figure, unstable, idxs=(:x, :y), aspect_ratio=1, label=:none, palette=:blues)
