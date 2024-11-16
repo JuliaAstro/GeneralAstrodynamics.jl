@@ -26,11 +26,12 @@ using DocStringExtensions
                                $(DOCSTRING)
                                """
 
+using AstrodynamicalCalculations
 using AstrodynamicalModels
 using ModelingToolkit, OrdinaryDiffEqVerner, SciMLBase
 using StaticArrays
 
-export propagate, propagate!, monodromy
+export propagate, propagate!, monodromy, convergent_manifold, divergent_manifold
 
 function SciMLBase.ODEProblem(
     orbit::AstrodynamicalModels.AstrodynamicalOrbit,
@@ -42,15 +43,7 @@ function SciMLBase.ODEProblem(
     u = AstrodynamicalModels.state(orbit)
 
     if stm
-        if (u isa CartesianState)
-            u = MVector{42}(vcat(u, vec(AstrodynamicalModels.CartesianSTM())))
-        else
-            throw(
-                ErrorException(
-                    "The `stm` argument is only valid for Cartesian state vector types!",
-                ),
-            )
-        end
+        u = Vector(vcat(u, vec(AstrodynamicalModels.CartesianSTM())))
     end
 
     p = AstrodynamicalModels.parameters(orbit)
@@ -210,6 +203,69 @@ function monodromy(
     end
 
     return reshape((solution.u[end][begin+6:end]), 6, 6)
+end
+
+function divergent_manifold(u, μ, Δt; eps = 1e-8, trajectories = nothing, kwargs...)
+    orbit = Orbit(u, CR3BParameters(μ))
+    Φ = monodromy(orbit, Δt)
+
+    if isnothing(trajectories)
+        ics = propagate(orbit, Δt; stm = true, kwargs...).u
+    else
+        if !isnothing(get(kwargs, :saveat, nothing))
+            error(
+                "you cannot provide both the `saveat` keyword argument and the `trajectories` keyword argument",
+            )
+        else
+            ics =
+                propagate(orbit, Δt; stm = true, saveat = Δt / trajectories, kwargs...).u[begin:begin+trajectories-1]
+        end
+    end
+
+    states = [CartesianState(u[begin:begin+5]) for u in ics]
+    stms = [CartesianSTM(u[begin+6:end]) for u in ics]
+
+    for (u, ϕ) in zip(states, stms)
+        diverge!(u, ϕ, Φ; eps = eps)
+    end
+
+    return map(
+        u -> Orbit(CartesianState(u), AstrodynamicalModels.parameters(orbit)),
+        states,
+    )
+
+end
+
+
+function convergent_manifold(u, μ, Δt; eps = 1e-8, trajectories = nothing, kwargs...)
+    orbit = Orbit(u, CR3BParameters(μ))
+    Φ = monodromy(orbit, Δt)
+
+    if isnothing(trajectories)
+        ics = propagate(orbit, Δt; stm = true, kwargs...).u
+    else
+        if !isnothing(get(kwargs, :saveat, nothing))
+            error(
+                "you cannot provide both the `saveat` keyword argument and the `trajectories` keyword argument",
+            )
+        else
+            ics =
+                propagate(orbit, Δt; stm = true, saveat = Δt / trajectories, kwargs...).u[begin:begin+trajectories-1]
+        end
+    end
+
+    states = [CartesianState(u[begin:begin+5]) for u in ics]
+    stms = [CartesianSTM(u[begin+6:end]) for u in ics]
+
+    for (u, ϕ) in zip(states, stms)
+        converge!(u, ϕ, Φ; eps = eps)
+    end
+
+    return map(
+        u -> Orbit(CartesianState(u), AstrodynamicalModels.parameters(orbit)),
+        states,
+    )
+
 end
 
 end

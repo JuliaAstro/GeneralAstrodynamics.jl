@@ -626,8 +626,12 @@ function perturb!(
     direction::AbstractVector;
     eps = 1e-8,
 )
-    return p .= @views(u[begin:begin+5]) + perturbation(stm, direction; eps = eps)
+    dir = perturbation(stm, direction; eps = eps)
+    @. p = u[begin:begin+5] + dir
+    return nothing
 end
+perturb!(u::AbstractVector, stm::AbstractMatrix, direction::AbstractVector; eps = 1e-8) =
+    perturb!(u, u, stm, direction; eps = eps)
 
 """
 Perturb halo orbit conditions onto the orbit's unstable manifold.
@@ -640,13 +644,19 @@ end
 """
 Perturb halo orbit conditions in-place onto the orbit's unstable manifold.
 """
-diverge!(
+function diverge!(
     p::AbstractVector,
     u::AbstractVector,
     stm::AbstractMatrix,
     Φ::AbstractMatrix;
     eps = 1e-8,
-) = (p .= @views(u[begin:begin+5]) + perturbation(stm, divergent_direction(Φ); eps = eps))
+)
+    dir = perturbation(stm, divergent_direction(Φ); eps = eps)
+    @. p += u[begin:begin+5] + dir
+    return nothing
+end
+diverge!(u::AbstractVector, stm::AbstractMatrix, Φ::AbstractMatrix; eps = 1e-8) =
+    diverge!(u, u, stm, Φ; eps = eps)
 
 """
 Perturb halo orbit conditions onto the orbit's unstable manifold.
@@ -659,12 +669,18 @@ end
 """
 Perturb halo orbit conditions in-place onto the orbit's stable manifold.
 """
-converge!(
+function converge!(
     p::AbstractVector,
     u::AbstractVector,
     stm::AbstractMatrix,
     Φ::AbstractMatrix;
     eps = 1e-8,
-) = (p .= @views(u[begin:begin+5]) + perturbation(stm, convergent_direction(Φ); eps = eps))
+)
+    dir = perturbation(stm, convergent_direction(Φ); eps = eps)
+    @. p = u[begin:begin+5] + dir
+    return nothing
+end
 
+converge!(u::AbstractVector, stm::AbstractMatrix, Φ::AbstractMatrix; eps = 1e-8) =
+    converge!(u, u, stm, Φ; eps = eps)
 end
