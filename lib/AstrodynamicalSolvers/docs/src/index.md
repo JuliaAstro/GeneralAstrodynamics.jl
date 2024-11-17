@@ -28,7 +28,7 @@ using Plots
 
 planar = let
     ic = halo(μ, 1) # lyapunov (planar) orbit
-    u = CartesianState(ic)
+    u = Vector(CartesianState(ic))
     problem = ODEProblem(CR3BFunction(), u, (0, ic.Δt), (μ,))
     solution = solve(problem, Vern9(), reltol=1e-14, abstol=1e-14)
     plot(solution, idxs=(:x,:y,:z), title = "Lyapunov Orbit", label=:none, size=(1600,900), dpi=400, aspect_ratio=1)
@@ -36,7 +36,7 @@ end
 
 extraplanar = let
     ic = halo(μ, 2; amplitude=0.01) # halo (non-planar) orbit
-    u = CartesianState(ic)
+    u = Vector(CartesianState(ic))
     problem = ODEProblem(CR3BFunction(), u, (0, ic.Δt), (μ,))
     solution = solve(problem, Vern9(), reltol=1e-14, abstol=1e-14)
     plot(solution, idxs=(:x,:y,:z), title = "Halo Orbit", label=:none, size=(1600,900), dpi=400, aspect_ratio=1)
