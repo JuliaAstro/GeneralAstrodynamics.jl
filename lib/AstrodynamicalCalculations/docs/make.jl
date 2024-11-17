@@ -15,7 +15,7 @@ makedocs(
 
 deploydocs(
     target = "build",
-    repo = "github.com/JuliaAstro/AstrodynamicalCalculations.jl.git",
+    repo = "github.com/JuliaAstro/GeneralAstrodynamics.jl.git",
     branch = "docs/astrodynamical-calculations",
     devbranch = "main",
     tag_prefix = "AstrodynamicalCalculations-",
