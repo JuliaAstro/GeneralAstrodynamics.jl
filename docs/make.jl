@@ -15,7 +15,7 @@ makedocs(
 
 deploydocs(
     target = "build",
-    repo = "github.com/cadojo/GeneralAstrodynamics.jl.git",
+    repo = "github.com/JuliaAstro/GeneralAstrodynamics.jl.git",
     branch = "docs/general-astrodynamics",
     devbranch = "main",
 )
@@ -31,7 +31,7 @@ content = [
         path = "docs",
         name = "GeneralAstrodynamics.jl",
         branch = "docs/general-astrodynamics",
-        giturl = "https://github.com/cadojo/GeneralAstrodynamics.jl.git",
+        giturl = "https://github.com/JuliaAstro/GeneralAstrodynamics.jl.git",
         fix_canonical_url = false,
     ),
     MultiDocumenter.MultiDocRef(
@@ -39,7 +39,7 @@ content = [
         path = joinpath("docs", "lib", "AstrodynamicalCalculations"),
         name = "Calculations",
         branch = "docs/astrodynamical-calculations",
-        giturl = "https://github.com/cadojo/GeneralAstrodynamics.jl.git",
+        giturl = "https://github.com/JuliaAstro/GeneralAstrodynamics.jl.git",
         fix_canonical_url = false,
     ),
     MultiDocumenter.MultiDocRef(
@@ -47,7 +47,7 @@ content = [
         path = joinpath("docs", "lib", "AstrodynamicalModels"),
         name = "Models",
         branch = "docs/astrodynamical-models",
-        giturl = "https://github.com/cadojo/GeneralAstrodynamics.jl.git",
+        giturl = "https://github.com/JuliaAstro/GeneralAstrodynamics.jl.git",
         fix_canonical_url = false,
     ),
     MultiDocumenter.MultiDocRef(
@@ -55,7 +55,7 @@ content = [
         path = joinpath("docs", "lib", "AstrodynamicalSolvers"),
         name = "Solvers",
         branch = "docs/astrodynamical-solvers",
-        giturl = "https://github.com/cadojo/GeneralAstrodynamics.jl.git",
+        giturl = "https://github.com/JuliaAstro/GeneralAstrodynamics.jl.git",
         fix_canonical_url = false,
     ),
 ]
@@ -79,5 +79,5 @@ MultiDocumenter.make(
 Documenter.deploydocs(
     target = outpath,
     versions = nothing,
-    repo = "github.com/cadojo/GeneralAstrodynamics.jl",
+    repo = "github.com/JuliaAstro/GeneralAstrodynamics.jl",
 )
