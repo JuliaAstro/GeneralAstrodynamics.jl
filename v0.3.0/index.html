@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Getting Started · AstrodynamicalSolvers.jl</title><meta name="title" content="Getting Started · AstrodynamicalSolvers.jl"/><meta property="og:title" content="Getting Started · AstrodynamicalSolvers.jl"/><meta property="twitter:title" content="Getting Started · AstrodynamicalSolvers.jl"/><meta name="description" content="Documentation for AstrodynamicalSolvers.jl."/><meta property="og:description" content="Documentation for AstrodynamicalSolvers.jl."/><meta property="twitter:description" content="Documentation for AstrodynamicalSolvers.jl."/><script data-outdated-warner src="assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="assets/documenter.js"></script><script src="search_index.js"></script><script src="siteinfo.js"></script><script src="../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href>AstrodynamicalSolvers.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li class="is-active"><a class="tocitem" href>Getting Started</a><ul class="internal"><li><a class="tocitem" href="#Installation"><span>Installation</span></a></li><li><a class="tocitem" href="#Getting-Started"><span>Getting Started</span></a></li></ul></li><li><span class="tocitem">Reference</span><ul><li><a class="tocitem" href="reference/"><code>AstrodynamicalSolvers</code></a></li><li><a class="tocitem" href="cr3bp/"><code>CR3BSolvers</code></a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Getting Started</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Getting Started</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/cadojo/AstrodynamicalSolvers.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/cadojo/AstrodynamicalSolvers.jl/blob/main/docs/src/index.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="AstrodynamicalSolvers.jl"><a class="docs-heading-anchor" href="#AstrodynamicalSolvers.jl"><code>AstrodynamicalSolvers.jl</code></a><a id="AstrodynamicalSolvers.jl-1"></a><a class="docs-heading-anchor-permalink" href="#AstrodynamicalSolvers.jl" title="Permalink"></a></h1><p><em>Common solvers within orbital mechanics and astrodynamics.</em></p><h2 id="Installation"><a class="docs-heading-anchor" href="#Installation">Installation</a><a id="Installation-1"></a><a class="docs-heading-anchor-permalink" href="#Installation" title="Permalink"></a></h2><pre><code class="language-julia hljs">pkg&gt; add AstrodynamicalSolvers</code></pre><h2 id="Getting-Started"><a class="docs-heading-anchor" href="#Getting-Started">Getting Started</a><a id="Getting-Started-1"></a><a class="docs-heading-anchor-permalink" href="#Getting-Started" title="Permalink"></a></h2><p>This package currently provides periodic orbit, and manifold computations within  Circular Restricted Three Body Problem dynamics.</p><h3 id="Periodic-Orbits"><a class="docs-heading-anchor" href="#Periodic-Orbits">Periodic Orbits</a><a id="Periodic-Orbits-1"></a><a class="docs-heading-anchor-permalink" href="#Periodic-Orbits" title="Permalink"></a></h3><p>This package contains differential correctors, and helpful wrapper functions, for  finding periodic orbits within Circular Restricted Three Body Problem dynamics.</p><pre><code class="language-julia hljs">using AstrodynamicalSolvers
+using AstrodynamicalModels
+using OrdinaryDiffEq
+using Plots
+
+μ = 0.012150584395829193
+
+planar = let
+    u, T = halo(μ, 1) # lyapunov (planar) orbit
+    u = [u.x, 0, 0, 0, u.ẏ, 0]
+    problem = ODEProblem(CR3BFunction(), u, (0, T), (μ,))
+    solution = solve(problem, Vern9(), reltol=1e-14, abstol=1e-14)
+    plot(solution, idxs=(:x,:y,:z), title = &quot;Lyapunov Orbit&quot;, label=:none, size=(1600,900), dpi=400, aspect_ratio=1)
+end
+
+extraplanar = let
+    u, T = halo(μ, 2; amplitude=0.01) # halo (non-planar) orbit
+    u = [u.x, 0, u.z, 0, u.ẏ, 0]
+    problem = ODEProblem(CR3BFunction(), u, (0, T), (μ,))
+    solution = solve(problem, Vern9(), reltol=1e-14, abstol=1e-14)
+    plot(solution, idxs=(:x,:y,:z), title = &quot;Halo Orbit&quot;, label=:none, size=(1600,900), dpi=400, aspect_ratio=1)
+end
+
+plot(planar, extraplanar, layout=(1,2))</code></pre><img src="index-4e4a3f83.svg" alt="Example block output"/><h3 id="Manifold-Computations"><a class="docs-heading-anchor" href="#Manifold-Computations">Manifold Computations</a><a id="Manifold-Computations-1"></a><a class="docs-heading-anchor-permalink" href="#Manifold-Computations" title="Permalink"></a></h3><p>Manifold computations, provided by <code>AstrodynamicalCalculations.jl</code>, can perturb  halo orbits onto their unstable or stable manifolds.</p><pre><code class="language-julia hljs">using AstrodynamicalSolvers
+using AstrodynamicalCalculations
+using AstrodynamicalModels
+using OrdinaryDiffEq
+using LinearAlgebra
+using Plots
+
+μ = 0.012150584395829193
+
+unstable = let
+    u, T = halo(μ, 1; amplitude=0.005)
+
+    u = [u.x, 0, u.z, 0, u.ẏ, 0]
+    Φ = monodromy(u, μ, T)
+
+    ics = let
+        problem = ODEProblem(CR3BFunction(stm=true), vcat(u, vec(I(6))), (0, T), (μ,))
+        solution = solve(problem, Vern9(), reltol=1e-12, abstol=1e-12, saveat=(T / 10))
+
+        solution.u
+    end
+
+    perturbations = [
+        diverge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps=-1e-7)
+        for ic in ics
+    ]
+
+    problem = EnsembleProblem(
+        ODEProblem(CR3BFunction(), u, (0.0, 2T), (μ,)),
+        prob_func=(prob, i, repeat) -&gt; remake(prob; u0=perturbations[i]),
+    )
+
+    solution = solve(problem, Vern9(), trajectories=length(perturbations), reltol=1e-14, abstol=1e-14)
+end
+
+stable = let
+    u, T = halo(μ, 2; amplitude=0.005)
+
+    u = [u.x, 0, u.z, 0, u.ẏ, 0]
+    Φ = monodromy(u, μ, T)
+
+    ics = let
+        problem = ODEProblem(CR3BFunction(stm=true), vcat(u, vec(I(6))), (0, T), (μ,))
+        solution = solve(problem, Vern9(), reltol=1e-12, abstol=1e-12, saveat=(T / 10))
+
+        solution.u
+    end
+
+    perturbations = [
+        converge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps=1e-7)
+        for ic in ics
+    ]
+
+    problem = EnsembleProblem(
+        ODEProblem(CR3BFunction(), u, (0.0, -2.1T), (μ,)),
+        prob_func=(prob, i, repeat) -&gt; remake(prob; u0=perturbations[i]),
+    )
+
+    solution = solve(problem, Vern9(), trajectories=length(perturbations), reltol=1e-14, abstol=1e-14)
+end
+
+figure = plot(;
+    aspect_ratio = 1.0,
+    background = :transparent,
+    grid = true,
+    title = &quot;Unstable and Stable Invariant Manifolds&quot;,
+    size = (1600,900),
+    dpi = 400,
+)
+
+plot!(figure, unstable, idxs=(:x, :y), aspect_ratio=1, label=:none, palette=:blues)
+plot!(figure, stable, idxs=(:x, :y), aspect_ratio=1, label=:none, palette=:blues)
+scatter!(figure, [1-μ], [0], label=&quot;Moon&quot;, xlabel=&quot;X (Earth-Moon Distance)&quot;, ylabel=&quot;Y (Earth-Moon Distance)&quot;, marker=:x, color=:black, markersize=10,)</code></pre><img src="index-b0724afb.svg" alt="Example block output"/></article><nav class="docs-footer"><a class="docs-footer-nextpage" href="reference/"><code>AstrodynamicalSolvers</code> »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="auto">Automatic (OS)</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.1.1 on <span class="colophon-date" title="Monday 16 October 2023 02:54">Monday 16 October 2023</span>. Using Julia version 1.6.7.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
