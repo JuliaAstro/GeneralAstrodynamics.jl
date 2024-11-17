@@ -7,7 +7,7 @@ using Plots
 
 planar = let
     ic = halo(μ, 1) # lyapunov (planar) orbit
-    u = CartesianState(ic)
+    u = Vector(CartesianState(ic))
     problem = ODEProblem(CR3BFunction(), u, (0, ic.Δt), (μ,))
     solution = solve(problem, Vern9(), reltol=1e-14, abstol=1e-14)
     plot(solution, idxs=(:x,:y,:z), title = "Lyapunov Orbit", label=:none, size=(1600,900), dpi=400, aspect_ratio=1)
@@ -15,13 +15,13 @@ end
 
 extraplanar = let
     ic = halo(μ, 2; amplitude=0.01) # halo (non-planar) orbit
-    u = CartesianState(ic)
+    u = Vector(CartesianState(ic))
     problem = ODEProblem(CR3BFunction(), u, (0, ic.Δt), (μ,))
     solution = solve(problem, Vern9(), reltol=1e-14, abstol=1e-14)
     plot(solution, idxs=(:x,:y,:z), title = "Halo Orbit", label=:none, size=(1600,900), dpi=400, aspect_ratio=1)
 end
 
-plot(planar, extraplanar, layout=(1,2))</code></pre><img alt="Example block output" src="index-072e0302.svg"/><h3 id="Manifold-Computations"><a class="docs-heading-anchor" href="#Manifold-Computations">Manifold Computations</a><a id="Manifold-Computations-1"></a><a class="docs-heading-anchor-permalink" href="#Manifold-Computations" title="Permalink"></a></h3><p>Manifold computations, provided by <code>AstrodynamicalCalculations.jl</code>, can perturb  halo orbits onto their unstable or stable manifolds.</p><pre><code class="language-julia hljs">using AstrodynamicalSolvers
+plot(planar, extraplanar, layout=(1,2))</code></pre><img alt="Example block output" src="index-53d5890a.svg"/><h3 id="Manifold-Computations"><a class="docs-heading-anchor" href="#Manifold-Computations">Manifold Computations</a><a id="Manifold-Computations-1"></a><a class="docs-heading-anchor-permalink" href="#Manifold-Computations" title="Permalink"></a></h3><p>Manifold computations, provided by <code>AstrodynamicalCalculations.jl</code>, can perturb  halo orbits onto their unstable or stable manifolds.</p><pre><code class="language-julia hljs">using AstrodynamicalSolvers
 using AstrodynamicalCalculations
 using AstrodynamicalModels
 using OrdinaryDiffEq
@@ -91,4 +91,4 @@ figure = plot(;
 
 plot!(figure, unstable, idxs=(:x, :y), aspect_ratio=1, label=:none, palette=:blues)
 plot!(figure, stable, idxs=(:x, :y), aspect_ratio=1, label=:none, palette=:blues)
-scatter!(figure, [1-μ], [0], label="Moon", xlabel="X (Earth-Moon Distance)", ylabel="Y (Earth-Moon Distance)", marker=:x, color=:black, markersize=10,)</code></pre><img alt="Example block output" src="index-46529197.svg"/></article><nav class="docs-footer"><a class="docs-footer-nextpage" href="reference/"><code>AstrodynamicalSolvers</code> »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label></p><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div><p></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.8.0 on <span class="colophon-date" title="Sunday 17 November 2024 18:00">Sunday 17 November 2024</span>. Using Julia version 1.11.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></HTML>
+scatter!(figure, [1-μ], [0], label="Moon", xlabel="X (Earth-Moon Distance)", ylabel="Y (Earth-Moon Distance)", marker=:x, color=:black, markersize=10,)</code></pre><img alt="Example block output" src="index-1f6b0030.svg"/></article><nav class="docs-footer"><a class="docs-footer-nextpage" href="reference/"><code>AstrodynamicalSolvers</code> »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label></p><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div><p></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.8.0 on <span class="colophon-date" title="Sunday 17 November 2024 19:25">Sunday 17 November 2024</span>. Using Julia version 1.11.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></HTML>
