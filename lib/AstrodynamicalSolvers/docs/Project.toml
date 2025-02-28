@@ -2,6 +2,7 @@
 AstrodynamicalCalculations = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
 AstrodynamicalModels = "4282b555-f590-4262-b575-3e516e1493a7"
 AstrodynamicalSolvers = "636ee813-9c9e-4a0a-af07-88b3043dcb77"
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 DocumenterTools = "35a29f4d-8980-5a13-9543-d66fff28ecb8"
