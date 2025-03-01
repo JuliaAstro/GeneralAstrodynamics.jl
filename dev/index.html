@@ -22,7 +22,7 @@ extraplanar = let
     plot(solution, idxs=(:x,:y,:z), title = &quot;Halo Orbit&quot;, label=:none, size=(1600,900), dpi=400, aspect_ratio=1)
 end
 
-plot(planar, extraplanar, layout=(1,2))</code></pre><img src="index-ec84600c.svg" alt="Example block output"/><h4 id="Makie.jl"><a class="docs-heading-anchor" href="#Makie.jl"><code>Makie.jl</code></a><a id="Makie.jl-1"></a><a class="docs-heading-anchor-permalink" href="#Makie.jl" title="Permalink"></a></h4><pre><code class="language-julia hljs">using AstrodynamicalSolvers
+plot(planar, extraplanar, layout=(1,2))</code></pre><img src="index-468dd555.svg" alt="Example block output"/><h4 id="Makie.jl"><a class="docs-heading-anchor" href="#Makie.jl"><code>Makie.jl</code></a><a id="Makie.jl-1"></a><a class="docs-heading-anchor-permalink" href="#Makie.jl" title="Permalink"></a></h4><pre><code class="language-julia hljs">using AstrodynamicalSolvers
 using AstrodynamicalModels
 using OrdinaryDiffEq
 using CairoMakie
@@ -132,7 +132,7 @@ figure = plot(;
 
 plot!(figure, unstable, idxs=(:x, :y), aspect_ratio=1, label=:none, palette=:blues)
 plot!(figure, stable, idxs=(:x, :y), aspect_ratio=1, label=:none, palette=:blues)
-scatter!(figure, [1-μ], [0], label=&quot;Moon&quot;, xlabel=&quot;X (Earth-Moon Distance)&quot;, ylabel=&quot;Y (Earth-Moon Distance)&quot;, marker=:x, color=:black, markersize=10,)</code></pre><img src="index-7e18f713.svg" alt="Example block output"/><h4 id="Makie.jl-2"><a class="docs-heading-anchor" href="#Makie.jl-2"><code>Makie.jl</code></a><a class="docs-heading-anchor-permalink" href="#Makie.jl-2" title="Permalink"></a></h4><pre><code class="language-julia hljs">using AstrodynamicalSolvers
+scatter!(figure, [1-μ], [0], label=&quot;Moon&quot;, xlabel=&quot;X (Earth-Moon Distance)&quot;, ylabel=&quot;Y (Earth-Moon Distance)&quot;, marker=:x, color=:black, markersize=10,)</code></pre><img src="index-27717c4b.svg" alt="Example block output"/><h4 id="Makie.jl-2"><a class="docs-heading-anchor" href="#Makie.jl-2"><code>Makie.jl</code></a><a class="docs-heading-anchor-permalink" href="#Makie.jl-2" title="Permalink"></a></h4><pre><code class="language-julia hljs">using AstrodynamicalSolvers
 using AstrodynamicalCalculations
 using AstrodynamicalModels
 using OrdinaryDiffEq
