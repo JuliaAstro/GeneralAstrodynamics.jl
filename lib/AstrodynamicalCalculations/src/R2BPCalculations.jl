@@ -154,7 +154,7 @@ Returns a spatial representation of the provied Perifocal state.
 function perifocal_to_cartesian(i, Ω, ω, x, y, z, ẋ, ẏ, ż)
 
     # Set up Perifocal ⟶ Cartesian conversion
-    R_3Ω = SMatrix{3,3}(cos(Ω), sin(Ω), 0, -sin(Ω), cos(ω), 0, 0, 0, 1)
+    R_3Ω = SMatrix{3,3}(cos(Ω), sin(Ω), 0, -sin(Ω), cos(Ω), 0, 0, 0, 1)
 
     R_1i = SMatrix{3,3}(1, 0, 0, 0, cos(i), sin(i), 0, -sin(i), cos(i))
 
