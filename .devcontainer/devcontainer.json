@@ -1,18 +1,15 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/JuliaLang/devcontainer-templates/tree/main/src/julia
 {
-	"name": "Julia",
-	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"name": "GeneralAstrodynamics",
 	"image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
-		// A Feature to install Julia via juliaup. More info: https://github.com/JuliaLang/devcontainer-features/tree/main/src/julia.
 		"ghcr.io/devcontainers/features/git": {},
 		"ghcr.io/devcontainers/features/git-lfs": {},
 		"ghcr.io/julialang/devcontainer-features/julia:1": {},
-		"ghcr.io/devcontainers/features/python:1": {},
 		"ghcr.io/devcontainers/features/github-cli": {},
 		"ghcr.io/devcontainers-contrib/features/starship": {}
+	},
+	"postCreateCommand": {
+		"initialize starship": "echo 'eval $(starship init bash)' >> ~/.bashrc"
 	},
 	"customizations": {
 		"vscode": {
