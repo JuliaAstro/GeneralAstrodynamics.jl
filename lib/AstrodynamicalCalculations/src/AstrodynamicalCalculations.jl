@@ -3,14 +3,13 @@ Common calculations within orbital mechanics and astrodynamics.
 
 # Extended Help
 
-## Imports
+## Documentation
 
-$(IMPORTS)
+See the project documentation for more information: https://JuliaAstro.org/AstrodynamicalCalculations.jl.
 
-## Exports
+## License
 
-$(EXPORTS)
-
+$(LICENSE)
 """
 module AstrodynamicalCalculations
 

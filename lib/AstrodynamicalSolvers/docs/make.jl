@@ -1,22 +1,11 @@
 using Documenter
-using AstrodynamicalSolvers
+using Quarto
 
-makedocs(
-    sitename = "AstrodynamicalSolvers.jl",
-    format = Documenter.HTML(),
-    modules = [AstrodynamicalSolvers],
-    authors = "Joey Carpinelli",
-    pages = [
-        "Getting Started" => "index.md",
-        "Reference" =>
-            ["`AstrodynamicalSolvers`" => "reference.md", "`CR3BSolvers`" => "cr3bp.md"],
-    ],
-)
-
+Quarto.render(joinpath(@__DIR__, "src"))
 
 deploydocs(
     target = "build",
-    repo = "github.com/JuliaAstro/GeneralAstrodynamics.jl.git",
+    repo = "github.com/JuliaAstro/GeneralAstrodynamics.jl",
     branch = "docs/astrodynamical-solvers",
     devbranch = "main",
     tag_prefix = "AstrodynamicalSolvers-",

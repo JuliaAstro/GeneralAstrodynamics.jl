@@ -2,11 +2,11 @@
 
 _Also known as NBP dynamics!_
 
-```@setup main
+```{julia}
+#| echo: false
+#| output: false
 using AstrodynamicalModels
 using ModelingToolkit
-using Latexify
-Latexify.auto_display(true)
 ```
 
 ## Overview
@@ -31,20 +31,23 @@ states!
 If you're curious, the number of states of an N-body system with state
 transition matrix dynamics appended is equivalent to `N*6 + (N*6)^2`.
 
-```@repl main
+```{julia}
+#| echo: true
 model = NBSystem(2; stm=true)
 ```
 
 Like other models, we can compute the Jacobian for these dynamics.
 
-```@repl main
+```{julia}
+#| echo: true
 using SparseArrays
 J = sparse(calculate_jacobian(NBSystem(4)))
 ```
 
 Finally, let's construct a Julia function which implements these dynamics!
 
-```@repl main
+```{julia}
+#| echo: true
 f = NBFunction(2)
 let u = randn(12), m = randn(2), G = rand(), t = 0
     f(u, [G, m...], t)

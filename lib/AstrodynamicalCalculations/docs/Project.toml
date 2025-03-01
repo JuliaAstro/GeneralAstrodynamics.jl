@@ -1,8 +1,6 @@
 [deps]
-AstrodynamicalCalculations = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
-Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
-DocumenterTools = "35a29f4d-8980-5a13-9543-d66fff28ecb8"
-LiveServer = "16fef848-5104-11e9-1b77-fb7a48bbb589"
-SPICE = "5bab7191-041a-5c2e-a744-024b9c3a5062"
-SPICEKernels = "8e9d28ce-e483-4ef7-bfd9-45b8fef6369c"
+Quarto = "d7167be5-f61b-4dc9-b75c-ab62374668c5"
+DocumenterQuarto = "73f83fcb-c367-40db-89b6-8fd94701aaf2"
+IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
+AstrodynamicalCalculations = "c0cf9fb7-f496-4999-a425-c50785d1b88b"

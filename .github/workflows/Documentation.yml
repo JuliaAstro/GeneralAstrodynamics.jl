@@ -5,6 +5,7 @@ on:
     branches:
       - main
     tags: "*"
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -12,15 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
       - uses: julia-actions/setup-julia@latest
+      - uses: quarto-dev/quarto-actions/setup@v2
+      - uses: actions/setup-python@v4
+      - run: pip install jupyter
 
       #
       # AstrodynamicalCalculations Documentation
       #
 
       - name: Install Documentation Dependencies for AstrodynamicalCalculations
-        run: julia --project=lib/AstrodynamicalCalculations/docs -e 'using Pkg; Pkg.develop(PackageSpec(path = joinpath("lib", "AstrodynamicalCalculations"))); Pkg.instantiate()'
+        run: julia --project=lib/AstrodynamicalCalculations/docs -e 'using Pkg; Pkg.develop(PackageSpec(path = joinpath("lib", "AstrodynamicalCalculations"))); Pkg.instantiate(); Pkg.build()'
 
       - name: Build and deploy AstrodynamicalCalculations
         env:
@@ -34,7 +37,7 @@ jobs:
       #
 
       - name: Install Documentation Dependencies for AstrodynamicalModels
-        run: julia --project=lib/AstrodynamicalModels/docs -e 'using Pkg; Pkg.develop(PackageSpec(path = joinpath("lib", "AstrodynamicalModels"))); Pkg.instantiate()'
+        run: julia --project=lib/AstrodynamicalModels/docs -e 'using Pkg; Pkg.develop(PackageSpec(path = joinpath("lib", "AstrodynamicalModels"))); Pkg.instantiate(); Pkg.build()'
 
       - name: Build and deploy AstrodynamicalModels
         env:
@@ -48,7 +51,7 @@ jobs:
       #
 
       - name: Install Documentation Dependencies for AstrodynamicalSolvers
-        run: julia --project=lib/AstrodynamicalSolvers/docs -e 'using Pkg; Pkg.develop(PackageSpec(path = joinpath("lib", "AstrodynamicalSolvers"))); Pkg.instantiate()'
+        run: julia --project=lib/AstrodynamicalSolvers/docs -e 'using Pkg; Pkg.develop(PackageSpec(path = joinpath("lib", "AstrodynamicalSolvers"))); Pkg.instantiate(); Pkg.build()'
 
       - name: Build and deploy AstrodynamicalSolvers
         env:
@@ -58,7 +61,8 @@ jobs:
         run: julia --project=docs/ docs/make.jl
 
       - name: Install Documentation Dependencies
-        run: julia --project=docs -e 'using Pkg; Pkg.develop(PackageSpec(path = @__DIR__)); Pkg.instantiate()'
+        run: julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate(); Pkg.build()'
+
 
       - name: Build and deploy
         env:
