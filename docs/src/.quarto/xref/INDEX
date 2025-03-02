@@ -1,8 +1,17 @@
 {
   "index.md": {
-    "index.html": "9cf24254"
+    "index.html": "9d129936"
   },
   "api/index.qmd": {
-    "index.html": "57f4fd9c"
+    "index.html": "c9b41a7c"
+  },
+  "api/calculations/index.qmd": {
+    "index.html": "9618446c"
+  },
+  "api/models/index.qmd": {
+    "index.html": "74412e9b"
+  },
+  "api/solvers/index.qmd": {
+    "index.html": "48d25e71"
   }
 }

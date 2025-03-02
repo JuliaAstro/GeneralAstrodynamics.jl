@@ -1,0 +1,30 @@
+---
+number-depth: 2
+---
+
+# Calculations
+
+```{julia}
+#| echo: false
+#| output: false
+using TOML
+using DocumenterQuarto
+using GeneralAstrodynamics
+
+function version(pkg) 
+    v = TOML.parsefile(joinpath(dirname(pathof(pkg)), "..", "Project.toml"))["version"]
+    return "version $v"
+end
+```
+
+
+::: {.callout-tip appearance="simple"}
+All names on this page are provided by `{julia} version(AstrodynamicalCalculations)` of `AstrodynamicalCalculations`.
+For more information, consult the [documentation](https://JuliaAstro.org/GeneralAstrodynamics/lib/AstrodynamicalCalculations) for `AstrodynamicalCalculations` directly.
+:::
+
+```{julia}
+#| echo: false
+#| output: asis
+DocumenterQuarto.autodoc(GeneralAstrodynamics.AstrodynamicalCalculations)
+```
