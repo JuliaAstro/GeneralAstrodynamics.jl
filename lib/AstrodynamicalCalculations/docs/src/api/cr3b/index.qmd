@@ -1,0 +1,20 @@
+---
+number-depth: 2
+---
+
+# Circular Restricted Three Body Calculations
+
+_Docstrings for `AstrodynamicalCalculations.CR3BPCalculations`._
+
+```{julia}
+#| echo: false
+#| output: false
+using DocumenterQuarto
+using AstrodynamicalCalculations: CR3BPCalculations
+```
+
+```{julia}
+#| echo: false
+#| output: asis
+DocumenterQuarto.autodoc(CR3BPCalculations)
+```

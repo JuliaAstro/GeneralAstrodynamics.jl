@@ -1,23 +1,12 @@
 using Documenter
-using AstrodynamicalCalculations
+using Quarto
 
-makedocs(
-    sitename = "AstrodynamicalCalculations.jl",
-    format = Documenter.HTML(),
-    modules = [AstrodynamicalCalculations],
-    authors = "Joey Carpinelli",
-    pages = [
-        "Getting Started" => "index.md",
-        "R2BP Equations" => "r2bp.md",
-        "CR3BP Equations" => "cr3bp.md",
-    ],
-)
+Quarto.render(joinpath(@__DIR__, "src"))
 
 deploydocs(
     target = "build",
-    repo = "github.com/JuliaAstro/GeneralAstrodynamics.jl.git",
+    repo = "github.com/JuliaAstro/GeneralAstrodynamics.jl",
     branch = "docs/astrodynamical-calculations",
     devbranch = "main",
     tag_prefix = "AstrodynamicalCalculations-",
 )
-

@@ -1,0 +1,60 @@
+project:
+    type: book
+    output-dir: "../build"
+
+book:
+    title: "AstrodynamicalSolvers"
+    author: 
+        name: "Joey Carpinelli"
+        email: "joey@loopy.codes"
+    date: "2025-03-02"
+    chapters:
+        - index.md
+        - examples/index.qmd
+        - api/index.qmd 
+
+    navbar: 
+        background: primary
+        right: 
+        - text: Version
+          menu: 
+            - text: dev
+        
+    search: 
+        location: sidebar
+        type: textbox
+
+    twitter-card: true
+    open-graph: true
+    repo-url: https://github.com/JuliaAstro/GeneralAstrodynamics.jl
+    repo-actions: [issue]
+
+toc-title: "Table of Contents"
+
+execute:
+    echo: false
+    output: true
+    cache: false
+    freeze: false
+
+bibliography: references.bib
+
+format:
+    html:
+        include-in-header: 
+            file: _static/versions.html
+        code-link: true
+        number-sections: false
+        css: _static/style.css
+        resources: 
+            - _static/style.css
+            - _static/versions.html
+            - _static/theme.scss
+        theme: 
+            light: 
+                - _static/theme.scss
+                - default
+            dark: 
+                - _static/theme.scss
+                - darkly
+    

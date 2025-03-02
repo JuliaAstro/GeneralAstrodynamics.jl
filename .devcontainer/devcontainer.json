@@ -6,7 +6,9 @@
 		"ghcr.io/devcontainers/features/git-lfs": {},
 		"ghcr.io/julialang/devcontainer-features/julia:1": {},
 		"ghcr.io/devcontainers/features/github-cli": {},
-		"ghcr.io/devcontainers-contrib/features/starship": {}
+		"ghcr.io/devcontainers-contrib/features/starship": {},
+		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {},
+		"ghcr.io/devcontainers/features/python:1": {"installJupyterlab": true}
 	},
 	"postCreateCommand": {
 		"initialize starship": "echo 'eval $(starship init bash)' >> ~/.bashrc"

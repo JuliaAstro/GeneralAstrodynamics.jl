@@ -1,0 +1,20 @@
+---
+number-depth: 2
+---
+
+# Restricted Two Body Calculations
+
+_Docstrings for `AstrodynamicalCalculations.R2BCalculations`._
+
+```{julia}
+#| echo: false
+#| output: false
+using DocumenterQuarto
+using AstrodynamicalCalculations: R2BPCalculations
+```
+
+```{julia}
+#| echo: false
+#| output: asis
+DocumenterQuarto.autodoc(R2BPCalculations)
+```
