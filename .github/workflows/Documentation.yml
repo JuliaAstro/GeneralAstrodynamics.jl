@@ -26,7 +26,7 @@ jobs:
       - run: pip install jupyter
 
       - name: Install Documentation Dependencies for ${{ matrix.package }}
-        run: julia --project=lib/${{ matrix.package }}/docs -e 'using Pkg; Pkg.develop(PackageSpec(path = joinpath("lib", ${{ matrix.package }}))); Pkg.instantiate(); Pkg.build()'
+        run: julia --project=lib/${{ matrix.package }}/docs -e 'using Pkg; Pkg.develop(PackageSpec(path = joinpath("lib", "${{ matrix.package }}"))); Pkg.instantiate(); Pkg.build()'
 
       - name: Build and deploy ${{ matrix.package }}
         env:
