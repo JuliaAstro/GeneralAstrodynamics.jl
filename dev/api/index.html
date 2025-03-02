@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Joey Carpinelli">
-<meta name="dcterms.date" content="2025-03-02">
 
-<title>AstrodynamicalCalculations</title>
+<title>Reference – AstrodynamicalCalculations</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,62 +20,29 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./api/index.html" rel="next">
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b53751a350365c71b6c909e95f209ed1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-100abed62b818bc459a4eaa2f3c410bb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-34270b2a9582e973c1fc0579fa17186d.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../api/r2b/index.html" rel="next">
+<link href="../index.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-b53751a350365c71b6c909e95f209ed1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-100abed62b818bc459a4eaa2f3c410bb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-34270b2a9582e973c1fc0579fa17186d.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -202,11 +167,11 @@ window.onload = function () {
 </script>
 
 
-<link rel="stylesheet" href="_static/style.css">
-<meta property="og:title" content="AstrodynamicalCalculations">
+<link rel="stylesheet" href="../_static/style.css">
+<meta property="og:title" content="Reference – AstrodynamicalCalculations">
 <meta property="og:description" content="">
 <meta property="og:site_name" content="AstrodynamicalCalculations">
-<meta name="twitter:title" content="AstrodynamicalCalculations">
+<meta name="twitter:title" content="Reference – AstrodynamicalCalculations">
 <meta name="twitter:description" content="">
 <meta name="twitter:card" content="summary">
 </head>
@@ -218,7 +183,7 @@ window.onload = function () {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">AstrodynamicalCalculations</span>
     </a>
   </div>
@@ -248,7 +213,7 @@ window.onload = function () {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-title">Overview</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/index.html">Reference</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -270,12 +235,12 @@ window.onload = function () {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Overview</span></a>
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Overview</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="./api/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../api/index.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Reference</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -284,12 +249,12 @@ window.onload = function () {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./api/r2b/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Restricted Two Body Calculations</span></a>
+  <a href="../api/r2b/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Restricted Two Body Calculations</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./api/cr3b/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Circular Restricted Three Body Calculations</span></a>
+  <a href="../api/cr3b/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Circular Restricted Three Body Calculations</span></a>
   </div>
 </li>
       </ul>
@@ -304,12 +269,7 @@ window.onload = function () {
     <h2 id="toc-title">Table of Contents</h2>
    
   <ul>
-  <li><a href="#astrodynamicalcalculations.jl" id="toc-astrodynamicalcalculations.jl" class="nav-link active" data-scroll-target="#astrodynamicalcalculations.jl"><code>AstrodynamicalCalculations.jl</code></a>
-  <ul class="collapse">
-  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a></li>
-  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">Overview</a></li>
-  <li><a href="#getting-stated" id="toc-getting-stated" class="nav-link" data-scroll-target="#getting-stated">Getting Stated</a></li>
-  </ul></li>
+  <li><a href="#astrodynamicalcalculations" id="toc-astrodynamicalcalculations" class="nav-link active" data-scroll-target="#astrodynamicalcalculations"><code>AstrodynamicalCalculations</code></a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/JuliaAstro/GeneralAstrodynamics.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -318,26 +278,14 @@ window.onload = function () {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">AstrodynamicalCalculations</h1>
+<h1 class="title">Reference</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Joey Carpinelli <a href="mailto:joey@loopy.codes" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">March 2, 2025</p>
-    </div>
-  </div>
   
     
   </div>
@@ -347,39 +295,36 @@ window.onload = function () {
 </header>
 
 
-<p><a href="https://github.com/cadojo/AstrodynamicalCalculations.jl/actions?query=workflow%3ATests"><img src="https://github.com/cadojo/AstrodynamicalCalculations.jl/workflows/Tests/badge.svg" class="img-fluid" alt="Tests"></a> <a href="https://cadojo.github.io/AstrodynamicalCalculations.jl"><img src="https://github.com/cadojo/AstrodynamicalCalculations.jl/workflows/Documentation/badge.svg" class="img-fluid" alt="Docs"></a></p>
-<section id="astrodynamicalcalculations.jl" class="level1">
-<h1><code>AstrodynamicalCalculations.jl</code></h1>
-<p><em>Common calculations relating to orbital mechanics and astrodynamics.</em></p>
-<section id="installation" class="level2">
-<h2 class="anchored" data-anchor-id="installation">Installation</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pkg<span class="op">&gt;</span> add AstrodynamicalCalculations</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><em>Docstrings for <code>AstrodynamicalCalculations</code>.</em></p>
+<section id="astrodynamicalcalculations" class="level2">
+<h2 class="anchored" data-anchor-id="astrodynamicalcalculations"><code>AstrodynamicalCalculations</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>Common calculations within orbital mechanics and astrodynamics.</p>
+<section id="extended-help" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="extended-help">Extended Help</h3>
+<section id="documentation" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="documentation">Documentation</h4>
+<p>See the project documentation for more information: https://JuliaAstro.org/AstrodynamicalCalculations.jl.</p>
 </section>
-<section id="overview" class="level2">
-<h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>Almost all of the equations used in your (my) first-year graduate astrodynamics coursework, in Julia! This package includes equations which are valid within the Restricted Two Body Problem (R2BP), and the Circular Restricted Three Body Problem (CR3BP). Each function’s docstring clearly labels the models in which the underlying equations are valid. Iterative solvers, including Kepler’s prediction algorithm, and the universal Lambert solver, are also provided.</p>
-<p>Two newer Lambert solver implementations (Lancaster / Blanchard, and Oldenhuis) are also provided, but they are currently not working. Something seems to have not transferred well while porting the code from MATLAB to Julia. I hope to work on this more in 2024.</p>
+<section id="license" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="license">License</h4>
+<p>MIT License</p>
+<p>Copyright (c) 2023 Joe Carpinelli</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
 </section>
-<section id="getting-stated" class="level2">
-<h2 class="anchored" data-anchor-id="getting-stated">Getting Stated</h2>
-<p>Please refer to the <a href="https://cadojo.github.io/AstrodynamicalCalculations.jl">documentation</a> for more detailed instructions, and usage examples.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> r <span class="op">=</span> [<span class="fl">0.0</span>, <span class="fl">11681.0</span>, <span class="fl">0.0</span>];     <span class="co"># km</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> v <span class="op">=</span> [<span class="fl">5.134</span>, <span class="fl">4.226</span>, <span class="fl">2.787</span>];   <span class="co"># km/s</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> μ <span class="op">=</span> <span class="fl">398600.4354360959</span>;       <span class="co"># km³ s⁻²</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="cn">e</span>, a, i, Ω, ω, ν <span class="op">=</span> <span class="fu">cartesian_to_keplerian</span>(r, v, μ) </span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>(<span class="fl">0.723452708202361</span>, <span class="fl">24509.265399338536</span>, <span class="fl">2.6442542356744734</span>, <span class="fl">1.5707963267948966</span>, <span class="fl">4.712449617676915</span>, <span class="fl">1.5707356895026707</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> T <span class="op">=</span> <span class="fu">orbital_period</span>(a, μ) </span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fl">38186.19850882009</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> rₙ, vₙ <span class="op">=</span> <span class="fu">kepler</span>(r, v, μ, <span class="fl">2.5</span>T)</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>([<span class="fl">36872.96963754877</span>, <span class="op">-</span><span class="fl">2574.241491333036</span>, <span class="fl">20016.549742861007</span>], [<span class="op">-</span><span class="fl">0.3141726028666592</span>, <span class="op">-</span><span class="fl">1.6044679459972122</span>, <span class="op">-</span><span class="fl">0.17054909314167882</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</div>
+</div>
+</div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -946,10 +891,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="../index.html" class="pagination-link" aria-label="Overview">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Overview</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./api/index.html" class="pagination-link" aria-label="Reference">
-        <span class="nav-page-text">Reference</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../api/r2b/index.html" class="pagination-link" aria-label="Restricted Two Body Calculations">
+        <span class="nav-page-text"><span class="chapter-title">Restricted Two Body Calculations</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
