@@ -1,0 +1,18 @@
+---
+number-depth: 2
+---
+
+# Reference
+
+`GeneralAstrodynamics` offers no functionality itself. Instead, it aggregates multiple other packages for convenience. All names exported by `GeneralAstrodynamics` are included in the following pages.
+
+```{julia}
+#| output: false
+using DocumenterQuarto
+using GeneralAstrodynamics
+```
+
+```{julia}
+#| output: asis
+DocumenterQuarto.doc(Main, :GeneralAstrodynamics)
+```
