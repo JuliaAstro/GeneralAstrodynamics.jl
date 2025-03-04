@@ -27,7 +27,7 @@ Memoize = "0.4"
 ModelingToolkit = "9.3"
 SciMLBase = "2"
 StaticArrays = "1"
-Symbolics = "5"
+Symbolics = "5, 6"
 julia = "1.7"
 
 [extras]
