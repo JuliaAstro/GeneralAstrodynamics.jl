@@ -2,7 +2,7 @@ using Documenter
 using Quarto
 using Git
 
-# Quarto.render(joinpath(@__DIR__, "src"))
+Quarto.render(joinpath(@__DIR__, "src"))
 
 function clone(pkg; branch = "docs/$pkg")
     run(Git.git(["clone", "--branch", branch, "--depth", "1", "https://github.com/JuliaAstro/GeneralAstrodynamics.jl", joinpath(@__DIR__, "build", "lib", "$pkg.jl")]))

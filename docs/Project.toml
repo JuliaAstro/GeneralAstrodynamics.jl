@@ -1,4 +1,7 @@
 [deps]
+AstrodynamicalCalculations = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
+AstrodynamicalModels = "4282b555-f590-4262-b575-3e516e1493a7"
+AstrodynamicalSolvers = "636ee813-9c9e-4a0a-af07-88b3043dcb77"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 DocumenterQuarto = "73f83fcb-c367-40db-89b6-8fd94701aaf2"
 GeneralAstrodynamics = "8068df5b-8501-4530-bd82-d24d3c9619db"
