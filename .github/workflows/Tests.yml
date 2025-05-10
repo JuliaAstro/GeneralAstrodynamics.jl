@@ -31,7 +31,6 @@ jobs:
           - AstrodynamicalSolvers
         version:
           - "1"
-          - "lts"
     steps:
       - uses: actions/checkout@v4
       - uses: julia-actions/setup-julia@v2
@@ -53,11 +52,16 @@ jobs:
           project: lib/${{ matrix.group }}
       - uses: julia-actions/julia-processcoverage@v1
         with:
-          directories: lib/${{ matrix.group }}/src
+          directories: lib/${{ matrix.group }}
       - uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-          slug: JuliaAstro/${{ matrix.group }}.jl
+        with:
+          flags: ${{ matrix.group }}.jl
+          working-directory: lib/${{ matrix.group }}
+          verbose: true
+          fail_ci_if_error: true
+          files: lcov.info
   test-superpackage:
     runs-on: ubuntu-latest
     strategy:
@@ -85,9 +89,10 @@ jobs:
         env:
           GROUP: "GeneralAstrodynamics"
       - uses: julia-actions/julia-processcoverage@v1
-        with:
-          directories: src
       - uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-          slug: JuliaAstro/GeneralAstrodynamics.jl
+        with:
+          verbose: true
+          fail_ci_if_error: true
+          files: lcov.info

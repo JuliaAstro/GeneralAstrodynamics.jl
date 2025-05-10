@@ -1,0 +1,27 @@
+flag_management:
+  default_rules: 
+    carryforward: true
+    statuses:
+      - type: project
+        target: auto
+        threshold: 50%
+      - type: patch
+        target: 90%
+  individual_flags: 
+    - name: GeneralAstrodynamics.jl 
+      paths: 
+      - src
+      - test
+      carryforward: false
+    - name: AstrodynamicalCalculations.jl 
+      paths: 
+      - lib/AstrodynamicalCalculations
+    - name: AstrodynamicalModels.jl 
+      paths: 
+      - lib/AstrodynamicalModels
+    - name: AstrodynamicalSolvers.jl 
+      paths: 
+      - lib/AstrodynamicalSolvers
+
+
+
