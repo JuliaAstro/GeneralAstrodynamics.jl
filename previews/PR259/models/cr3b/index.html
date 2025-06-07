@@ -564,23 +564,23 @@ window.Quarto = {
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
 <p>State transition dynamics are particularly valuable for CR3BP models. Recall that the state transition matrix is simply the local linearization of a spacecraft within CR3BP dynamics. Let’s look at the Jacobian (another word for “local linearization”) below, evaluated at some random state.</p>
-<div id="15453aa1" class="cell" data-execution_count="2">
+<div id="d1846b63" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">CR3BFunction</span>(; jac<span class="op">=</span><span class="cn">true</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> x <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">6</span>), p <span class="op">=</span> <span class="fu">rand</span>((<span class="fl">0.0</span>, <span class="fl">0.5</span>)), t <span class="op">=</span> <span class="fl">0</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    f.<span class="fu">jac</span>(x, p, t)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <pre><code>6×6 Matrix{Float64}:
-  0.0          0.0          0.0         1.0  0.0  0.0
-  0.0          0.0          0.0         0.0  1.0  0.0
-  0.0          0.0          0.0         0.0  0.0  1.0
-  0.87014      0.00939288  -0.0136433   0.0  2.0  0.0
-  0.00939288   0.98144     -0.218546   -2.0  0.0  0.0
- -0.0136433   -0.218546     0.148421    0.0  0.0  0.0</code></pre>
+  0.0        0.0         0.0         1.0  0.0  0.0
+  0.0        0.0         0.0         0.0  1.0  0.0
+  0.0        0.0         0.0         0.0  0.0  1.0
+  1.09679   -0.114784    0.117664    0.0  2.0  0.0
+ -0.114784   0.950009   -0.0644276  -2.0  0.0  0.0
+  0.117664  -0.0644276  -0.0467976   0.0  0.0  0.0</code></pre>
 </div>
 </div>
 <p>The Jacobian will always have this form (zeros in the top-left, the identity matrix in the top-right, a dense matrix in the bottom-left, and the same sparse “-2, 2” matrix in the bottom-right). We can include the state transition dynamics in our model with <code>stm=true</code>, initialize the state transition matrix states to the identity matrix, and propagate our spacecraft for one periodic orbit: the result is known as the Monodromy Matrix! The Monodromy Matrix provides stability characteristics for the entire periodic orbit.</p>
-<div id="c7625c3c" class="cell" data-execution_count="3">
+<div id="c0067eff" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">CR3BSystem</span>(; stm<span class="op">=</span><span class="cn">true</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
 <p><span class="math display">\[ \begin{align}
