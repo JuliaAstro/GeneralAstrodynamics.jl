@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.30">
+<meta name="generator" content="quarto-1.7.31">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -73,14 +73,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-de070a7b0ab54f8780927367ac907214.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-2b3e328b71be8d25427581baeb23079b.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-de070a7b0ab54f8780927367ac907214.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-8ef56b68f8fa1e9d2ba328e99e439f80.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-ce0ab452870aa5edf6f6b1129e2f7929.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-0d52a5aeca090a2fe7b73ae5eec57762.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-ce0ab452870aa5edf6f6b1129e2f7929.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-742d4e033ef916f66bc6fcf840ff4a2f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-2ea2c6996b1179a855173f71ee9c5720.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-742d4e033ef916f66bc6fcf840ff4a2f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -561,7 +561,7 @@ window.Quarto = {
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div id="70c71d6e" class="cell" data-execution_count="2">
+<div id="7dcaf233" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">PlanarEntrySystem</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="3">
 <p><span class="math display">\[ \begin{align}
@@ -574,14 +574,14 @@ window.Quarto = {
 </div>
 </div>
 <p>Let’s compute the Jacobian for these dynamics.</p>
-<div id="6676193d" class="cell" data-execution_count="3">
+<div id="2638231f" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>J <span class="op">=</span> <span class="fu">calculate_jacobian</span>(<span class="fu">PlanarEntrySystem</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
 <p><span class="math display">\[ \begin{equation}
 \left[
 \begin{array}{cccc}
-\frac{\left( \frac{R}{r\left( t \right)} \right)^{2} \sin\left( \gamma\left( t \right) \right) \left( 1 - \left( \frac{v\left( t \right)}{\sqrt{\frac{\mu}{r\left( t \right)}}} \right)^{2} \right) \mu}{R^{2} v\left( t \right)} &amp; \frac{\frac{\left( \frac{R}{r\left( t \right)} \right)^{2} \cos\left( \gamma\left( t \right) \right) \left( 1 - \left( \frac{v\left( t \right)}{\sqrt{\frac{\mu}{r\left( t \right)}}} \right)^{2} \right) \mu}{R^{2}} + \frac{ - 2 m}{-2 m}}{\left( v\left( t \right) \right)^{2}} + \frac{\frac{2 \left( \frac{R}{r\left( t \right)} \right)^{2} v\left( t \right) \cos\left( \gamma\left( t \right) \right) \mu}{\left( \sqrt{\frac{\mu}{r\left( t \right)}} \right)^{2} R^{2}} - A P v\left( t \right) e^{\frac{R - r\left( t \right)}{H}} \frac{m}{\frac{1}{4} \left( e^{\frac{R - r\left( t \right)}{H}} \right)^{2} \left( v\left( t \right) \right)^{4} P^{2} A^{2}}}{v\left( t \right)} &amp; \frac{\frac{\frac{1}{2} \left( v\left( t \right) \right)^{2} A P e^{\frac{R - r\left( t \right)}{H}} \frac{m}{\frac{1}{4} \left( e^{\frac{R - r\left( t \right)}{H}} \right)^{2} \left( v\left( t \right) \right)^{4} P^{2} A^{2}}}{H} + \frac{\frac{\left( \frac{R}{r\left( t \right)} \right)^{2} \frac{\mu}{\left( r\left( t \right) \right)^{2}} v\left( t \right) \cos\left( \gamma\left( t \right) \right) \frac{v\left( t \right)}{\left( \sqrt{\frac{\mu}{r\left( t \right)}} \right)^{2}} \mu}{\left( \sqrt{\frac{\mu}{r\left( t \right)}} \right)^{2}} + \frac{2 R \cos\left( \gamma\left( t \right) \right) \left( 1 - \left( \frac{v\left( t \right)}{\sqrt{\frac{\mu}{r\left( t \right)}}} \right)^{2} \right) \frac{R}{\left( r\left( t \right) \right)^{2}} \mu}{r\left( t \right)}}{R^{2}}}{v\left( t \right)} &amp; 0 \\
-\frac{ - \left( \frac{R}{r\left( t \right)} \right)^{2} \cos\left( \gamma\left( t \right) \right) \mu}{R^{2}} &amp; \frac{ - A C P v\left( t \right) e^{\frac{R - r\left( t \right)}{H}}}{m} &amp; \frac{2 \sin\left( \gamma\left( t \right) \right) \frac{R}{\left( r\left( t \right) \right)^{2}} \mu}{R r\left( t \right)} + \frac{-2 m}{2 m} &amp; 0 \\
+\frac{\left( \frac{R}{r\left( t \right)} \right)^{2} \sin\left( \gamma\left( t \right) \right) \left( 1 - \left( \frac{v\left( t \right)}{\sqrt{\frac{\mu}{r\left( t \right)}}} \right)^{2} \right) \mu}{R^{2} v\left( t \right)} &amp; \frac{\frac{ - 2 m}{\left( v\left( t \right) \right)^{2} A P e^{\frac{R - r\left( t \right)}{H}}} + \frac{\left( \frac{R}{r\left( t \right)} \right)^{2} \cos\left( \gamma\left( t \right) \right) \left( 1 - \left( \frac{v\left( t \right)}{\sqrt{\frac{\mu}{r\left( t \right)}}} \right)^{2} \right) \mu}{R^{2}}}{\left( v\left( t \right) \right)^{2}} + \frac{\frac{2 \left( \frac{R}{r\left( t \right)} \right)^{2} v\left( t \right) \cos\left( \gamma\left( t \right) \right) \mu}{\left( \sqrt{\frac{\mu}{r\left( t \right)}} \right)^{2} R^{2}} - A P v\left( t \right) e^{\frac{R - r\left( t \right)}{H}} \frac{m}{\frac{1}{4} \left( e^{\frac{R - r\left( t \right)}{H}} \right)^{2} \left( v\left( t \right) \right)^{4} P^{2} A^{2}}}{v\left( t \right)} &amp; \frac{\frac{\frac{1}{2} \left( v\left( t \right) \right)^{2} A P e^{\frac{R - r\left( t \right)}{H}} \frac{m}{\frac{1}{4} \left( e^{\frac{R - r\left( t \right)}{H}} \right)^{2} \left( v\left( t \right) \right)^{4} P^{2} A^{2}}}{H} + \frac{\frac{\left( \frac{R}{r\left( t \right)} \right)^{2} \frac{\mu}{\left( r\left( t \right) \right)^{2}} v\left( t \right) \cos\left( \gamma\left( t \right) \right) \frac{v\left( t \right)}{\left( \sqrt{\frac{\mu}{r\left( t \right)}} \right)^{2}} \mu}{\left( \sqrt{\frac{\mu}{r\left( t \right)}} \right)^{2}} + \frac{2 R \cos\left( \gamma\left( t \right) \right) \left( 1 - \left( \frac{v\left( t \right)}{\sqrt{\frac{\mu}{r\left( t \right)}}} \right)^{2} \right) \frac{R}{\left( r\left( t \right) \right)^{2}} \mu}{r\left( t \right)}}{R^{2}}}{v\left( t \right)} &amp; 0 \\
+\frac{ - \left( \frac{R}{r\left( t \right)} \right)^{2} \cos\left( \gamma\left( t \right) \right) \mu}{R^{2}} &amp; \frac{ - A C P v\left( t \right) e^{\frac{R - r\left( t \right)}{H}}}{m} &amp; \frac{\left( v\left( t \right) \right)^{2} A C P e^{\frac{R - r\left( t \right)}{H}}}{2 H m} + \frac{2 \sin\left( \gamma\left( t \right) \right) \frac{R}{\left( r\left( t \right) \right)^{2}} \mu}{R r\left( t \right)} &amp; 0 \\
 v\left( t \right) \cos\left( \gamma\left( t \right) \right) &amp; \sin\left( \gamma\left( t \right) \right) &amp; 0 &amp; 0 \\
 \frac{ - \sin\left( \gamma\left( t \right) \right) v\left( t \right)}{r\left( t \right)} &amp; \frac{\cos\left( \gamma\left( t \right) \right)}{r\left( t \right)} &amp;  - \frac{v\left( t \right) \cos\left( \gamma\left( t \right) \right)}{\left( r\left( t \right) \right)^{2}} &amp; 0 \\
 \end{array}
@@ -591,17 +591,17 @@ v\left( t \right) \cos\left( \gamma\left( t \right) \right) &amp; \sin\left( \ga
 </div>
 </div>
 <p>Finally, let’s construct a Julia function which implements these dynamics!</p>
-<div id="93a41b1f" class="cell" data-execution_count="4">
+<div id="a57bc66e" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">PlanarEntryFunction</span>()</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">abs</span>.(<span class="fu">randn</span>(<span class="fl">4</span>)), p <span class="op">=</span> <span class="fu">abs</span>.(<span class="fu">randn</span>(<span class="fl">7</span>)), t <span class="op">=</span> <span class="fl">0</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, p, t)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>4-element Vector{Float64}:
- 17.73221789330697
- -0.22498377996358643
-  0.6455155339935914
-  0.27345490702735037</code></pre>
+ -16.264827899385093
+  -9.313831221098457
+   0.2803491795347625
+   1.839779612046684</code></pre>
 </div>
 </div>
 
