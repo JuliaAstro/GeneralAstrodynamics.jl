@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.29">
+<meta name="generator" content="quarto-1.7.31">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -73,14 +73,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-0815c480559380816a4d1ea211a47e91.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-748b535e376f14d4692bf2b2e5fd6380.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-0815c480559380816a4d1ea211a47e91.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-8ef56b68f8fa1e9d2ba328e99e439f80.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-5dfe2bff453734addedca01d4dd8a380.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-d06590aeffccd89e9596dd42d42a4ec0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-5dfe2bff453734addedca01d4dd8a380.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-742d4e033ef916f66bc6fcf840ff4a2f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-2ea2c6996b1179a855173f71ee9c5720.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-742d4e033ef916f66bc6fcf840ff4a2f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -397,6 +397,7 @@ window.Quarto = {
       toggleColorMode(toAlternate);
       setStyleSentinel(toAlternate);
       toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
     };
     // Switch to dark mode if need be
     if (hasAlternateSentinel()) {
@@ -563,23 +564,23 @@ window.Quarto = {
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
 <p>State transition dynamics are particularly valuable for CR3BP models. Recall that the state transition matrix is simply the local linearization of a spacecraft within CR3BP dynamics. Let’s look at the Jacobian (another word for “local linearization”) below, evaluated at some random state.</p>
-<div id="9d9a92f2" class="cell" data-execution_count="2">
+<div id="fa9b3d44" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">CR3BFunction</span>(; jac<span class="op">=</span><span class="cn">true</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> x <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">6</span>), p <span class="op">=</span> <span class="fu">rand</span>((<span class="fl">0.0</span>, <span class="fl">0.5</span>)), t <span class="op">=</span> <span class="fl">0</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    f.<span class="fu">jac</span>(x, p, t)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <pre><code>6×6 Matrix{Float64}:
-  0.0         0.0          0.0          1.0  0.0  0.0
-  0.0         0.0          0.0          0.0  1.0  0.0
-  0.0         0.0          0.0          0.0  0.0  1.0
-  1.08096    -0.0654405   -0.0122144    0.0  2.0  0.0
- -0.0654405   0.974922     0.00595629  -2.0  0.0  0.0
- -0.0122144   0.00595629  -0.0558778    0.0  0.0  0.0</code></pre>
+ 0.0        0.0         0.0         1.0  0.0  0.0
+ 0.0        0.0         0.0         0.0  1.0  0.0
+ 0.0        0.0         0.0         0.0  0.0  1.0
+ 1.19505    0.0416403   0.204417    0.0  2.0  0.0
+ 0.0416403  0.84591     0.0240427  -2.0  0.0  0.0
+ 0.204417   0.0240427  -0.0409591   0.0  0.0  0.0</code></pre>
 </div>
 </div>
 <p>The Jacobian will always have this form (zeros in the top-left, the identity matrix in the top-right, a dense matrix in the bottom-left, and the same sparse “-2, 2” matrix in the bottom-right). We can include the state transition dynamics in our model with <code>stm=true</code>, initialize the state transition matrix states to the identity matrix, and propagate our spacecraft for one periodic orbit: the result is known as the Monodromy Matrix! The Monodromy Matrix provides stability characteristics for the entire periodic orbit.</p>
-<div id="fe8f383b" class="cell" data-execution_count="3">
+<div id="15fdff55" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">CR3BSystem</span>(; stm<span class="op">=</span><span class="cn">true</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
 <p><span class="math display">\[ \begin{align}
