@@ -555,7 +555,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
 <p>All <code>NBSystem</code> calls require the number of bodies to be specified as the first argument, like so. As always, use the <code>stm</code> argument at your leisure. Beware, though! using <code>stm=true</code> for N-body systems with more than 5 bodies may cause <code>NBSystem</code> to compute for a <em>really, really</em> long time! True story – <code>v1.0.1</code> of this package had a version of these docs which tried to compute <code>NBSystem(30; stm=true)</code>. That resulted in GitHub and JuliaHub failing the job on a timeout after <em>several hours</em> –&nbsp;at first I was surprised, until I realized that appending state transition matrix dynamics to a 30-body system results in a total of 32580 states!</p>
 <p>If you’re curious, the number of states of an N-body system with state transition matrix dynamics appended is equivalent to <code>N*6 + (N*6)^2</code>.</p>
-<div id="a1dbbc27" class="cell" data-execution_count="2">
+<div id="0d0baff3" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">NBSystem</span>(<span class="fl">2</span>; stm<span class="op">=</span><span class="cn">true</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="3">
 <p><span class="math display">\[ \begin{align}
@@ -720,7 +720,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Like other models, we can compute the Jacobian for these dynamics.</p>
-<div id="dd12c805" class="cell" data-execution_count="3">
+<div id="e3438b68" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SparseArrays</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>J <span class="op">=</span> <span class="fu">sparse</span>(<span class="fu">calculate_jacobian</span>(<span class="fu">NBSystem</span>(<span class="fl">4</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
@@ -758,25 +758,25 @@ window.Quarto = {
 </div>
 </div>
 <p>Finally, let’s construct a Julia function which implements these dynamics!</p>
-<div id="f9127abe" class="cell" data-execution_count="4">
+<div id="0476ce69" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">NBFunction</span>(<span class="fl">2</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">12</span>), m <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">2</span>), G <span class="op">=</span> <span class="fu">rand</span>(), t <span class="op">=</span> <span class="fl">0</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, [G, m<span class="op">...</span>], t)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>12-element Vector{Float64}:
-  0.7441917342349741
- -0.2754395390991282
- -0.7014505957176408
- -0.7789573040923037
- -0.2884011374070034
- -0.8376272648319176
-  0.008595533626633282
- -0.004985182125436083
-  0.02004334196435391
-  0.001294015578608114
- -0.0007504948049443797
-  0.00301742717507145</code></pre>
+ -1.034965805870251
+  0.03968808681193926
+ -1.1343324917361142
+  0.7361385532135263
+ -0.8081428840803884
+ -1.0112827503495303
+ -0.02113460292683173
+ -0.08263429294194578
+  0.08372860905058402
+ -0.02300781049473634
+ -0.08995835686891845
+  0.09114966468463906</code></pre>
 </div>
 </div>
 
