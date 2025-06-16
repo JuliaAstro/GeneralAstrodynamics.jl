@@ -7,21 +7,3 @@ flag_management:
         threshold: 50%
       - type: patch
         target: 90%
-  individual_flags:
-    - name: GeneralAstrodynamics.jl
-      paths:
-        - src
-        - test
-      carryforward: false
-    - name: AstrodynamicalCalculations.jl
-      paths:
-        - lib/AstrodynamicalCalculations/src
-        - lib/AstrodynamicalCalculations/test
-    - name: AstrodynamicalModels.jl
-      paths:
-        - lib/AstrodynamicalModels/src
-        - lib/AstrodynamicalModels/test
-    - name: AstrodynamicalSolvers.jl
-      paths:
-        - lib/AstrodynamicalSolvers/src
-        - lib/AstrodynamicalSolvers/test
