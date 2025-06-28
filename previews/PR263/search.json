@@ -1,0 +1,744 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "AstrodynamicalCalculations",
+    "section": "",
+    "text": "AstrodynamicalCalculations.jl\nCommon calculations relating to orbital mechanics and astrodynamics.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#installation",
+    "href": "index.html#installation",
+    "title": "AstrodynamicalCalculations",
+    "section": "Installation",
+    "text": "Installation\npkg&gt; add AstrodynamicalCalculations",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#overview",
+    "href": "index.html#overview",
+    "title": "AstrodynamicalCalculations",
+    "section": "Overview",
+    "text": "Overview\nAlmost all of the equations used in your (my) first-year graduate astrodynamics coursework, in Julia! This package includes equations which are valid within the Restricted Two Body Problem (R2BP), and the Circular Restricted Three Body Problem (CR3BP). Each function’s docstring clearly labels the models in which the underlying equations are valid. Iterative solvers, including Kepler’s prediction algorithm, and the universal Lambert solver, are also provided.\nTwo newer Lambert solver implementations (Lancaster / Blanchard, and Oldenhuis) are also provided, but they are currently not working. Something seems to have not transferred well while porting the code from MATLAB to Julia. I hope to work on this more in 2024.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#getting-stated",
+    "href": "index.html#getting-stated",
+    "title": "AstrodynamicalCalculations",
+    "section": "Getting Stated",
+    "text": "Getting Stated\nPlease refer to the documentation for more detailed instructions, and usage examples.\njulia&gt; r = [0.0, 11681.0, 0.0];     # km\n\njulia&gt; v = [5.134, 4.226, 2.787];   # km/s\n\njulia&gt; μ = 398600.4354360959;       # km³ s⁻²\n\njulia&gt; e, a, i, Ω, ω, ν = cartesian_to_keplerian(r, v, μ)\n(0.723452708202361, 24509.265399338536, 2.6442542356744734, 1.5707963267948966, 4.712449617676915, 1.5707356895026707)\n\njulia&gt; T = orbital_period(a, μ)\n38186.19850882009\n\njulia&gt; rₙ, vₙ = kepler(r, v, μ, 2.5T)\n([36872.96963754877, -2574.241491333036, 20016.549742861007], [-0.3141726028666592, -1.6044679459972122, -0.17054909314167882])",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html",
+    "href": "api/index.html",
+    "title": "Reference",
+    "section": "",
+    "text": "AstrodynamicalCalculations\nDocstrings for AstrodynamicalCalculations.",
+    "crumbs": [
+      "Reference"
+    ]
+  },
+  {
+    "objectID": "api/index.html#astrodynamicalcalculations",
+    "href": "api/index.html#astrodynamicalcalculations",
+    "title": "Reference",
+    "section": "",
+    "text": "Common calculations within orbital mechanics and astrodynamics.\n\nExtended Help\n\nDocumentation\nSee the project documentation for more information: https://JuliaAstro.org/AstrodynamicalCalculations.jl.\n\n\nLicense\nMIT License\nCopyright (c) 2023 Joe Carpinelli\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+    "crumbs": [
+      "Reference"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html",
+    "href": "api/r2b/index.html",
+    "title": "Restricted Two Body Calculations",
+    "section": "",
+    "text": "R2BPCalculations\nDocstrings for AstrodynamicalCalculations.R2BCalculations.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#r2bpcalculations",
+    "href": "api/r2b/index.html#r2bpcalculations",
+    "title": "Restricted Two Body Calculations",
+    "section": "",
+    "text": "Common calculations within Restricted Two Body Problem dynamics.\n\nExtended Help\n\nImports\n\nBase\nCore\nDocStringExtensions\nLinearAlgebra\nStaticArrays\n\n\n\nExports\n\napoapsis_radius\nargument_of_periapsis\nc3\ncartesian_to_keplerian\ncartesian_to_perifocal\nconic\neccentricity\neccentricity_vector\nhohmann\ninclination\nkepler\nkeplerian_to_cartesian\nkeplerian_to_perifocal\nlambert\nmean_motion\norbital_period\norbital_radius\norbital_speed\nperiapsis_radius\nperifocal_to_cartesian\nright_ascension_ascending_node\nsemi_parameter\nsemimajor_axis\nspecific_angular_momentum\nspecific_angular_momentum_vector\nspecific_energy\nspecific_potential_energy\nsphere_of_activity\nsphere_of_influence\ntime_since_periapsis\ntrue_anomaly\nv_infinity",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#apoapsis_radius",
+    "href": "api/r2b/index.html#apoapsis_radius",
+    "title": "Restricted Two Body Calculations",
+    "section": "apoapsis_radius",
+    "text": "apoapsis_radius\n\n\n\n\n\n\napoapsis_radius(a, e)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns apoapsis distance, rₐ.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#argument_of_periapsis",
+    "href": "api/r2b/index.html#argument_of_periapsis",
+    "title": "Restricted Two Body Calculations",
+    "section": "argument_of_periapsis",
+    "text": "argument_of_periapsis\n\n\n\n\n\n\nargument_of_periapsis(x, y, z, ẋ, ẏ, ż, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns the argument of periapsis.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#c3",
+    "href": "api/r2b/index.html#c3",
+    "title": "Restricted Two Body Calculations",
+    "section": "c3",
+    "text": "c3\n\n\n\n\n\n\nc3(r, v, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns C3 value.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#cartesian_to_keplerian",
+    "href": "api/r2b/index.html#cartesian_to_keplerian",
+    "title": "Restricted Two Body Calculations",
+    "section": "cartesian_to_keplerian",
+    "text": "cartesian_to_keplerian\n\n\n\n\n\n\ncartesian_to_keplerian(x, y, z, ẋ, ẏ, ż, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns a Keplarian representation of a Cartesian orbital state. Algorithm taught in ENAE601.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#cartesian_to_perifocal",
+    "href": "api/r2b/index.html#cartesian_to_perifocal",
+    "title": "Restricted Two Body Calculations",
+    "section": "cartesian_to_perifocal",
+    "text": "cartesian_to_perifocal\n\n\n\n\n\n\ncartesian_to_perifocal(i, Ω, ω, x, y, z, ẋ, ẏ, ż)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns the position and velocity vectors in the Perifocal frame.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#conic",
+    "href": "api/r2b/index.html#conic",
+    "title": "Restricted Two Body Calculations",
+    "section": "conic",
+    "text": "conic\n\n\n\n\n\n\nconic(e)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns the conic section, as specified by eccentricity e.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#eccentricity",
+    "href": "api/r2b/index.html#eccentricity",
+    "title": "Restricted Two Body Calculations",
+    "section": "eccentricity",
+    "text": "eccentricity\n\n\n\n\n\n\neccentricity(x, y, z, ẋ, ẏ, ż, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns orbital eccentricity, e.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#eccentricity_vector",
+    "href": "api/r2b/index.html#eccentricity_vector",
+    "title": "Restricted Two Body Calculations",
+    "section": "eccentricity_vector",
+    "text": "eccentricity_vector\n\n\n\n\n\n\neccentricity_vector(x, y, z, ẋ, ẏ, ż, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns orbital eccentricity vector e̅.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#hohmann",
+    "href": "api/r2b/index.html#hohmann",
+    "title": "Restricted Two Body Calculations",
+    "section": "hohmann",
+    "text": "hohmann\n\n\n\n\n\n\nhohmann(r₁, r₂, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nComputes a Hohmann transfer, and returns the departure and arrival velocity vectors.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#inclination",
+    "href": "api/r2b/index.html#inclination",
+    "title": "Restricted Two Body Calculations",
+    "section": "inclination",
+    "text": "inclination\n\n\n\n\n\n\ninclination(x, y, z, ẋ, ẏ, ż, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns the orbital inclination.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#kepler",
+    "href": "api/r2b/index.html#kepler",
+    "title": "Restricted Two Body Calculations",
+    "section": "kepler",
+    "text": "kepler\n\n\n\n\n\n\nkepler(x, y, z, ẋ, ẏ, ż, μ, Δt; atol, maxiter)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nSolves Kepler’s Problem, predicting the orbit’s future state geometrically.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#keplerian_to_cartesian",
+    "href": "api/r2b/index.html#keplerian_to_cartesian",
+    "title": "Restricted Two Body Calculations",
+    "section": "keplerian_to_cartesian",
+    "text": "keplerian_to_cartesian\n\n\n\n\n\n\nkeplerian_to_cartesian(e, a, i, Ω, ω, ν, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns a Cartesian representation of a Keplerian two-body orbital state in an inertial frame, centered at the center of mass of the central body. Algorithm taught in ENAE601.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#keplerian_to_perifocal",
+    "href": "api/r2b/index.html#keplerian_to_perifocal",
+    "title": "Restricted Two Body Calculations",
+    "section": "keplerian_to_perifocal",
+    "text": "keplerian_to_perifocal\n\n\n\n\n\n\nkeplerian_to_perifocal(a, e, ν, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns position and velocity vectors in the Perifocal frame.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#lambert",
+    "href": "api/r2b/index.html#lambert",
+    "title": "Restricted Two Body Calculations",
+    "section": "lambert",
+    "text": "lambert\n\n\n\n\n\n\nlambert(\n    x₁,\n    y₁,\n    z₁,\n    x₂,\n    y₂,\n    z₂,\n    μ,\n    Δt;\n    trajectory,\n    atol,\n    maxiter\n)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nSolves Lambert’s problem through the use of universal variables.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#mean_motion",
+    "href": "api/r2b/index.html#mean_motion",
+    "title": "Restricted Two Body Calculations",
+    "section": "mean_motion",
+    "text": "mean_motion\n\n\n\n\n\n\nmean_motion(a, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns mean motion, n.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#orbital_period",
+    "href": "api/r2b/index.html#orbital_period",
+    "title": "Restricted Two Body Calculations",
+    "section": "orbital_period",
+    "text": "orbital_period\n\n\n\n\n\n\norbital_period(a, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns the orbital period.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#orbital_radius",
+    "href": "api/r2b/index.html#orbital_radius",
+    "title": "Restricted Two Body Calculations",
+    "section": "orbital_radius",
+    "text": "orbital_radius\n\n\n\n\n\n\norbital_radius(p, e, ν)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns distance, r.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#orbital_speed",
+    "href": "api/r2b/index.html#orbital_speed",
+    "title": "Restricted Two Body Calculations",
+    "section": "orbital_speed",
+    "text": "orbital_speed\n\n\n\n\n\n\norbital_speed(x, y, z, ẋ, ẏ, ż, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns the instantaneous velocity, v, for any orbital representation.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#periapsis_radius",
+    "href": "api/r2b/index.html#periapsis_radius",
+    "title": "Restricted Two Body Calculations",
+    "section": "periapsis_radius",
+    "text": "periapsis_radius\n\n\n\n\n\n\nperiapsis_radius(a, e)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns periapsis distance, rₚ.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#perifocal_to_cartesian",
+    "href": "api/r2b/index.html#perifocal_to_cartesian",
+    "title": "Restricted Two Body Calculations",
+    "section": "perifocal_to_cartesian",
+    "text": "perifocal_to_cartesian\n\n\n\n\n\n\nperifocal_to_cartesian(i, Ω, ω, x, y, z, ẋ, ẏ, ż)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns a spatial representation of the provided Perifocal state.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#right_ascension_ascending_node",
+    "href": "api/r2b/index.html#right_ascension_ascending_node",
+    "title": "Restricted Two Body Calculations",
+    "section": "right_ascension_ascending_node",
+    "text": "right_ascension_ascending_node\n\n\n\n\n\n\nright_ascension_ascending_node(x, y, z, ẋ, ẏ, ż, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns the right ascension of the ascending node.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#semi_parameter",
+    "href": "api/r2b/index.html#semi_parameter",
+    "title": "Restricted Two Body Calculations",
+    "section": "semi_parameter",
+    "text": "semi_parameter\n\n\n\n\n\n\nsemi_parameter(a, e)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns semilatus parameter, p.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#semimajor_axis",
+    "href": "api/r2b/index.html#semimajor_axis",
+    "title": "Restricted Two Body Calculations",
+    "section": "semimajor_axis",
+    "text": "semimajor_axis\n\n\n\n\n\n\nsemimajor_axis(r, v, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns semimajor axis parameter, a.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#specific_angular_momentum",
+    "href": "api/r2b/index.html#specific_angular_momentum",
+    "title": "Restricted Two Body Calculations",
+    "section": "specific_angular_momentum",
+    "text": "specific_angular_momentum\n\n\n\n\n\n\nspecific_angular_momentum(x, y, z, ẋ, ẏ, ż)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns scalar specific angular momentum vector, h.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#specific_angular_momentum_vector",
+    "href": "api/r2b/index.html#specific_angular_momentum_vector",
+    "title": "Restricted Two Body Calculations",
+    "section": "specific_angular_momentum_vector",
+    "text": "specific_angular_momentum_vector\n\n\n\n\n\n\nspecific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns specific angular momentum vector, h̅.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#specific_energy",
+    "href": "api/r2b/index.html#specific_energy",
+    "title": "Restricted Two Body Calculations",
+    "section": "specific_energy",
+    "text": "specific_energy\n\n\n\n\n\n\nspecific_energy(a, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns specific orbital energy, ϵ.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#specific_potential_energy",
+    "href": "api/r2b/index.html#specific_potential_energy",
+    "title": "Restricted Two Body Calculations",
+    "section": "specific_potential_energy",
+    "text": "specific_potential_energy\n\n\n\n\n\n\nspecific_potential_energy(r, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns the specific potential energy: the energy per unit mass.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#sphere_of_activity",
+    "href": "api/r2b/index.html#sphere_of_activity",
+    "title": "Restricted Two Body Calculations",
+    "section": "sphere_of_activity",
+    "text": "sphere_of_activity\n\n\n\n\n\n\nsphere_of_activity(a, m, M)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nSphere of activity.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#sphere_of_influence",
+    "href": "api/r2b/index.html#sphere_of_influence",
+    "title": "Restricted Two Body Calculations",
+    "section": "sphere_of_influence",
+    "text": "sphere_of_influence\n\n\n\n\n\n\nsphere_of_influence(a, m, M)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nSphere of influence.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#time_since_periapsis",
+    "href": "api/r2b/index.html#time_since_periapsis",
+    "title": "Restricted Two Body Calculations",
+    "section": "time_since_periapsis",
+    "text": "time_since_periapsis\n\n\n\n\n\n\ntime_since_periapsis(n, e, E)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns time since periapsis, t.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#true_anomaly",
+    "href": "api/r2b/index.html#true_anomaly",
+    "title": "Restricted Two Body Calculations",
+    "section": "true_anomaly",
+    "text": "true_anomaly\n\n\n\n\n\n\ntrue_anomaly(x, y, z, ẋ, ẏ, ż, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns true anomaly, ν.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/r2b/index.html#v_infinity",
+    "href": "api/r2b/index.html#v_infinity",
+    "title": "Restricted Two Body Calculations",
+    "section": "v_infinity",
+    "text": "v_infinity\n\n\n\n\n\n\nv_infinity(r, v, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns v∞.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html",
+    "href": "api/cr3b/index.html",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "",
+    "text": "CR3BPCalculations\nDocstrings for AstrodynamicalCalculations.CR3BPCalculations.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#cr3bpcalculations",
+    "href": "api/cr3b/index.html#cr3bpcalculations",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "",
+    "text": "Common calculations within Circular Restricted Three Body Problem dynamics.\n\nExtended Help\n\nImports\n\nBase\nCore\nDocStringExtensions\nLinearAlgebra\nRoots\nStaticArrays\n\n\n\nExports\n\nconverge\nconverge!\nconvergent_direction\ndistance_scaling\ndistance_to_primary\ndistance_to_secondary\ndiverge\ndiverge!\ndivergent_direction\njacobi_constant\nlagrange_point\nnondimensional\nnondimensional_radii\nperturb\nperturb!\nperturbation\npotential_energy\nprimary_synodic_position\nredimensioned\nreduced_mass\nrichardson_halo\nrichardson_ic\nsecondary_synodic_position\ntime_scaling\nvelocity_scaling\nzero_velocity_curves",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#converge",
+    "href": "api/cr3b/index.html#converge",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "converge",
+    "text": "converge\n\n\n\n\n\n\nconverge(u, stm, Φ; eps)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nPerturb halo orbit conditions onto the orbit’s unstable manifold.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#converge-1",
+    "href": "api/cr3b/index.html#converge-1",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "converge!",
+    "text": "converge!\n\n\n\n\n\n\nconverge!(p, u, stm, Φ; eps)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nPerturb halo orbit conditions in-place onto the orbit’s stable manifold.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#convergent_direction",
+    "href": "api/cr3b/index.html#convergent_direction",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "convergent_direction",
+    "text": "convergent_direction\n\n\n\n\n\n\nconvergent_direction(stm; atol)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nCalculates the eigenvector associated with the stable manifold of a Monodromy matrix.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#distance_scaling",
+    "href": "api/cr3b/index.html#distance_scaling",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "distance_scaling",
+    "text": "distance_scaling\n\n\n\n\n\n\ndistance_scaling(a)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nThe length scale factor used to nondimensionalize CR3BP states.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#distance_to_primary",
+    "href": "api/cr3b/index.html#distance_to_primary",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "distance_to_primary",
+    "text": "distance_to_primary\n\n\n\n\n\n\ndistance_to_primary(r, μ)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturns synodic distance to primary body.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#distance_to_secondary",
+    "href": "api/cr3b/index.html#distance_to_secondary",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "distance_to_secondary",
+    "text": "distance_to_secondary\n\n\n\n\n\n\ndistance_to_secondary(r, μ)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturns synodic distance to secondary body.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#diverge",
+    "href": "api/cr3b/index.html#diverge",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "diverge",
+    "text": "diverge\n\n\n\n\n\n\ndiverge(u, stm, Φ; eps)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nPerturb halo orbit conditions onto the orbit’s unstable manifold.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#diverge-1",
+    "href": "api/cr3b/index.html#diverge-1",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "diverge!",
+    "text": "diverge!\n\n\n\n\n\n\ndiverge!(p, u, stm, Φ; eps)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nPerturb halo orbit conditions in-place onto the orbit’s unstable manifold.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#divergent_direction",
+    "href": "api/cr3b/index.html#divergent_direction",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "divergent_direction",
+    "text": "divergent_direction\n\n\n\n\n\n\ndivergent_direction(stm; atol)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nCalculates the direction associated with the unstable manifold of a Monodromy matrix.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#jacobi_constant",
+    "href": "api/cr3b/index.html#jacobi_constant",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "jacobi_constant",
+    "text": "jacobi_constant\n\n\n\n\n\n\njacobi_constant(x, y, z, ẋ, ẏ, ż, μ)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturns the Jacobi Constant, C in the Synodic frame with Normalized units.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#lagrange_point",
+    "href": "api/cr3b/index.html#lagrange_point",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "lagrange_point",
+    "text": "lagrange_point\n\n\n\n\n\n\nlagrange_point(μ, L)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturns the lagrange points for a CR3BP system.\nArguments:\n\nμ: Non-dimensional mass parameter for the CR3BP system.\nL: Langrange points requested, must be in range [1,5]\n\nOutputs:\n\nTuple of Lagrange points\nThrows ArgumentError if L is out of range [1,5]\n\nReferences:\n\nRund, 2018",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#nondimensional",
+    "href": "api/cr3b/index.html#nondimensional",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "nondimensional",
+    "text": "nondimensional\n\n\n\n\n\n\nnondimensional(x, y, z, ẋ, ẏ, ż, t, a, μ₁, μ₂)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nNormalizes a CR3BP orbit in the rotating reference frame.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#nondimensional_radii",
+    "href": "api/cr3b/index.html#nondimensional_radii",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "nondimensional_radii",
+    "text": "nondimensional_radii\n\n\n\n\n\n\nnondimensional_radii(x, y, z, xᵢ)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturns the spacecraft’s nondimensional position w.r.t. body 1 (or 2).",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#perturb",
+    "href": "api/cr3b/index.html#perturb",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "perturb",
+    "text": "perturb\n\n\n\n\n\n\nperturb(u, stm, direction; eps)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nPerturb a Cartesian state along a halo orbit onto a stable or unstable manifold.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#perturb-1",
+    "href": "api/cr3b/index.html#perturb-1",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "perturb!",
+    "text": "perturb!\n\n\n\n\n\n\nperturb!(p, u, stm, direction; eps)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nPerturb a Cartesian state in-place along a halo orbit onto a stable or unstable manifold.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#perturbation",
+    "href": "api/cr3b/index.html#perturbation",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "perturbation",
+    "text": "perturbation\n\n\n\n\n\n\nperturbation(stm, direction; eps)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturn the perturbation in Cartesian state space along a halo orbit onto the provided direction of the provided manifold.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#potential_energy",
+    "href": "api/cr3b/index.html#potential_energy",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "potential_energy",
+    "text": "potential_energy\n\n\n\n\n\n\npotential_energy(x, y, z, μ)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturns the potential energy U in the Synodic frame with Normalized units.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#primary_synodic_position",
+    "href": "api/cr3b/index.html#primary_synodic_position",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "primary_synodic_position",
+    "text": "primary_synodic_position\n\n\n\n\n\n\nprimary_synodic_position(μ)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nPosition of primary body.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#redimensioned",
+    "href": "api/cr3b/index.html#redimensioned",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "redimensioned",
+    "text": "redimensioned\n\n\n\n\n\n\nredimensioned(x, y, z, ẋ, ẏ, ż, t, μ, a, T)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nRedimensionalizes a CR3BP orbit in the rotating reference frame.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#reduced_mass",
+    "href": "api/cr3b/index.html#reduced_mass",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "reduced_mass",
+    "text": "reduced_mass\n\n\n\n\n\n\nreduced_mass(μ₁, μ₂)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturn the reduced mass.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#richardson_halo",
+    "href": "api/cr3b/index.html#richardson_halo",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "richardson_halo",
+    "text": "richardson_halo\n\n\n\n\n\n\nrichardson_halo(μ, L; Z, hemisphere, ϕ, length)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturns an analytical solution for a Halo orbit about L.\n\nExtended Help\n\nArguments\n\nμ: Non-dimensional mass parameter for the CR3BP system.\nL: Lagrange point to orbit (L1 or L2).\nZ: Desired non-dimensional Z-amplitude for Halo orbit.\nhemisphere: Specifies northern or southern Halo orbit.\nϕ: Desired Halo orbit phase.\nsteps: Number of non-dimensional timepoints in returned state.\n\n\n\nOutputs\n\nNear-periodic initial condition u\nHalo orbit period T.\nThrows ArgumentError if L is not 1 or 2.\n\nReferences:\n\nRund, 2018.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#richardson_ic",
+    "href": "api/cr3b/index.html#richardson_ic",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "richardson_ic",
+    "text": "richardson_ic\n\n\n\n\n\n\nrichardson_ic(μ, L; Z, hemisphere, ϕ)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturns an analytical solution for a Halo orbit about L.\n\nExtended Help\n\nArguments\n\nμ: Non-dimensional mass parameter for the CR3BP system.\nL: Lagrange point to orbit (L1 or L2).\nZ: Desired non-dimensional Z-amplitude for Halo orbit.\nhemisphere: Specifies northern or southern Halo orbit.\nϕ: Desired Halo orbit phase.\nsteps: Number of non-dimensional timepoints in returned state.\n\n\n\nOutputs\n\nNear-periodic initial condition u\nHalo orbit period T.\nThrows ArgumentError if L is not 1 or 2.\n\nReferences:\n\nRund, 2018.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#secondary_synodic_position",
+    "href": "api/cr3b/index.html#secondary_synodic_position",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "secondary_synodic_position",
+    "text": "secondary_synodic_position\n\n\n\n\n\n\nsecondary_synodic_position(μ)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nPosition of primary body.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#time_scaling",
+    "href": "api/cr3b/index.html#time_scaling",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "time_scaling",
+    "text": "time_scaling\n\n\n\n\n\n\ntime_scaling(a, μ₁, μ₂)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nThe time scale factor used to nondimensionalize CR3BP states.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#velocity_scaling",
+    "href": "api/cr3b/index.html#velocity_scaling",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "velocity_scaling",
+    "text": "velocity_scaling\n\n\n\n\n\n\nvelocity_scaling(a, μ₁, μ₂)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nThe velocity scale factor used to nondimensionalize CR3BP states.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/cr3b/index.html#zero_velocity_curves",
+    "href": "api/cr3b/index.html#zero_velocity_curves",
+    "title": "Circular Restricted Three Body Calculations",
+    "section": "zero_velocity_curves",
+    "text": "zero_velocity_curves\n\n\n\n\n\n\nzero_velocity_curves(r, v, μ; nondimensional_range)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturns a Vector of Matrix values. Each Matrix contains a 3-column nondimensional position trajectory in the Synodic frame which represents a Zero Velocity Curve.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
+    ]
+  }
+]
