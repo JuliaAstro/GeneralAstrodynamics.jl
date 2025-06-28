@@ -5,7 +5,7 @@
 @doc CartesianState const CR3BState = CartesianState
 
 """
-A paremeter vector for CR3BP dynamics.
+A parameter vector for CR3BP dynamics.
 """
 Base.@kwdef struct CR3BParameters{F} <: AstrodynamicalParameters{F,1}
     μ::F

@@ -1,27 +1,35 @@
 {
-	"name": "GeneralAstrodynamics",
-	"image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+	"name": "GeneralAstrodynamics.jl",
+	"image": "mcr.microsoft.com/devcontainers/base:bookworm",
+	"containerEnv": {
+		"SHELL": "/bin/bash"
+	},
+	"remoteEnv": {
+		"JULIA_DEPOT_PATH": "/home/vscode/.julia"
+	},
 	"features": {
-		"ghcr.io/devcontainers/features/git": {},
-		"ghcr.io/devcontainers/features/git-lfs": {},
-		"ghcr.io/julialang/devcontainer-features/julia:1": {},
-		"ghcr.io/devcontainers/features/github-cli": {},
-		"ghcr.io/devcontainers-contrib/features/starship": {},
+		"ghcr.io/devcontainers/features/python:1": {
+			"installTools": true,
+			"enableShared": true,
+			"installJupyterlab": true,
+			"version": "3.12"
+		},
 		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {},
-		"ghcr.io/devcontainers/features/python:1": {"installJupyterlab": true}
-	},
-	"postCreateCommand": {
-		"initialize starship": "echo 'eval $(starship init bash)' >> ~/.bashrc"
-	},
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"GitHub.codespaces",
-				"github.vscode-github-actions",
-				"julialang.language-julia",
-				"ms-toolsai.jupyter",
-				"streetsidesoftware.code-spell-checker"
-			]
+		"ghcr.io/julialang/devcontainer-features/julia:1": {},
+		"ghcr.io/devcontainer-community/devcontainer-features/starship.rs:1": {},
+		"ghcr.io/devcontainers/features/git:1": {},
+		"ghcr.io/devcontainers/features/git-lfs:1": {},
+		"ghcr.io/devcontainers-extra/features/pre-commit:2": {},
+		"ghcr.io/devcontainers/features/github-cli:1": {},
+		"ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+			"packages": "jq"
 		}
+	},
+	"onCreateCommand": {
+		"initialize starship": "echo eval '$(starship init bash)' >> ~/.bashrc",
+		"initialize pre-commit": "pre-commit install --install-hooks"
+	},
+	"updateContentCommand": {
+		"install pip dependencies": "pip install --user gala galpy",
 	}
 }

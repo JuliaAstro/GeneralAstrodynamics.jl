@@ -5,14 +5,14 @@ project:
 
 manuscript:
   article: paper.md
-  notebooks: 
+  notebooks:
     - notebook: notebooks/representing-orbits.ipynb
       title: Representing Orbits
     - notebook: notebooks/solving-orbits.ipynb
       title: Solving for Orbits
     - notebook: notebooks/manifold-computations.ipynb
       title: Computing Invariant Manifolds
-  resources: 
+  resources:
     - "*.bib"
     - "*.ipynb"
 
@@ -22,9 +22,9 @@ format:
     title-block-style: manuscript
     title-block-banner-color: white
     title-block-banner: "#303446"
-    include-in-header: 
+    include-in-header:
       text: <meta theme-color content="#303446"/>
-    include-before-body: 
+    include-before-body:
       text: |
         <div class="callout-note callout callout-style-simple">
             <div class="callout-body d-flex">
@@ -33,14 +33,14 @@ format:
                     </div>
                     <div class="callout-body-container">
                     <p><i>
-                      This page is a <b>pre-print</b>! The published paper is available at 
+                      This page is a <b>pre-print</b>! The published paper is available at
                       the <a href="https://joss.theoj.org">Journal of Open Source Software</a>.
                     </i></p>
                 </div>
             </div>
         </div>
 
-    theme: 
+    theme:
       - _style/light.scss
       - _style/common.scss
       - _style/latte.scss

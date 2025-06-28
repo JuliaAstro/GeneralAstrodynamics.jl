@@ -4,7 +4,7 @@ project:
 
 book:
     title: "AstrodynamicalModels"
-    author: 
+    author:
         name: "Joey Carpinelli"
         email: "joey@loopy.codes"
     date: "2025-03-02"
@@ -17,16 +17,16 @@ book:
             - models/r2b/index.qmd
             - models/cr3b/index.qmd
             - models/nb/index.qmd
-        - api/index.qmd 
+        - api/index.qmd
 
-    navbar: 
+    navbar:
         background: primary
-        right: 
+        right:
         - text: Version
-          menu: 
+          menu:
             - text: dev
-        
-    search: 
+
+    search:
         location: sidebar
         type: textbox
 
@@ -47,20 +47,19 @@ bibliography: references.bib
 
 format:
     html:
-        include-in-header: 
+        include-in-header:
             file: _static/versions.html
         code-link: true
         number-sections: false
         css: _static/style.css
-        resources: 
+        resources:
             - _static/style.css
             - _static/versions.html
             - _static/theme.scss
-        theme: 
-            light: 
+        theme:
+            light:
                 - _static/theme.scss
                 - default
-            dark: 
+            dark:
                 - _static/theme.scss
                 - darkly
-    

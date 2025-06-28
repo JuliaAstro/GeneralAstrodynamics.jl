@@ -4,7 +4,7 @@ _Usage examples._
 
 ## Periodic Orbits
 
-This package contains differential correctors, and helpful wrapper functions, for 
+This package contains differential correctors, and helpful wrapper functions, for
 finding periodic orbits within Circular Restricted Three Body Problem dynamics.
 
 ### `Plots.jl`
@@ -86,7 +86,7 @@ fig
 
 ## Manifold Computations
 
-Manifold computations, provided by `AstrodynamicalCalculations.jl`, can perturb 
+Manifold computations, provided by `AstrodynamicalCalculations.jl`, can perturb
 halo orbits onto their unstable or stable manifolds.
 
 ### `Plots.jl`
@@ -140,7 +140,7 @@ stable = let
 
         solution.u
     end
-    
+
     perturbations = [
         converge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps=1e-7)
         for ic in ics
@@ -154,7 +154,7 @@ stable = let
     solution = solve(problem, Vern9(), trajectories=length(perturbations), reltol=1e-14, abstol=1e-14)
 end
 
-figure = Plots.plot(; 
+figure = Plots.plot(;
     aspect_ratio = 1.0,
     background = :transparent,
     grid = true,

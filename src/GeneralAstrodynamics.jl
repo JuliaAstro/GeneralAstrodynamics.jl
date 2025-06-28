@@ -1,5 +1,5 @@
 """
-A superpackage for handling common astrodynamics problems. 
+A superpackage for handling common astrodynamics problems.
 See the **Extended Help** section for more information!
 
 # Extended Help

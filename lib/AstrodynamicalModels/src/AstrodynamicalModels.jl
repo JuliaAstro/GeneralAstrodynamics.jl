@@ -518,7 +518,7 @@ Base.@kwdef mutable struct CartesianSTM{F} <: FieldMatrix{6,6,F}
 end
 
 """
-An abstract supertype for all orbits. 
+An abstract supertype for all orbits.
 
 # Extended Help
 

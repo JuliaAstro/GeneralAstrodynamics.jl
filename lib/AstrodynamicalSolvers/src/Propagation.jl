@@ -1,5 +1,5 @@
 """
-Wrappers around SciML differential equation solvers for fast and convenient 
+Wrappers around SciML differential equation solvers for fast and convenient
 orbit propagation.
 
 # Extended Help
@@ -53,7 +53,7 @@ function SciMLBase.ODEProblem(
 end
 
 """
-Numerically integrate the orbit forward (or backward) in time, and return a new 
+Numerically integrate the orbit forward (or backward) in time, and return a new
 `AstrodynamicalOrbit` instance with identical parameters to the provided orbit.
 """
 function propagate(
@@ -70,7 +70,7 @@ function propagate(
 end
 
 """
-Numerically integrate the orbit forward (or backward) in time, modifying the 
+Numerically integrate the orbit forward (or backward) in time, modifying the
 state vector in-place within the `AstrodynamicalOrbit` instance.
 """
 function propagate!(
@@ -206,7 +206,7 @@ function monodromy(
 end
 
 """
-Return a vector of orbits along the manifold which diverges from the provided 
+Return a vector of orbits along the manifold which diverges from the provided
 halo orbit.
 """
 function divergent_manifold(u, μ, Δt; eps = 1e-8, trajectories = nothing, kwargs...)
@@ -241,7 +241,7 @@ function divergent_manifold(u, μ, Δt; eps = 1e-8, trajectories = nothing, kwar
 end
 
 """
-Return a vector of orbits along the manifold which converges to the provided 
+Return a vector of orbits along the manifold which converges to the provided
 halo orbit.
 """
 function convergent_manifold(u, μ, Δt; eps = 1e-8, trajectories = nothing, kwargs...)

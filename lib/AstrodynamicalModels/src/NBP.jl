@@ -171,7 +171,7 @@ end
     if N ≥ 2 && stm && options.jac
         @warn """
         With state transition matrix dynamics appended to the state
-        vector, and Jacobian compuations reqeusted, your system
+        vector, and Jacobian computations requested, your system
         will require $((((N*6) + (N*6)^2) + ((N*6) + (N*6)^2)^2)) scalar
         calculations! Consider setting `jac=false`, `stm=false`, or both.
         """

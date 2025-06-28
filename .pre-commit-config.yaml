@@ -1,0 +1,17 @@
+exclude: '(^|/)pyproject\.toml$|(^|/)Project\.toml$|(^|/)Manifest\.toml$|^_extensions/|^_freeze/'
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-executables-have-shebangs
+      - id: check-symlinks
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.33.1
+    hooks:
+      - id: typos
+        args: ["--config", ".typos.toml", "--write-changes"]

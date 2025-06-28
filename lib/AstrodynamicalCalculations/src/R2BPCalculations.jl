@@ -149,7 +149,7 @@ function keplerian_to_cartesian(e, a, i, Ω, ω, ν, μ)
 end
 
 """
-Returns a spatial representation of the provied Perifocal state.
+Returns a spatial representation of the provided Perifocal state.
 """
 function perifocal_to_cartesian(i, Ω, ω, x, y, z, ẋ, ẏ, ż)
 
@@ -236,13 +236,15 @@ inclination(x, y, z, ẋ, ẏ, ż, μ) = cartesian_to_keplerian(x, y, z, ẋ, y
 """
 Returns the right ascension of the ascending node.
 """
-right_ascension_ascending_node(x, y, z, ẋ, ẏ, ż, μ) = cartesian_to_keplerian(x, y, z, ẋ, ẏ, ż, μ).Ω
+right_ascension_ascending_node(x, y, z, ẋ, ẏ, ż, μ) =
+    cartesian_to_keplerian(x, y, z, ẋ, ẏ, ż, μ).Ω
 const raan = right_ascension_ascending_node
 
 """
 Returns the argument of periapsis.
 """
-argument_of_periapsis(x, y, z, ẋ, ẏ, ż, μ) = cartesian_to_keplerian(x, y, z, ẋ, ẏ, ż, μ).ω
+argument_of_periapsis(x, y, z, ẋ, ẏ, ż, μ) =
+    cartesian_to_keplerian(x, y, z, ẋ, ẏ, ż, μ).ω
 
 """
 Return the cross product between two splatted three-vectors.
@@ -253,20 +255,24 @@ _cross(x, y, z, ẋ, ẏ, ż) = SVector(y * ż - z * ẏ, -x * ż + z * ẋ, 
 Returns specific angular momentum vector, h̅.
 """
 specific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż) = _cross(x, y, z, ẋ, ẏ, ż)
-specific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż, μ) = specific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż)
+specific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż, μ) =
+    specific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż)
 
 """
 Returns scalar specific angular momentum vector, h.
 """
-specific_angular_momentum(x, y, z, ẋ, ẏ, ż) = norm(specific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż))
-specific_angular_momentum(x, y, z, ẋ, ẏ, ż, μ) = specific_angular_momentum(x, y, z, ẋ, ẏ, ż)
+specific_angular_momentum(x, y, z, ẋ, ẏ, ż) =
+    norm(specific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż))
+specific_angular_momentum(x, y, z, ẋ, ẏ, ż, μ) =
+    specific_angular_momentum(x, y, z, ẋ, ẏ, ż)
 
 """
 Returns specific orbital energy, ϵ.
 """
 specific_energy(a, μ) = (-μ / (2 * a))
 specific_energy(r, v, μ) = (v^2 / 2) - (μ / r)
-specific_energy(x, y, z, ẋ, ẏ, ż, μ) = specific_energy(norm((x, y, z)), norm((ẋ, ẏ, ż)), μ)
+specific_energy(x, y, z, ẋ, ẏ, ż, μ) =
+    specific_energy(norm((x, y, z)), norm((ẋ, ẏ, ż)), μ)
 
 """
 Returns C3 value.
@@ -281,18 +287,21 @@ v_infinity(r, v, μ) = sqrt(c3(r, v, μ))
 v_infinity(x, y, z, ẋ, ẏ, ż, μ) = v_infinity(norm((x, y, z)), norm((ẋ, ẏ, ż)), μ)
 
 """
-Returns the specific potential energy: the energy per unit mass. 
+Returns the specific potential energy: the energy per unit mass.
 """
 specific_potential_energy(r, μ) = (μ / r)
-specific_potential_energy(x, y, z, ẋ, ẏ, ż, μ) = specific_potential_energy(norm((x, y, z)), μ)
-specific_potential_energy(r, μ, R, J₂, ϕ) = (μ / r) * (1 - J₂ * (R / r)^2 * ((3 / 2) * (sin(ϕ))^2 - (1 / 2)))
+specific_potential_energy(x, y, z, ẋ, ẏ, ż, μ) =
+    specific_potential_energy(norm((x, y, z)), μ)
+specific_potential_energy(r, μ, R, J₂, ϕ) =
+    (μ / r) * (1 - J₂ * (R / r)^2 * ((3 / 2) * (sin(ϕ))^2 - (1 / 2)))
 
 """
 Returns orbital eccentricity vector e̅.
 """
 function eccentricity_vector(x, y, z, ẋ, ẏ, ż, μ)
     h₁, h₂, h₃ = specific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż)
-    return (1 / μ) * (_cross(ẋ, ẏ, ż, h₁, h₂, h₃) - μ * SVector(x, y, z) / norm((x, y, z)))
+    return (1 / μ) *
+           (_cross(ẋ, ẏ, ż, h₁, h₂, h₃) - μ * SVector(x, y, z) / norm((x, y, z)))
 
 end
 
@@ -305,13 +314,20 @@ eccentricity(x, y, z, ẋ, ẏ, ż, μ) = norm(eccentricity_vector(x, y, z, ẋ
 Returns semilatus parameter, p.
 """
 semi_parameter(a, e) = a * (1 - e^2)
-semi_parameter(x, y, z, ẋ, ẏ, ż, μ) = semi_parameter(semimajor_axis(x, y, z, ẋ, ẏ, ż, μ), eccentricity(x, y, z, ẋ, ẏ, ż, μ))
+semi_parameter(x, y, z, ẋ, ẏ, ż, μ) = semi_parameter(
+    semimajor_axis(x, y, z, ẋ, ẏ, ż, μ),
+    eccentricity(x, y, z, ẋ, ẏ, ż, μ),
+)
 
 """
 Returns distance, r.
 """
 orbital_radius(p, e, ν) = p / (1 + e * cos(ν))
-orbital_radius(x, y, z, ẋ, ẏ, ż, μ) = orbital_radius(semi_parameter(x, y, z, ẋ, ẏ, ż, μ), eccentricity(x, y, z, ẋ, ẏ, ż, μ), true_anomaly(x, y, z, ẋ, ẏ, ż, μ))
+orbital_radius(x, y, z, ẋ, ẏ, ż, μ) = orbital_radius(
+    semi_parameter(x, y, z, ẋ, ẏ, ż, μ),
+    eccentricity(x, y, z, ẋ, ẏ, ż, μ),
+    true_anomaly(x, y, z, ẋ, ẏ, ż, μ),
+)
 
 """
 Returns the instantaneous velocity, v, for any orbital representation.
@@ -329,22 +345,29 @@ orbital_speed(p, e, ν, a, μ) = orbital_speed(orbital_radius(p, e, ν), a, μ)
 Returns periapsis distance, rₚ.
 """
 periapsis_radius(a, e) = a * (1 - e)
-periapsis_radius(x, y, z, ẋ, ẏ, ż, μ) = periapsis_radius(semimajor_axis(x, y, z, ẋ, ẏ, ż, μ), eccentricity(x, y, z, ẋ, ẏ, ż, μ))
+periapsis_radius(x, y, z, ẋ, ẏ, ż, μ) = periapsis_radius(
+    semimajor_axis(x, y, z, ẋ, ẏ, ż, μ),
+    eccentricity(x, y, z, ẋ, ẏ, ż, μ),
+)
 
 """
 Returns apoapsis distance, rₐ.
 """
 apoapsis_radius(a, e) = a * (1 + e)
-apoapsis_radius(x, y, z, ẋ, ẏ, ż, μ) = apoapsis_radius(semimajor_axis(x, y, z, ẋ, ẏ, ż, μ), eccentricity(x, y, z, ẋ, ẏ, ż, μ))
+apoapsis_radius(x, y, z, ẋ, ẏ, ż, μ) = apoapsis_radius(
+    semimajor_axis(x, y, z, ẋ, ẏ, ż, μ),
+    eccentricity(x, y, z, ẋ, ẏ, ż, μ),
+)
 
 """
 Returns the orbital period.
 """
 orbital_period(a, μ) = 2π * √(a^3 / μ)
-orbital_period(x, y, z, ẋ, ẏ, ż, μ) = orbital_period(semimajor_axis(x, y, z, ẋ, ẏ, ż, μ), μ)
+orbital_period(x, y, z, ẋ, ẏ, ż, μ) =
+    orbital_period(semimajor_axis(x, y, z, ẋ, ẏ, ż, μ), μ)
 
 """
-Returns true anomoly, ν.
+Returns true anomaly, ν.
 """
 function true_anomaly(x, y, z, ẋ, ẏ, ż, μ)
     r = (x, y, z)
@@ -380,8 +403,8 @@ Sphere of activity.
 sphere_of_activity(a, m, M) = a * (m / 3M)^(1 / 3)
 
 """
-Computes a Hohmann transfer, and returns the departure and 
-arrival velocity vectors. 
+Computes a Hohmann transfer, and returns the departure and
+arrival velocity vectors.
 """
 function hohmann(r₁, r₂, μ)
 
@@ -395,7 +418,7 @@ end
 """
 Solves Kepler's Problem, predicting the orbit's future state geometrically.
 """
-function kepler(x, y, z, ẋ, ẏ, ż, μ, Δt; atol=1e-6, maxiter=100)
+function kepler(x, y, z, ẋ, ẏ, ż, μ, Δt; atol = 1e-6, maxiter = 100)
 
     e, a, i, Ω, ω, ν = cartesian_to_keplerian(x, y, z, ẋ, ẏ, ż, μ)
     T = orbital_period(a, μ)
@@ -421,7 +444,7 @@ function kepler(x, y, z, ẋ, ẏ, ż, μ, Δt; atol=1e-6, maxiter=100)
     # TODO: Compare loop vs. recursion performance here.
     # There shouldn't be too large of a difference, since this tends
     # to converge with only a few iterations.
-    χₙ, rₙ, ψ, C₂, C₃ = step_kepler(χ₀, Δt, r, v, a, μ, atol=atol, maxiter=maxiter)
+    χₙ, rₙ, ψ, C₂, C₃ = step_kepler(χ₀, Δt, r, v, a, μ, atol = atol, maxiter = maxiter)
 
     # Convert to a Orbit
     f = 1 - χₙ^2 / norm(r) * C₂
@@ -436,7 +459,7 @@ function kepler(x, y, z, ẋ, ẏ, ż, μ, Δt; atol=1e-6, maxiter=100)
 end
 
 
-function step_kepler(χₙ, Δt, rᵢ₀, vᵢ₀, a, μ; iter=1, atol=1e-14, maxiter=100)
+function step_kepler(χₙ, Δt, rᵢ₀, vᵢ₀, a, μ; iter = 1, atol = 1e-14, maxiter = 100)
 
     r₀ = norm(rᵢ₀)
     ψ = χₙ^2 / a
@@ -474,25 +497,29 @@ function step_kepler(χₙ, Δt, rᵢ₀, vᵢ₀, a, μ; iter=1, atol=1e-14, ma
             vᵢ₀,
             a,
             μ;
-            iter=iter + 1,
-            atol=atol,
-            maxiter=maxiter,
+            iter = iter + 1,
+            atol = atol,
+            maxiter = maxiter,
         )
     end
 
 end
 
 """
-Solves Lambert's problem through the use of univeral variables.
+Solves Lambert's problem through the use of universal variables.
 """
 function lambert(
-    x₁, y₁, z₁,
-    x₂, y₂, z₂,
+    x₁,
+    y₁,
+    z₁,
+    x₂,
+    y₂,
+    z₂,
     μ,
     Δt;
-    trajectory=:short,
-    atol=1e-12,
-    maxiter=25,
+    trajectory = :short,
+    atol = 1e-12,
+    maxiter = 25,
 )
 
     r̅₁ = SVector(x₁, y₁, z₁)
@@ -563,13 +590,13 @@ function lambert(
     ẋ₁, ẏ₁, ż₁ = (r̅₂ .- (f .* r̅₁)) ./ g
     ẋ₂, ẏ₂, ż₂ = ((ġ .* r̅₂) .- r̅₁) ./ g
 
-    return (; ẋ=ẋ₁, ẏ=ẏ₁, ż=ż₁), (; ẋ=ẋ₂, ẏ=ẏ₂, ż=ż₂)
+    return (; ẋ = ẋ₁, ẏ = ẏ₁, ż = ż₁), (; ẋ = ẋ₂, ẏ = ẏ₂, ż = ż₂)
 
 end
 
 """
 The following code was converted to Julia, from a [GitHub repository](https://github.com/rodyo/FEX-Lambert)
-that hosts a MATLAB implementation. At the time of writing, this respository has a BSD license. I'm providing the copyright notice here, as instructed by the license text.
+that hosts a MATLAB implementation. At the time of writing, this repository has a BSD license. I'm providing the copyright notice here, as instructed by the license text.
 
 ```
 Copyright (c) 2018, Rody Oldenhuis
@@ -642,7 +669,7 @@ end
 
 """
 The following code was converted to Julia, from a [GitHub repository](https://github.com/rodyo/FEX-Lambert)
-that hosts the MATLAB implementation. At the time of writing, the respository has a BSD license. I'm providing the copyright notice here, as instructed by the license text.
+that hosts the MATLAB implementation. At the time of writing, the repository has a BSD license. I'm providing the copyright notice here, as instructed by the license text.
 
 ```
 Copyright (c) 2018, Rody Oldenhuis
@@ -742,7 +769,7 @@ end
 
 """
 The following code was converted to Julia, from a [GitHub repository](https://github.com/rodyo/FEX-Lambert)
-that hosts a MATLAB implementation. At the time of writing, this respository has a BSD license. I'm providing the copyright notice here, as instructed by the license text.
+that hosts a MATLAB implementation. At the time of writing, this repository has a BSD license. I'm providing the copyright notice here, as instructed by the license text.
 
 ```
 Copyright (c) 2018, Rody Oldenhuis
@@ -794,7 +821,7 @@ function minmax_distances(r̲₁, r̲₂, r₁, r₂, δₜ, a, v̲₁, v̲₂, 
     end
 
     # We have the eccentricity vector, so we know exactly
-    # where the pericenter is. Given δₜ and that fact 
+    # where the pericenter is. Given δₜ and that fact
     # to cross-check if the trajectory goes past it
 
     if m > zero(m) # always elliptical, both apses traversed
@@ -832,7 +859,7 @@ end
 
 """
 The following code was converted to Julia, from a [GitHub repository](https://github.com/rodyo/FEX-Lambert)
-that hosts a MATLAB implementation. At the time of writing, this respository has a BSD license. I'm providing the copyright notice here, as instructed by the license text.
+that hosts a MATLAB implementation. At the time of writing, this repository has a BSD license. I'm providing the copyright notice here, as instructed by the license text.
 
 ```
 Copyright (c) 2018, Rody Oldenhuis
@@ -868,12 +895,12 @@ function lambert_lancaster_blanchard(
     r̲₂::AbstractVector,
     μ::Number,
     Δt::Number;
-    revolutions=0,
-    branch=:left,
-    trajectory=:short,
-    atol=1e-12,
-    maxiter=25,
-    output_extrema=Val{false},
+    revolutions = 0,
+    branch = :left,
+    trajectory = :short,
+    atol = 1e-12,
+    maxiter = 25,
+    output_extrema = Val{false},
 )
 
     m = revolutions
@@ -912,20 +939,20 @@ function lambert_lancaster_blanchard(
                 string(
                     "Number of revolutions must be non-negative!",
                     "Use the `branch` kwarg to specify",
-                    "left or righht branch solutions.",
+                    "left or right branch solutions.",
                 ),
             ),
         )
     end
 
-    # Collect unit vectors and magnitudes 
+    # Collect unit vectors and magnitudes
     # of provided position vectors
     r₁ = norm(r̲₁)
     r₂ = norm(r̲₂)
     r̂₁ = normalize(r̲₁)
     r̂₂ = normalize(r̲₂)
 
-    # Unit position vector orthogonal to 
+    # Unit position vector orthogonal to
     # position vectors
     r̂ₒ = normalize(r̲₁ × r̲₂)
 
@@ -933,7 +960,7 @@ function lambert_lancaster_blanchard(
     t̂₁ = r̂ₒ × r̂₁
     t̂₂ = r̂ₒ × r̂₂
 
-    # Turn angle 
+    # Turn angle
     δₜ = acos(max(-1, min(1, (r̲₁ ⋅ r̲₂) / r₁ / r₂)))
 
     # If longway, account for final velocity
@@ -969,7 +996,7 @@ function lambert_lancaster_blanchard(
 
             # TODO potential bug, see https://github.com/rodyo/FEX-Lambert/issues/1
             W = x₀₁ + 1.7 * √(2 - phr / π)  # one of these is right! (1)
-            # W   = x₀₁ + 1.7 * √(2 - δₜ/π)     # is it this one?     (2)    
+            # W   = x₀₁ + 1.7 * √(2 - δₜ/π)     # is it this one?     (2)
 
             if W ≥ zero(W)
                 x₀₃ = x₀₁
@@ -990,7 +1017,7 @@ function lambert_lancaster_blanchard(
 
     else
 
-        # Minumum ∂T(x)
+        # Minimum ∂T(x)
         xMπ = 4 / (3π * (2m + 1))
         if phr < π
             xM₀ = xMπ * (phr / π)^(1 / 8)
@@ -1107,7 +1134,7 @@ function lambert_lancaster_blanchard(
 
         Tₓ, ∂T, ∂²T, _ = lancaster_blanchard(x, q, m)
 
-        # Find the root of the difference between Tₓ and 
+        # Find the root of the difference between Tₓ and
         # required time T
         Tₓ = Tₓ - T
 
@@ -1176,7 +1203,7 @@ end
 
 """
 The following code was converted to Julia, from a [GitHub repository](https://github.com/rodyo/FEX-Lambert)
-that hosts a MATLAB implementation. At the time of writing, this respository has a BSD license. I'm providing the copyright notice here, as instructed by the license text.
+that hosts a MATLAB implementation. At the time of writing, this repository has a BSD license. I'm providing the copyright notice here, as instructed by the license text.
 
 ```
 Copyright (c) 2018, Rody Oldenhuis
@@ -1241,7 +1268,7 @@ function lambert_oldenhuis(r1vec, r2vec, tf, m, muC)
     routine since such a direction would depend on which application the
     transfer is going to be used in.
 
-    please report bugs to dario.izzo@esa.int    
+    please report bugs to dario.izzo@esa.int
     =#
 
     # adjusted documentation:
@@ -1262,14 +1289,14 @@ function lambert_oldenhuis(r1vec, r2vec, tf, m, muC)
     # E-mail     : dario.izzo@esa.int
     # Affiliation: ESA / Advanced Concepts Team (ACT)
 
-    # Made more readible and optimized for speed by Rody P.S. Oldenhuis
+    # Made more readable and optimized for speed by Rody P.S. Oldenhuis
     # Code available in MGA.M on   http://www.esa.int/gsp/ACT/inf/op/globopt.htm
 
     # last edited 12/Dec/2009
 
     # ADJUSTED FOR EML-COMPILATION 24/Dec/2009
 
-    # initial values        
+    # initial values
     tol = 1e-14
     bad = false
     days = 86400
@@ -1288,7 +1315,7 @@ function lambert_oldenhuis(r1vec, r2vec, tf, m, muC)
     dth = acos(max(-1, min(1, (dot(r1vec, r2vec)) / mr2vec)))
 
     # decide whether to use the left or right branch (for multi-revolution
-    # problems), and the long- or short way    
+    # problems), and the long- or short way
     leftbranch = sign(m)
     longway = sign(tf)
     m = abs(m)
@@ -1297,7 +1324,7 @@ function lambert_oldenhuis(r1vec, r2vec, tf, m, muC)
         dth = 2 * pi - dth
     end
 
-    # derived quantities        
+    # derived quantities
     c = sqrt(1 + mr2vec^2 - 2 * mr2vec * cos(dth)) # non-dimensional chord
     s = (1 + mr2vec + c) / 2                     # non-dimensional semi-perimeter
     a_min = s / 2                                    # minimum energy ellipse semi major axis
@@ -1319,14 +1346,14 @@ function lambert_oldenhuis(r1vec, r2vec, tf, m, muC)
     # single revolution (1 solution)
     if (m == 0)
 
-        # initial values        
+        # initial values
         inn1 = -0.5233      # first initial guess
         inn2 = +0.5233      # second initial guess
         x1 = log(1 + inn1)# transformed first initial guess
         x2 = log(1 + inn2)# transformed first second guess
 
     # multiple revolutions (0, 1 or 2 solutions)
-    # the returned soltuion depends on the sign of [m]
+    # the returned solution depends on the sign of [m]
     else
         # select initial values
         if (leftbranch < 0)
@@ -1364,7 +1391,7 @@ function lambert_oldenhuis(r1vec, r2vec, tf, m, muC)
 
     # Newton-Raphson iterations
     # NOTE - the number of iterations will go to infinity in case
-    # m > 0  and there is no solution. Start the other routine in 
+    # m > 0  and there is no solution. Start the other routine in
     # that case
     err = Inf
     iterations = 0
@@ -1419,7 +1446,7 @@ function lambert_oldenhuis(r1vec, r2vec, tf, m, muC)
     end
 
     # If the Newton-Raphson scheme failed, try to solve the problem
-    # with the other Lambert targeter. 
+    # with the other Lambert targeter.
     if bad
         # NOTE: use the original, UN-normalized quantities
         _branch = leftbranch > 0 ? :left : :right
@@ -1431,10 +1458,10 @@ function lambert_oldenhuis(r1vec, r2vec, tf, m, muC)
             r2vec * r1,
             tf * T,
             muC;
-            revolutions=_m,
-            branch=_branch,
-            trajectory=_traj,
-            output_extrema=Val{true},
+            revolutions = _m,
+            branch = _branch,
+            trajectory = _traj,
+            output_extrema = Val{true},
         )
         return V1, V2, extremal_distances, 1
     end

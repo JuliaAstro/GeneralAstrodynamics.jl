@@ -2,7 +2,7 @@ using Pkg, Test
 
 const GROUP = get(ENV, "GROUP", "ALL")
 
-# 
+#
 # Copied from https://github.com/SciML/Optimization.jl/blob/master/test/runtests.jl
 #
 # Copyright (c) 2022 Julia Computing
