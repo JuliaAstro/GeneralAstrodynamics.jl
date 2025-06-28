@@ -38,7 +38,8 @@ if uppercase(GROUP) == "ALL"
         Pkg.test()
     end
 elseif uppercase(GROUP) == "GENERALASTRODYNAMICS"
-    @test true # TODO placeholder
+    using GeneralAstrodynamics
+    @test true
 else
     activate_subpkg_env(GROUP)
     Pkg.test()

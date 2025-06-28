@@ -1,5 +1,5 @@
 {
-	"name": "GeneralAstrodynamics.jl",
+	"name": "general-astrodynamics",
 	"image": "mcr.microsoft.com/devcontainers/base:bookworm",
 	"containerEnv": {
 		"SHELL": "/bin/bash"
@@ -27,9 +27,7 @@
 	},
 	"onCreateCommand": {
 		"initialize starship": "echo eval '$(starship init bash)' >> ~/.bashrc",
+		"configure starship": "starship preset no-runtime-versions -o ~/.config/starship.toml",
 		"initialize pre-commit": "pre-commit install --install-hooks"
-	},
-	"updateContentCommand": {
-		"install pip dependencies": "pip install --user gala galpy",
 	}
 }
