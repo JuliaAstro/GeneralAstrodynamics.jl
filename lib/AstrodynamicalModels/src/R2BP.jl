@@ -35,7 +35,7 @@ The Restricted Two-body Problem is a simplified dynamical model
 describing one small body (spacecraft, etc.) and one celestial
 body. The gravity of the celestial body exhibits a force on the
 small body. This model is commonly used as a simplification to
-descibe our solar systems' planets orbiting our sun, or a
+describe our solar systems' planets orbiting our sun, or a
 spacecraft orbiting Earth.
 
 ### Usage

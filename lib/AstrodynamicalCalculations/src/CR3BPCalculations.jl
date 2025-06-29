@@ -199,7 +199,7 @@ end
 """
 Returns the lagrange points for a CR3BP system.
 
-__Arguments:__ 
+__Arguments:__
 - `μ`: Non-dimensional mass parameter for the CR3BP system.
 - `L`: Langrange points requested, must be in range [1,5]
 
@@ -235,7 +235,7 @@ Returns an analytical solution for a Halo orbit about `L`.
 
 # Extended Help
 
-## Arguments 
+## Arguments
 - `μ`: Non-dimensional mass parameter for the CR3BP system.
 - `L`: Lagrange point to orbit (L1 or L2).
 - `Z`: Desired non-dimensional Z-amplitude for Halo orbit.
@@ -367,7 +367,7 @@ Returns an analytical solution for a Halo orbit about `L`.
 
 # Extended Help
 
-## Arguments 
+## Arguments
 - `μ`: Non-dimensional mass parameter for the CR3BP system.
 - `L`: Lagrange point to orbit (L1 or L2).
 - `Z`: Desired non-dimensional Z-amplitude for Halo orbit.
@@ -402,7 +402,7 @@ function richardson_halo(μ, L::Int; Z = 0.0, hemisphere = :northern, ϕ = 0.0, 
     if length < 2
         throw(
             ArgumentError(
-                "The trajectory lenth must be two or greater. You provided: $length.",
+                "The trajectory length must be two or greater. You provided: $length.",
             ),
         )
     end

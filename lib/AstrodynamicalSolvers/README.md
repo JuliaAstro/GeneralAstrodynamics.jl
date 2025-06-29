@@ -17,8 +17,8 @@ This package contains most of the solvers you (I) encountered in your (my) first
 Right now, the primary functionality is iterative solvers for periodic orbits within CR3BP dynamics.
 ## Getting Stated
 
-Please refer to the [documentation](https://cadojo.github.io/AstrodynamicalSolvers.jl) 
-for more detailed instructions, and usage examples. 
+Please refer to the [documentation](https://cadojo.github.io/AstrodynamicalSolvers.jl)
+for more detailed instructions, and usage examples.
 
 ```julia
 julia> μ = 0.012150584395829193

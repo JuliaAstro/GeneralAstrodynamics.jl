@@ -2,7 +2,7 @@ using Pkg, Test
 
 const GROUP = get(ENV, "GROUP", "ALL")
 
-# 
+#
 # Copied from https://github.com/SciML/Optimization.jl/blob/master/test/runtests.jl
 #
 # Copyright (c) 2022 Julia Computing
@@ -38,7 +38,8 @@ if uppercase(GROUP) == "ALL"
         Pkg.test()
     end
 elseif uppercase(GROUP) == "GENERALASTRODYNAMICS"
-    @test true # TODO placeholder
+    using GeneralAstrodynamics
+    @test true
 else
     activate_subpkg_env(GROUP)
     Pkg.test()

@@ -412,9 +412,9 @@ function halo(u::AbstractVector, μ, T; kwargs...)
 end
 
 """
-Given a nondimensional mass parameter `μ`, and orbit characteristics, construct 
+Given a nondimensional mass parameter `μ`, and orbit characteristics, construct
 an initial guess using Richardson's analytical solution, and iterate on that
-guess using a differential corrector. 
+guess using a differential corrector.
 """
 function halo(
     μ,

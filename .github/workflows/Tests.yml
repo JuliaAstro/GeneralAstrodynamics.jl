@@ -52,7 +52,7 @@ jobs:
           project: lib/${{ matrix.group }}
       - uses: julia-actions/julia-processcoverage@v1
         with:
-          directories: lib/${{ matrix.group }}/src
+          directories: lib/${{ matrix.group }}/src,lib/${{ matrix.group }}/test
       - uses: codecov/codecov-action@v5
         with:
           files: lcov.info
@@ -87,7 +87,7 @@ jobs:
           GROUP: "GeneralAstrodynamics"
       - uses: julia-actions/julia-processcoverage@v1
         with:
-          directories: src
+          directories: src,test
       - uses: codecov/codecov-action@v5
         with:
           files: lcov.info

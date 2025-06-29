@@ -11,7 +11,7 @@ using TOML
 using DocumenterQuarto
 using GeneralAstrodynamics
 
-function version(pkg) 
+function version(pkg)
     v = TOML.parsefile(joinpath(dirname(pathof(pkg)), "..", "Project.toml"))["version"]
     return "version $v"
 end
