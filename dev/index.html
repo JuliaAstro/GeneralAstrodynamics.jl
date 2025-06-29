@@ -79,9 +79,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-557119bb9fc8cc8a35baf6d5051579f3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-2c7b082640a8a7bf97775994211e3a20.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-557119bb9fc8cc8a35baf6d5051579f3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-7d86f3bf485fb2e9674f76062651666d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-9aeabf126ed562f1aad43221c4b6af15.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-7d86f3bf485fb2e9674f76062651666d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -109,10 +109,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <script>
-// 
-// The code below was originally written by the authors of Wflow.jl. Their 
+//
+// The code below was originally written by the authors of Wflow.jl. Their
 // license is provided below. ChatGPT was used to iterately modify the code.
-// 
+//
 
 // MIT License for Wflow.jl
 //
@@ -536,10 +536,10 @@ window.onload = function () {
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> μ <span class="op">=</span> <span class="fl">398600.4354360959</span>;       <span class="co"># km³ s⁻²</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="cn">e</span>, a, i, Ω, ω, ν <span class="op">=</span> <span class="fu">cartesian_to_keplerian</span>(r, v, μ) </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="cn">e</span>, a, i, Ω, ω, ν <span class="op">=</span> <span class="fu">cartesian_to_keplerian</span>(r, v, μ)</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>(<span class="fl">0.723452708202361</span>, <span class="fl">24509.265399338536</span>, <span class="fl">2.6442542356744734</span>, <span class="fl">1.5707963267948966</span>, <span class="fl">4.712449617676915</span>, <span class="fl">1.5707356895026707</span>)</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> T <span class="op">=</span> <span class="fu">orbital_period</span>(a, μ) </span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> T <span class="op">=</span> <span class="fu">orbital_period</span>(a, μ)</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fl">38186.19850882009</span></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> rₙ, vₙ <span class="op">=</span> <span class="fu">kepler</span>(r, v, μ, <span class="fl">2.5</span>T)</span>
