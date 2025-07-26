@@ -1,6 +1,3 @@
-[![Tests](https://github.com/cadojo/AstrodynamicalModels.jl/workflows/UnitTests/badge.svg)](https://github.com/cadojo/AstrodynamicalModels.jl/actions?query=workflow%3AUnitTests)
-[![Docs](https://github.com/cadojo/AstrodynamicalModels.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/AstrodynamicalModels.jl)
-
 # AstrodynamicalModels.jl
 
 _An extension of

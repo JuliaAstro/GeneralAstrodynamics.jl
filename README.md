@@ -46,7 +46,7 @@ trajectory = propagate(orbit, orbital_period(orbit))
 
 furnsh(
     de440s(),                   # position and velocity data for nearby planets
-    latest_leapseconds_lsk(),   # timekeeping, parsing epochs
+    latest_leapseconds_tls(),   # timekeeping, parsing epochs
     gm_de440(),                 # mass parameters for major solar system bodies
     pck00011(),                 # physical properties of major solar system bodies
 )

@@ -1,6 +1,3 @@
-[![Tests](https://github.com/cadojo/AstrodynamicalCalculations.jl/workflows/Tests/badge.svg)](https://github.com/cadojo/AstrodynamicalCalculations.jl/actions?query=workflow%3ATests)
-[![Docs](https://github.com/cadojo/AstrodynamicalCalculations.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/AstrodynamicalCalculations.jl)
-
 # `AstrodynamicalCalculations.jl`
 
 _Common calculations relating to orbital mechanics and astrodynamics._
@@ -23,7 +20,7 @@ also provided.
 Two newer Lambert solver implementations (Lancaster / Blanchard, and
 Oldenhuis) are also provided, but they are currently not working. Something seems to have
 not transferred well while porting the code from MATLAB to Julia. I hope to work on this
-more in 2024.
+more in 2026.
 
 ## Getting Stated
 

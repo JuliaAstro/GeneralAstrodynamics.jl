@@ -1,6 +1,3 @@
-[![Tests](https://github.com/cadojo/AstrodynamicalSolvers.jl/workflows/Tests/badge.svg)](https://github.com/cadojo/AstrodynamicalSolvers.jl/actions?query=workflow%3ATests)
-[![Docs](https://github.com/cadojo/AstrodynamicalSolvers.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/AstrodynamicalSolvers.jl)
-
 # `AstrodynamicalSolvers.jl`
 
 _Common solvers relating to orbital mechanics and astrodynamics._
