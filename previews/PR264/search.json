@@ -1,0 +1,1217 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "GeneralAstrodynamics",
+    "section": "",
+    "text": "GeneralAstrodynamics.jl\nCommon astrodynamics calculations, with hooks into the SciML ecosystem.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#juliacon-talk",
+    "href": "index.html#juliacon-talk",
+    "title": "GeneralAstrodynamics",
+    "section": "JuliaCon Talk",
+    "text": "JuliaCon Talk\nCheck out GeneralAstrodynamics in action at JuliaCon 2021! The talk Going to Jupiter with Julia walks through a simple Jupiter mission design while gently introducing astrodynamics, Julia, and GeneralAstrodynamics.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#features",
+    "href": "index.html#features",
+    "title": "GeneralAstrodynamics",
+    "section": "Features",
+    "text": "Features\n\nRestricted Two-body Problem (R2BP)\n\nStructures for Cartesian and Keplerian states, and R2BP systems\nFunctions which implement common R2BP equations\nKepler and Lambert solvers\nOrbit propagation and plotting\n\n\n\nCircular Restricted Three-body Problem (CR3BP)\n\nStructures for dimensioned and normalized Cartesian states, and dimensioned and normalized CR3BP systems\nFunctions which implement common CR3BP equations\nAnalytical and iterative (numerical) Halo orbit solvers\nUnstable and stable Halo orbit manifold computation\nOrbit propagation and plotting\nZero-velocity curve computation and plotting\n\n\n\nN-body Problem (NBP)\n\nThis was implemented in a previous package version, and is currently being refactored",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#usage",
+    "href": "index.html#usage",
+    "title": "GeneralAstrodynamics",
+    "section": "Usage",
+    "text": "Usage\nusing GeneralAstrodynamics\n\norbit = rand(R2BPOrbit)\ntrajectory = propagate(orbit, orbital_period(orbit))\n\nfurnsh(\n    de440s(),                   # position and velocity data for nearby planets\n    latest_leapseconds_tls(),   # timekeeping, parsing epochs\n    gm_de440(),                 # mass parameters for major solar system bodies\n    pck00011(),                 # physical properties of major solar system bodies\n)\n\nμ = reduced_mass(\n  gm(\"earth\"),\n  gm(\"moon\"),\n)\n\norbit, T = let\n  u, T = halo(μ, 2; amplitude=1e-2)\n\n  CR3BPOrbit(CartesianState(u), CR3BParameters(μ)), T\nend\n\ntrajectory = propagate(orbit, T)",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html",
+    "href": "api/index.html",
+    "title": "Reference",
+    "section": "",
+    "text": "GeneralAstrodynamics\nGeneralAstrodynamics offers no functionality itself. Instead, it aggregates multiple other packages for convenience. All names exported by GeneralAstrodynamics are included in the following pages.",
+    "crumbs": [
+      "Reference"
+    ]
+  },
+  {
+    "objectID": "api/index.html#generalastrodynamics",
+    "href": "api/index.html#generalastrodynamics",
+    "title": "Reference",
+    "section": "",
+    "text": "A superpackage for handling common astrodynamics problems. See the Extended Help section for more information!\n\nExtended Help\n\nLicense\nMIT License\nCopyright (c) 2023 Joe Carpinelli\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n\nExports\n\nAstrodynamicalCalculations\nAstrodynamicalModels\nAstrodynamicalSolvers\nAttitudeFunction\nAttitudeParameters\nAttitudeState\nAttitudeSystem\nCR3BFunction\nCR3BOrbit\nCR3BPCalculations\nCR3BParameters\nCR3BSolvers\nCR3BState\nCR3BSystem\nC_G_1000012_2012_2017\nCartesianOrbit\nCartesianSTM\nCartesianState\nDSK\nEphemerisSources\nFK\nGravity\nHorizonsAPI\nHorizonsEphemeris\nKeplerianOrbit\nKeplerianParameters\nKeplerianState\nKernelBody\nL1_de431\nL2_de431\nL4_de431\nL5_de431\nLSK\nNAIF\nNBFunction\nNBSystem\nOrbit\nOrbitalElements\nPCK\nPlanarEntryFunction\nPlanarEntryParameters\nPlanarEntryState\nPlanarEntrySystem\nPropagation\nR2BFunction\nR2BOrbit\nR2BPCalculations\nR2BParameters\nR2BState\nR2BSystem\nSPICEBodies\nSPICEKernels\nSPK\napoapsis_radius\nargument_of_periapsis\nc2013a1_s105_merged\nc3\ncartesian_to_keplerian\ncartesian_to_perifocal\ncodes_300ast_20100725_bsp\ncodes_300ast_20100725_tf\nconic\nconverge\nconverge!\nconvergent_direction\nde430\nde431_part_1\nde431_part_2\nde432s\nde435\nde438\nde440\nde440s\nde441_part_1\nde441_part_2\nde442\nde442s\nde_403_masses\ndistance_scaling\ndistance_to_primary\ndistance_to_secondary\ndiverge\ndiverge!\ndivergent_direction\ndss_17_prelim_itrf93_161110\ndss_17_prelim_itrf93_190814_bsp\ndss_17_prelim_itrf93_190814_tf\ndss_23_placeholder_itrf93_201017_bsp\ndss_23_placeholder_itrf93_201017_tf\ndss_30_itrf93_210201_bsp\ndss_30_itrf93_210201_tf\ndss_59_prelim_itrf93_220921_bsp\ndss_59_prelim_itrf93_220921_tf\ndss_69_prelim_itrf93_201215_bsp\ndss_69_prelim_itrf93_201215_tf\ndynamics\nearth_1962_240827_2124_combined\nearth_200101_990827_predict\nearth_620120_240827\nearth_assoc_itrf93\nearth_fixed\nearth_latest_high_prec\nearth_topo_201023\nearthstns_fx_201023\nearthstns_itrf93_201023\neccentricity\neccentricity_vector\nephemeris\nfetch_approach\nfetch_elements\nfetch_observer\nfetch_properties\nfetch_spk\nfetch_vectors\nfetchkernel\nfurnsh\ngm\ngm_de431\ngm_de440\nhalo\nhay_a_amica_5_itokawashape_v1_0_512q\nhay_a_amica_5_itokawashape_v1_0_64q\nhohmann\ninclination\nison\njacobi_constant\njup344\njup344_nameid\njup344_s2003_j24\njup344_s2003_j24_nameid\njup346\njup346_nameid\njup365\nkepler\nkeplerian_to_cartesian\nkeplerian_to_perifocal\nkernel\nlagrange_point\nlambert\nlatest_leapseconds_tls\nlyapunov\nmar097\nmars_iau2000_v1\nmean_motion\nmonodromy\nmoon_080317\nmoon_assoc_me\nmoon_assoc_pa\nmoon_de440_220930\nmoon_pa_de403_1950_2198\nmoon_pa_de418_1950_2050\nmoon_pa_de421_1900_2050\nmoon_pa_de440_200625\nnaif0011\nnaif0012_tls\nndosl_140530_v01_bsp\nndosl_140530_v01_tf\nndosl_190716_v01_bsp\nndosl_190716_v01_tf\nndosl_190716_v02_bsp\nndosl_190716_v02_tf\nnear_a_msi_5_erosshape_v1_0_512q\nnear_a_msi_5_erosshape_v1_0_64q\nnep095\nnep095_nameid\nnep097\nnep097xl_801\nnep097xl_899\nnep101xl\nnep101xl_802\nnep104\nnep104_nameid\nnep105\nnondimensional\nnondimensional_radii\norbital_period\norbital_radius\norbital_speed\nparameters\npck00010\npck00011\npck00011_n0066\nperiapsis_radius\nperifocal_to_cartesian\nperturb\nperturb!\nperturbation\nphobos512\nphobos_2014_09_22\nphobos_3_3\nplu060\npotential_energy\nprimary_synodic_position\npropagate\npropagate!\nradii\nredimensioned\nreduced_mass\nrichardson_halo\nrichardson_ic\nright_ascension_ascending_node\nsat393_daphnis\nsat415\nsat441\nsat441xl_part_1\nsat441xl_part_2\nsat454\nsat454_nameid\nsecondary_synodic_position\nsemi_parameter\nsemimajor_axis\nsiding_spring_8_19_14\nsiding_spring_s46\nspecific_angular_momentum\nspecific_angular_momentum_vector\nspecific_energy\nspecific_potential_energy\nsphere_of_activity\nsphere_of_influence\nstate\nsystem\ntime_scaling\ntime_since_periapsis\ntnosat_v001_20000617_jpl082_20230601\ntnosat_v001_20050000_jpl043_20220908\ntnosat_v001_20090482_jpl043_20220908\ntnosat_v001_20120347_jpl025_20220908\ntnosat_v001_20136199_jpl080_20220908\ntnosat_v001_20469705_jpl009_20220908\ntnosat_v001_20612095_jpl006_20220908\ntnosat_v001_20612687_jpl008_20220908\ntnosat_v001_53031823_jpl010_20220908\ntnosat_v001_53092511_jpl005_20220908\ntnosat_v001b_20136108_jpl110_20221014\ntrue_anomaly\nura111xl_701\nura111xl_702\nura111xl_703\nura111xl_704\nura111xl_705\nura111xl_799\nura115\nura116\nura116xl\nura117\nura117_nameid\nura182\nv_infinity\nvelocity_scaling\nvesta_gaskell_256\nvesta_thomas_1997\nzero_velocity_curves",
+    "crumbs": [
+      "Reference"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html",
+    "href": "api/calculations/index.html",
+    "title": "Calculations",
+    "section": "",
+    "text": "AstrodynamicalCalculations",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#astrodynamicalcalculations",
+    "href": "api/calculations/index.html#astrodynamicalcalculations",
+    "title": "Calculations",
+    "section": "",
+    "text": "Common calculations within orbital mechanics and astrodynamics.\n\nExtended Help\n\nImports\n\nAstrodynamicalCalculations.CR3BPCalculations\nAstrodynamicalCalculations.R2BPCalculations\nBase\nCore\nDocStringExtensions\nReexport\n\n\n\nExports\n\nCR3BPCalculations\nR2BPCalculations\napoapsis_radius\nargument_of_periapsis\nc3\ncartesian_to_keplerian\ncartesian_to_perifocal\nconic\nconverge\nconverge!\nconvergent_direction\ndistance_scaling\ndistance_to_primary\ndistance_to_secondary\ndiverge\ndiverge!\ndivergent_direction\neccentricity\neccentricity_vector\nhohmann\ninclination\njacobi_constant\nkepler\nkeplerian_to_cartesian\nkeplerian_to_perifocal\nlagrange_point\nlambert\nmean_motion\nnondimensional\nnondimensional_radii\norbital_period\norbital_radius\norbital_speed\nperiapsis_radius\nperifocal_to_cartesian\nperturb\nperturb!\nperturbation\npotential_energy\nprimary_synodic_position\nredimensioned\nreduced_mass\nrichardson_halo\nrichardson_ic\nright_ascension_ascending_node\nsecondary_synodic_position\nsemi_parameter\nsemimajor_axis\nspecific_angular_momentum\nspecific_angular_momentum_vector\nspecific_energy\nspecific_potential_energy\nsphere_of_activity\nsphere_of_influence\ntime_scaling\ntime_since_periapsis\ntrue_anomaly\nv_infinity\nvelocity_scaling\nzero_velocity_curves",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#cr3bpcalculations",
+    "href": "api/calculations/index.html#cr3bpcalculations",
+    "title": "Calculations",
+    "section": "CR3BPCalculations",
+    "text": "CR3BPCalculations\n\n\n\n\n\n\nCommon calculations within Circular Restricted Three Body Problem dynamics.\n\nExtended Help\n\nImports\n\nBase\nCore\nDocStringExtensions\nLinearAlgebra\nRoots\nStaticArrays\n\n\n\nExports\n\nconverge\nconverge!\nconvergent_direction\ndistance_scaling\ndistance_to_primary\ndistance_to_secondary\ndiverge\ndiverge!\ndivergent_direction\njacobi_constant\nlagrange_point\nnondimensional\nnondimensional_radii\nperturb\nperturb!\nperturbation\npotential_energy\nprimary_synodic_position\nredimensioned\nreduced_mass\nrichardson_halo\nrichardson_ic\nsecondary_synodic_position\ntime_scaling\nvelocity_scaling\nzero_velocity_curves",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#r2bpcalculations",
+    "href": "api/calculations/index.html#r2bpcalculations",
+    "title": "Calculations",
+    "section": "R2BPCalculations",
+    "text": "R2BPCalculations\n\n\n\n\n\n\nCommon calculations within Restricted Two Body Problem dynamics.\n\nExtended Help\n\nImports\n\nBase\nCore\nDocStringExtensions\nLinearAlgebra\nStaticArrays\n\n\n\nExports\n\napoapsis_radius\nargument_of_periapsis\nc3\ncartesian_to_keplerian\ncartesian_to_perifocal\nconic\neccentricity\neccentricity_vector\nhohmann\ninclination\nkepler\nkeplerian_to_cartesian\nkeplerian_to_perifocal\nlambert\nmean_motion\norbital_period\norbital_radius\norbital_speed\nperiapsis_radius\nperifocal_to_cartesian\nright_ascension_ascending_node\nsemi_parameter\nsemimajor_axis\nspecific_angular_momentum\nspecific_angular_momentum_vector\nspecific_energy\nspecific_potential_energy\nsphere_of_activity\nsphere_of_influence\ntime_since_periapsis\ntrue_anomaly\nv_infinity",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#apoapsis_radius",
+    "href": "api/calculations/index.html#apoapsis_radius",
+    "title": "Calculations",
+    "section": "apoapsis_radius",
+    "text": "apoapsis_radius\n\n\n\n\n\n\napoapsis_radius(a, e)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns apoapsis distance, rₐ.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#argument_of_periapsis",
+    "href": "api/calculations/index.html#argument_of_periapsis",
+    "title": "Calculations",
+    "section": "argument_of_periapsis",
+    "text": "argument_of_periapsis\n\n\n\n\n\n\nargument_of_periapsis(x, y, z, ẋ, ẏ, ż, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns the argument of periapsis.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#c3",
+    "href": "api/calculations/index.html#c3",
+    "title": "Calculations",
+    "section": "c3",
+    "text": "c3\n\n\n\n\n\n\nc3(r, v, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns C3 value.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#cartesian_to_keplerian",
+    "href": "api/calculations/index.html#cartesian_to_keplerian",
+    "title": "Calculations",
+    "section": "cartesian_to_keplerian",
+    "text": "cartesian_to_keplerian\n\n\n\n\n\n\ncartesian_to_keplerian(x, y, z, ẋ, ẏ, ż, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns a Keplarian representation of a Cartesian orbital state. Algorithm taught in ENAE601.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#cartesian_to_perifocal",
+    "href": "api/calculations/index.html#cartesian_to_perifocal",
+    "title": "Calculations",
+    "section": "cartesian_to_perifocal",
+    "text": "cartesian_to_perifocal\n\n\n\n\n\n\ncartesian_to_perifocal(i, Ω, ω, x, y, z, ẋ, ẏ, ż)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns the position and velocity vectors in the Perifocal frame.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#conic",
+    "href": "api/calculations/index.html#conic",
+    "title": "Calculations",
+    "section": "conic",
+    "text": "conic\n\n\n\n\n\n\nconic(e)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns the conic section, as specified by eccentricity e.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#converge",
+    "href": "api/calculations/index.html#converge",
+    "title": "Calculations",
+    "section": "converge",
+    "text": "converge\n\n\n\n\n\n\nconverge(u, stm, Φ; eps)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nPerturb halo orbit conditions onto the orbit’s unstable manifold.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#converge-1",
+    "href": "api/calculations/index.html#converge-1",
+    "title": "Calculations",
+    "section": "converge!",
+    "text": "converge!\n\n\n\n\n\n\nconverge!(p, u, stm, Φ; eps)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nPerturb halo orbit conditions in-place onto the orbit’s stable manifold.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#convergent_direction",
+    "href": "api/calculations/index.html#convergent_direction",
+    "title": "Calculations",
+    "section": "convergent_direction",
+    "text": "convergent_direction\n\n\n\n\n\n\nconvergent_direction(stm; atol)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nCalculates the eigenvector associated with the stable manifold of a Monodromy matrix.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#distance_scaling",
+    "href": "api/calculations/index.html#distance_scaling",
+    "title": "Calculations",
+    "section": "distance_scaling",
+    "text": "distance_scaling\n\n\n\n\n\n\ndistance_scaling(a)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nThe length scale factor used to nondimensionalize CR3BP states.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#distance_to_primary",
+    "href": "api/calculations/index.html#distance_to_primary",
+    "title": "Calculations",
+    "section": "distance_to_primary",
+    "text": "distance_to_primary\n\n\n\n\n\n\ndistance_to_primary(r, μ)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturns synodic distance to primary body.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#distance_to_secondary",
+    "href": "api/calculations/index.html#distance_to_secondary",
+    "title": "Calculations",
+    "section": "distance_to_secondary",
+    "text": "distance_to_secondary\n\n\n\n\n\n\ndistance_to_secondary(r, μ)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturns synodic distance to secondary body.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#diverge",
+    "href": "api/calculations/index.html#diverge",
+    "title": "Calculations",
+    "section": "diverge",
+    "text": "diverge\n\n\n\n\n\n\ndiverge(u, stm, Φ; eps)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nPerturb halo orbit conditions onto the orbit’s unstable manifold.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#diverge-1",
+    "href": "api/calculations/index.html#diverge-1",
+    "title": "Calculations",
+    "section": "diverge!",
+    "text": "diverge!\n\n\n\n\n\n\ndiverge!(p, u, stm, Φ; eps)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nPerturb halo orbit conditions in-place onto the orbit’s unstable manifold.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#divergent_direction",
+    "href": "api/calculations/index.html#divergent_direction",
+    "title": "Calculations",
+    "section": "divergent_direction",
+    "text": "divergent_direction\n\n\n\n\n\n\ndivergent_direction(stm; atol)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nCalculates the direction associated with the unstable manifold of a Monodromy matrix.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#eccentricity",
+    "href": "api/calculations/index.html#eccentricity",
+    "title": "Calculations",
+    "section": "eccentricity",
+    "text": "eccentricity\n\n\n\n\n\n\neccentricity(x, y, z, ẋ, ẏ, ż, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns orbital eccentricity, e.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#eccentricity_vector",
+    "href": "api/calculations/index.html#eccentricity_vector",
+    "title": "Calculations",
+    "section": "eccentricity_vector",
+    "text": "eccentricity_vector\n\n\n\n\n\n\neccentricity_vector(x, y, z, ẋ, ẏ, ż, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns orbital eccentricity vector e̅.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#hohmann",
+    "href": "api/calculations/index.html#hohmann",
+    "title": "Calculations",
+    "section": "hohmann",
+    "text": "hohmann\n\n\n\n\n\n\nhohmann(r₁, r₂, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nComputes a Hohmann transfer, and returns the departure and arrival velocity vectors.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#inclination",
+    "href": "api/calculations/index.html#inclination",
+    "title": "Calculations",
+    "section": "inclination",
+    "text": "inclination\n\n\n\n\n\n\ninclination(x, y, z, ẋ, ẏ, ż, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns the orbital inclination.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#jacobi_constant",
+    "href": "api/calculations/index.html#jacobi_constant",
+    "title": "Calculations",
+    "section": "jacobi_constant",
+    "text": "jacobi_constant\n\n\n\n\n\n\njacobi_constant(x, y, z, ẋ, ẏ, ż, μ)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturns the Jacobi Constant, C in the Synodic frame with Normalized units.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#kepler",
+    "href": "api/calculations/index.html#kepler",
+    "title": "Calculations",
+    "section": "kepler",
+    "text": "kepler\n\n\n\n\n\n\nkepler(x, y, z, ẋ, ẏ, ż, μ, Δt; atol, maxiter)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nSolves Kepler’s Problem, predicting the orbit’s future state geometrically.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#keplerian_to_cartesian",
+    "href": "api/calculations/index.html#keplerian_to_cartesian",
+    "title": "Calculations",
+    "section": "keplerian_to_cartesian",
+    "text": "keplerian_to_cartesian\n\n\n\n\n\n\nkeplerian_to_cartesian(e, a, i, Ω, ω, ν, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns a Cartesian representation of a Keplerian two-body orbital state in an inertial frame, centered at the center of mass of the central body. Algorithm taught in ENAE601.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#keplerian_to_perifocal",
+    "href": "api/calculations/index.html#keplerian_to_perifocal",
+    "title": "Calculations",
+    "section": "keplerian_to_perifocal",
+    "text": "keplerian_to_perifocal\n\n\n\n\n\n\nkeplerian_to_perifocal(a, e, ν, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns position and velocity vectors in the Perifocal frame.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#lagrange_point",
+    "href": "api/calculations/index.html#lagrange_point",
+    "title": "Calculations",
+    "section": "lagrange_point",
+    "text": "lagrange_point\n\n\n\n\n\n\nlagrange_point(μ, L)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturns the lagrange points for a CR3BP system.\nArguments:\n\nμ: Non-dimensional mass parameter for the CR3BP system.\nL: Langrange points requested, must be in range [1,5]\n\nOutputs:\n\nTuple of Lagrange points\nThrows ArgumentError if L is out of range [1,5]\n\nReferences:\n\nRund, 2018",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#lambert",
+    "href": "api/calculations/index.html#lambert",
+    "title": "Calculations",
+    "section": "lambert",
+    "text": "lambert\n\n\n\n\n\n\nlambert(\n    x₁,\n    y₁,\n    z₁,\n    x₂,\n    y₂,\n    z₂,\n    μ,\n    Δt;\n    trajectory,\n    atol,\n    maxiter\n)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nSolves Lambert’s problem through the use of univeral variables.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#mean_motion",
+    "href": "api/calculations/index.html#mean_motion",
+    "title": "Calculations",
+    "section": "mean_motion",
+    "text": "mean_motion\n\n\n\n\n\n\nmean_motion(a, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns mean motion, n.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#nondimensional",
+    "href": "api/calculations/index.html#nondimensional",
+    "title": "Calculations",
+    "section": "nondimensional",
+    "text": "nondimensional\n\n\n\n\n\n\nnondimensional(x, y, z, ẋ, ẏ, ż, t, a, μ₁, μ₂)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nNormalizes a CR3BP orbit in the rotating reference frame.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#nondimensional_radii",
+    "href": "api/calculations/index.html#nondimensional_radii",
+    "title": "Calculations",
+    "section": "nondimensional_radii",
+    "text": "nondimensional_radii\n\n\n\n\n\n\nnondimensional_radii(x, y, z, xᵢ)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturns the spacecraft’s nondimensional position w.r.t. body 1 (or 2).",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#orbital_period",
+    "href": "api/calculations/index.html#orbital_period",
+    "title": "Calculations",
+    "section": "orbital_period",
+    "text": "orbital_period\n\n\n\n\n\n\norbital_period(a, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns the orbital period.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#orbital_radius",
+    "href": "api/calculations/index.html#orbital_radius",
+    "title": "Calculations",
+    "section": "orbital_radius",
+    "text": "orbital_radius\n\n\n\n\n\n\norbital_radius(p, e, ν)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns distance, r.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#orbital_speed",
+    "href": "api/calculations/index.html#orbital_speed",
+    "title": "Calculations",
+    "section": "orbital_speed",
+    "text": "orbital_speed\n\n\n\n\n\n\norbital_speed(x, y, z, ẋ, ẏ, ż, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns the instantaneous velocity, v, for any orbital representation.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#periapsis_radius",
+    "href": "api/calculations/index.html#periapsis_radius",
+    "title": "Calculations",
+    "section": "periapsis_radius",
+    "text": "periapsis_radius\n\n\n\n\n\n\nperiapsis_radius(a, e)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns periapsis distance, rₚ.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#perifocal_to_cartesian",
+    "href": "api/calculations/index.html#perifocal_to_cartesian",
+    "title": "Calculations",
+    "section": "perifocal_to_cartesian",
+    "text": "perifocal_to_cartesian\n\n\n\n\n\n\nperifocal_to_cartesian(i, Ω, ω, x, y, z, ẋ, ẏ, ż)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns a spatial representation of the provied Perifocal state.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#perturb",
+    "href": "api/calculations/index.html#perturb",
+    "title": "Calculations",
+    "section": "perturb",
+    "text": "perturb\n\n\n\n\n\n\nperturb(u, stm, direction; eps)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nPerturb a Cartesian state along a halo orbit onto a stable or unstable manifold.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#perturb-1",
+    "href": "api/calculations/index.html#perturb-1",
+    "title": "Calculations",
+    "section": "perturb!",
+    "text": "perturb!\n\n\n\n\n\n\nperturb!(p, u, stm, direction; eps)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nPerturb a Cartesian state in-place along a halo orbit onto a stable or unstable manifold.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#perturbation",
+    "href": "api/calculations/index.html#perturbation",
+    "title": "Calculations",
+    "section": "perturbation",
+    "text": "perturbation\n\n\n\n\n\n\nperturbation(stm, direction; eps)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturn the perturbation in Cartesian state space along a halo orbit onto the provided direction of the provided manifold.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#potential_energy",
+    "href": "api/calculations/index.html#potential_energy",
+    "title": "Calculations",
+    "section": "potential_energy",
+    "text": "potential_energy\n\n\n\n\n\n\npotential_energy(x, y, z, μ)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturns the potential energy U in the Synodic frame with Normalized units.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#primary_synodic_position",
+    "href": "api/calculations/index.html#primary_synodic_position",
+    "title": "Calculations",
+    "section": "primary_synodic_position",
+    "text": "primary_synodic_position\n\n\n\n\n\n\nprimary_synodic_position(μ)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nPosition of primary body.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#redimensioned",
+    "href": "api/calculations/index.html#redimensioned",
+    "title": "Calculations",
+    "section": "redimensioned",
+    "text": "redimensioned\n\n\n\n\n\n\nredimensioned(x, y, z, ẋ, ẏ, ż, t, μ, a, T)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nRedimensionalizes a CR3BP orbit in the rotating reference frame.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#reduced_mass",
+    "href": "api/calculations/index.html#reduced_mass",
+    "title": "Calculations",
+    "section": "reduced_mass",
+    "text": "reduced_mass\n\n\n\n\n\n\nreduced_mass(μ₁, μ₂)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturn the reduced mass.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#richardson_halo",
+    "href": "api/calculations/index.html#richardson_halo",
+    "title": "Calculations",
+    "section": "richardson_halo",
+    "text": "richardson_halo\n\n\n\n\n\n\nrichardson_halo(μ, L; Z, hemisphere, ϕ, length)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturns an analytical solution for a Halo orbit about L.\n\nExtended Help\n\nArguments\n\nμ: Non-dimensional mass parameter for the CR3BP system.\nL: Lagrange point to orbit (L1 or L2).\nZ: Desired non-dimensional Z-amplitude for Halo orbit.\nhemisphere: Specifies northern or southern Halo orbit.\nϕ: Desired Halo orbit phase.\nsteps: Number of non-dimensional timepoints in returned state.\n\n\n\nOutputs\n\nNear-periodic initial condition u\nHalo orbit period T.\nThrows ArgumentError if L is not 1 or 2.\n\nReferences:\n\nRund, 2018.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#richardson_ic",
+    "href": "api/calculations/index.html#richardson_ic",
+    "title": "Calculations",
+    "section": "richardson_ic",
+    "text": "richardson_ic\n\n\n\n\n\n\nrichardson_ic(μ, L; Z, hemisphere, ϕ)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturns an analytical solution for a Halo orbit about L.\n\nExtended Help\n\nArguments\n\nμ: Non-dimensional mass parameter for the CR3BP system.\nL: Lagrange point to orbit (L1 or L2).\nZ: Desired non-dimensional Z-amplitude for Halo orbit.\nhemisphere: Specifies northern or southern Halo orbit.\nϕ: Desired Halo orbit phase.\nsteps: Number of non-dimensional timepoints in returned state.\n\n\n\nOutputs\n\nNear-periodic initial condition u\nHalo orbit period T.\nThrows ArgumentError if L is not 1 or 2.\n\nReferences:\n\nRund, 2018.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#right_ascension_ascending_node",
+    "href": "api/calculations/index.html#right_ascension_ascending_node",
+    "title": "Calculations",
+    "section": "right_ascension_ascending_node",
+    "text": "right_ascension_ascending_node\n\n\n\n\n\n\nright_ascension_ascending_node(x, y, z, ẋ, ẏ, ż, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns the right ascension of the ascending node.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#secondary_synodic_position",
+    "href": "api/calculations/index.html#secondary_synodic_position",
+    "title": "Calculations",
+    "section": "secondary_synodic_position",
+    "text": "secondary_synodic_position\n\n\n\n\n\n\nsecondary_synodic_position(μ)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nPosition of primary body.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#semi_parameter",
+    "href": "api/calculations/index.html#semi_parameter",
+    "title": "Calculations",
+    "section": "semi_parameter",
+    "text": "semi_parameter\n\n\n\n\n\n\nsemi_parameter(a, e)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns semilatus parameter, p.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#semimajor_axis",
+    "href": "api/calculations/index.html#semimajor_axis",
+    "title": "Calculations",
+    "section": "semimajor_axis",
+    "text": "semimajor_axis\n\n\n\n\n\n\nsemimajor_axis(r, v, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns semimajor axis parameter, a.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#specific_angular_momentum",
+    "href": "api/calculations/index.html#specific_angular_momentum",
+    "title": "Calculations",
+    "section": "specific_angular_momentum",
+    "text": "specific_angular_momentum\n\n\n\n\n\n\nspecific_angular_momentum(x, y, z, ẋ, ẏ, ż)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns scalar specific angular momentum vector, h.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#specific_angular_momentum_vector",
+    "href": "api/calculations/index.html#specific_angular_momentum_vector",
+    "title": "Calculations",
+    "section": "specific_angular_momentum_vector",
+    "text": "specific_angular_momentum_vector\n\n\n\n\n\n\nspecific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns specific angular momentum vector, h̅.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#specific_energy",
+    "href": "api/calculations/index.html#specific_energy",
+    "title": "Calculations",
+    "section": "specific_energy",
+    "text": "specific_energy\n\n\n\n\n\n\nspecific_energy(a, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns specific orbital energy, ϵ.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#specific_potential_energy",
+    "href": "api/calculations/index.html#specific_potential_energy",
+    "title": "Calculations",
+    "section": "specific_potential_energy",
+    "text": "specific_potential_energy\n\n\n\n\n\n\nspecific_potential_energy(r, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns the specific potential energy: the energy per unit mass.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#sphere_of_activity",
+    "href": "api/calculations/index.html#sphere_of_activity",
+    "title": "Calculations",
+    "section": "sphere_of_activity",
+    "text": "sphere_of_activity\n\n\n\n\n\n\nsphere_of_activity(a, m, M)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nSphere of activity.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#sphere_of_influence",
+    "href": "api/calculations/index.html#sphere_of_influence",
+    "title": "Calculations",
+    "section": "sphere_of_influence",
+    "text": "sphere_of_influence\n\n\n\n\n\n\nsphere_of_influence(a, m, M)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nSphere of influence.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#time_scaling",
+    "href": "api/calculations/index.html#time_scaling",
+    "title": "Calculations",
+    "section": "time_scaling",
+    "text": "time_scaling\n\n\n\n\n\n\ntime_scaling(a, μ₁, μ₂)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nThe time scale factor used to nondimensionalize CR3BP states.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#time_since_periapsis",
+    "href": "api/calculations/index.html#time_since_periapsis",
+    "title": "Calculations",
+    "section": "time_since_periapsis",
+    "text": "time_since_periapsis\n\n\n\n\n\n\ntime_since_periapsis(n, e, E)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns time since periapsis, t.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#true_anomaly",
+    "href": "api/calculations/index.html#true_anomaly",
+    "title": "Calculations",
+    "section": "true_anomaly",
+    "text": "true_anomaly\n\n\n\n\n\n\ntrue_anomaly(x, y, z, ẋ, ẏ, ż, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns true anomoly, ν.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#v_infinity",
+    "href": "api/calculations/index.html#v_infinity",
+    "title": "Calculations",
+    "section": "v_infinity",
+    "text": "v_infinity\n\n\n\n\n\n\nv_infinity(r, v, μ)\n\n\n\n\n\n\nR2BP Dynamics\n\n\n\nThis computation is valid for Restricted Two Body Problem (Keplerian) orbits.\n\n\nReturns v∞.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#velocity_scaling",
+    "href": "api/calculations/index.html#velocity_scaling",
+    "title": "Calculations",
+    "section": "velocity_scaling",
+    "text": "velocity_scaling\n\n\n\n\n\n\nvelocity_scaling(a, μ₁, μ₂)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nThe velocity scale factor used to nondimensionalize CR3BP states.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/calculations/index.html#zero_velocity_curves",
+    "href": "api/calculations/index.html#zero_velocity_curves",
+    "title": "Calculations",
+    "section": "zero_velocity_curves",
+    "text": "zero_velocity_curves\n\n\n\n\n\n\nzero_velocity_curves(r, v, μ; nondimensional_range)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nReturns a Vector of Matrix values. Each Matrix contains a 3-column nondimensional position trajectory in the Synodic frame which represents a Zero Velocity Curve.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html",
+    "href": "api/models/index.html",
+    "title": "Models",
+    "section": "",
+    "text": "AstrodynamicalModels",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#astrodynamicalmodels",
+    "href": "api/models/index.html#astrodynamicalmodels",
+    "title": "Models",
+    "section": "",
+    "text": "Provides astrodynamical models as AstrodynamicalModels.ODESystems. Check out the ModelingToolkit docs to learn how to use these systems for orbit propagation with DifferentialEquations, or see GeneralAstrodynamics for some convenient orbit propagation wrappers.\n\nExtended help\n\nLicense\nMIT License\nCopyright (c) 2023 Joseph D Carpinelli\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n\nExports\n\nAttitudeFunction\nAttitudeParameters\nAttitudeState\nAttitudeSystem\nCR3BFunction\nCR3BOrbit\nCR3BParameters\nCR3BState\nCR3BSystem\nCartesianOrbit\nCartesianSTM\nCartesianState\nKeplerianOrbit\nKeplerianParameters\nKeplerianState\nNBFunction\nNBSystem\nOrbit\nOrbitalElements\nPlanarEntryFunction\nPlanarEntryParameters\nPlanarEntryState\nPlanarEntrySystem\nR2BFunction\nR2BOrbit\nR2BParameters\nR2BState\nR2BSystem\ndynamics\nparameters\nstate\nsystem\n\n\n\nImports\n\nBase\nCore\nDocStringExtensions\nLinearAlgebra\nMemoize\nModelingToolkit\nSciMLBase\nStaticArrays\nSymbolics",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#attitudefunction",
+    "href": "api/models/index.html#attitudefunction",
+    "title": "Models",
+    "section": "AttitudeFunction",
+    "text": "AttitudeFunction\n\n\n\n\n\n\nAttitudeFunction(; stm, name, kwargs...)\nReturns an ODEFunction for spacecraft attitude dynamics.\n\nExtended Help\n\nUsage\nThe stm and name keyword arguments are passed to Attitude. All other keyword arguments are passed directly to SciMLBase.ODEFunction.\nf = AttitudeFunction()\nlet u = randn(7), p = randn(15), t = NaN # time invariant\n    f(u, p, t)\nend",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#attitudeparameters",
+    "href": "api/models/index.html#attitudeparameters",
+    "title": "Models",
+    "section": "AttitudeParameters",
+    "text": "AttitudeParameters\n\n\n\n\n\n\nstruct AttitudeParameters{F} &lt;: AstrodynamicalModels.AstrodynamicalParameters{F, 15}\nA parameter vector for attitude dynamics.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#attitudestate",
+    "href": "api/models/index.html#attitudestate",
+    "title": "Models",
+    "section": "AttitudeState",
+    "text": "AttitudeState\n\n\n\n\n\n\nmutable struct AttitudeState{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 7}\nA mutable state vector for attitude dynamics.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#attitudesystem",
+    "href": "api/models/index.html#attitudesystem",
+    "title": "Models",
+    "section": "AttitudeSystem",
+    "text": "AttitudeSystem\n\n\n\n\n\n\nAttitudeSystem(; stm, name, defaults, kwargs...)\nA ModelingToolkit.ODESystem for atmospheric entry. Currently, only exponential atmosphere models are provided! The output model is cached with Memoize.jl. Planet-specific parameters default to Earth values.\nThe order of the states follows: [q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃].\nThe order of the parameters follows: []\n\nExtended Help\nThis model describes how an object moves through an exponential atmosphere, above a spherical planet.\n\nStates\n\nq: scalar-last attitude quaternion\nω: body rates (radians per second)\n\n\n\nParameters\n\nJ: inertial matrix\nL: lever arm where input torque is applied\nf: torques on the vehicle body (Newton-meters)\n\n\nUsage\nmodel = Attitude()",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#cr3bfunction",
+    "href": "api/models/index.html#cr3bfunction",
+    "title": "Models",
+    "section": "CR3BFunction",
+    "text": "CR3BFunction\n\n\n\n\n\n\nCR3BFunction(; stm, name, kwargs...)\nReturns an ODEFunction for CR3B dynamics.\nThe order of the states follows: [μ].\nThe order of the parameters follows: [μ].\n\nExtended Help\n\nUsage\nThe stm, and name keyword arguments are passed to CR3B. All other keyword arguments are passed directly to SciMLBase.ODEFunction.\nf = CR3BFunction(; stm=false, jac=true)\nlet u = randn(6), p = randn(1), t = 0\n    f(u, p, t)\nend",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#cr3borbit",
+    "href": "api/models/index.html#cr3borbit",
+    "title": "Models",
+    "section": "CR3BOrbit",
+    "text": "CR3BOrbit\n\n\n\n\n\n\nstruct Orbit{var\"#s80\"&lt;:CartesianState, var\"#s79\"&lt;:CR3BParameters} &lt;: AstrodynamicalModels.AstrodynamicalOrbit{var\"#s80\"&lt;:CartesianState, var\"#s79\"&lt;:CR3BParameters}\nAn Orbit which exists within CR3BP dynamics.\nReturn a CR3BP orbit with parameters associated with the provided body in nondimensional units.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#cr3bparameters",
+    "href": "api/models/index.html#cr3bparameters",
+    "title": "Models",
+    "section": "CR3BParameters",
+    "text": "CR3BParameters\n\n\n\n\n\n\nstruct CR3BParameters{F} &lt;: AstrodynamicalModels.AstrodynamicalParameters{F, 1}\nA paremeter vector for CR3BP dynamics.\nReturn the CR3BP parameters associated with the provided body in nondimensional units.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#cr3bstate",
+    "href": "api/models/index.html#cr3bstate",
+    "title": "Models",
+    "section": "CR3BState",
+    "text": "CR3BState\n\n\n\n\n\n\nmutable struct CartesianState{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 6}\nCartesianState",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#cr3bsystem",
+    "href": "api/models/index.html#cr3bsystem",
+    "title": "Models",
+    "section": "CR3BSystem",
+    "text": "CR3BSystem\n\n\n\n\n\n\nCR3BSystem(; stm, name, defaults, kwargs...)\nA ModelingToolkit.ODESystem for the Circular Restricted Three-body Problem.\nThe order of the states follows: [x, y, z, ẋ, ẏ, ż].\nThe order of the parameters follows: [μ].\n\nExtended Help\nThe Circular Restricted Three-body Problem is a simplified dynamical model describing one small body (spacecraft, etc.) and two celestial bodies moving in a circle about their common center of mass. This may seem like an arbitrary simplification, but this assumption holds reasonably well for the Earth-Moon, Sun-Earth, and many other systems in our solar system.\n\nUsage\nmodel = CR3BSystem(; stm=true)",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#cartesianorbit",
+    "href": "api/models/index.html#cartesianorbit",
+    "title": "Models",
+    "section": "CartesianOrbit",
+    "text": "CartesianOrbit\n\n\n\n\n\n\nstruct Orbit{var\"#s80\"&lt;:CartesianState, P&lt;:(AbstractVector)} &lt;: AstrodynamicalModels.AstrodynamicalOrbit{var\"#s80\"&lt;:CartesianState, P&lt;:(AbstractVector)}\nAn Orbit which exists within R2BP dynamics.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#cartesianstm",
+    "href": "api/models/index.html#cartesianstm",
+    "title": "Models",
+    "section": "CartesianSTM",
+    "text": "CartesianSTM\n\n\n\n\n\n\nmutable struct CartesianSTM{F} &lt;: StaticArraysCore.FieldMatrix{6, 6, F}\nA mutable matrix, with labels, for a 6DOF Cartesian state transition matrix.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#cartesianstate",
+    "href": "api/models/index.html#cartesianstate",
+    "title": "Models",
+    "section": "CartesianState",
+    "text": "CartesianState\n\n\n\n\n\n\nmutable struct CartesianState{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 6}\nA mutable vector, with labels, for 6DOF Cartesian states.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#keplerianorbit",
+    "href": "api/models/index.html#keplerianorbit",
+    "title": "Models",
+    "section": "KeplerianOrbit",
+    "text": "KeplerianOrbit\n\n\n\n\n\n\nstruct Orbit{var\"#s80\"&lt;:OrbitalElements, var\"#s79\"&lt;:KeplerianParameters} &lt;: AstrodynamicalModels.AstrodynamicalOrbit{var\"#s80\"&lt;:OrbitalElements, var\"#s79\"&lt;:KeplerianParameters}\nAn Orbit which exists within Keplerian dynamics.\nReturn a Keplerian orbit with parameters associated with the provided body (KM3/S2).",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#keplerianparameters",
+    "href": "api/models/index.html#keplerianparameters",
+    "title": "Models",
+    "section": "KeplerianParameters",
+    "text": "KeplerianParameters\n\n\n\n\n\n\nstruct KeplerianParameters{F} &lt;: AstrodynamicalModels.AstrodynamicalParameters{F, 1}\nA parameter vector for Keplerian dynamics.\nReturn the Keplerian parameters associated with the provided body (KM3/S2).",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#keplerianstate",
+    "href": "api/models/index.html#keplerianstate",
+    "title": "Models",
+    "section": "KeplerianState",
+    "text": "KeplerianState\n\n\n\n\n\n\nmutable struct OrbitalElements{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 6}\nOrbitalElements",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#nbfunction",
+    "href": "api/models/index.html#nbfunction",
+    "title": "Models",
+    "section": "NBFunction",
+    "text": "NBFunction\n\n\n\n\n\n\nNBFunction(N; stm, name, kwargs...)\nReturns an ODEFunction for NBP dynamics. The order of states and parameters in the ODEFunction arguments are equivalent to the order of states and parameters for the system produced with NBP(N). As a general rule, the order of the states follows: [x₁, y₁, z₁, ..., xₙ, yₙ, zₙ, ẋ₁, ẏ₁, ż₁, ..., ẋₙ, ẏₙ, żₙ].\n\n\n\n\n\n\nNote\n\n\n\nUnlike R2BP and CR3BP, jac is set to false by default. The number of states for NBP systems can be very large for relatively small numbers of bodies (N). Enabling jac=true by default would cause unnecessarily long waiting times for this (memoize?) function to return for N ≥ 3 or so. If N=2 and stm=true, setting jac=true could still result in several minutes of calculations, depending on the computer you’re using.\n\n\n\n\n\n\n\n\nWarning\n\n\n\nBe careful about specifying stm=true for systems with N ≥ 3! If state transition matrix dynamics are enabled, you can calculate the total number of system states with N*6 + (N*6)^2. Note that this increases exponentially as N grows! For N == 6, unless you’re using parallelization, your computer may run for several hours.\n\n\n\nExtended Help\n\nUsage\nThe stm, and name keyword arguments are passed to NBP. All other keyword arguments are passed directly to SciMLBase.ODEFunction.\nf = NBFunction(3; stm=false, name=:NBP, jac=false, sparse=false)\nlet u = randn(3*6), p = randn(1 + 3), t = 0\n    f(u, p, t)\nend",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#nbsystem",
+    "href": "api/models/index.html#nbsystem",
+    "title": "Models",
+    "section": "NBSystem",
+    "text": "NBSystem\n\n\n\n\n\n\nNBSystem(N; stm, name, defaults, kwargs...)\nA ModelingToolkit.ODESystem for the Newtonian N-body Problem.\nThe order of the states follows: [x₁, y₁, z₁, ..., xₙ, yₙ, zₙ, ẋ₁, ẏ₁, ż₁, ..., ẋₙ, ẏₙ, żₙ].\nThe order of the parameters follows: [G, m₁, m₂, ..., mₙ].\n\n\n\n\n\n\nWarning\n\n\n\nBe careful about specifying stm=true for systems with N ≥ 3! If state transition matrix dynamics are enabled, you can calculate the total number of system states with N*6 + (N*6)^2. Note that this increases exponentially as N grows! For N == 6, unless you’re using parallelization, your computer may run for several hours.\n\n\n\nExtended Help\nThe N-body problem is a model which describes how N bodies will move with respect to a common origin. This problem typically involves many bodies which act due to one force: electromagentism, gravity, etc. This model applies most closely to many celestial bodies moving due to gravity. That’s about right for a model in a package called AstrodynamicalModels!\n\nUsage\n# One model for ALL the planets in our solar system 😎\nmodel = NBSystem(9)",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#orbit",
+    "href": "api/models/index.html#orbit",
+    "title": "Models",
+    "section": "Orbit",
+    "text": "Orbit\n\n\n\n\n\n\nstruct Orbit{U&lt;:(AbstractVector), P&lt;:(AbstractVector)} &lt;: AstrodynamicalModels.AstrodynamicalOrbit{U&lt;:(AbstractVector), P&lt;:(AbstractVector)}\nA full representation of an orbit, including a numerical state, and the parameters of the system.\nReturn an orbit with parameters associated with the provided body (KM3/S2).",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#orbitalelements",
+    "href": "api/models/index.html#orbitalelements",
+    "title": "Models",
+    "section": "OrbitalElements",
+    "text": "OrbitalElements\n\n\n\n\n\n\nmutable struct OrbitalElements{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 6}\nA mutable vector, with labels, for 6DOF Keplerian states.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#planarentryfunction",
+    "href": "api/models/index.html#planarentryfunction",
+    "title": "Models",
+    "section": "PlanarEntryFunction",
+    "text": "PlanarEntryFunction\n\n\n\n\n\n\nPlanarEntryFunction(; name, kwargs...)\nReturns an ODEFunction for Planar Entry dynamics. Results are cached with Memoize.jl.\nThe order of the states follows: [γ, v, r, θ].\nThe order of the parameters follows: [R, P, H, m, A, C, μ]\n\nExtended Help\n\nUsage\nThe name keyword argument is ]passed to PlanarEntry. All other keyword arguments are passed directly to SciMLBase.ODEFunction.\nf = PlanarEntryFunction()\nlet u = randn(4), p = randn(7), t = NaN # time invariant\n    f(u, p, t)\nend",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#planarentryparameters",
+    "href": "api/models/index.html#planarentryparameters",
+    "title": "Models",
+    "section": "PlanarEntryParameters",
+    "text": "PlanarEntryParameters\n\n\n\n\n\n\nstruct PlanarEntryParameters{F} &lt;: AstrodynamicalModels.AstrodynamicalParameters{F, 7}\nA parameter vector for planar entry dynamics.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#planarentrystate",
+    "href": "api/models/index.html#planarentrystate",
+    "title": "Models",
+    "section": "PlanarEntryState",
+    "text": "PlanarEntryState\n\n\n\n\n\n\nmutable struct PlanarEntryState{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 4}\nA state vector for planar entry dynamics.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#planarentrysystem",
+    "href": "api/models/index.html#planarentrysystem",
+    "title": "Models",
+    "section": "PlanarEntrySystem",
+    "text": "PlanarEntrySystem\n\n\n\n\n\n\nPlanarEntrySystem(; name, defaults, kwargs...)\nA ModelingToolkit.ODESystem for atmospheric entry. Currently, only exponential atmosphere models are provided! The output model is cached with Memoize.jl. Planet-specific parameters default to Earth values.\nThe order of the states follows: [γ, v, r, θ].\nThe order of the parameters follows: [R, P, H, m, A, C, μ]\n\nExtended Help\nThis model describes how an object moves through an exponential atmosphere, above a spherical planet.\n\nUsage\nmodel = PlanarEntrySystem()",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#r2bfunction",
+    "href": "api/models/index.html#r2bfunction",
+    "title": "Models",
+    "section": "R2BFunction",
+    "text": "R2BFunction\n\n\n\n\n\n\nR2BFunction(; stm, name, kwargs...)\nReturns an ODEFunction for R2B dynamics.\nThe order of the states follows: [x, y, z, ẋ, ẏ, ż].\nThe order of the parameters follows: [μ].\n\nExtended Help\n\nUsage\nThe stm, and name keyword arguments are passed to R2B. All other keyword arguments are passed directly to SciMLBase.ODEFunction.\nf = R2BFunction(; stm=false, name=:R2B, jac=true)\nlet u = randn(6), p = randn(1), t = 0\n    f(u, p, t)\nend",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#r2borbit",
+    "href": "api/models/index.html#r2borbit",
+    "title": "Models",
+    "section": "R2BOrbit",
+    "text": "R2BOrbit\n\n\n\n\n\n\nstruct Orbit{var\"#s80\"&lt;:CartesianState, var\"#s79\"&lt;:R2BParameters} &lt;: AstrodynamicalModels.AstrodynamicalOrbit{var\"#s80\"&lt;:CartesianState, var\"#s79\"&lt;:R2BParameters}\nAn Orbit which exists within R2BP dynamics.\nReturn a R2BP orbit with parameters associated with the provided body (KM3/S2).",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#r2bparameters",
+    "href": "api/models/index.html#r2bparameters",
+    "title": "Models",
+    "section": "R2BParameters",
+    "text": "R2BParameters\n\n\n\n\n\n\nstruct R2BParameters{F} &lt;: AstrodynamicalModels.AstrodynamicalParameters{F, 1}\nA parameter vector for R2BP dynamics.\nReturn the R2BP parameters associated with the provided body (KM3/S2).",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#r2bstate",
+    "href": "api/models/index.html#r2bstate",
+    "title": "Models",
+    "section": "R2BState",
+    "text": "R2BState\n\n\n\n\n\n\nmutable struct CartesianState{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 6}\nCartesianState",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#r2bsystem",
+    "href": "api/models/index.html#r2bsystem",
+    "title": "Models",
+    "section": "R2BSystem",
+    "text": "R2BSystem\n\n\n\n\n\n\nR2BSystem(; stm, name, defaults, kwargs...)\nA ModelingToolkit.ODESystem for the Restricted Two-body Problem.\nThe order of the states follows: [x, y, z, ẋ, ẏ, ż].\nThe order of the parameters follows: [μ].\n\nExtended Help\nThe Restricted Two-body Problem is a simplified dynamical model describing one small body (spacecraft, etc.) and one celestial body. The gravity of the celestial body exhibits a force on the small body. This model is commonly used as a simplification to descibe our solar systems’ planets orbiting our sun, or a spacecraft orbiting Earth.\n\nUsage\nmodel = R2BSystem()",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#dynamics",
+    "href": "api/models/index.html#dynamics",
+    "title": "Models",
+    "section": "dynamics",
+    "text": "dynamics\n\n\n\n\n\n\ndynamics(orbit, args; kwargs...)\nReturn the underlying dynamics of the system in the form of a ModelingToolkit.ODEFunction.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#parameters-1",
+    "href": "api/models/index.html#parameters-1",
+    "title": "Models",
+    "section": "parameters",
+    "text": "parameters\n\n\n\n\n\n\nparameters(orbit)\nReturn the parameter vector for an Orbit.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#state",
+    "href": "api/models/index.html#state",
+    "title": "Models",
+    "section": "state",
+    "text": "state\n\n\n\n\n\n\nstate(orbit)\nReturn the state vector for an Orbit.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/models/index.html#system",
+    "href": "api/models/index.html#system",
+    "title": "Models",
+    "section": "system",
+    "text": "system\n\n\n\n\n\n\nsystem(orbit, args; kwargs...)\nReturn the underlying dynamics of the system in the form of a ModelingToolkit.ODESystem.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
+    ]
+  },
+  {
+    "objectID": "api/solvers/index.html",
+    "href": "api/solvers/index.html",
+    "title": "Solvers",
+    "section": "",
+    "text": "AstrodynamicalSolvers",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Solvers</span>"
+    ]
+  },
+  {
+    "objectID": "api/solvers/index.html#astrodynamicalsolvers",
+    "href": "api/solvers/index.html#astrodynamicalsolvers",
+    "title": "Solvers",
+    "section": "",
+    "text": "Provides astrodynamical solvers, including Lyapunov and halo orbit correctors.\n\nExtended help\n\nLicense\nMIT License\nCopyright (c) 2023 Joseph D Carpinelli\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n\nExports\n\nCR3BSolvers\nPropagation\nhalo\nlyapunov\nmonodromy\npropagate\npropagate!\n\n\n\nImports\n\nAstrodynamicalSolvers.CR3BSolvers\nAstrodynamicalSolvers.Propagation\nBase\nCore\nDocStringExtensions\nReexport",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Solvers</span>"
+    ]
+  },
+  {
+    "objectID": "api/solvers/index.html#cr3bsolvers",
+    "href": "api/solvers/index.html#cr3bsolvers",
+    "title": "Solvers",
+    "section": "CR3BSolvers",
+    "text": "CR3BSolvers\n\n\n\n\n\n\nSolvers specific to the Circular Restricted Three Body Problem.\n\nExtended Help\n\nExports\n\nhalo\nlyapunov\n\n\n\nImports\n\nAstrodynamicalCalculations\nAstrodynamicalModels\nBase\nCore\nDocStringExtensions\nLinearAlgebra\nModelingToolkit\nOrdinaryDiffEq\nStaticArrays",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Solvers</span>"
+    ]
+  },
+  {
+    "objectID": "api/solvers/index.html#propagation",
+    "href": "api/solvers/index.html#propagation",
+    "title": "Solvers",
+    "section": "Propagation",
+    "text": "Propagation\n\n\n\n\n\n\nWrappers around SciML differential equation solvers for fast and convenient orbit propagation.\n\nExtended Help\n\nExports\n\nmonodromy\npropagate\npropagate!\n\n\n\nImports\n\nAstrodynamicalModels\nBase\nCore\nDocStringExtensions\nModelingToolkit\nOrdinaryDiffEq\nStaticArrays",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Solvers</span>"
+    ]
+  },
+  {
+    "objectID": "api/solvers/index.html#halo",
+    "href": "api/solvers/index.html#halo",
+    "title": "Solvers",
+    "section": "halo",
+    "text": "halo\n\n\n\n\n\n\nhalo(x, z, ẏ, μ, T; reltol, abstol, maxiters)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nIterate on an initial guess for halo orbit conditions.\nhalo(μ, lagrange; amplitude, phase, hemisphere, kwargs...)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nGiven a nondimensional mass parameter μ, and orbit characteristics, construct an initial guess using Richardson’s analytical solution, and iterate on that guess using a differential corrector.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Solvers</span>"
+    ]
+  },
+  {
+    "objectID": "api/solvers/index.html#lyapunov",
+    "href": "api/solvers/index.html#lyapunov",
+    "title": "Solvers",
+    "section": "lyapunov",
+    "text": "lyapunov\n\n\n\n\n\n\nlyapunov(x, ẏ, μ, T; reltol, abstol, maxiters)\n\n\n\n\n\n\nCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nIterate on an initial guess for Lyapunov orbit conditions.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Solvers</span>"
+    ]
+  },
+  {
+    "objectID": "api/solvers/index.html#monodromy",
+    "href": "api/solvers/index.html#monodromy",
+    "title": "Solvers",
+    "section": "monodromy",
+    "text": "monodromy\n\n\n\n\n\n\nmonodromy(orbit, Δt; algorithm, reltol, abstol, kwargs...)\nCompute the monodromy matrix for any periodic orbit.\nmonodromy(\n    u,\n    μ,\n    T,\n    f;\n    algorithm,\n    reltol,\n    abstol,\n    save_everystep,\n    kwargs...\n)\nSolve for the monodromy matrix of the periodic orbit.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Solvers</span>"
+    ]
+  },
+  {
+    "objectID": "api/solvers/index.html#propagate",
+    "href": "api/solvers/index.html#propagate",
+    "title": "Solvers",
+    "section": "propagate",
+    "text": "propagate\n\n\n\n\n\n\npropagate(\n    orbit,\n    Δt;\n    stm,\n    algorithm,\n    reltol,\n    abstol,\n    kwargs...\n)\nNumerically integrate the orbit forward (or backward) in time, and return a new AstrodynamicalOrbit instance with identical parameters to the provided orbit.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Solvers</span>"
+    ]
+  },
+  {
+    "objectID": "api/solvers/index.html#propagate-1",
+    "href": "api/solvers/index.html#propagate-1",
+    "title": "Solvers",
+    "section": "propagate!",
+    "text": "propagate!\n\n\n\n\n\n\npropagate!(\n    orbit,\n    Δt;\n    stm,\n    algorithm,\n    reltol,\n    abstol,\n    kwargs...\n)\nNumerically integrate the orbit forward (or backward) in time, modifying the state vector in-place within the AstrodynamicalOrbit instance.",
+    "crumbs": [
+      "Reference",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Solvers</span>"
+    ]
+  }
+]
