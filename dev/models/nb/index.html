@@ -78,9 +78,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-d54943d6a1fb81c149b4c8376212c338.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-ba7e87a30813508d4c72cece93c29647.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-d54943d6a1fb81c149b4c8376212c338.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-d0143609c29254f01225a153d070f737.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-50313ee0dc2e288d96eb715e4598a439.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-d0143609c29254f01225a153d070f737.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -555,7 +555,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
 <p>All <code>NBSystem</code> calls require the number of bodies to be specified as the first argument, like so. As always, use the <code>stm</code> argument at your leisure. Beware, though! using <code>stm=true</code> for N-body systems with more than 5 bodies may cause <code>NBSystem</code> to compute for a <em>really, really</em> long time! True story – <code>v1.0.1</code> of this package had a version of these docs which tried to compute <code>NBSystem(30; stm=true)</code>. That resulted in GitHub and JuliaHub failing the job on a timeout after <em>several hours</em> –&nbsp;at first I was surprised, until I realized that appending state transition matrix dynamics to a 30-body system results in a total of 32580 states!</p>
 <p>If you’re curious, the number of states of an N-body system with state transition matrix dynamics appended is equivalent to <code>N*6 + (N*6)^2</code>.</p>
-<div id="e06b729c" class="cell" data-execution_count="2">
+<div id="668af96f" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">NBSystem</span>(<span class="fl">2</span>; stm<span class="op">=</span><span class="cn">true</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="3">
 <p><span class="math display">\[ \begin{align}
@@ -720,7 +720,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Like other models, we can compute the Jacobian for these dynamics.</p>
-<div id="8ec8f019" class="cell" data-execution_count="3">
+<div id="d6cdb3d6" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SparseArrays</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>J <span class="op">=</span> <span class="fu">sparse</span>(<span class="fu">calculate_jacobian</span>(<span class="fu">NBSystem</span>(<span class="fl">4</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
@@ -758,25 +758,25 @@ window.Quarto = {
 </div>
 </div>
 <p>Finally, let’s construct a Julia function which implements these dynamics!</p>
-<div id="875b1c2c" class="cell" data-execution_count="4">
+<div id="1e6906d0" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">NBFunction</span>(<span class="fl">2</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">12</span>), m <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">2</span>), G <span class="op">=</span> <span class="fu">rand</span>(), t <span class="op">=</span> <span class="fl">0</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, [G, m<span class="op">...</span>], t)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>12-element Vector{Float64}:
-  0.10812011544190162
- -0.6745769502230389
-  0.4229411817977162
-  0.38631054343009014
- -0.3395437282333225
- -0.32038270408201086
-  0.006766954445952817
-  0.04756264647447298
- -0.16832917954398105
-  0.024020431273838967
-  0.168831531225287
- -0.5975124438788175</code></pre>
+ -0.6006290809489055
+  0.007805788321922146
+ -0.2568681313271339
+ -1.8170287600348194
+  0.7105652001974101
+  1.7328744454491813
+ -0.06490900660494305
+  0.04936790634315185
+ -0.04027787727227896
+ -0.030915313174946855
+  0.02351328983786601
+ -0.019183827561455112</code></pre>
 </div>
 </div>
 
