@@ -34,7 +34,7 @@
     "href": "index.html#usage",
     "title": "GeneralAstrodynamics",
     "section": "Usage",
-    "text": "Usage\nusing GeneralAstrodynamics\n\norbit = rand(R2BPOrbit)\ntrajectory = propagate(orbit, orbital_period(orbit))\n\nfurnsh(\n    de440s(),                   # position and velocity data for nearby planets\n    latest_leapseconds_lsk(),   # timekeeping, parsing epochs\n    gm_de440(),                 # mass parameters for major solar system bodies\n    pck00011(),                 # physical properties of major solar system bodies\n)\n\nμ = reduced_mass(\n  gm(\"earth\"),\n  gm(\"moon\"),\n)\n\norbit, T = let\n  u, T = halo(μ, 2; amplitude=1e-2)\n\n  CR3BPOrbit(CartesianState(u), CR3BParameters(μ)), T\nend\n\ntrajectory = propagate(orbit, T)",
+    "text": "Usage\nusing GeneralAstrodynamics\n\norbit = rand(R2BPOrbit)\ntrajectory = propagate(orbit, orbital_period(orbit))\n\nfurnsh(\n    de440s(),                   # position and velocity data for nearby planets\n    latest_leapseconds_tls(),   # timekeeping, parsing epochs\n    gm_de440(),                 # mass parameters for major solar system bodies\n    pck00011(),                 # physical properties of major solar system bodies\n)\n\nμ = reduced_mass(\n  gm(\"earth\"),\n  gm(\"moon\"),\n)\n\norbit, T = let\n  u, T = halo(μ, 2; amplitude=1e-2)\n\n  CR3BPOrbit(CartesianState(u), CR3BParameters(μ)), T\nend\n\ntrajectory = propagate(orbit, T)",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
     ]
