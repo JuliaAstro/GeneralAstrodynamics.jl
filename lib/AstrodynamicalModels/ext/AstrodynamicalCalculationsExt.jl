@@ -15,6 +15,8 @@ function AC.keplerian_to_cartesian(state::KeplerianState, μ)
 end
 AC.keplerian_to_cartesian(orbit::CartesianOrbit) =
     Orbit(AC.keplerian_to_cartesian(orbit.state, orbit.parameters), orbit.parameters)
+AC.keplerian_to_cartesian(orbit::KeplerianOrbit) =
+    Orbit(AC.keplerian_to_cartesian(orbit.state, orbit.parameters), orbit.parameters)
 
 function AC.cartesian_to_keplerian(state::CartesianState, μ)
     p = μ isa Number ? R2BParameters(μ) : μ

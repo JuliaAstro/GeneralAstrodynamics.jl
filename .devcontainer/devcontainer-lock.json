@@ -1,0 +1,49 @@
+{
+  "features": {
+    "ghcr.io/devcontainer-community/devcontainer-features/starship.rs:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/devcontainer-community/devcontainer-features/starship.rs@sha256:436765d97a663dc00b69466dca52dd7dcc073ad43c1aa25237852c291ffb2489",
+      "integrity": "sha256:436765d97a663dc00b69466dca52dd7dcc073ad43c1aa25237852c291ffb2489"
+    },
+    "ghcr.io/devcontainers-extra/features/pre-commit:2": {
+      "version": "2.0.18",
+      "resolved": "ghcr.io/devcontainers-extra/features/pre-commit@sha256:6e0bb2ce80caca1d94f44dab5d0653d88a1c00984e590adb7c6bce012d0ade6e",
+      "integrity": "sha256:6e0bb2ce80caca1d94f44dab5d0653d88a1c00984e590adb7c6bce012d0ade6e"
+    },
+    "ghcr.io/devcontainers/features/git-lfs:1": {
+      "version": "1.2.5",
+      "resolved": "ghcr.io/devcontainers/features/git-lfs@sha256:71c2b371cf12ab7fcec47cf17369c6f59156100dad9abf9e4c593049d789de72",
+      "integrity": "sha256:71c2b371cf12ab7fcec47cf17369c6f59156100dad9abf9e4c593049d789de72"
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "1.3.4",
+      "resolved": "ghcr.io/devcontainers/features/git@sha256:f24645e64ad39a596131a50ec96f7d5cf7a2a87544cce772dd4b7182a233e98a",
+      "integrity": "sha256:f24645e64ad39a596131a50ec96f7d5cf7a2a87544cce772dd4b7182a233e98a"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "1.0.14",
+      "resolved": "ghcr.io/devcontainers/features/github-cli@sha256:ca677566507c4118e4368cd76a4800807e911e5e350cc3525fb67ebc9132dfa1",
+      "integrity": "sha256:ca677566507c4118e4368cd76a4800807e911e5e350cc3525fb67ebc9132dfa1"
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "1.7.1",
+      "resolved": "ghcr.io/devcontainers/features/python@sha256:cf9b6d879790a594b459845b207c5e1762a0c8f954bb8033ff396e497f9c301b",
+      "integrity": "sha256:cf9b6d879790a594b459845b207c5e1762a0c8f954bb8033ff396e497f9c301b"
+    },
+    "ghcr.io/julialang/devcontainer-features/julia:1": {
+      "version": "1.2.0",
+      "resolved": "ghcr.io/julialang/devcontainer-features/julia@sha256:748ff7272e392e0c2ac7c837dbdc6c8cfa1dd3f81819fd29a111c718e3c4199d",
+      "integrity": "sha256:748ff7272e392e0c2ac7c837dbdc6c8cfa1dd3f81819fd29a111c718e3c4199d"
+    },
+    "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+      "version": "1.0.2",
+      "resolved": "ghcr.io/rocker-org/devcontainer-features/apt-packages@sha256:87a4d7750a596a5db034ba8508782f31aebdc2ffe955c66aaecb33d9de2ecdae",
+      "integrity": "sha256:87a4d7750a596a5db034ba8508782f31aebdc2ffe955c66aaecb33d9de2ecdae"
+    },
+    "ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {
+      "version": "1.1.4",
+      "resolved": "ghcr.io/rocker-org/devcontainer-features/quarto-cli@sha256:74960cb27e2be0dbea52c666342fd4eb69475cec971440265b3944eee30e1f86",
+      "integrity": "sha256:74960cb27e2be0dbea52c666342fd4eb69475cec971440265b3944eee30e1f86"
+    }
+  }
+}

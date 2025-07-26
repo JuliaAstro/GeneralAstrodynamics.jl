@@ -226,7 +226,8 @@ Returns semimajor axis parameter, a.
 """
 semimajor_axis(r::Number, v::Number, μ) = inv((2 / r) - (v^2 / μ))
 semimajor_axis(r, v, μ) = semimajor_axis(norm(r), norm(v), μ)
-semimajor_axis(x, y, z, ẋ, ẏ, ż, μ) = semimajor_axis((x, y, z), (ẋ, ẏ, ż), μ)
+semimajor_axis(x, y, z, ẋ, ẏ, ż, μ) =
+    semimajor_axis(SVector(x, y, z), SVector(ẋ, ẏ, ż), μ)
 
 """
 Returns the orbital inclination.
@@ -272,7 +273,7 @@ Returns specific orbital energy, ϵ.
 specific_energy(a, μ) = (-μ / (2 * a))
 specific_energy(r, v, μ) = (v^2 / 2) - (μ / r)
 specific_energy(x, y, z, ẋ, ẏ, ż, μ) =
-    specific_energy(norm((x, y, z)), norm((ẋ, ẏ, ż)), μ)
+    specific_energy(norm(SVector(x, y, z)), norm(SVector(ẋ, ẏ, ż)), μ)
 
 """
 Returns C3 value.
@@ -291,7 +292,7 @@ Returns the specific potential energy: the energy per unit mass.
 """
 specific_potential_energy(r, μ) = (μ / r)
 specific_potential_energy(x, y, z, ẋ, ẏ, ż, μ) =
-    specific_potential_energy(norm((x, y, z)), μ)
+    specific_potential_energy(norm(SVector(x, y, z)), μ)
 specific_potential_energy(r, μ, R, J₂, ϕ) =
     (μ / r) * (1 - J₂ * (R / r)^2 * ((3 / 2) * (sin(ϕ))^2 - (1 / 2)))
 
@@ -301,7 +302,7 @@ Returns orbital eccentricity vector e̅.
 function eccentricity_vector(x, y, z, ẋ, ẏ, ż, μ)
     h₁, h₂, h₃ = specific_angular_momentum_vector(x, y, z, ẋ, ẏ, ż)
     return (1 / μ) *
-           (_cross(ẋ, ẏ, ż, h₁, h₂, h₃) - μ * SVector(x, y, z) / norm((x, y, z)))
+           (_cross(ẋ, ẏ, ż, h₁, h₂, h₃) - μ * SVector(x, y, z) / norm(SVector(x, y, z)))
 
 end
 
@@ -333,8 +334,8 @@ orbital_radius(x, y, z, ẋ, ẏ, ż, μ) = orbital_radius(
 Returns the instantaneous velocity, v, for any orbital representation.
 """
 function orbital_speed(x, y, z, ẋ, ẏ, ż, μ)
-    r = norm((x, y, z))
-    v = norm((ẋ, ẏ, ż))
+    r = norm(SVector(x, y, z))
+    v = norm(SVector(ẋ, ẏ, ż))
     return orbital_speed(r, semimajor_axis(r, v, μ), μ)
 end
 
@@ -370,7 +371,7 @@ orbital_period(x, y, z, ẋ, ẏ, ż, μ) =
 Returns true anomaly, ν.
 """
 function true_anomaly(x, y, z, ẋ, ẏ, ż, μ)
-    r = (x, y, z)
+    r = norm(SVector(x, y, z))
 
     e = eccentricity(x, y, z, ẋ, ẏ, ż, μ)
     h = specific_angular_momentum(x, y, z, ẋ, ẏ, ż)
