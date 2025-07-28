@@ -291,8 +291,8 @@ v_infinity(x, y, z, ẋ, ẏ, ż, μ) = v_infinity(norm((x, y, z)), norm((ẋ, 
 Returns the specific potential energy: the energy per unit mass.
 """
 specific_potential_energy(r, μ) = (μ / r)
-specific_potential_energy(x, y, z, ẋ, ẏ, ż, μ) =
-    specific_potential_energy(norm(SVector(x, y, z)), μ)
+specific_potential_energy(x, y, z, μ) = specific_potential_energy(norm(SVector(x, y, z)), μ)
+specific_potential_energy(x, y, z, ẋ, ẏ, ż, μ) = specific_potential_energy(x, y, z, μ)
 specific_potential_energy(r, μ, R, J₂, ϕ) =
     (μ / r) * (1 - J₂ * (R / r)^2 * ((3 / 2) * (sin(ϕ))^2 - (1 / 2)))
 
@@ -594,6 +594,9 @@ function lambert(
     return (; ẋ = ẋ₁, ẏ = ẏ₁, ż = ż₁), (; ẋ = ẋ₂, ẏ = ẏ₂, ż = ż₂)
 
 end
+
+lambert(r₁, r₂, μ, Δt; trajectory = :short, atol = 1e-12, maxiter = 25) =
+    lambert(r₁..., r₂..., μ, Δt; trajectory = trajectory, atol = atol, maxiter = maxiter)
 
 """
 The following code was converted to Julia, from a [GitHub repository](https://github.com/rodyo/FEX-Lambert)

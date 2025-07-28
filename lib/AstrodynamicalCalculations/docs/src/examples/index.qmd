@@ -1,0 +1,19 @@
+---
+number-depth: 2
+---
+
+# Examples
+
+_Usage examples for `AstrodynamicalCalculations`._
+
+All following subsections show how various astrodynamics calculations can be performed using `AstrodynamicalCalculations`.
+As mentioned previously, you can install `AstrodynamicalCalculations` using one of the lines below.
+
+```julia
+import Pkg
+Pkg.add("AstrodynamicalCalculations")
+```
+
+```julia
+pkg> add AstrodynamicalCalculations
+```

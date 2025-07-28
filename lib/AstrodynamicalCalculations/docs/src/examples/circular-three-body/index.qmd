@@ -1,0 +1,127 @@
+---
+number-depth: 2
+---
+
+# Orbits in Circular Three Body Dynamics
+
+*Orbits in e.g. the Earth-Moon system.*
+
+```{julia}
+using LinearAlgebra
+using AstrodynamicalCalculations
+```
+
+## Coordinate Conversions
+
+The Circular Restricted Three Body (CR3B) Problem describes a massless spacecraft experiencing gravitational forces due to *two* point masses which orbit their common center of mass.
+There's a good bit there, so let's unpack that statement further.
+Consider the Earth and its moon.
+The Earth and the Moon both orbit the Sun, but if we neglect the Sun and watch the positions of the Earth and the Moon with respect to their common center of mass (in a rotating reference frame where the $\hat{x}$ axis points from the Earth to the Moon) then both the Earth and the Moon appear to move along *circular* orbits.
+
+When we analyze orbits within this problem, we typically use non-dimensional units: we scale all distance units by the distance $a$ between the two massive bodies, and we scale all time distances by the following function of $a$ and each body's mass parameter: $2\pi \sqrt{\frac{a^3}{\mu_1 + \mu_2}}$.
+
+```{julia}
+a = 1e5 # TODO replace with real value
+μ₁ = 1e5 # TODO replace with real value
+μ₂ = 14 # TODO replace with real value
+```
+
+Both of these scalings are provided by the `distance_scaling` and `time_scaling` functions.
+The `velocity_scaling` is simply the result of the `distance_scaling` divided by the `time_scaling`.
+
+```{julia}
+L = distance_scaling(a, μ₁, μ₂)
+```
+
+```{julia}
+T = time_scaling(a, μ₁, μ₂)
+```
+
+```{julia}
+V = velocity_scaling(a, μ₁, μ₂)
+```
+
+These scalings are applied to Cartesian state vectors in CR3B dynamics.
+
+```{julia}
+c = (; x = 1e6, y = -1e2, z = 3e3, ẋ = 1e2, ẏ = -1e3, ż = 0.0)
+t = 1e9
+
+c = nondimensional(c..., t, a, μ₁, μ₂)
+```
+
+::: {.callout-important appearance="simple"}
+All CR3B calculations are performed using **nondimensional** units in the Synodic (rotating) reference frame!
+:::
+
+Given a particular Synodic (rotating reference frame) position $\overrightarrow{x}$, we can also compute the corresponding distance to the primary and secondary bodies using `distance_to_primary` and `distance_to_secondary` respectively.
+
+```{julia}
+r = norm((c.x, c.y, c.z))
+```
+
+```{julia}
+r₁ = distance_to_primary(r, c.μ)
+```
+
+```{julia}
+r₂ = distance_to_secondary(r, c.μ)
+```
+
+As mentioned above, all calculations are performed in the Synodic (rotating) reference frame.
+We can convert nondimensional Cartesian coordinates expressed in the Synodic frame to the barycentric inertial frame (an inertial frame centered at the center of mass of the system) using the `synodic_to_inertial` function with two additional pieces of information: the time $t$ since the coordinate frame epoch and the angular speed of the massive bodies $\omega$.
+
+```{julia}
+let t = 0.1, ω = 1.0
+    synodic_to_inertial(c.x, c.y, c.z, t, ω)
+end
+```
+
+## Energy Calculations
+
+As always, we can compute the potential energy of the orbit using the `potential_energy` function.
+
+```{julia}
+P = potential_energy(c.x, c.y, c.z, c.μ)
+```
+
+There is a second metric for measuring orbital energies in CR3B dynamics: the so-called Jacobi constant $C \triangleq 2 P - v^2$.
+We can use the `jacobi_constant` function to compute this value.
+
+```{julia}
+C = jacobi_constant(c.x, c.y, c.z, c.ẋ, c.ẏ, c.ż, c.μ)
+```
+
+Every CR3B system has the potential for *contours* of zero-velocity dynamics: a spacecraft in the system may never cross such lines in state space.
+The `zero_velocity_curves` function computes these contours as collections of $(x,y)$ lines.
+
+## Lagrange Points
+
+As is the case for all nonlinear dynamical systems, there are special positions in state space where the induced accelerations are null.
+In CR3B dynamics, these points are known as Lagrange points.
+In theory, a spacecraft placed at one of these points will stay there for all time.
+In practice, of course, no system perfectly satisfies the assumptions set by the CR3B definition.
+Still, these points *are* practically useful, as demonstrated by e.g. the James Webb Space Telescope's orbit about an Earth-Moon Lagrange point.
+
+There are $5$ Lagrange points for every CR3B system: three along the $x$ axis, and two offset points which are mirrored across the $x$ axis.
+The positions for each of these points can be found using the `lagrange_point` function, given the nondimensional mass parameter $\mu$ for the CR3B system.
+
+```{julia}
+let L = 1:5
+    L .=> lagrange_point.(c.μ, L)
+end
+```
+
+## Approximate Periodic Orbits
+
+There exist periodic orbits about Lagrange points in CR3B dynamics.
+Periodic orbits in three dimensions (extra-planar orbits) are known as *halo* orbits.
+Periodic orbits in two dimensions (planar orbits) are known as *Lyapunov* orbits.
+These orbits can only be found using (quite sensitive) numerical methods: these capabilities are provided by `AstrodynamicalSolvers.jl`, and are described in the package [documentation](https://JuliaAstro.org/GeneralAstrodynamics/lib/AstrodynamicalSolvers).
+Approximations for periodic initial conditions are available analytically, and this is provided in `AstrodynamicalCalculations` through the `richardson_ic` function.
+
+```{julia}
+let L = 2, Z = 1e-3
+    ic = richardson_ic(c.μ, L; Z = Z)
+end
+```

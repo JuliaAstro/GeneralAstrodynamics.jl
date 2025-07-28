@@ -1,0 +1,159 @@
+---
+number-depth: 2
+---
+
+# Keplerian Orbits
+
+_Hot off the (first generation) printing presses._
+
+```{julia}
+using LinearAlgebra
+using AstrodynamicalCalculations
+```
+
+## General Calculations
+
+As before, we can assume a mass-less spacecraft orbiting a point mass.
+Here, we do _not_ assume a perfectly circular orbit.
+Keplerian orbits --- massless objects orbiting point masses in Newtonian gravitational fields --- are categorized into four groups by their _eccentricity_.
+
+| Eccentricity | Conic Section |
+| --- | --- |
+| $e = 0$ | Circular |
+| $0 < e < 1$ | Elliptical |
+| $e = 1$ | Parabolic |
+| $e > 1$ | Hyperbolic |
+
+
+We can confirm these categories using the `conic` function.
+
+```{julia}
+let e = [0, 0.25, 1, 1.25]
+    e .=> conic.(e)
+end
+```
+
+We can construct a fully specified orbit by specifying Keplerian parameters (orbital elements).
+The mass parameter `μ` is the mass of the body we are orbiting multiplied by gravitational constant $G$.
+
+```{julia}
+k = (; e = 0.25, a = 10e5, i = π / 4, Ω = 0, ω = 0, ν = π / 2)
+μ = 3.1e10
+```
+
+All calculations which are computed for circular orbits are also relevant for Keplerian orbits more generally.
+
+```{julia}
+c = keplerian_to_cartesian(k..., μ)
+```
+
+```{julia}
+cartesian_to_keplerian(c..., μ)
+```
+
+```{julia}
+specific_energy(c..., μ)
+```
+
+```{julia}
+c3(c..., μ)
+```
+
+```{julia}
+P = specific_potential_energy(c..., μ)
+```
+
+```{julia}
+r = orbital_radius(c..., μ)
+```
+
+```{julia}
+v = orbital_speed(c..., μ)
+```
+
+```{julia}
+p = semi_parameter(c..., μ)
+```
+
+:::{.callout-tip appearance="simple"}
+For non-circular orbits, the semi-parameter $p$ is _not equal_ (generally) to the instantaneous orbital radius $r$.
+:::
+
+## Shape Calculations
+
+The _shape_ of a Keplerian orbit is completely described by its _eccentricity_. The full eccentricity vector $\overrightarrow{e}$ is found through the `eccentricity_vector` function, and the norm of this vector can be conveniently found using the `eccentricity` function.
+
+```{julia}
+ē = eccentricity_vector(c..., μ)
+```
+
+```{julia}
+@assert norm(ē) ≈ eccentricity(c..., μ)
+```
+
+For elliptical orbits, there exists some concepts of apoapsis and periapsis.
+An orbit's point of apoapsis is the point along the orbit where the orbital radius is maximized.
+The point of periapsis is the point along the orbit where the orbital radius is minimized.
+
+:::{.callout-tip appearance="simple"}
+In school, I learned the following helpful pneumonic: apoapsis (pronounced _ah-po-apsis_) is _far_.
+:::
+
+```{julia}
+periapsis_radius(c..., μ)
+```
+
+```{julia}
+apoapsis_radius(c..., μ)
+```
+
+## Orbit Prediction
+
+We can numerically integrate orbits to determine their position at future points in time; for this capability, see the [documentation](https://JuliaAstro.org/GeneralAstrodynamics/lib/AstrodynamicalSolvers) for `AstrodynamicalSolvers.jl`.
+Alternatively, we can use an iterative algorithm known as the _Kepler problem_ to determine future orbital states.
+For transferring from one orbit to another, we can solve another iterative problem known as _Lambert's problem_.
+Examples for both of these algorithms are shown immediately below.
+
+### Kepler's Problem
+
+Kepler's problem answers the following question: given a full orbital state at any instance in time, what will the orbital state be after some time duration $\Delta t$?
+
+We have an example state for an elliptical orbit already (defined above): `{julia} c`.
+For a spacecraft along this orbit, where can we find the spacecraft after $100$ seconds?
+We can use the `kepler` function to answer this question.
+
+```{julia}
+c₁₀₀ = kepler(c..., μ, 100)
+```
+
+### Lambert's Problem
+
+Kepler's problem is a drop-in replacement for numerical integration (for restricted two-body dynamics).
+Lambert's problem answers a different question: given a starting position and an ending position, what change in velocity is required to _transfer_ from the first orbit to the second in some amount of time?
+Note that the second position is _not_ a position along the first orbit.
+The velocities returned by Lambert's problem tell you how much you need to _speed up_ along your starting orbit, and how much you need to _slow down_ upon arriving at your ending orbit.
+We can calculate these values using the `lambert` function.
+Let's assume we want to increase our $x$ position by $100$ km over the course of $1$ hour, or $86,400$ seconds.
+
+```{julia}
+r₁ = [c.x, c.y, c.z]
+r₂ = [c.x + 100, c.y, c.z]
+Δt = 86400
+
+Δv₁, Δv₂ = lambert(r₁..., r₂..., μ, Δt)
+```
+
+The total change in speed can be described by the sum of the norms of $\Delta v_1$ and $\Delta v_2$.
+
+```{julia}
+Δv = norm(Δv₁) + norm(Δv₂)
+```
+
+As shown above, this maneuver would require a `{julia} Δv` $\frac{km}{s}$.
+
+## Next Steps
+
+Keperian orbits are very useful for orbits close to a single primary body, but they (by definition) neglect any gravity due to other bodies.
+Analytical tools for multi-body gravitational dynamics problems are limited.
+Fortunately, other simplifications exist, such as the _circular-restricted_ three-body problem.
+The following usage example presents calculations for such orbits.
