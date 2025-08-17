@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.7.33">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -73,14 +73,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-2fef5ea3f8957b3e4ecc936fc74692ca.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-bc185b5c5bdbcb35c2eb49d8a876ef70.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-d0143609c29254f01225a153d070f737.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-50313ee0dc2e288d96eb715e4598a439.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-d0143609c29254f01225a153d070f737.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-ddb99fa2ba16c4b70d1133970cbc32f5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-92207bab5d2d7c72058c1d3cc8a0ed17.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-ddb99fa2ba16c4b70d1133970cbc32f5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -574,7 +574,7 @@ window.Quarto = {
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div id="93f1bfea" class="cell" data-execution_count="2">
+<div id="808ec2b8" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">AttitudeSystem</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="3">
 <p><span class="math display">\[ \begin{align}
@@ -584,13 +584,13 @@ window.Quarto = {
 \frac{\mathrm{d} q\_{4}\left( t \right)}{\mathrm{d}t} &amp;= \frac{1}{2} \left(  - q\_{1}\left( t \right) \omega\_{1}\left( t \right) - q\_{2}\left( t \right) \omega\_{2}\left( t \right) - q\_{3}\left( t \right) \omega\_{3}\left( t \right) \right) \\
 \frac{\mathrm{d} \omega\_{1}\left( t \right)}{\mathrm{d}t} &amp;= f_{1} + \frac{\left(  - J_{1,2} J_{3,3} + J_{1,3} J_{3,2} \right) L_{2}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} + \frac{\left( J_{1,2} J_{2,3} - J_{1,3} J_{2,2} \right) L_{3}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} + \frac{\left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) L_{1}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} - \left(  - \left( J_{1,1} \omega\_{1}\left( t \right) + J_{1,2} \omega\_{2}\left( t \right) + J_{1,3} \omega\_{3}\left( t \right) \right) \omega\_{2}\left( t \right) + \left( J_{2,1} \omega\_{1}\left( t \right) + J_{2,2} \omega\_{2}\left( t \right) + J_{2,3} \omega\_{3}\left( t \right) \right) \omega\_{1}\left( t \right) \right) \frac{J_{1,2} J_{2,3} - J_{1,3} J_{2,2}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} - \left( \left( J_{1,1} \omega\_{1}\left( t \right) + J_{1,2} \omega\_{2}\left( t \right) + J_{1,3} \omega\_{3}\left( t \right) \right) \omega\_{3}\left( t \right) - \left( J_{3,1} \omega\_{1}\left( t \right) + J_{3,2} \omega\_{2}\left( t \right) + J_{3,3} \omega\_{3}\left( t \right) \right) \omega\_{1}\left( t \right) \right) \frac{ - J_{1,2} J_{3,3} + J_{1,3} J_{3,2}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} - \left(  - \left( J_{2,1} \omega\_{1}\left( t \right) + J_{2,2} \omega\_{2}\left( t \right) + J_{2,3} \omega\_{3}\left( t \right) \right) \omega\_{3}\left( t \right) + \left( J_{3,1} \omega\_{1}\left( t \right) + J_{3,2} \omega\_{2}\left( t \right) + J_{3,3} \omega\_{3}\left( t \right) \right) \omega\_{2}\left( t \right) \right) \frac{J_{2,2} J_{3,3} - J_{2,3} J_{3,2}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} \\
 \frac{\mathrm{d} \omega\_{2}\left( t \right)}{\mathrm{d}t} &amp;= f_{2} + \frac{\left(  - J_{2,1} J_{3,3} + J_{2,3} J_{3,1} \right) L_{1}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} + \frac{\left(  - J_{1,1} J_{2,3} + J_{1,3} J_{2,1} \right) L_{3}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} + \frac{\left( J_{1,1} J_{3,3} - J_{1,3} J_{3,1} \right) L_{2}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} - \left(  - \left( J_{1,1} \omega\_{1}\left( t \right) + J_{1,2} \omega\_{2}\left( t \right) + J_{1,3} \omega\_{3}\left( t \right) \right) \omega\_{2}\left( t \right) + \left( J_{2,1} \omega\_{1}\left( t \right) + J_{2,2} \omega\_{2}\left( t \right) + J_{2,3} \omega\_{3}\left( t \right) \right) \omega\_{1}\left( t \right) \right) \frac{ - J_{1,1} J_{2,3} + J_{1,3} J_{2,1}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} - \left( \left( J_{1,1} \omega\_{1}\left( t \right) + J_{1,2} \omega\_{2}\left( t \right) + J_{1,3} \omega\_{3}\left( t \right) \right) \omega\_{3}\left( t \right) - \left( J_{3,1} \omega\_{1}\left( t \right) + J_{3,2} \omega\_{2}\left( t \right) + J_{3,3} \omega\_{3}\left( t \right) \right) \omega\_{1}\left( t \right) \right) \frac{J_{1,1} J_{3,3} - J_{1,3} J_{3,1}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} - \left(  - \left( J_{2,1} \omega\_{1}\left( t \right) + J_{2,2} \omega\_{2}\left( t \right) + J_{2,3} \omega\_{3}\left( t \right) \right) \omega\_{3}\left( t \right) + \left( J_{3,1} \omega\_{1}\left( t \right) + J_{3,2} \omega\_{2}\left( t \right) + J_{3,3} \omega\_{3}\left( t \right) \right) \omega\_{2}\left( t \right) \right) \frac{ - J_{2,1} J_{3,3} + J_{2,3} J_{3,1}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} \\
-\frac{\mathrm{d} \omega\_{3}\left( t \right)}{\mathrm{d}t} &amp;= f_{3} + \frac{\left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right) L_{1}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} + \frac{\left(  - J_{1,1} J_{3,2} + J_{1,2} J_{3,1} \right) L_{2}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} + \frac{\left( J_{1,1} J_{2,2} - J_{1,2} J_{2,1} \right) L_{3}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} - \left(  - \left( J_{1,1} \omega\_{1}\left( t \right) + J_{1,2} \omega\_{2}\left( t \right) + J_{1,3} \omega\_{3}\left( t \right) \right) \omega\_{2}\left( t \right) + \left( J_{2,1} \omega\_{1}\left( t \right) + J_{2,2} \omega\_{2}\left( t \right) + J_{2,3} \omega\_{3}\left( t \right) \right) \omega\_{1}\left( t \right) \right) \frac{J_{1,1} J_{2,2} - J_{1,2} J_{2,1}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} - \left( \left( J_{1,1} \omega\_{1}\left( t \right) + J_{1,2} \omega\_{2}\left( t \right) + J_{1,3} \omega\_{3}\left( t \right) \right) \omega\_{3}\left( t \right) - \left( J_{3,1} \omega\_{1}\left( t \right) + J_{3,2} \omega\_{2}\left( t \right) + J_{3,3} \omega\_{3}\left( t \right) \right) \omega\_{1}\left( t \right) \right) \frac{ - J_{1,1} J_{3,2} + J_{1,2} J_{3,1}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} - \left(  - \left( J_{2,1} \omega\_{1}\left( t \right) + J_{2,2} \omega\_{2}\left( t \right) + J_{2,3} \omega\_{3}\left( t \right) \right) \omega\_{3}\left( t \right) + \left( J_{3,1} \omega\_{1}\left( t \right) + J_{3,2} \omega\_{2}\left( t \right) + J_{3,3} \omega\_{3}\left( t \right) \right) \omega\_{2}\left( t \right) \right) \frac{J_{2,1} J_{3,2} - J_{2,2} J_{3,1}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)}
+\frac{\mathrm{d} \omega\_{3}\left( t \right)}{\mathrm{d}t} &amp;= f_{3} + \frac{\left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right) L_{1}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} + \frac{\left(  - J_{1,1} J_{3,2} + J_{1,2} J_{3,1} \right) L_{2}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} + \frac{\left( J_{1,1} J_{2,2} - J_{1,2} J_{2,1} \right) L_{3}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} - \left( \left( J_{1,1} \omega\_{1}\left( t \right) + J_{1,2} \omega\_{2}\left( t \right) + J_{1,3} \omega\_{3}\left( t \right) \right) \omega\_{3}\left( t \right) - \left( J_{3,1} \omega\_{1}\left( t \right) + J_{3,2} \omega\_{2}\left( t \right) + J_{3,3} \omega\_{3}\left( t \right) \right) \omega\_{1}\left( t \right) \right) \frac{ - J_{1,1} J_{3,2} + J_{1,2} J_{3,1}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} - \left(  - \left( J_{1,1} \omega\_{1}\left( t \right) + J_{1,2} \omega\_{2}\left( t \right) + J_{1,3} \omega\_{3}\left( t \right) \right) \omega\_{2}\left( t \right) + \left( J_{2,1} \omega\_{1}\left( t \right) + J_{2,2} \omega\_{2}\left( t \right) + J_{2,3} \omega\_{3}\left( t \right) \right) \omega\_{1}\left( t \right) \right) \frac{J_{1,1} J_{2,2} - J_{1,2} J_{2,1}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)} - \left(  - \left( J_{2,1} \omega\_{1}\left( t \right) + J_{2,2} \omega\_{2}\left( t \right) + J_{2,3} \omega\_{3}\left( t \right) \right) \omega\_{3}\left( t \right) + \left( J_{3,1} \omega\_{1}\left( t \right) + J_{3,2} \omega\_{2}\left( t \right) + J_{3,3} \omega\_{3}\left( t \right) \right) \omega\_{2}\left( t \right) \right) \frac{J_{2,1} J_{3,2} - J_{2,2} J_{3,1}}{J_{1,1} \left( J_{2,2} J_{3,3} - J_{2,3} J_{3,2} \right) - J_{1,2} \left( J_{2,1} J_{3,3} - J_{2,3} J_{3,1} \right) + J_{1,3} \left( J_{2,1} J_{3,2} - J_{2,2} J_{3,1} \right)}
 \end{align}
 \]</span></p>
 </div>
 </div>
 <p>Let’s compute the Jacobian for these dynamics.</p>
-<div id="9145d802" class="cell" data-execution_count="3">
+<div id="8ed27110" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>J <span class="op">=</span> <span class="fu">calculate_jacobian</span>(<span class="fu">AttitudeSystem</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
 <p><span class="math display">\[ \begin{equation}
@@ -610,20 +610,20 @@ window.Quarto = {
 </div>
 </div>
 <p>Finally, let’s construct a Julia function which implements these dynamics!</p>
-<div id="f95e4c08" class="cell" data-execution_count="4">
+<div id="a3eda4c1" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">AttitudeFunction</span>()</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">7</span>), p <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">15</span>), t <span class="op">=</span> <span class="fl">0</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, p, t)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>7-element Vector{Float64}:
- -0.9208697760747326
- -0.3630207347729094
- -0.4626713831855001
-  0.6901270413407783
- -9.36386807043304
- -4.614331583204495
- -9.89479725376828</code></pre>
+ -0.2727198474753132
+ -0.37424953913861264
+  0.14328105357815013
+ -1.3856617724716604
+  4.409441952630638
+  0.7849342543273288
+ -0.599058143423732</code></pre>
 </div>
 </div>
 
