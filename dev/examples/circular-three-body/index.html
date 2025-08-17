@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Reference – AstrodynamicalCalculations</title>
+<title>Orbits in Circular Three Body Dynamics – AstrodynamicalCalculations</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,32 +20,67 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../api/r2b/index.html" rel="next">
-<link href="../examples/circular-three-body/index.html" rel="prev">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-bc185b5c5bdbcb35c2eb49d8a876ef70.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-82e5ff6757d989b2e91a5e18c8e32f43.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-9e6cac25e3d565252e0916cd0bfb74dc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-82e5ff6757d989b2e91a5e18c8e32f43.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../api/index.html" rel="next">
+<link href="../../examples/keplerian/index.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-bc185b5c5bdbcb35c2eb49d8a876ef70.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-82e5ff6757d989b2e91a5e18c8e32f43.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-9e6cac25e3d565252e0916cd0bfb74dc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-82e5ff6757d989b2e91a5e18c8e32f43.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -169,12 +204,41 @@ window.onload = function () {
 };
 </script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="../_static/style.css">
-<meta property="og:title" content="Reference – AstrodynamicalCalculations">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../_static/style.css">
+<meta property="og:title" content="Orbits in Circular Three Body Dynamics – AstrodynamicalCalculations">
 <meta property="og:description" content="">
 <meta property="og:site_name" content="AstrodynamicalCalculations">
-<meta name="twitter:title" content="Reference – AstrodynamicalCalculations">
+<meta name="twitter:title" content="Orbits in Circular Three Body Dynamics – AstrodynamicalCalculations">
 <meta name="twitter:description" content="">
 <meta name="twitter:card" content="summary">
 </head>
@@ -348,7 +412,7 @@ window.onload = function () {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">AstrodynamicalCalculations</span>
     </a>
   </div>
@@ -378,7 +442,7 @@ window.onload = function () {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/index.html">Reference</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../examples/index.html">Examples</a></li><li class="breadcrumb-item"><a href="../../examples/circular-three-body/index.html"><span class="chapter-title">Orbits in Circular Three Body Dynamics</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -400,12 +464,12 @@ window.onload = function () {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Overview</span></a>
+  <a href="../../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Overview</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../examples/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../examples/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Examples</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -414,24 +478,24 @@ window.onload = function () {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../examples/circular-two-body/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Circular Orbits</span></a>
+  <a href="../../examples/circular-two-body/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Circular Orbits</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../examples/keplerian/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Keplerian Orbits</span></a>
+  <a href="../../examples/keplerian/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Keplerian Orbits</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../examples/circular-three-body/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Orbits in Circular Three Body Dynamics</span></a>
+  <a href="../../examples/circular-three-body/index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Orbits in Circular Three Body Dynamics</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../api/index.html" class="sidebar-item-text sidebar-link active">
+            <a href="../../api/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Reference</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -440,12 +504,12 @@ window.onload = function () {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/r2b/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Restricted Two Body Calculations</span></a>
+  <a href="../../api/r2b/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Restricted Two Body Calculations</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/cr3b/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Circular Restricted Three Body Calculations</span></a>
+  <a href="../../api/cr3b/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Circular Restricted Three Body Calculations</span></a>
   </div>
 </li>
       </ul>
@@ -460,7 +524,10 @@ window.onload = function () {
     <h2 id="toc-title">Table of Contents</h2>
    
   <ul>
-  <li><a href="#astrodynamicalcalculations" id="toc-astrodynamicalcalculations" class="nav-link active" data-scroll-target="#astrodynamicalcalculations"><code>AstrodynamicalCalculations</code></a></li>
+  <li><a href="#coordinate-conversions" id="toc-coordinate-conversions" class="nav-link active" data-scroll-target="#coordinate-conversions">Coordinate Conversions</a></li>
+  <li><a href="#energy-calculations" id="toc-energy-calculations" class="nav-link" data-scroll-target="#energy-calculations">Energy Calculations</a></li>
+  <li><a href="#lagrange-points" id="toc-lagrange-points" class="nav-link" data-scroll-target="#lagrange-points">Lagrange Points</a></li>
+  <li><a href="#approximate-periodic-orbits" id="toc-approximate-periodic-orbits" class="nav-link" data-scroll-target="#approximate-periodic-orbits">Approximate Periodic Orbits</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/JuliaAstro/GeneralAstrodynamics.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -468,9 +535,9 @@ window.onload = function () {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../examples/index.html">Examples</a></li><li class="breadcrumb-item"><a href="../../examples/circular-three-body/index.html"><span class="chapter-title">Orbits in Circular Three Body Dynamics</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Reference</h1>
+<h1 class="title"><span class="chapter-title">Orbits in Circular Three Body Dynamics</span></h1>
 </div>
 
 
@@ -487,27 +554,136 @@ window.onload = function () {
 </header>
 
 
-<p><em>Docstrings for <code>AstrodynamicalCalculations</code>.</em></p>
-<section id="astrodynamicalcalculations" class="level2">
-<h2 class="anchored" data-anchor-id="astrodynamicalcalculations"><code>AstrodynamicalCalculations</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
+<p><em>Orbits in e.g.&nbsp;the Earth-Moon system.</em></p>
+<div id="1639be07" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">LinearAlgebra</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalCalculations</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="coordinate-conversions" class="level2">
+<h2 class="anchored" data-anchor-id="coordinate-conversions">Coordinate Conversions</h2>
+<p>The Circular Restricted Three Body (CR3B) Problem describes a massless spacecraft experiencing gravitational forces due to <em>two</em> point masses which orbit their common center of mass. There’s a good bit there, so let’s unpack that statement further. Consider the Earth and its moon. The Earth and the Moon both orbit the Sun, but if we neglect the Sun and watch the positions of the Earth and the Moon with respect to their common center of mass (in a rotating reference frame where the <span class="math inline">\(\hat{x}\)</span> axis points from the Earth to the Moon) then both the Earth and the Moon appear to move along <em>circular</em> orbits.</p>
+<p>When we analyze orbits within this problem, we typically use non-dimensional units: we scale all distance units by the distance <span class="math inline">\(a\)</span> between the two massive bodies, and we scale all time distances by the following function of <span class="math inline">\(a\)</span> and each body’s mass parameter: <span class="math inline">\(2\pi \sqrt{\frac{a^3}{\mu_1 + \mu_2}}\)</span>.</p>
+<div id="637fe40d" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="fl">1e5</span> <span class="co"># </span><span class="al">TODO</span><span class="co"> replace with real value</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>μ₁ <span class="op">=</span> <span class="fl">1e5</span> <span class="co"># </span><span class="al">TODO</span><span class="co"> replace with real value</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>μ₂ <span class="op">=</span> <span class="fl">14</span> <span class="co"># </span><span class="al">TODO</span><span class="co"> replace with real value</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>14</code></pre>
+</div>
+</div>
+<p>Both of these scalings are provided by the <code>distance_scaling</code> and <code>time_scaling</code> functions. The <code>velocity_scaling</code> is simply the result of the <code>distance_scaling</code> divided by the <code>time_scaling</code>.</p>
+<div id="d42934aa" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>L <span class="op">=</span> <span class="fu">distance_scaling</span>(a, μ₁, μ₂)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>100000.0</code></pre>
+</div>
+</div>
+<div id="4cfe3766" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> <span class="fu">time_scaling</span>(a, μ₁, μ₂)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>628274.553038411</code></pre>
+</div>
+</div>
+<div id="c0f0d2a5" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>V <span class="op">=</span> <span class="fu">velocity_scaling</span>(a, μ₁, μ₂)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>0.15916608354800943</code></pre>
+</div>
+</div>
+<p>These scalings are applied to Cartesian state vectors in CR3B dynamics.</p>
+<div id="f9560fb6" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> (; x <span class="op">=</span> <span class="fl">1e6</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">1e2</span>, z <span class="op">=</span> <span class="fl">3e3</span>, ẋ <span class="op">=</span> <span class="fl">1e2</span>, ẏ <span class="op">=</span> <span class="op">-</span><span class="fl">1e3</span>, ż <span class="op">=</span> <span class="fl">0.0</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> <span class="fl">1e9</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> <span class="fu">nondimensional</span>(c<span class="op">...</span>, t, a, μ₁, μ₂)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>(x = 10.0, y = -0.001, z = 0.03, ẋ = 628.274553038411, ẏ = -6282.74553038411, ż = 0.0, t = 1591.6608354800942, μ = 0.00013998040274361588, L = 100000.0, T = 628274.553038411)</code></pre>
+</div>
+</div>
+<div class="callout callout-style-simple callout-important">
 <div class="callout-body d-flex">
 <div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
+<i class="callout-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>Common calculations within orbital mechanics and astrodynamics.</p>
-<section id="extended-help" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="extended-help">Extended Help</h3>
-<section id="documentation" class="level4 unnumbered">
-<h4 class="unnumbered anchored" data-anchor-id="documentation">Documentation</h4>
-<p>See the project documentation for more information: https://JuliaAstro.org/AstrodynamicalCalculations.jl.</p>
-</section>
-<section id="license" class="level4 unnumbered">
-<h4 class="unnumbered anchored" data-anchor-id="license">License</h4>
-</section>
-</section>
+<p>All CR3B calculations are performed using <strong>nondimensional</strong> units in the Synodic (rotating) reference frame!</p>
 </div>
+</div>
+</div>
+<p>Given a particular Synodic (rotating reference frame) position <span class="math inline">\(\overrightarrow{x}\)</span>, we can also compute the corresponding distance to the primary and secondary bodies using <code>distance_to_primary</code> and <code>distance_to_secondary</code> respectively.</p>
+<div id="21fa48e9" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> <span class="fu">norm</span>((c.x, c.y, c.z))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>10.000045049898524</code></pre>
+</div>
+</div>
+<div id="10e4cc43" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>r₁ <span class="op">=</span> <span class="fu">distance_to_primary</span>(r, c.μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>10.000185030301267</code></pre>
+</div>
+</div>
+<div id="27ce8cba" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>r₂ <span class="op">=</span> <span class="fu">distance_to_secondary</span>(r, c.μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>9.000185030301267</code></pre>
+</div>
+</div>
+<p>As mentioned above, all calculations are performed in the Synodic (rotating) reference frame. We can convert nondimensional Cartesian coordinates expressed in the Synodic frame to the barycentric inertial frame (an inertial frame centered at the center of mass of the system) using the <code>synodic_to_inertial</code> function with two additional pieces of information: the time <span class="math inline">\(t\)</span> since the coordinate frame epoch and the angular speed of the massive bodies <span class="math inline">\(\omega\)</span>.</p>
+<div id="c55b0ead" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> t <span class="op">=</span> <span class="fl">0.1</span>, ω <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">synodic_to_inertial</span>(c.x, c.y, c.z, t, ω)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>(x = 9.94994181936361, y = -0.9993291706335595, z = 0.03)</code></pre>
+</div>
+</div>
+</section>
+<section id="energy-calculations" class="level2">
+<h2 class="anchored" data-anchor-id="energy-calculations">Energy Calculations</h2>
+<p>As always, we can compute the potential energy of the orbit using the <code>potential_energy</code> function.</p>
+<div id="6e2974f3" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>P <span class="op">=</span> <span class="fu">potential_energy</span>(c.x, c.y, c.z, c.μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>50.100000205005934</code></pre>
+</div>
+</div>
+<p>There is a second metric for measuring orbital energies in CR3B dynamics: the so-called Jacobi constant <span class="math inline">\(C \triangleq 2 P - v^2\)</span>. We can use the <code>jacobi_constant</code> function to compute this value.</p>
+<div id="a7c40f48" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> <span class="fu">jacobi_constant</span>(c.x, c.y, c.z, c.ẋ, c.ẏ, c.ż, c.μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>-3.986752011355671e7</code></pre>
+</div>
+</div>
+<p>Every CR3B system has the potential for <em>contours</em> of zero-velocity dynamics: a spacecraft in the system may never cross such lines in state space. The <code>zero_velocity_curves</code> function computes these contours as collections of <span class="math inline">\((x,y)\)</span> lines.</p>
+</section>
+<section id="lagrange-points" class="level2">
+<h2 class="anchored" data-anchor-id="lagrange-points">Lagrange Points</h2>
+<p>As is the case for all nonlinear dynamical systems, there are special positions in state space where the induced accelerations are null. In CR3B dynamics, these points are known as Lagrange points. In theory, a spacecraft placed at one of these points will stay there for all time. In practice, of course, no system perfectly satisfies the assumptions set by the CR3B definition. Still, these points <em>are</em> practically useful, as demonstrated by e.g.&nbsp;the James Webb Space Telescope’s orbit about an Earth-Moon Lagrange point.</p>
+<p>There are <span class="math inline">\(5\)</span> Lagrange points for every CR3B system: three along the <span class="math inline">\(x\)</span> axis, and two offset points which are mirrored across the <span class="math inline">\(x\)</span> axis. The positions for each of these points can be found using the <code>lagrange_point</code> function, given the nondimensional mass parameter <span class="math inline">\(\mu\)</span> for the CR3B system.</p>
+<div id="91dbf35b" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> L <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    L <span class="op">.=&gt;</span> <span class="fu">lagrange_point</span>.(c.μ, L)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>5-element Vector{Pair{Int64, Vector{Float64}}}:
+ 1 =&gt; [0.9642949670861006, 0.0, 0.0]
+ 2 =&gt; [1.0362889706912246, 0.0, 0.0]
+ 3 =&gt; [-1.036536359328956, 0.0, 0.0]
+ 4 =&gt; [0.4998600195972564, 0.8660254037844386, 0.0]
+ 5 =&gt; [0.4998600195972564, -0.8660254037844386, 0.0]</code></pre>
+</div>
+</div>
+</section>
+<section id="approximate-periodic-orbits" class="level2">
+<h2 class="anchored" data-anchor-id="approximate-periodic-orbits">Approximate Periodic Orbits</h2>
+<p>There exist periodic orbits about Lagrange points in CR3B dynamics. Periodic orbits in three dimensions (extra-planar orbits) are known as <em>halo</em> orbits. Periodic orbits in two dimensions (planar orbits) are known as <em>Lyapunov</em> orbits. These orbits can only be found using (quite sensitive) numerical methods: these capabilities are provided by <code>AstrodynamicalSolvers.jl</code>, and are described in the package <a href="https://JuliaAstro.org/GeneralAstrodynamics/lib/AstrodynamicalSolvers">documentation</a>. Approximations for periodic initial conditions are available analytically, and this is provided in <code>AstrodynamicalCalculations</code> through the <code>richardson_ic</code> function.</p>
+<div id="6d67dabc" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> L <span class="op">=</span> <span class="fl">2</span>, Z <span class="op">=</span> <span class="fl">1e-3</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    ic <span class="op">=</span> <span class="fu">richardson_ic</span>(c.μ, L; Z <span class="op">=</span> Z)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<pre><code>(x = 1.0303103548566064, y = 0.0, z = 0.0009308517372494995, ẋ = 0.0, ẏ = 0.03527008629435396, ż = -0.0, Δt = 3.1166638574162655)</code></pre>
 </div>
 </div>
 
@@ -929,13 +1105,13 @@ window.onload = function () {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../examples/circular-three-body/index.html" class="pagination-link" aria-label="Orbits in Circular Three Body Dynamics">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Orbits in Circular Three Body Dynamics</span></span>
+      <a href="../../examples/keplerian/index.html" class="pagination-link" aria-label="Keplerian Orbits">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Keplerian Orbits</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../api/r2b/index.html" class="pagination-link" aria-label="Restricted Two Body Calculations">
-        <span class="nav-page-text"><span class="chapter-title">Restricted Two Body Calculations</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../api/index.html" class="pagination-link" aria-label="Reference">
+        <span class="nav-page-text">Reference</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Reference – AstrodynamicalCalculations</title>
+<title>Circular Orbits – AstrodynamicalCalculations</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,32 +20,67 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../api/r2b/index.html" rel="next">
-<link href="../examples/circular-three-body/index.html" rel="prev">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-bc185b5c5bdbcb35c2eb49d8a876ef70.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-82e5ff6757d989b2e91a5e18c8e32f43.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-9e6cac25e3d565252e0916cd0bfb74dc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-82e5ff6757d989b2e91a5e18c8e32f43.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../examples/keplerian/index.html" rel="next">
+<link href="../../examples/index.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-bc185b5c5bdbcb35c2eb49d8a876ef70.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-82e5ff6757d989b2e91a5e18c8e32f43.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-9e6cac25e3d565252e0916cd0bfb74dc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-82e5ff6757d989b2e91a5e18c8e32f43.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -169,12 +204,41 @@ window.onload = function () {
 };
 </script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="../_static/style.css">
-<meta property="og:title" content="Reference – AstrodynamicalCalculations">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../_static/style.css">
+<meta property="og:title" content="Circular Orbits – AstrodynamicalCalculations">
 <meta property="og:description" content="">
 <meta property="og:site_name" content="AstrodynamicalCalculations">
-<meta name="twitter:title" content="Reference – AstrodynamicalCalculations">
+<meta name="twitter:title" content="Circular Orbits – AstrodynamicalCalculations">
 <meta name="twitter:description" content="">
 <meta name="twitter:card" content="summary">
 </head>
@@ -348,7 +412,7 @@ window.onload = function () {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">AstrodynamicalCalculations</span>
     </a>
   </div>
@@ -378,7 +442,7 @@ window.onload = function () {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/index.html">Reference</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../examples/index.html">Examples</a></li><li class="breadcrumb-item"><a href="../../examples/circular-two-body/index.html"><span class="chapter-title">Circular Orbits</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -400,12 +464,12 @@ window.onload = function () {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Overview</span></a>
+  <a href="../../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Overview</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../examples/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../examples/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Examples</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -414,24 +478,24 @@ window.onload = function () {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../examples/circular-two-body/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Circular Orbits</span></a>
+  <a href="../../examples/circular-two-body/index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Circular Orbits</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../examples/keplerian/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Keplerian Orbits</span></a>
+  <a href="../../examples/keplerian/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Keplerian Orbits</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../examples/circular-three-body/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Orbits in Circular Three Body Dynamics</span></a>
+  <a href="../../examples/circular-three-body/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Orbits in Circular Three Body Dynamics</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../api/index.html" class="sidebar-item-text sidebar-link active">
+            <a href="../../api/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Reference</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -440,12 +504,12 @@ window.onload = function () {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/r2b/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Restricted Two Body Calculations</span></a>
+  <a href="../../api/r2b/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Restricted Two Body Calculations</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/cr3b/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Circular Restricted Three Body Calculations</span></a>
+  <a href="../../api/cr3b/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Circular Restricted Three Body Calculations</span></a>
   </div>
 </li>
       </ul>
@@ -460,7 +524,10 @@ window.onload = function () {
     <h2 id="toc-title">Table of Contents</h2>
    
   <ul>
-  <li><a href="#astrodynamicalcalculations" id="toc-astrodynamicalcalculations" class="nav-link active" data-scroll-target="#astrodynamicalcalculations"><code>AstrodynamicalCalculations</code></a></li>
+  <li><a href="#coordinate-conversions" id="toc-coordinate-conversions" class="nav-link active" data-scroll-target="#coordinate-conversions">Coordinate Conversions</a></li>
+  <li><a href="#energy-calculations" id="toc-energy-calculations" class="nav-link" data-scroll-target="#energy-calculations">Energy Calculations</a></li>
+  <li><a href="#orbital-characterizations" id="toc-orbital-characterizations" class="nav-link" data-scroll-target="#orbital-characterizations">Orbital Characterizations</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/JuliaAstro/GeneralAstrodynamics.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -468,9 +535,9 @@ window.onload = function () {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../examples/index.html">Examples</a></li><li class="breadcrumb-item"><a href="../../examples/circular-two-body/index.html"><span class="chapter-title">Circular Orbits</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Reference</h1>
+<h1 class="title"><span class="chapter-title">Circular Orbits</span></h1>
 </div>
 
 
@@ -487,29 +554,119 @@ window.onload = function () {
 </header>
 
 
-<p><em>Docstrings for <code>AstrodynamicalCalculations</code>.</em></p>
-<section id="astrodynamicalcalculations" class="level2">
-<h2 class="anchored" data-anchor-id="astrodynamicalcalculations"><code>AstrodynamicalCalculations</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
+<p><em>The simplest possible orbit.</em></p>
+<div id="863c48ee" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">LinearAlgebra</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalCalculations</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="coordinate-conversions" class="level2">
+<h2 class="anchored" data-anchor-id="coordinate-conversions">Coordinate Conversions</h2>
+<p>If we assume a mass-less spacecraft orbiting a point mass, perfectly circular orbits are possible. The eccentricity of circular orbits is (by definition) zero. We can confirm this using the <code>conic</code> function.</p>
+<div id="a70798df" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="cn">e</span> <span class="op">=</span> <span class="fl">0</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">conic</span>(<span class="cn">e</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>:Circular</code></pre>
+</div>
+</div>
+<p>We can construct a fully specified circular orbit by specifying Keplerian parameters (orbital elements). The mass parameter <code>μ</code> is the mass of the body we are orbiting multiplied by gravitational constant <span class="math inline">\(G\)</span>.</p>
+<div id="8d3de144" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> (; <span class="cn">e</span> <span class="op">=</span> <span class="fl">0</span>, a <span class="op">=</span> <span class="fl">10e5</span>, i <span class="op">=</span> <span class="cn">π</span> <span class="op">/</span> <span class="fl">4</span>, Ω <span class="op">=</span> <span class="fl">0</span>, ω <span class="op">=</span> <span class="fl">0</span>, ν <span class="op">=</span> <span class="cn">π</span> <span class="op">/</span> <span class="fl">2</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>μ <span class="op">=</span> <span class="fl">3.1e10</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>3.1e10</code></pre>
+</div>
+</div>
+<p>With our orbit specified in Keplerian parameters, we may ask: what are the Cartesian coordinates of the orbit?</p>
+<div class="callout-info" data-appearance="simple">
+<p>The Cartesian coordinates are defined <em>with respect to</em> the center of the primary body (the body that is being orbited), and <em>expressed in</em> the coordinate frame defined by the primary body.</p>
+</div>
+<div id="c954831a" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> <span class="fu">keplerian_to_cartesian</span>(k<span class="op">...</span>, μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>(x = 6.123233995736767e-11, y = 707106.7811865476, z = 707106.7811865475, ẋ = -176.0681686165901, ẏ = 7.623364846191411e-15, ż = 7.623364846191411e-15)</code></pre>
+</div>
+</div>
+<p>We can also take Cartesian coordinates and convert them back to Keplerian coordinates.</p>
+<div class="callout callout-style-simple callout-warning">
 <div class="callout-body d-flex">
 <div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
+<i class="callout-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>Common calculations within orbital mechanics and astrodynamics.</p>
-<section id="extended-help" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="extended-help">Extended Help</h3>
-<section id="documentation" class="level4 unnumbered">
-<h4 class="unnumbered anchored" data-anchor-id="documentation">Documentation</h4>
-<p>See the project documentation for more information: https://JuliaAstro.org/AstrodynamicalCalculations.jl.</p>
-</section>
-<section id="license" class="level4 unnumbered">
-<h4 class="unnumbered anchored" data-anchor-id="license">License</h4>
-</section>
-</section>
+<p>The transformation from Keplerian to Cartesian coordinates is <em>not</em> the inverse of the transformation from Cartesian to Keplerian coordinates!</p>
 </div>
 </div>
 </div>
+<div id="03d02d16" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cartesian_to_keplerian</span>(c<span class="op">...</span>, μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>(e = 1.7402569707723985e-16, a = 1.0000000000000002e6, i = 0.7853981633974484, Ω = 0.0, ω = 1.5707963267948966, ν = 0.0)</code></pre>
+</div>
+</div>
+</section>
+<section id="energy-calculations" class="level2">
+<h2 class="anchored" data-anchor-id="energy-calculations">Energy Calculations</h2>
+<p>Every (restricted) orbit has an associated specific energy: the energy of the orbit per unit mass. An associated parameter is the <span class="math inline">\(C_3\)</span> energy, which is defined as <span class="math inline">\(v^2 - \frac{2\mu}{r}\)</span>, where <span class="math inline">\(v\)</span> and <span class="math inline">\(r\)</span> are the scalar instantaneous orbital speed and radius values respectively.</p>
+<div id="1bff566b" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">specific_energy</span>(c<span class="op">...</span>, μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>-15499.999999999998</code></pre>
+</div>
+</div>
+<div id="49991fa7" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c3</span>(c<span class="op">...</span>, μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>-30999.999999999996</code></pre>
+</div>
+</div>
+<p>The specific potential energy includes the potential energy per unit mass. Of course, the velocity components of the Cartesian state are not relevant to the calculation! For convenience, you can still provide the full Cartesian state in the method: the calculation will simply discard the velocity components.</p>
+<div id="1f0f53d4" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>P <span class="op">=</span> <span class="fu">specific_potential_energy</span>(c<span class="op">...</span>, μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>31000.0</code></pre>
+</div>
+</div>
+<div id="1afb97f5" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@assert</span> P <span class="op">==</span> <span class="fu">specific_potential_energy</span>(<span class="fu">norm</span>([c.x, c.y, c.z]), μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="orbital-characterizations" class="level2">
+<h2 class="anchored" data-anchor-id="orbital-characterizations">Orbital Characterizations</h2>
+<p>Simple characterizations, such as the instantaneous orbital speed, orbital radius, or semi-parameter, are also available.</p>
+<div id="ca29a906" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> <span class="fu">orbital_radius</span>(c<span class="op">...</span>, μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>1.0000000000000002e6</code></pre>
+</div>
+</div>
+<div id="42b78970" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> <span class="fu">orbital_speed</span>(c<span class="op">...</span>, μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>176.0681686165901</code></pre>
+</div>
+</div>
+<div id="67419744" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fu">semi_parameter</span>(c<span class="op">...</span>, μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>1.0000000000000002e6</code></pre>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>For circular orbits, the semi-parameter <span class="math inline">\(p\)</span> is equivalent to the orbital radius <span class="math inline">\(r\)</span>!</p>
+</div>
+</div>
+</div>
+</section>
+<section id="next-steps" class="level2">
+<h2 class="anchored" data-anchor-id="next-steps">Next Steps</h2>
+<p>Circular orbits are quite simple problems to solve; they are a special case of Keplerian orbits in general. The following usage example presents non-circular Keplerian orbits, and the additional calculations that are relevant to such problems, e.g.&nbsp;eccentricity, the periapsis radius, and the apoapsis radius.</p>
 
 
 </section>
@@ -929,13 +1086,13 @@ window.onload = function () {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../examples/circular-three-body/index.html" class="pagination-link" aria-label="Orbits in Circular Three Body Dynamics">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Orbits in Circular Three Body Dynamics</span></span>
+      <a href="../../examples/index.html" class="pagination-link" aria-label="Examples">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Examples</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../api/r2b/index.html" class="pagination-link" aria-label="Restricted Two Body Calculations">
-        <span class="nav-page-text"><span class="chapter-title">Restricted Two Body Calculations</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../examples/keplerian/index.html" class="pagination-link" aria-label="Keplerian Orbits">
+        <span class="nav-page-text"><span class="chapter-title">Keplerian Orbits</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
