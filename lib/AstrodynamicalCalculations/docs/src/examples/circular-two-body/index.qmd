@@ -1,0 +1,102 @@
+---
+number-depth: 2
+---
+
+# Circular Orbits
+
+_The simplest possible orbit._
+
+```{julia}
+using LinearAlgebra
+using AstrodynamicalCalculations
+```
+
+## Coordinate Conversions
+
+If we assume a mass-less spacecraft orbiting a point mass, perfectly circular orbits are possible.
+The eccentricity of circular orbits is (by definition) zero.
+We can confirm this using the `conic` function.
+
+```{julia}
+let e = 0
+    conic(e)
+end
+```
+
+We can construct a fully specified circular orbit by specifying Keplerian parameters (orbital elements).
+The mass parameter `μ` is the mass of the body we are orbiting multiplied by gravitational constant $G$.
+
+```{julia}
+k = (; e = 0, a = 10e5, i = π / 4, Ω = 0, ω = 0, ν = π / 2)
+μ = 3.1e10
+```
+
+With our orbit specified in Keplerian parameters, we may ask: what are the Cartesian coordinates of the orbit?
+
+:::{.callout-info appearance="simple"}
+The Cartesian coordinates are defined _with respect to_ the center of the primary body (the body that is being orbited), and _expressed in_ the coordinate frame defined by the primary body.
+:::
+
+```{julia}
+c = keplerian_to_cartesian(k..., μ)
+```
+
+We can also take Cartesian coordinates and convert them back to Keplerian coordinates.
+
+:::{.callout-warning appearance="simple"}
+The transformation from Keplerian to Cartesian coordinates is _not_ the inverse of the transformation from Cartesian to Keplerian coordinates!
+:::
+
+```{julia}
+cartesian_to_keplerian(c..., μ)
+```
+
+## Energy Calculations
+
+Every (restricted) orbit has an associated specific energy: the energy of the orbit per unit mass.
+An associated parameter is the $C_3$ energy, which is defined as $v^2 - \frac{2\mu}{r}$, where $v$ and $r$ are the scalar instantaneous orbital speed and radius values respectively.
+
+```{julia}
+specific_energy(c..., μ)
+```
+
+```{julia}
+c3(c..., μ)
+```
+
+The specific potential energy includes the potential energy per unit mass.
+Of course, the velocity components of the Cartesian state are not relevant to the calculation!
+For convenience, you can still provide the full Cartesian state in the method: the calculation will simply discard the velocity components.
+
+```{julia}
+P = specific_potential_energy(c..., μ)
+```
+
+```{julia}
+@assert P == specific_potential_energy(norm([c.x, c.y, c.z]), μ)
+```
+
+## Orbital Characterizations
+
+Simple characterizations, such as the instantaneous orbital speed, orbital radius, or semi-parameter, are also available.
+
+```{julia}
+r = orbital_radius(c..., μ)
+```
+
+```{julia}
+v = orbital_speed(c..., μ)
+```
+
+```{julia}
+p = semi_parameter(c..., μ)
+```
+
+:::{.callout-tip appearance="simple"}
+For circular orbits, the semi-parameter $p$ is equivalent to the orbital radius $r$!
+:::
+
+## Next Steps
+
+Circular orbits are quite simple problems to solve; they are a special case of Keplerian orbits in general.
+The following usage example presents non-circular Keplerian orbits, and the additional calculations that are relevant to such problems, e.g. eccentricity, the periapsis radius, and the apoapsis radius.

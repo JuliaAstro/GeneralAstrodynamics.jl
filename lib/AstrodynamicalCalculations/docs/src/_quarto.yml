@@ -10,6 +10,11 @@ book:
     date: "2025-03-02"
     chapters:
         - index.md
+        - part: examples/index.qmd
+          chapters:
+            - examples/circular-two-body/index.qmd
+            - examples/keplerian/index.qmd
+            - examples/circular-three-body/index.qmd
         - part: api/index.qmd
           chapters:
             - api/r2b/index.qmd
@@ -34,10 +39,8 @@ book:
 toc-title: "Table of Contents"
 
 execute:
-    echo: false
+    echo: true
     output: true
-    cache: false
-    freeze: false
 
 bibliography: references.bib
 
