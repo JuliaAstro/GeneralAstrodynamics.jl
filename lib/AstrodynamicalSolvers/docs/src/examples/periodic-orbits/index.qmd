@@ -1,0 +1,140 @@
+# Periodic Orbits
+
+*Finding orbits where positions and velocities repeat.*
+
+Can you find some duration $\Delta t$ such that a spacecraft in orbit at time $t$ will return to its previous position (and velocity) at time $t + \Delta t$?
+If so, your orbit is *periodic*.
+The name *orbit* probably puts the image of a *periodic orbit* in your head.
+Picture an orbit about Earth: you're probably thinking of a circle, kind of like a halo or a sash, wrapping Earth.
+In reality, most orbits are not periodic.
+There are varying degrees of difficulty required for finding periodic orbits.
+Let's explore this problem for two example systems: the restricted two-body system, and the circular-restricted three-body system.
+
+```{julia}
+using AstrodynamicalSolvers
+using AstrodynamicalModels
+using AstrodynamicalCalculations
+```
+
+## Periodic Orbits in R2B Dynamics
+
+An orbit in the restricted two-body problem is periodic if and only if its eccentricity is less than one.
+There are no negative eccentricities, so you may say the orbit is periodic when its eccentricity $e$ satisfies the following inequality: $0 \leq e < 1$.
+Let's try this for an example orbit.
+
+```{julia}
+orbit = let
+    u = CartesianState(; x = 11e5, y = 5e5, ẋ = 1e3, ẏ = 1e3)
+    p = R2BParameters(4.00458e12)
+
+    Orbit(u, p)
+end
+```
+
+The print-out states that the orbit is elliptical, so we already know it's periodic.
+Let's make sure!
+
+```{julia}
+0 ≤ eccentricity(orbit) < 1
+```
+
+We now know the orbit is periodic!
+Its period can be found with the `orbital_period` function: `{julia} orbital_period(orbit) / 60 / 60 / 24` days.
+
+## Periodic Orbits in CR3B Dynamics
+
+Three-body systems are a bit more complicated.
+There is no simple inequality to check for periodicity.
+Instead, you have to propagate the orbit and see if it's periodic.
+Let's pick an orbit at random and see if it ever repeats.
+
+```{julia}
+orbit = Orbit(
+    rand(CartesianState),
+    CR3BParameters(0.012),
+)
+
+periodic = false
+initial = copy(state(orbit))
+
+let tries = 1000
+    while tries > 0
+        propagate!(orbit, 1e-3)
+
+        periodic = state(orbit) ≈ initial
+        periodic && break
+
+        tries -= 1
+    end
+
+    if periodic
+        println("This orbit is periodic!")
+    else
+        println("This orbit is not periodic.")
+    end
+end
+```
+
+```{julia}
+#| echo: false
+#| output: false
+
+# just in case...
+@assert !periodic
+```
+
+That didn't work.
+Now, we didn't try *that* hard.
+You might wonder: what if we tried $2000$ times?
+Or $10000$?
+Or one million?
+
+The chances that this routine will work for a random orbit are vanishingly small.
+Three-body orbits are chaotic, and so they are not generally periodic at all.
+There are cases where periodic orbits can be found, however.
+One such case is an orbit about a Lagrange point.
+
+Differential correction techniques can be used to find an orbit that is periodic nearby a Lagrange point.
+One such technique is implemented in `AstrodynamicalSolvers` via the `halo` function.
+The `halo` function can find two-dimensional (rigorously called Lyapunov) orbits, or three-dimensional (so-called Halo) orbits.
+Let's try a couple of examples.
+First, a Lyapunov (planar) orbit.
+Then, a halo (extra-planar) orbit.
+In both cases, a named tuple is returned with Cartesian state values for an initial condition, and an orbital period.
+
+```{julia}
+let L = 2, μ = orbit.parameters.μ
+    (; x, ẏ, Δt) = halo(μ, L)
+
+    start = CartesianState(; x, ẏ)
+
+    orbit = Orbit(start, CR3BParameters(μ))
+    propagate!(orbit, Δt)
+
+    periodic = state(orbit) ≈ start
+
+    @assert periodic
+
+    orbit
+end
+```
+
+The planar orbit is periodic!
+As shown below, the extra-planar orbit is periodic as well.
+
+```{julia}
+let L = 1, μ = orbit.parameters.μ
+    (; x, z, ẏ, Δt) = halo(μ, L; amplitude = 1e-6)
+
+    start = CartesianState(; x, ẏ)
+
+    orbit = Orbit(start, CR3BParameters(μ))
+    propagate!(orbit, Δt)
+
+    periodic = state(orbit) ≈ start
+
+    @assert periodic
+
+    orbit
+end
+```
