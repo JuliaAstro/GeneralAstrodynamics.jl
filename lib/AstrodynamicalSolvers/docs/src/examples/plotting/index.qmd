@@ -1,0 +1,355 @@
+# Plotting
+
+All orbit propagation is provided by [SciML](https://sciml.ai) ecosystem packages.
+Therefore, trajectories generated from orbit propagation can be very simply plotted with Julia's most popular plotting front-end packages: `Plots.jl` and `Makie.jl`.
+
+## Periodic Orbits
+
+This package provides differential correction methods and helpful wrapper function for finding periodic orbits within Circular Restricted Three Body Problem dynamics.
+First, let's find two periodic orbits: one planar orbit, and one extraplanar (three dimensioned in the rotating / Synodic frame) orbit.
+
+```{julia}
+#| echo: true
+using AstrodynamicalSolvers
+using AstrodynamicalModels
+using OrdinaryDiffEq
+
+μ = 0.012150584395829193
+
+planar = let
+    ic = halo(μ, 1) # lyapunov (planar) orbit about L1
+    u = Vector(CartesianState(ic))
+    problem = ODEProblem(CR3BFunction(), u, (0, ic.Δt), (μ,))
+    solution = solve(problem, Vern9(), reltol = 1e-14, abstol = 1e-14)
+end
+
+extraplanar = let
+    ic = halo(μ, 2; amplitude = 0.01) # halo (non-planar) orbit about L2
+    u = Vector(CartesianState(ic))
+    problem = ODEProblem(CR3BFunction(), u, (0, ic.Δt), (μ,))
+    solution = solve(problem, Vern9(), reltol = 1e-14, abstol = 1e-14)
+end
+```
+
+### `Plots.jl`
+
+Both the planar orbit and the extraplanar orbit can be plotted with `Plots.jl`.
+
+::: {.callout-warning appearance="simple"}
+Using `Plots.jl` and `Makie.jl` simultaneously is uncommon!
+For this to work, you need to qualify their `plot` functions, e.g.
+`Plots.plot`.
+:::
+
+```{julia}
+#| echo: true
+using Plots
+
+let
+    planar_plot = Plots.plot(
+        planar,
+        idxs = (:x, :y, :z),
+        title = "Lyapunov Orbit",
+        label = :none,
+        size = (1600, 900),
+        dpi = 400,
+        aspect_ratio = 1,
+    )
+
+    extraplanar_plot = Plots.plot(
+        extraplanar,
+        idxs = (:x, :y, :z),
+        title = "Halo Orbit",
+        label = :none,
+        size = (1600, 900),
+        dpi = 400,
+        aspect_ratio = 1,
+    )
+
+    Plots.plot(planar_plot, extraplanar_plot, layout = (1, 2))
+end
+```
+
+### `Makie.jl`
+
+```{julia}
+#| echo: true
+using CairoMakie
+
+let
+    fig = CairoMakie.Figure(size = (800, 400); fontsize = 11)
+
+    ax_kwargs_common = (; aspect = :equal, azimuth = -π / 3)
+
+    ax_left = CairoMakie.Axis3(
+        fig[1, 1];
+        title = "Lyapunov Orbit",
+        limits = (0.78, 0.90, -0.09, 0.09, -0.02, 1.04),
+        ax_kwargs_common...,
+    )
+    ax_right = CairoMakie.Axis3(
+        fig[1, 2];
+        title = "Halo Orbit",
+        limits = (1.05, 1.26, -0.1, 0.1, -0.02, 0.01),
+        protrusions = (30, 100, 0, 0),
+        ax_kwargs_common...,
+    )
+
+    CairoMakie.plot!(ax_left, planar; idxs = (:x, :y, :z))
+    CairoMakie.plot!(ax_right, extraplanar; idxs = (:x, :y, :z))
+
+    fig
+end
+```
+
+## Manifold Computations
+
+Manifold computations, provided by `AstrodynamicalCalculations.jl`, can perturb halo orbits onto their unstable or stable manifolds.
+
+### `Plots.jl`
+
+```{julia}
+#| echo: true
+using AstrodynamicalSolvers
+using AstrodynamicalCalculations
+using AstrodynamicalModels
+using OrdinaryDiffEq
+using LinearAlgebra
+using Plots
+
+μ = 0.012150584395829193
+
+unstable = let
+    ic = halo(μ, 1; amplitude = 0.005)
+
+    u = CartesianState(ic)
+    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))
+
+    ics = let
+        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), (μ,))
+        solution = solve(
+            problem,
+            Vern9(),
+            reltol = 1e-12,
+            abstol = 1e-12,
+            saveat = (ic.Δt / 10),
+        )
+
+        solution.u
+    end
+
+    perturbations =
+        [diverge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps = -1e-7) for ic in ics]
+
+    problem = EnsembleProblem(
+        ODEProblem(CR3BFunction(), u, (0.0, 2 * ic.Δt), (μ,)),
+        prob_func = (prob, i, repeat) -> remake(prob; u0 = perturbations[i]),
+    )
+
+    solution = solve(
+        problem,
+        Vern9(),
+        trajectories = length(perturbations),
+        reltol = 1e-14,
+        abstol = 1e-14,
+    )
+end
+
+stable = let
+    ic = halo(μ, 2; amplitude = 0.005)
+
+    u = CartesianState(ic)
+    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))
+
+    ics = let
+        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), (μ,))
+        solution = solve(
+            problem,
+            Vern9(),
+            reltol = 1e-12,
+            abstol = 1e-12,
+            saveat = (ic.Δt / 10),
+        )
+
+        solution.u
+    end
+
+    perturbations =
+        [converge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps = 1e-7) for ic in ics]
+
+    problem = EnsembleProblem(
+        ODEProblem(CR3BFunction(), u, (0.0, -2.1 * ic.Δt), (μ,)),
+        prob_func = (prob, i, repeat) -> remake(prob; u0 = perturbations[i]),
+    )
+
+    solution = solve(
+        problem,
+        Vern9(),
+        trajectories = length(perturbations),
+        reltol = 1e-14,
+        abstol = 1e-14,
+    )
+end
+
+figure = Plots.plot(;
+    aspect_ratio = 1.0,
+    background = :transparent,
+    grid = true,
+    title = "Unstable and Stable Invariant Manifolds",
+)
+
+Plots.plot!(
+    figure,
+    unstable,
+    idxs = (:x, :y),
+    aspect_ratio = 1,
+    label = :none,
+    palette = :blues,
+)
+Plots.plot!(
+    figure,
+    stable,
+    idxs = (:x, :y),
+    aspect_ratio = 1,
+    label = :none,
+    palette = :blues,
+)
+Plots.scatter!(
+    figure,
+    [1 - μ],
+    [0],
+    label = "Moon",
+    xlabel = "X (Earth-Moon Distance)",
+    ylabel = "Y (Earth-Moon Distance)",
+    marker = :x,
+    color = :black,
+    markersize = 10,
+)
+
+figure # hide
+```
+
+## `Makie.jl`
+
+```{julia}
+#| echo: true
+using AstrodynamicalSolvers
+using AstrodynamicalCalculations
+using AstrodynamicalModels
+using OrdinaryDiffEq
+using LinearAlgebra
+using CairoMakie
+
+μ = 0.012150584395829193
+
+unstable = let
+    ic = halo(μ, 1; amplitude = 0.005)
+
+    u = CartesianState(ic)
+    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))
+
+    ics = let
+        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), (μ,))
+        solution = solve(
+            problem,
+            Vern9(),
+            reltol = 1e-12,
+            abstol = 1e-12,
+            saveat = (ic.Δt / 10),
+        )
+
+        solution.u
+    end
+
+    perturbations =
+        [diverge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps = -1e-7) for ic in ics]
+
+    problem = EnsembleProblem(
+        ODEProblem(CR3BFunction(), u, (0.0, 2 * ic.Δt), (μ,)),
+        prob_func = (prob, i, repeat) -> remake(prob; u0 = perturbations[i]),
+    )
+
+    solution = solve(
+        problem,
+        Vern9(),
+        trajectories = length(perturbations),
+        reltol = 1e-14,
+        abstol = 1e-14,
+    )
+end
+
+stable = let
+    ic = halo(μ, 2; amplitude = 0.005)
+
+    u = CartesianState(ic)
+    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))
+
+    ics = let
+        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), (μ,))
+        solution = solve(
+            problem,
+            Vern9(),
+            reltol = 1e-12,
+            abstol = 1e-12,
+            saveat = (ic.Δt / 10),
+        )
+
+        solution.u
+    end
+
+    perturbations =
+        [converge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps = 1e-7) for ic in ics]
+
+    problem = EnsembleProblem(
+        ODEProblem(CR3BFunction(), u, (0.0, -2.1 * ic.Δt), (μ,)),
+        prob_func = (prob, i, repeat) -> remake(prob; u0 = perturbations[i]),
+    )
+
+    solution = solve(
+        problem,
+        Vern9(),
+        trajectories = length(perturbations),
+        reltol = 1e-14,
+        abstol = 1e-14,
+    )
+end
+
+fig = CairoMakie.Figure(size = (800, 400), fontsize = 20)
+
+ax = CairoMakie.Axis(
+    fig[1, 1];
+    xreversed = true,
+    xticks = LinearTicks(5),
+    yticks = LinearTicks(5),
+    aspect = DataAspect(),
+    xlabel = "X (Earth-Moon Distance)",
+    ylabel = "Y (Earth-Moon Distance)",
+    title = "Unstable and Stable Invariant Manifolds",
+    titlesize = 24,
+)
+
+idxs = (:x, :y)
+
+# TODO: replace this manual workaround when
+# https://github.com/SciML/SciMLBase.jl/issues/697#issuecomment-2135801331
+# is addressed
+for (traj, color) in zip(unstable, resample_cmap(:blues, length(unstable)))
+    CairoMakie.plot!(ax, traj; idxs, color)
+end
+
+for (traj, color) in zip(stable, resample_cmap(:blues, length(stable)))
+    CairoMakie.plot!(ax, traj; idxs, color)
+end
+
+CairoMakie.scatter!(
+    ax,
+    [1 - μ],
+    [0];
+    marker = '⨯',
+    color = :black,
+    markersize = 50,
+    label = "Moon",
+)
+
+fig
+```
