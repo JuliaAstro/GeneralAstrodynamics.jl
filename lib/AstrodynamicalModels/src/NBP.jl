@@ -178,9 +178,7 @@ end
     end
     sys = complete(NBSystem(N; stm = stm, name = name); split = false)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
-        sys,
-        ModelingToolkit.unknowns(sys),
-        ModelingToolkit.parameters(sys);
+        sys;
         options...,
     )
 end
