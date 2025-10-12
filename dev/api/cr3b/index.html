@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.33">
+<meta name="generator" content="quarto-1.8.25">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -68,18 +68,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../api/r2b/index.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-bc185b5c5bdbcb35c2eb49d8a876ef70.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-707d8167ce6003fca903bfe2be84ab7f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-82e5ff6757d989b2e91a5e18c8e32f43.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-9e6cac25e3d565252e0916cd0bfb74dc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-82e5ff6757d989b2e91a5e18c8e32f43.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-b9efe103605aac5501d162c1b35daf72.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-94a51ee850811f79d9cf93158755d08b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-b9efe103605aac5501d162c1b35daf72.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -382,6 +383,8 @@ window.onload = function () {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    </a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">AstrodynamicalCalculations</span>
     </a>
@@ -425,6 +428,10 @@ window.onload = function () {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="../../index.html" class="sidebar-logo-link">
+      </a>
+      </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
@@ -565,7 +572,6 @@ window.onload = function () {
 <h4 class="unnumbered anchored" data-anchor-id="imports">Imports</h4>
 <ul>
 <li><code>Base</code></li>
-<li><code>Core</code></li>
 <li><code>DocStringExtensions</code></li>
 <li><code>LinearAlgebra</code></li>
 <li><code>Roots</code></li>
@@ -619,14 +625,14 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">converge</span>(u, stm, Φ; eps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">converge</span>(u, stm, Φ; eps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -647,14 +653,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">converge!</span>(p, u, stm, Φ; eps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">converge!</span>(p, u, stm, Φ; eps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -675,14 +681,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">convergent_direction</span>(stm; atol)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">convergent_direction</span>(stm; atol)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -703,14 +709,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">distance_scaling</span>(a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">distance_scaling</span>(a)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -731,14 +737,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">distance_to_primary</span>(r, μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">distance_to_primary</span>(r, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -759,14 +765,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">distance_to_secondary</span>(r, μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">distance_to_secondary</span>(r, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -787,14 +793,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">diverge</span>(u, stm, Φ; eps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">diverge</span>(u, stm, Φ; eps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -815,14 +821,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">diverge!</span>(p, u, stm, Φ; eps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">diverge!</span>(p, u, stm, Φ; eps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -843,14 +849,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">divergent_direction</span>(stm; atol)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">divergent_direction</span>(stm; atol)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -871,14 +877,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">inertial_to_synodic</span>(x, y, z, t, ω)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">inertial_to_synodic</span>(x, y, z, t, ω)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -899,14 +905,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">jacobi_constant</span>(x, y, z, ẋ, ẏ, ż, μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">jacobi_constant</span>(x, y, z, ẋ, ẏ, ż, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -927,14 +933,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lagrange_point</span>(μ, L)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lagrange_point</span>(μ, L)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -969,14 +975,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nondimensional</span>(x, y, z, ẋ, ẏ, ż, t, a, μ₁, μ₂)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nondimensional</span>(x, y, z, ẋ, ẏ, ż, t, a, μ₁, μ₂)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -997,14 +1003,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nondimensional_radii</span>(x, y, z, xᵢ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nondimensional_radii</span>(x, y, z, xᵢ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1025,14 +1031,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">perturb</span>(u, stm, direction; eps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">perturb</span>(u, stm, direction; eps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1053,14 +1059,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">perturb!</span>(p, u, stm, direction; eps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">perturb!</span>(p, u, stm, direction; eps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1081,14 +1087,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">perturbation</span>(stm, direction; eps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">perturbation</span>(stm, direction; eps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1109,14 +1115,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">potential_energy</span>(x, y, z, μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">potential_energy</span>(x, y, z, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1137,14 +1143,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">primary_synodic_position</span>(μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">primary_synodic_position</span>(μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1165,14 +1171,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">redimensioned</span>(x, y, z, ẋ, ẏ, ż, t, μ, a, T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">redimensioned</span>(x, y, z, ẋ, ẏ, ż, t, μ, a, T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1193,14 +1199,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">reduced_mass</span>(μ₁, μ₂)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">reduced_mass</span>(μ₁, μ₂)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1221,14 +1227,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">richardson_halo</span>(μ, L; Z, hemisphere, ϕ, length)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">richardson_halo</span>(μ, L; Z, hemisphere, ϕ, length)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1275,14 +1281,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">richardson_ic</span>(μ, L; Z, hemisphere, ϕ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">richardson_ic</span>(μ, L; Z, hemisphere, ϕ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1329,14 +1335,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">secondary_synodic_position</span>(μ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">secondary_synodic_position</span>(μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1357,14 +1363,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">synodic_to_inertial</span>(x, y, z, t, ω)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">synodic_to_inertial</span>(x, y, z, t, ω)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1385,14 +1391,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">time_scaling</span>(a, μ₁, μ₂)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">time_scaling</span>(a, μ₁, μ₂)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1413,14 +1419,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">velocity_scaling</span>(a, μ₁, μ₂)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">velocity_scaling</span>(a, μ₁, μ₂)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1441,14 +1447,14 @@ CR3BP Dynamics
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb28"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">zero_velocity_curves</span>(r, v, μ; nondimensional_range)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">zero_velocity_curves</span>(r, v, μ; nondimensional_range)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-CR3BP Dynamics
+<span class="screen-reader-only">Warning</span>CR3BP Dynamics
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1529,13 +1535,14 @@ CR3BP Dynamics
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
