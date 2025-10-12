@@ -1,0 +1,111 @@
+# Orbit Propagation
+
+*Numerical integration via [SciML](https://sciml.ai).*
+
+Given initial conditions at some time $t_0$, where will an object in orbit be at time $t_1$?
+In general, there is no analytical answer to this question.
+We can instead find the answer numerically with tools such as `DifferentialEquations.jl`, and other simulation codes in the [SciML](https://sciml.ai) ecosystem.
+These numerical integration problems are abstracted by the `AstrodynamicalSolvers.propagate` function.
+Read on for more information about orbit propagation within `AstrodynamicalSolvers.jl`.
+
+```{julia}
+using AstrodynamicalSolvers
+using AstrodynamicalModels
+using AstrodynamicalCalculations
+using OrdinaryDiffEq
+using Statistics
+```
+
+## R2B Propagation
+
+The restricted two-body problem describes a massless spacecraft in orbit about a single point mass.
+For example: an elliptical orbit about Earth.
+
+```{julia}
+orbit = let
+    u = CartesianState(; x = 11e5, y = 5e5, ẋ = 1e3, ẏ = 1e3)
+    p = R2BParameters(4.00458e12)
+
+    Orbit(u, p)
+end
+```
+
+Where will a spacecraft at this orbit be in one minute?
+To answer this question, we can use `propagate!` to numerically integrate for a set duration while mutating object in-place.
+
+```{julia}
+propagate!(orbit, 60.0)
+```
+
+Let's look at the orbit one minute later.
+It's position (and velocity) have changed!
+
+```{julia}
+orbit
+```
+
+We can also return orbit instances at many times along the path using `propagate`, which returns a `SciMLBase.ODESolution` instance.
+Let's propagate the orbit for one hour, and see what we can do with the resulting trajectory.
+
+```{julia}
+trajectory = propagate(orbit, 60.0^2)
+```
+
+The trajectory can be indexed for the precise state at an algorithmically chosen instance in time.
+Let's inspect next-to-last state in the trajectory.
+
+```{julia}
+trajectory.t[end-1] => trajectory.u[end-1]
+```
+
+To find the orbital state at an arbitrary point in time, you can use the built-in interpolation feature in `ODESolution`.
+
+```{julia}
+trajectory(2000)
+```
+
+To retrieve more `Orbit` instances, you can use Julia's list comprehension syntax.
+
+```{julia}
+orbits = [
+    Orbit(state, parameters(orbit))
+    for state in trajectory.u
+]
+
+eccentricities = eccentricity.(orbits)
+
+let
+    avg = mean(eccentricities)
+    dev = std(eccentricities)
+
+    println(avg, " ± ", dev)
+end
+```
+
+## CR3B Propagation
+
+The circular-restricted three-body problem denotes a massless spacecraft in orbit about a two point masses which orbit their common center of mass.
+For example: a spacecraft traveling between the Earth and the moon.
+States in this description are typically described in units scaled by the distance between the two massive bodies and the (circular) orbital period of the massive bodies.
+In addition, states are typically described in a special frame known as the Synodic frame: a rotating frame which places both massive bodies along its $x$ axis.
+With these caveats out of the way, let's construct a `CR3BOrbit` instance which *roughly* describes a spacecraft traveling due to the gravity of the Earth and the Sun.
+
+```{julia}
+orbit = Orbit(
+    rand(CartesianState),
+    CR3BParameters(0.012),
+)
+```
+
+Three-body orbits are classic examples of chaotic systems.
+Let's see the spacecraft's state at every $0.01$ units of (dimensionless) time (approximately $4$ days).
+For clarity, let's stack each state as a row in a tall matrix.
+Note how much the values change down a single column!
+
+```{julia}
+trajectory = propagate(orbit, 1.0; saveat=0.01)
+
+let states = hcat(trajectory.u...)
+    Matrix(transpose(states))
+end
+```
