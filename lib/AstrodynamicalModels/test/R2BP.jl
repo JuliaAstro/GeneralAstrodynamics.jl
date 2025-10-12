@@ -6,12 +6,12 @@ module R2BPTests
 using AstrodynamicalModels, ModelingToolkit, Test
 
 @testset "R2BP Model Constructors" begin
-    @test R2BSystem(; stm=false) isa ODESystem
-    @test R2BSystem(; stm=true) isa ODESystem
+    @test R2BSystem(; stm=false) isa System
+    @test R2BSystem(; stm=true) isa System
 
     @test rand(R2BState) isa R2BState
     @test rand(R2BParameters) isa R2BParameters
-    @test system(rand(R2BParameters)) isa ODESystem
+    @test system(rand(R2BParameters)) isa System
     @test dynamics(rand(R2BParameters)) isa ODEFunction
 end
 

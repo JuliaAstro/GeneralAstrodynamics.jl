@@ -48,9 +48,9 @@ for a planar periodic orbit.
 function planar_differential(state::AbstractVector, μ)
 
     f = CR3BFunction()
-    accel = f(state, (μ,), NaN)
+    accel = f(state, SVector(μ), NaN)
 
-    F = @views [
+    F = @SMatrix [
         state[22] state[34] accel[4]
         state[24] state[36] accel[6]
         state[20] state[32] state[5]
@@ -76,7 +76,7 @@ for a periodic orbit.
 function extraplanar_differential(state::AbstractVector, μ)
 
     f = CR3BFunction()
-    accel = f(state, (μ,), NaN)
+    accel = f(state, SVector(μ), NaN)
 
     F = [
         state[10] state[34] accel[4]
@@ -151,7 +151,7 @@ function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
         0,
         1,
     ]
-    p = (μ,)
+    p = @SVector [μ]
     tspan = (zero(τ), τ)
 
     problem = ODEProblem(CR3BFunction(stm = true), ic, tspan, p)
@@ -304,7 +304,7 @@ function halo(x, z, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
         1,
     ]
 
-    p = (μ,)
+    p = SVector(μ)
     tspan = (zero(τ), τ)
 
     f = CR3BFunction()

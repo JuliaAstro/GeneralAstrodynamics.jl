@@ -3,7 +3,7 @@
 #
 
 """
-A `ModelingToolkit.ODESystem` for the Newtonian N-body Problem.
+A `ModelingToolkit.System` for the Newtonian N-body Problem.
 
 The order of the states follows:
 `[x₁, y₁, z₁, ..., xₙ, yₙ, zₙ, ẋ₁, ẏ₁, ż₁, ..., ẋₙ, ẏₙ, żₙ]`.
@@ -99,7 +99,7 @@ model = NBSystem(9)
 
     if stm
         defaults = vcat(defaults, vec(Φ .=> Float64.(I(6N))))
-        return ODESystem(
+        return System(
             eqs,
             t,
             vcat(u, Φ...),
@@ -109,7 +109,7 @@ model = NBSystem(9)
             kwargs...,
         )
     else
-        return ODESystem(
+        return System(
             eqs,
             t,
             u,
