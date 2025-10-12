@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.33">
+<meta name="generator" content="quarto-1.8.25">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -68,18 +68,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../models/nb/index.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-bc185b5c5bdbcb35c2eb49d8a876ef70.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-707d8167ce6003fca903bfe2be84ab7f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-ddb99fa2ba16c4b70d1133970cbc32f5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-92207bab5d2d7c72058c1d3cc8a0ed17.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-ddb99fa2ba16c4b70d1133970cbc32f5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-1b62c0229222358ee59215b53ffeaec5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-cd516360f2e5322ed5d5ae2714fdeeec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-1b62c0229222358ee59215b53ffeaec5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -382,6 +383,8 @@ window.onload = function () {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    </a>
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">AstrodynamicalModels</span>
     </a>
@@ -425,6 +428,10 @@ window.onload = function () {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="../index.html" class="sidebar-logo-link">
+      </a>
+      </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
@@ -608,7 +615,6 @@ window.onload = function () {
 <h4 class="unnumbered anchored" data-anchor-id="imports">Imports</h4>
 <ul>
 <li><code>Base</code></li>
-<li><code>Core</code></li>
 <li><code>DocStringExtensions</code></li>
 <li><code>LinearAlgebra</code></li>
 <li><code>Memoize</code></li>
@@ -632,17 +638,17 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AttitudeFunction</span>(; stm, name, kwargs<span class="op">...</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AttitudeFunction</span>(; stm, name, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Returns an <code>ODEFunction</code> for spacecraft attitude dynamics.</p>
 <section id="extended-help-1" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="extended-help-1">Extended Help</h3>
 <section id="usage" class="level5 unnumbered">
 <h5 class="unnumbered anchored" data-anchor-id="usage">Usage</h5>
 <p>The <code>stm</code> and <code>name</code> keyword arguments are passed to <code>Attitude</code>. All other keyword arguments are passed directly to <code>SciMLBase.ODEFunction</code>.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">AttitudeFunction</span>()</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">AttitudeFunction</span>()</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">7</span>), p <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">15</span>), t <span class="op">=</span> <span class="cn">NaN</span> <span class="co"># time invariant</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, p, t)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </div>
@@ -658,7 +664,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> AttitudeParameters{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalParameters{F, 15}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> AttitudeParameters{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalParameters{F, 15}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A parameter vector for attitude dynamics.</p>
 </div>
 </div>
@@ -673,7 +679,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mutable struct</span> AttitudeState{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalState{F, 7}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mutable struct</span> AttitudeState{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalState{F, 7}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A mutable state vector for attitude dynamics.</p>
 </div>
 </div>
@@ -688,7 +694,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AttitudeSystem</span>(; stm, name, defaults, kwargs<span class="op">...</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AttitudeSystem</span>(; stm, name, defaults, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A <code>ModelingToolkit.ODESystem</code> for atmospheric entry. Currently, only exponential atmosphere models are provided! The output model is cached with <code>Memoize.jl</code>. Planet-specific parameters default to Earth values.</p>
 <p>The order of the states follows: <code>[q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃]</code>.</p>
 <p>The order of the parameters follows: <code>[]</code></p>
@@ -711,7 +717,7 @@ window.onload = function () {
 </ol>
 <section id="usage-1" class="level5 unnumbered">
 <h5 class="unnumbered anchored" data-anchor-id="usage-1">Usage</h5>
-<div class="sourceCode" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">Attitude</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">Attitude</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </section>
@@ -728,7 +734,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CR3BFunction</span>(; stm, name, kwargs<span class="op">...</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CR3BFunction</span>(; stm, name, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Returns an <code>ODEFunction</code> for CR3B dynamics.</p>
 <p>The order of the states follows: <code>[μ]</code>.</p>
 <p>The order of the parameters follows: <code>[μ]</code>.</p>
@@ -737,10 +743,10 @@ window.onload = function () {
 <section id="usage-2" class="level5 unnumbered">
 <h5 class="unnumbered anchored" data-anchor-id="usage-2">Usage</h5>
 <p>The <code>stm</code>, and <code>name</code> keyword arguments are passed to <code>CR3B</code>. All other keyword arguments are passed directly to <code>SciMLBase.ODEFunction</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">CR3BFunction</span>(; stm<span class="op">=</span><span class="cn">false</span>, jac<span class="op">=</span><span class="cn">true</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">CR3BFunction</span>(; stm<span class="op">=</span><span class="cn">false</span>, jac<span class="op">=</span><span class="cn">true</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">6</span>), p <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">1</span>), t <span class="op">=</span> <span class="fl">0</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, p, t)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </div>
@@ -756,7 +762,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Orbit{var<span class="st">"#s80"</span><span class="op">&lt;:</span><span class="dt">CartesianState</span>, var<span class="st">"#s79"</span><span class="op">&lt;:</span><span class="dt">CR3BParameters</span>} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalOrbit{var"#s80"&lt;:CartesianState, var"#s79"&lt;:CR3BParameters}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Orbit{var<span class="st">"#s83"</span><span class="op">&lt;:</span><span class="dt">CartesianState</span>, var<span class="st">"#s82"</span><span class="op">&lt;:</span><span class="dt">CR3BParameters</span>} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalOrbit{var"#s83"&lt;:CartesianState, var"#s82"&lt;:CR3BParameters}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>An <code>Orbit</code> which exists within CR3BP dynamics.</p>
 </div>
 </div>
@@ -771,7 +777,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> CR3BParameters{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalParameters{F, 1}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> CR3BParameters{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalParameters{F, 1}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A parameter vector for CR3BP dynamics.</p>
 </div>
 </div>
@@ -786,7 +792,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mutable struct</span> CartesianState{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalState{F, 6}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mutable struct</span> CartesianState{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalState{F, 6}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>CartesianState</p>
 </div>
 </div>
@@ -801,7 +807,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CR3BSystem</span>(; stm, name, defaults, kwargs<span class="op">...</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CR3BSystem</span>(; stm, name, defaults, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A <code>ModelingToolkit.ODESystem</code> for the Circular Restricted Three-body Problem.</p>
 <p>The order of the states follows: <code>[x, y, z, ẋ, ẏ, ż]</code>.</p>
 <p>The order of the parameters follows: <code>[μ]</code>.</p>
@@ -810,7 +816,7 @@ window.onload = function () {
 <p>The Circular Restricted Three-body Problem is a simplified dynamical model describing one small body (spacecraft, etc.) and two celestial bodies moving in a circle about their common center of mass. This may seem like an arbitrary simplification, but this assumption holds reasonably well for the Earth-Moon, Sun-Earth, and many other systems in our solar system.</p>
 <section id="usage-3" class="level5 unnumbered">
 <h5 class="unnumbered anchored" data-anchor-id="usage-3">Usage</h5>
-<div class="sourceCode" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">CR3BSystem</span>(; stm<span class="op">=</span><span class="cn">true</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">CR3BSystem</span>(; stm<span class="op">=</span><span class="cn">true</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </div>
@@ -826,7 +832,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Orbit{var<span class="st">"#s80"</span><span class="op">&lt;:</span><span class="dt">CartesianState</span>, P<span class="op">&lt;:</span><span class="dt">(AbstractVector</span>)} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalOrbit{var"#s80"&lt;:CartesianState, P&lt;:(AbstractVector)}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Orbit{var<span class="st">"#s83"</span><span class="op">&lt;:</span><span class="dt">CartesianState</span>, P<span class="op">&lt;:</span><span class="dt">(AbstractVector</span>)} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalOrbit{var"#s83"&lt;:CartesianState, P&lt;:(AbstractVector)}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>An <code>Orbit</code> which exists within R2BP dynamics.</p>
 </div>
 </div>
@@ -841,7 +847,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mutable struct</span> CartesianSTM{F} <span class="op">&lt;:</span><span class="dt"> StaticArraysCore.FieldMatrix{6, 6, F}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mutable struct</span> CartesianSTM{F} <span class="op">&lt;:</span><span class="dt"> StaticArraysCore.FieldMatrix{6, 6, F}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A mutable matrix, with labels, for a 6DOF Cartesian state transition matrix.</p>
 </div>
 </div>
@@ -856,7 +862,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mutable struct</span> CartesianState{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalState{F, 6}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mutable struct</span> CartesianState{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalState{F, 6}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A mutable vector, with labels, for 6DOF Cartesian states.</p>
 </div>
 </div>
@@ -871,7 +877,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Orbit{var<span class="st">"#s80"</span><span class="op">&lt;:</span><span class="dt">OrbitalElements</span>, var<span class="st">"#s79"</span><span class="op">&lt;:</span><span class="dt">KeplerianParameters</span>} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalOrbit{var"#s80"&lt;:OrbitalElements, var"#s79"&lt;:KeplerianParameters}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Orbit{var<span class="st">"#s83"</span><span class="op">&lt;:</span><span class="dt">OrbitalElements</span>, var<span class="st">"#s82"</span><span class="op">&lt;:</span><span class="dt">KeplerianParameters</span>} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalOrbit{var"#s83"&lt;:OrbitalElements, var"#s82"&lt;:KeplerianParameters}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>An <code>Orbit</code> which exists within Keplerian dynamics.</p>
 </div>
 </div>
@@ -886,7 +892,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> KeplerianParameters{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalParameters{F, 1}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> KeplerianParameters{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalParameters{F, 1}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A parameter vector for Keplerian dynamics.</p>
 </div>
 </div>
@@ -901,7 +907,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mutable struct</span> OrbitalElements{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalState{F, 6}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mutable struct</span> OrbitalElements{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalState{F, 6}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>OrbitalElements</p>
 </div>
 </div>
@@ -916,7 +922,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">NBFunction</span>(N; stm, name, kwargs<span class="op">...</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">NBFunction</span>(N; stm, name, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Returns an <code>ODEFunction</code> for NBP dynamics. The order of states and parameters in the <code>ODEFunction</code> arguments are equivalent to the order of states and parameters for the system produced with <code>NBP(N)</code>. As a general rule, the order of the states follows: <code>[x₁, y₁, z₁, ..., xₙ, yₙ, zₙ, ẋ₁, ẏ₁, ż₁, ..., ẋₙ, ẏₙ, żₙ]</code>.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="Note">
 <div class="callout-header d-flex align-content-center">
@@ -924,7 +930,7 @@ window.onload = function () {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Note
+<span class="screen-reader-only">Note</span>Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -937,7 +943,7 @@ Note
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Warning
+<span class="screen-reader-only">Warning</span>Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -949,10 +955,10 @@ Warning
 <section id="usage-4" class="level5 unnumbered">
 <h5 class="unnumbered anchored" data-anchor-id="usage-4">Usage</h5>
 <p>The <code>stm</code>, and <code>name</code> keyword arguments are passed to <code>NBP</code>. All other keyword arguments are passed directly to <code>SciMLBase.ODEFunction</code>.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">NBFunction</span>(<span class="fl">3</span>; stm<span class="op">=</span><span class="cn">false</span>, name<span class="op">=:</span>NBP, jac<span class="op">=</span><span class="cn">false</span>, sparse<span class="op">=</span><span class="cn">false</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">NBFunction</span>(<span class="fl">3</span>; stm<span class="op">=</span><span class="cn">false</span>, name<span class="op">=:</span>NBP, jac<span class="op">=</span><span class="cn">false</span>, sparse<span class="op">=</span><span class="cn">false</span>)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">3</span><span class="op">*</span><span class="fl">6</span>), p <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">1</span> <span class="op">+</span> <span class="fl">3</span>), t <span class="op">=</span> <span class="fl">0</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, p, t)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </div>
@@ -968,7 +974,7 @@ Warning
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">NBSystem</span>(N; stm, name, defaults, kwargs<span class="op">...</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">NBSystem</span>(N; stm, name, defaults, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A <code>ModelingToolkit.ODESystem</code> for the Newtonian N-body Problem.</p>
 <p>The order of the states follows: <code>[x₁, y₁, z₁, ..., xₙ, yₙ, zₙ, ẋ₁, ẏ₁, ż₁, ..., ẋₙ, ẏₙ, żₙ]</code>.</p>
 <p>The order of the parameters follows: <code>[G, m₁, m₂, ..., mₙ]</code>.</p>
@@ -978,7 +984,7 @@ Warning
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Warning
+<span class="screen-reader-only">Warning</span>Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -990,8 +996,8 @@ Warning
 <p>The N-body problem is a model which describes how <code>N</code> bodies will move with respect to a common origin. This problem typically involves many bodies which act due to one force: electromagentism, gravity, etc. This model applies most closely to many celestial bodies moving due to gravity. That’s about right for a model in a package called <code>AstrodynamicalModels</code>!</p>
 <section id="usage-5" class="level5 unnumbered">
 <h5 class="unnumbered anchored" data-anchor-id="usage-5">Usage</h5>
-<div class="sourceCode" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># One model for ALL the planets in our solar system 😎</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">NBSystem</span>(<span class="fl">9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># One model for ALL the planets in our solar system 😎</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">NBSystem</span>(<span class="fl">9</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </div>
@@ -1007,7 +1013,7 @@ Warning
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Orbit{U<span class="op">&lt;:</span><span class="dt">(AbstractVector</span>), P<span class="op">&lt;:</span><span class="dt">(AbstractVector</span>)} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalOrbit{U&lt;:(AbstractVector), P&lt;:(AbstractVector)}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Orbit{U<span class="op">&lt;:</span><span class="dt">(AbstractVector</span>), P<span class="op">&lt;:</span><span class="dt">(AbstractVector</span>)} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalOrbit{U&lt;:(AbstractVector), P&lt;:(AbstractVector)}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A full representation of an orbit, including a numerical state, and the parameters of the system.</p>
 </div>
 </div>
@@ -1022,7 +1028,7 @@ Warning
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mutable struct</span> OrbitalElements{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalState{F, 6}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mutable struct</span> OrbitalElements{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalState{F, 6}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A mutable vector, with labels, for 6DOF Keplerian states.</p>
 </div>
 </div>
@@ -1037,7 +1043,7 @@ Warning
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PlanarEntryFunction</span>(; name, kwargs<span class="op">...</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PlanarEntryFunction</span>(; name, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Returns an <code>ODEFunction</code> for Planar Entry dynamics. Results are cached with <code>Memoize.jl</code>.</p>
 <p>The order of the states follows: <code>[γ, v, r, θ]</code>.</p>
 <p>The order of the parameters follows: <code>[R, P, H, m, A, C, μ]</code></p>
@@ -1046,10 +1052,10 @@ Warning
 <section id="usage-6" class="level5 unnumbered">
 <h5 class="unnumbered anchored" data-anchor-id="usage-6">Usage</h5>
 <p>The <code>name</code> keyword argument is ]passed to <code>PlanarEntry</code>. All other keyword arguments are passed directly to <code>SciMLBase.ODEFunction</code>.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">PlanarEntryFunction</span>()</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">PlanarEntryFunction</span>()</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">4</span>), p <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">7</span>), t <span class="op">=</span> <span class="cn">NaN</span> <span class="co"># time invariant</span></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, p, t)</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </div>
@@ -1065,7 +1071,7 @@ Warning
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb28"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> PlanarEntryParameters{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalParameters{F, 7}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> PlanarEntryParameters{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalParameters{F, 7}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A parameter vector for planar entry dynamics.</p>
 </div>
 </div>
@@ -1080,7 +1086,7 @@ Warning
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mutable struct</span> PlanarEntryState{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalState{F, 4}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mutable struct</span> PlanarEntryState{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalState{F, 4}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A state vector for planar entry dynamics.</p>
 </div>
 </div>
@@ -1095,7 +1101,7 @@ Warning
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PlanarEntrySystem</span>(; name, defaults, kwargs<span class="op">...</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PlanarEntrySystem</span>(; name, defaults, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A <code>ModelingToolkit.ODESystem</code> for atmospheric entry. Currently, only exponential atmosphere models are provided! The output model is cached with <code>Memoize.jl</code>. Planet-specific parameters default to Earth values.</p>
 <p>The order of the states follows: <code>[γ, v, r, θ]</code>.</p>
 <p>The order of the parameters follows: <code>[R, P, H, m, A, C, μ]</code></p>
@@ -1104,7 +1110,7 @@ Warning
 <p>This model describes how an object moves through an exponential atmosphere, above a spherical planet.</p>
 <section id="usage-7" class="level5 unnumbered">
 <h5 class="unnumbered anchored" data-anchor-id="usage-7">Usage</h5>
-<div class="sourceCode" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">PlanarEntrySystem</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">PlanarEntrySystem</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </div>
@@ -1120,7 +1126,7 @@ Warning
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">R2BFunction</span>(; stm, name, kwargs<span class="op">...</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">R2BFunction</span>(; stm, name, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Returns an <code>ODEFunction</code> for R2B dynamics.</p>
 <p>The order of the states follows: <code>[x, y, z, ẋ, ẏ, ż]</code>.</p>
 <p>The order of the parameters follows: <code>[μ]</code>.</p>
@@ -1129,10 +1135,10 @@ Warning
 <section id="usage-8" class="level5 unnumbered">
 <h5 class="unnumbered anchored" data-anchor-id="usage-8">Usage</h5>
 <p>The <code>stm</code>, and <code>name</code> keyword arguments are passed to <code>R2B</code>. All other keyword arguments are passed directly to <code>SciMLBase.ODEFunction</code>.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">R2BFunction</span>(; stm<span class="op">=</span><span class="cn">false</span>, name<span class="op">=:</span>R2B, jac<span class="op">=</span><span class="cn">true</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">R2BFunction</span>(; stm<span class="op">=</span><span class="cn">false</span>, name<span class="op">=:</span>R2B, jac<span class="op">=</span><span class="cn">true</span>)</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">6</span>), p <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">1</span>), t <span class="op">=</span> <span class="fl">0</span></span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, p, t)</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </div>
@@ -1148,7 +1154,7 @@ Warning
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb34"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Orbit{var<span class="st">"#s80"</span><span class="op">&lt;:</span><span class="dt">CartesianState</span>, var<span class="st">"#s79"</span><span class="op">&lt;:</span><span class="dt">R2BParameters</span>} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalOrbit{var"#s80"&lt;:CartesianState, var"#s79"&lt;:R2BParameters}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Orbit{var<span class="st">"#s83"</span><span class="op">&lt;:</span><span class="dt">CartesianState</span>, var<span class="st">"#s82"</span><span class="op">&lt;:</span><span class="dt">R2BParameters</span>} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalOrbit{var"#s83"&lt;:CartesianState, var"#s82"&lt;:R2BParameters}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>An <code>Orbit</code> which exists within R2BP dynamics.</p>
 </div>
 </div>
@@ -1163,7 +1169,7 @@ Warning
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb35"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> R2BParameters{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalParameters{F, 1}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> R2BParameters{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalParameters{F, 1}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A parameter vector for R2BP dynamics.</p>
 </div>
 </div>
@@ -1178,7 +1184,7 @@ Warning
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb36"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mutable struct</span> CartesianState{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalState{F, 6}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mutable struct</span> CartesianState{F} <span class="op">&lt;:</span><span class="dt"> AstrodynamicalModels.AstrodynamicalState{F, 6}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>CartesianState</p>
 </div>
 </div>
@@ -1193,7 +1199,7 @@ Warning
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb37"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">R2BSystem</span>(; stm, name, defaults, kwargs<span class="op">...</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">R2BSystem</span>(; stm, name, defaults, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A <code>ModelingToolkit.ODESystem</code> for the Restricted Two-body Problem.</p>
 <p>The order of the states follows: <code>[x, y, z, ẋ, ẏ, ż]</code>.</p>
 <p>The order of the parameters follows: <code>[μ]</code>.</p>
@@ -1202,7 +1208,7 @@ Warning
 <p>The Restricted Two-body Problem is a simplified dynamical model describing one small body (spacecraft, etc.) and one celestial body. The gravity of the celestial body exhibits a force on the small body. This model is commonly used as a simplification to describe our solar systems’ planets orbiting our sun, or a spacecraft orbiting Earth.</p>
 <section id="usage-9" class="level5 unnumbered">
 <h5 class="unnumbered anchored" data-anchor-id="usage-9">Usage</h5>
-<div class="sourceCode" id="cb38"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">R2BSystem</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">R2BSystem</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </div>
@@ -1218,7 +1224,7 @@ Warning
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb39"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dynamics</span>(orbit, args; kwargs<span class="op">...</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dynamics</span>(orbit, args; kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return the underlying dynamics of the system in the form of a <code>ModelingToolkit.ODEFunction</code>.</p>
 </div>
 </div>
@@ -1233,7 +1239,7 @@ Warning
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb40"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">parameters</span>(orbit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">parameters</span>(orbit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return the parameter vector for an <code>Orbit</code>.</p>
 </div>
 </div>
@@ -1248,7 +1254,7 @@ Warning
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb41"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">state</span>(orbit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">state</span>(orbit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return the state vector for an <code>Orbit</code>.</p>
 </div>
 </div>
@@ -1263,7 +1269,7 @@ Warning
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="sourceCode" id="cb42"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(orbit, args; kwargs<span class="op">...</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(orbit, args; kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return the underlying dynamics of the system in the form of a <code>ModelingToolkit.ODESystem</code>.</p>
 </div>
 </div>
@@ -1338,13 +1344,14 @@ Warning
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
