@@ -268,9 +268,7 @@ end
     options = merge(defaults, kwargs)
     sys = complete(AttitudeSystem(; stm = stm, name = name); split = false)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
-        sys,
-        ModelingToolkit.unknowns(sys),
-        ModelingToolkit.parameters(sys);
+        sys;
         options...,
     )
 end
