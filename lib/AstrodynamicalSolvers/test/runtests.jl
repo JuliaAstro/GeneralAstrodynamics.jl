@@ -13,10 +13,10 @@ using LinearAlgebra
 @testset "Orbit Propagation" begin
 
     orbit = Orbit(rand(CartesianState), rand(R2BParameters))
-    @test propagate(orbit, 1.0) isa ODESolution
+    @test propagate(orbit, 1e-3) isa ODESolution
 
     state = copy(orbit.state)
-    @test isnothing(propagate!(orbit, 100.0))
+    @test isnothing(propagate!(orbit, 1e-3))
     @test orbit.state != state
 
 end
