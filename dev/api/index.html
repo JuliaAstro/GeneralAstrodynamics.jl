@@ -563,7 +563,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>Provides astrodynamical models as <code>AstrodynamicalModels.ODESystems</code>. Check out the <code>ModelingToolkit</code> docs to learn how to use these systems for orbit propagation with <code>DifferentialEquations</code>, or see <code>GeneralAstrodynamics</code> for some convenient orbit propagation wrappers.</p>
+<p>Provides astrodynamical models as <code>AstrodynamicalModels.System</code> instances. Check out the <code>ModelingToolkit</code> docs to learn how to use these systems for orbit propagation with <code>DifferentialEquations</code>, or see <code>GeneralAstrodynamics</code> for some convenient orbit propagation wrappers.</p>
 <section id="extended-help" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="extended-help">Extended help</h3>
 <section id="license" class="level4 unnumbered">
@@ -695,7 +695,7 @@ window.onload = function () {
 </div>
 <div class="callout-body-container">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AttitudeSystem</span>(; stm, name, defaults, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>A <code>ModelingToolkit.ODESystem</code> for atmospheric entry. Currently, only exponential atmosphere models are provided! The output model is cached with <code>Memoize.jl</code>. Planet-specific parameters default to Earth values.</p>
+<p>A <code>ModelingToolkit.System</code> for atmospheric entry. Currently, only exponential atmosphere models are provided! The output model is cached with <code>Memoize.jl</code>. Planet-specific parameters default to Earth values.</p>
 <p>The order of the states follows: <code>[q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃]</code>.</p>
 <p>The order of the parameters follows: <code>[]</code></p>
 <section id="extended-help-2" class="level3 unnumbered">
@@ -808,7 +808,7 @@ window.onload = function () {
 </div>
 <div class="callout-body-container">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CR3BSystem</span>(; stm, name, defaults, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>A <code>ModelingToolkit.ODESystem</code> for the Circular Restricted Three-body Problem.</p>
+<p>A <code>ModelingToolkit.System</code> for the Circular Restricted Three-body Problem.</p>
 <p>The order of the states follows: <code>[x, y, z, ẋ, ẏ, ż]</code>.</p>
 <p>The order of the parameters follows: <code>[μ]</code>.</p>
 <section id="extended-help-4" class="level3 unnumbered">
@@ -975,7 +975,7 @@ window.onload = function () {
 </div>
 <div class="callout-body-container">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">NBSystem</span>(N; stm, name, defaults, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>A <code>ModelingToolkit.ODESystem</code> for the Newtonian N-body Problem.</p>
+<p>A <code>ModelingToolkit.System</code> for the Newtonian N-body Problem.</p>
 <p>The order of the states follows: <code>[x₁, y₁, z₁, ..., xₙ, yₙ, zₙ, ẋ₁, ẏ₁, ż₁, ..., ẋₙ, ẏₙ, żₙ]</code>.</p>
 <p>The order of the parameters follows: <code>[G, m₁, m₂, ..., mₙ]</code>.</p>
 <div class="callout callout-style-default callout-warning callout-titled" title="Warning">
@@ -1102,7 +1102,7 @@ window.onload = function () {
 </div>
 <div class="callout-body-container">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PlanarEntrySystem</span>(; name, defaults, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>A <code>ModelingToolkit.ODESystem</code> for atmospheric entry. Currently, only exponential atmosphere models are provided! The output model is cached with <code>Memoize.jl</code>. Planet-specific parameters default to Earth values.</p>
+<p>A <code>ModelingToolkit.System</code> for atmospheric entry. Currently, only exponential atmosphere models are provided! The output model is cached with <code>Memoize.jl</code>. Planet-specific parameters default to Earth values.</p>
 <p>The order of the states follows: <code>[γ, v, r, θ]</code>.</p>
 <p>The order of the parameters follows: <code>[R, P, H, m, A, C, μ]</code></p>
 <section id="extended-help-8" class="level3 unnumbered">
@@ -1200,7 +1200,7 @@ window.onload = function () {
 </div>
 <div class="callout-body-container">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">R2BSystem</span>(; stm, name, defaults, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>A <code>ModelingToolkit.ODESystem</code> for the Restricted Two-body Problem.</p>
+<p>A <code>ModelingToolkit.System</code> for the Restricted Two-body Problem.</p>
 <p>The order of the states follows: <code>[x, y, z, ẋ, ẏ, ż]</code>.</p>
 <p>The order of the parameters follows: <code>[μ]</code>.</p>
 <section id="extended-help-10" class="level3 unnumbered">
@@ -1270,7 +1270,7 @@ window.onload = function () {
 </div>
 <div class="callout-body-container">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(orbit, args; kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Return the underlying dynamics of the system in the form of a <code>ModelingToolkit.ODESystem</code>.</p>
+<p>Return the underlying dynamics of the system in the form of a <code>ModelingToolkit.System</code>.</p>
 </div>
 </div>
 </div>
