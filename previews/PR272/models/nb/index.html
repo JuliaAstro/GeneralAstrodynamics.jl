@@ -562,7 +562,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
 <p>All <code>NBSystem</code> calls require the number of bodies to be specified as the first argument, like so. As always, use the <code>stm</code> argument at your leisure. Beware, though! using <code>stm=true</code> for N-body systems with more than 5 bodies may cause <code>NBSystem</code> to compute for a <em>really, really</em> long time! True story – <code>v1.0.1</code> of this package had a version of these docs which tried to compute <code>NBSystem(30; stm=true)</code>. That resulted in GitHub and JuliaHub failing the job on a timeout after <em>several hours</em> –&nbsp;at first I was surprised, until I realized that appending state transition matrix dynamics to a 30-body system results in a total of 32580 states!</p>
 <p>If you’re curious, the number of states of an N-body system with state transition matrix dynamics appended is equivalent to <code>N*6 + (N*6)^2</code>.</p>
-<div id="78da34a5" class="cell" data-execution_count="2">
+<div id="ca04418a" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">NBSystem</span>(<span class="fl">2</span>; stm<span class="op">=</span><span class="cn">true</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="3">
 <p><span class="math display">\[ \begin{align}
@@ -727,7 +727,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Like other models, we can compute the Jacobian for these dynamics.</p>
-<div id="9f12ff7c" class="cell" data-execution_count="3">
+<div id="a05ddb3a" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SparseArrays</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>J <span class="op">=</span> <span class="fu">sparse</span>(<span class="fu">calculate_jacobian</span>(<span class="fu">NBSystem</span>(<span class="fl">4</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
@@ -765,25 +765,25 @@ window.Quarto = {
 </div>
 </div>
 <p>Finally, let’s construct a Julia function which implements these dynamics!</p>
-<div id="80253fc7" class="cell" data-execution_count="4">
+<div id="c8bbe277" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">NBFunction</span>(<span class="fl">2</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">12</span>), m <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">2</span>), G <span class="op">=</span> <span class="fu">rand</span>(), t <span class="op">=</span> <span class="fl">0</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, [G, m<span class="op">...</span>], t)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>12-element Vector{Float64}:
-  0.9494350050408682
-  1.8912509381971123
- -1.2440681676500793
- -2.391197318554838
-  0.3616314654280638
-  1.3146483696955646
- -0.0005393399210129987
-  0.0020276366395712802
- -0.0015962861754447977
- -0.0015804523975239296
-  0.005941676229526794
- -0.0046776702684599375</code></pre>
+ -0.04432960575825135
+  0.5424051740283679
+ -0.8109859818310065
+  1.7966712013744162
+ -1.7361501831108557
+  1.641787073498828
+  0.37836861889640017
+ -0.21003812992502752
+ -0.2596558893804418
+ -0.11119190392883746
+  0.06172430375472277
+  0.07630556886762371</code></pre>
 </div>
 </div>
 
