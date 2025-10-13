@@ -1,5 +1,5 @@
 """
-Provides astrodynamical models as `AstrodynamicalModels.ODESystems`.
+Provides astrodynamical models as `AstrodynamicalModels.System` instances.
 Check out the `ModelingToolkit` docs to learn how to use these
 systems for orbit propagation with `DifferentialEquations`, or
 see `GeneralAstrodynamics` for some convenient orbit propagation
@@ -572,7 +572,7 @@ Base.getindex(orbit::AstrodynamicalOrbit, args...) = Base.getindex(state(orbit),
 Base.setindex!(orbit::AstrodynamicalOrbit, args...) = Base.setindex!(state(orbit), args...)
 
 """
-Return the underlying dynamics of the system in the form of a `ModelingToolkit.ODESystem`.
+Return the underlying dynamics of the system in the form of a `ModelingToolkit.System`.
 """
 system(orbit::AstrodynamicalOrbit, args...; kwargs...) =
     system(parameters(orbit), args...; kwargs...)
@@ -596,7 +596,7 @@ include("NBP.jl")
 include("Entry.jl")
 include("Attitude.jl")
 
-ModelingToolkit.ODESystem(orbit::AstrodynamicalOrbit, args...; kwargs...) =
+ModelingToolkit.System(orbit::AstrodynamicalOrbit, args...; kwargs...) =
     system(orbit, args...; kwargs...)
 ModelingToolkit.ODEFunction(orbit::AstrodynamicalOrbit, args...; kwargs...) =
     dynamics(orbit, args...; kwargs...)

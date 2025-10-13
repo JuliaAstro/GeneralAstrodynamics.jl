@@ -7,14 +7,14 @@ using AstrodynamicalModels, ModelingToolkit, LinearAlgebra, Test
 
 @testset "Attitude Model Constructors" begin
     model = AttitudeSystem()
-    @test model isa ODESystem
+    @test model isa System
 
     model = AttitudeSystem(stm=true)
-    @test model isa ODESystem
+    @test model isa System
 
     @test rand(AttitudeState) isa AttitudeState
     @test rand(AttitudeParameters) isa AttitudeParameters
-    @test system(rand(AttitudeParameters)) isa ModelingToolkit.ODESystem
+    @test system(rand(AttitudeParameters)) isa ModelingToolkit.System
     @test dynamics(rand(AttitudeParameters)) isa ModelingToolkit.ODEFunction
 end
 
@@ -30,6 +30,7 @@ end
     f = [0, 0, 0]
     p = vcat(vec(J), L, f)
 
+    # see #270
     @test isapprox(
         vectorfield(x, p, NaN),
         [0.05, 0.05, 0.05, -0.0, -0.009999999999999995, 0.01, -0.003333333333333335];

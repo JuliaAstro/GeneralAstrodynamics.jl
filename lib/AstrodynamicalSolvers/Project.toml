@@ -22,7 +22,7 @@ AstrodynamicalCalculations = {path="../AstrodynamicalCalculations"}
 AstrodynamicalCalculations = "1"
 AstrodynamicalModels = "3.8"
 DocStringExtensions = "0.9"
-ModelingToolkit = "9, 10"
+ModelingToolkit = "9"
 OrdinaryDiffEqVerner = "1.1.1"
 Reexport = "1"
 SciMLBase = "2"

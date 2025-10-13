@@ -133,7 +133,7 @@ dynamics(::AttitudeParameters, args...; kwargs...) = AttitudeFunction(args...; k
 Base.@pure paradigm(::AttitudeParameters) = "Newton-Euler Attitude Dynamics"
 
 """
-A `ModelingToolkit.ODESystem` for atmospheric entry. Currently, only exponential atmosphere
+A `ModelingToolkit.System` for atmospheric entry. Currently, only exponential atmosphere
 models are provided! The output model is cached with `Memoize.jl`. Planet-specific
 parameters default to Earth values.
 
@@ -179,11 +179,11 @@ model = Attitude()
     @parameters f[1:3] [description = "input torque"]
     δ = Differential(t)
 
-    q = collect(q)
-    ω = collect(ω)
-    J = collect(J)
-    L = collect(L)
-    f = collect(f)
+    q = Symbolics.scalarize(q)
+    ω = Symbolics.scalarize(ω)
+    J = Symbolics.scalarize(J)
+    L = Symbolics.scalarize(L)
+    f = Symbolics.scalarize(f)
 
     A = [
         0 ω[3] -ω[2] ω[1]
@@ -223,7 +223,7 @@ model = Attitude()
 
     if stm
         defaults = vcat(defaults, vec(Φ .=> Float64.(I(7))))
-        return ODESystem(
+        return System(
             eqs,
             t,
             vcat(u, vec(Φ)),
@@ -233,7 +233,7 @@ model = Attitude()
             kwargs...,
         )
     else
-        return ODESystem(
+        return System(
             eqs,
             t,
             u,

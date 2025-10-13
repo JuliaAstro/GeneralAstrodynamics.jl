@@ -23,7 +23,7 @@ Base.@pure paradigm(::CR3BParameters) = "Circular Restricted Three Body Dynamics
 
 
 """
-A `ModelingToolkit.ODESystem` for the Circular Restricted Three-body Problem.
+A `ModelingToolkit.System` for the Circular Restricted Three-body Problem.
 
 The order of the states follows: `[x, y, z, ẋ, ẏ, ż]`.
 
@@ -94,7 +94,7 @@ model = CR3BSystem(; stm=true)
 
     if stm
         defaults = vcat(defaults, vec(Φ .=> Float64.(I(6))))
-        return ODESystem(
+        return System(
             eqs,
             t,
             vcat(r, v, vec(Φ)),
@@ -104,7 +104,7 @@ model = CR3BSystem(; stm=true)
             kwargs...,
         )
     else
-        return ODESystem(
+        return System(
             eqs,
             t,
             vcat(r, v),

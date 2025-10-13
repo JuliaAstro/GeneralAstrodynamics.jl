@@ -56,7 +56,7 @@ dynamics(::PlanarEntryParameters, args...; kwargs...) =
 Base.@pure paradigm(::PlanarEntryParameters) = "Planar Entry Dynamics"
 
 """
-A `ModelingToolkit.ODESystem` for atmospheric entry. Currently, only exponential atmosphere
+A `ModelingToolkit.System` for atmospheric entry. Currently, only exponential atmosphere
 models are provided! The output model is cached with `Memoize.jl`. Planet-specific
 parameters default to Earth values.
 
@@ -114,7 +114,7 @@ model = PlanarEntrySystem()
         δ(θ) ~ (v / r) * cos(γ),
     ]
 
-    model = ODESystem(
+    model = System(
         eqs,
         t,
         [γ, v, r, θ],

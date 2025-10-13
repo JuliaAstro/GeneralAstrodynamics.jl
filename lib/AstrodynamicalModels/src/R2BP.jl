@@ -24,7 +24,7 @@ dynamics(::R2BParameters, args...; kwargs...) = R2BFunction(args...; kwargs...)
 Base.@pure paradigm(::R2BParameters) = "Restricted Two Body Dynamics"
 
 """
-A `ModelingToolkit.ODESystem` for the Restricted Two-body Problem.
+A `ModelingToolkit.System` for the Restricted Two-body Problem.
 
 The order of the states follows: `[x, y, z, ẋ, ẏ, ż]`.
 
@@ -80,7 +80,7 @@ model = R2BSystem()
 
     if stm
         defaults = vcat(defaults, vec(Φ .=> Float64.(I(6))))
-        return ODESystem(
+        return System(
             eqs,
             t,
             vcat(r, v, vec(Φ)),
@@ -90,7 +90,7 @@ model = R2BSystem()
             kwargs...,
         )
     else
-        return ODESystem(
+        return System(
             eqs,
             t,
             vcat(r, v),
