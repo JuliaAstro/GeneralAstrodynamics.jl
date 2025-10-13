@@ -12,7 +12,6 @@ Read on for more information about orbit propagation within `AstrodynamicalSolve
 using AstrodynamicalSolvers
 using AstrodynamicalModels
 using AstrodynamicalCalculations
-using OrdinaryDiffEq
 using Statistics
 ```
 
