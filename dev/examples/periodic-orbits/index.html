@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Joey Carpinelli">
-<meta name="dcterms.date" content="2025-08-17">
 
-<title>AstrodynamicalSolvers</title>
+<title>Periodic Orbits – AstrodynamicalSolvers</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -60,29 +58,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./examples/index.html" rel="next">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-707d8167ce6003fca903bfe2be84ab7f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-7e47bf2f65756fe4f7936dc976dd9ae3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-baf3416d49bb030b557b486a9505ce7b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-7e47bf2f65756fe4f7936dc976dd9ae3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../examples/manifolds/index.html" rel="next">
+<link href="../../examples/propagation/index.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-707d8167ce6003fca903bfe2be84ab7f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-7e47bf2f65756fe4f7936dc976dd9ae3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-baf3416d49bb030b557b486a9505ce7b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-7e47bf2f65756fe4f7936dc976dd9ae3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -206,12 +205,41 @@ window.onload = function () {
 };
 </script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="_static/style.css">
-<meta property="og:title" content="AstrodynamicalSolvers">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../_static/style.css">
+<meta property="og:title" content="Periodic Orbits – AstrodynamicalSolvers">
 <meta property="og:description" content="">
 <meta property="og:site_name" content="AstrodynamicalSolvers">
-<meta name="twitter:title" content="AstrodynamicalSolvers">
+<meta name="twitter:title" content="Periodic Orbits – AstrodynamicalSolvers">
 <meta name="twitter:description" content="">
 <meta name="twitter:card" content="summary">
 </head>
@@ -385,9 +413,9 @@ window.onload = function () {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
     </a>
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">AstrodynamicalSolvers</span>
     </a>
   </div>
@@ -417,7 +445,7 @@ window.onload = function () {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-title">Overview</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../examples/index.html">Examples</a></li><li class="breadcrumb-item"><a href="../../examples/periodic-orbits/index.html"><span class="chapter-title">Periodic Orbits</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -431,7 +459,7 @@ window.onload = function () {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="./index.html" class="sidebar-logo-link">
+      <a href="../../index.html" class="sidebar-logo-link">
       </a>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -443,12 +471,12 @@ window.onload = function () {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Overview</span></a>
+  <a href="../../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Overview</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="./examples/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../examples/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Examples</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -457,22 +485,22 @@ window.onload = function () {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./examples/propagation/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Orbit Propagation</span></a>
+  <a href="../../examples/propagation/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Orbit Propagation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./examples/periodic-orbits/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Periodic Orbits</span></a>
+  <a href="../../examples/periodic-orbits/index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Periodic Orbits</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./examples/manifolds/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">index.html</span></a>
+  <a href="../../examples/manifolds/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">index.html</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./examples/plotting/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Plotting</span></a>
+  <a href="../../examples/plotting/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Plotting</span></a>
   </div>
 </li>
       </ul>
@@ -491,11 +519,8 @@ window.onload = function () {
     <h2 id="toc-title">Table of Contents</h2>
    
   <ul>
-  <li><a href="#astrodynamicalsolvers.jl" id="toc-astrodynamicalsolvers.jl" class="nav-link active" data-scroll-target="#astrodynamicalsolvers.jl"><code>AstrodynamicalSolvers.jl</code></a>
-  <ul class="collapse">
-  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a></li>
-  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">Overview</a></li>
-  </ul></li>
+  <li><a href="#periodic-orbits-in-r2b-dynamics" id="toc-periodic-orbits-in-r2b-dynamics" class="nav-link active" data-scroll-target="#periodic-orbits-in-r2b-dynamics">Periodic Orbits in R2B Dynamics</a></li>
+  <li><a href="#periodic-orbits-in-cr3b-dynamics" id="toc-periodic-orbits-in-cr3b-dynamics" class="nav-link" data-scroll-target="#periodic-orbits-in-cr3b-dynamics">Periodic Orbits in CR3B Dynamics</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/JuliaAstro/GeneralAstrodynamics.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -503,28 +528,16 @@ window.onload = function () {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../examples/index.html">Examples</a></li><li class="breadcrumb-item"><a href="../../examples/periodic-orbits/index.html"><span class="chapter-title">Periodic Orbits</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">AstrodynamicalSolvers</h1>
+<h1 class="title"><span class="chapter-title">Periodic Orbits</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Joey Carpinelli <a href="mailto:joey@loopy.codes" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">August 17, 2025</p>
-    </div>
-  </div>
   
     
   </div>
@@ -534,29 +547,151 @@ window.onload = function () {
 </header>
 
 
-<section id="astrodynamicalsolvers.jl" class="level1">
-<h1><code>AstrodynamicalSolvers.jl</code></h1>
-<p><em>Common solvers relating to orbital mechanics and astrodynamics.</em></p>
-<section id="installation" class="level2">
-<h2 class="anchored" data-anchor-id="installation">Installation</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pkg<span class="op">&gt;</span> add AstrodynamicalSolvers</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Finding orbits where positions and velocities repeat.</em></p>
+<p>Can you find some duration <span class="math inline">\(\Delta t\)</span> such that a spacecraft in orbit at time <span class="math inline">\(t\)</span> will return to its previous position (and velocity) at time <span class="math inline">\(t + \Delta t\)</span>? If so, your orbit is <em>periodic</em>. The name <em>orbit</em> probably puts the image of a <em>periodic orbit</em> in your head. Picture an orbit about Earth: you’re probably thinking of a circle, kind of like a halo or a sash, wrapping Earth. In reality, most orbits are not periodic. There are varying degrees of difficulty required for finding periodic orbits. Let’s explore this problem for two example systems: the restricted two-body system, and the circular-restricted three-body system.</p>
+<div id="b30287e3" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalSolvers</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalModels</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalCalculations</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="periodic-orbits-in-r2b-dynamics" class="level2">
+<h2 class="anchored" data-anchor-id="periodic-orbits-in-r2b-dynamics">Periodic Orbits in R2B Dynamics</h2>
+<p>An orbit in the restricted two-body problem is periodic if and only if its eccentricity is less than one. There are no negative eccentricities, so you may say the orbit is periodic when its eccentricity <span class="math inline">\(e\)</span> satisfies the following inequality: <span class="math inline">\(0 \leq e &lt; 1\)</span>. Let’s try this for an example orbit.</p>
+<div id="48cdb694" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>orbit <span class="op">=</span> <span class="kw">let</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    u <span class="op">=</span> <span class="fu">CartesianState</span>(; x <span class="op">=</span> <span class="fl">11e5</span>, y <span class="op">=</span> <span class="fl">5e5</span>, ẋ <span class="op">=</span> <span class="fl">1e3</span>, ẏ <span class="op">=</span> <span class="fl">1e3</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> <span class="fu">R2BParameters</span>(<span class="fl">4.00458e12</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Orbit</span>(u, p)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>Elliptical Orbit in Restricted Two Body Dynamics
+
+  CartesianState with eltype Float64
+  
+    x: 1.1e6
+    y: 500000.0
+    z: 0.0
+    ẋ: 1000.0
+    ẏ: 1000.0
+    ż: 0.0
+
+  R2BParameters with eltype Float64
+  
+    μ: 4.00458e12</code></pre>
+</div>
+</div>
+<p>The print-out states that the orbit is elliptical, so we already know it’s periodic. Let’s make sure!</p>
+<div id="5a5e9627" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fl">0</span> <span class="op">≤</span> <span class="fu">eccentricity</span>(orbit) <span class="op">&lt;</span> <span class="fl">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>true</code></pre>
+</div>
+</div>
+<p>We now know the orbit is periodic! Its period can be found with the <code>orbital_period</code> function: 0.02924642822220008 days.</p>
 </section>
-<section id="overview" class="level2">
-<h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>This package contains most of the solvers you (I) encountered in your (my) first year of graduate astrodynamics coursework. Right now, the primary functionality is iterative solvers for periodic orbits within CR3BP dynamics. ## Getting Stated</p>
-<p>Please refer to the <a href="https://cadojo.github.io/AstrodynamicalSolvers.jl">documentation</a> for more detailed instructions, and usage examples.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> μ <span class="op">=</span> <span class="fl">0.012150584395829193</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fl">0.012150584395829193</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> u, T <span class="op">=</span> <span class="fu">halo</span>(μ, <span class="fl">1</span>) <span class="co"># lyapunov (planar) orbit</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>([<span class="fl">0.8567678285004178</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="op">-</span><span class="fl">0.14693135696819282</span>, <span class="fl">0.0</span>], <span class="fl">2.7536820160579087</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> u, T <span class="op">=</span> <span class="fu">halo</span>(μ, <span class="fl">2</span>; amplitude<span class="op">=</span><span class="fl">0.005</span>) <span class="co"># halo (non-planar) orbit</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>([<span class="fl">1.180859455641048</span>, <span class="fl">0.0</span>, <span class="op">-</span><span class="fl">0.006335144846688764</span>, <span class="fl">0.0</span>, <span class="op">-</span><span class="fl">0.15608881601817765</span>, <span class="fl">0.0</span>], <span class="fl">3.415202902714686</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="periodic-orbits-in-cr3b-dynamics" class="level2">
+<h2 class="anchored" data-anchor-id="periodic-orbits-in-cr3b-dynamics">Periodic Orbits in CR3B Dynamics</h2>
+<p>Three-body systems are a bit more complicated. There is no simple inequality to check for periodicity. Instead, you have to propagate the orbit and see if it’s periodic. Let’s pick an orbit at random and see if it ever repeats.</p>
+<div id="434aa579" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>orbit <span class="op">=</span> <span class="fu">Orbit</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rand</span>(CartesianState),</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">CR3BParameters</span>(<span class="fl">0.012</span>),</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>periodic <span class="op">=</span> <span class="cn">false</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>initial <span class="op">=</span> <span class="fu">copy</span>(<span class="fu">state</span>(orbit))</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> tries <span class="op">=</span> <span class="fl">1000</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> tries <span class="op">&gt;</span> <span class="fl">0</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">propagate!</span>(orbit, <span class="fl">1e-3</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        periodic <span class="op">=</span> <span class="fu">state</span>(orbit) <span class="op">≈</span> initial</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        periodic <span class="op">&amp;&amp;</span> <span class="cf">break</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        tries <span class="op">-=</span> <span class="fl">1</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> periodic</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="fu">println</span>(<span class="st">"This orbit is periodic!"</span>)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        <span class="fu">println</span>(<span class="st">"This orbit is not periodic."</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>This orbit is not periodic.</code></pre>
+</div>
+</div>
+<p>That didn’t work. Now, we didn’t try <em>that</em> hard. You might wonder: what if we tried <span class="math inline">\(2000\)</span> times? Or <span class="math inline">\(10000\)</span>? Or one million?</p>
+<p>The chances that this routine will work for a random orbit are vanishingly small. Three-body orbits are chaotic, and so they are not generally periodic at all. There are cases where periodic orbits can be found, however. One such case is an orbit about a Lagrange point.</p>
+<p>Differential correction techniques can be used to find an orbit that is periodic nearby a Lagrange point. One such technique is implemented in <code>AstrodynamicalSolvers</code> via the <code>halo</code> function. The <code>halo</code> function can find two-dimensional (rigorously called Lyapunov) orbits, or three-dimensional (so-called Halo) orbits. Let’s try a couple of examples. First, a Lyapunov (planar) orbit. Then, a halo (extra-planar) orbit. In both cases, a named tuple is returned with Cartesian state values for an initial condition, and an orbital period.</p>
+<div id="eb8424e3" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> L <span class="op">=</span> <span class="fl">2</span>, μ <span class="op">=</span> orbit.parameters.μ</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    (; x, ẏ, Δt) <span class="op">=</span> <span class="fu">halo</span>(μ, L)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    start <span class="op">=</span> <span class="fu">CartesianState</span>(; x, ẏ)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    orbit <span class="op">=</span> <span class="fu">Orbit</span>(start, <span class="fu">CR3BParameters</span>(μ))</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">propagate!</span>(orbit, Δt)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    periodic <span class="op">=</span> <span class="fu">state</span>(orbit) <span class="op">≈</span> start</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="pp">@assert</span> periodic</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    orbit</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>Orbit in Circular Restricted Three Body Dynamics
+
+  CartesianState with eltype Float64
+  
+    x: 1.1239361086895472
+    y: 1.0578239586064644e-12
+    z: 0.0
+    ẋ: -2.925111364591514e-12
+    ẏ: 0.15644803336633115
+    ż: 0.0
+
+  CR3BParameters with eltype Float64
+  
+    μ: 0.012</code></pre>
+</div>
+</div>
+<p>The planar orbit is periodic! As shown below, the extra-planar orbit is periodic as well.</p>
+<div id="e7423b8e" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> L <span class="op">=</span> <span class="fl">1</span>, μ <span class="op">=</span> orbit.parameters.μ</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    (; x, z, ẏ, Δt) <span class="op">=</span> <span class="fu">halo</span>(μ, L; amplitude <span class="op">=</span> <span class="fl">1e-6</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    start <span class="op">=</span> <span class="fu">CartesianState</span>(; x, ẏ)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    orbit <span class="op">=</span> <span class="fu">Orbit</span>(start, <span class="fu">CR3BParameters</span>(μ))</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">propagate!</span>(orbit, Δt)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    periodic <span class="op">=</span> <span class="fu">state</span>(orbit) <span class="op">≈</span> start</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="pp">@assert</span> periodic</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    orbit</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>Orbit in Circular Restricted Three Body Dynamics
+
+  CartesianState with eltype Float64
+  
+    x: 0.8241722626563555
+    y: -8.159103049412517e-10
+    z: 0.0
+    ẋ: 6.839879511112921e-9
+    ẏ: 0.1258636033233483
+    ż: 0.0
+
+  CR3BParameters with eltype Float64
+  
+    μ: 0.012</code></pre>
+</div>
+</div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -975,10 +1110,13 @@ window.onload = function () {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="../../examples/propagation/index.html" class="pagination-link" aria-label="Orbit Propagation">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Orbit Propagation</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./examples/index.html" class="pagination-link" aria-label="Examples">
-        <span class="nav-page-text">Examples</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../examples/manifolds/index.html" class="pagination-link" aria-label="index.html">
+        <span class="nav-page-text"><span class="chapter-title">index.html</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

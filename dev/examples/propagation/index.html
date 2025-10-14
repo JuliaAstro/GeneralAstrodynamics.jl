@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Joey Carpinelli">
-<meta name="dcterms.date" content="2025-08-17">
 
-<title>AstrodynamicalSolvers</title>
+<title>Orbit Propagation – AstrodynamicalSolvers</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -60,29 +58,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./examples/index.html" rel="next">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-707d8167ce6003fca903bfe2be84ab7f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-7e47bf2f65756fe4f7936dc976dd9ae3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-baf3416d49bb030b557b486a9505ce7b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-7e47bf2f65756fe4f7936dc976dd9ae3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../examples/periodic-orbits/index.html" rel="next">
+<link href="../../examples/index.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-707d8167ce6003fca903bfe2be84ab7f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-7e47bf2f65756fe4f7936dc976dd9ae3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-baf3416d49bb030b557b486a9505ce7b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-7e47bf2f65756fe4f7936dc976dd9ae3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -206,12 +205,41 @@ window.onload = function () {
 };
 </script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="_static/style.css">
-<meta property="og:title" content="AstrodynamicalSolvers">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../_static/style.css">
+<meta property="og:title" content="Orbit Propagation – AstrodynamicalSolvers">
 <meta property="og:description" content="">
 <meta property="og:site_name" content="AstrodynamicalSolvers">
-<meta name="twitter:title" content="AstrodynamicalSolvers">
+<meta name="twitter:title" content="Orbit Propagation – AstrodynamicalSolvers">
 <meta name="twitter:description" content="">
 <meta name="twitter:card" content="summary">
 </head>
@@ -385,9 +413,9 @@ window.onload = function () {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
     </a>
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">AstrodynamicalSolvers</span>
     </a>
   </div>
@@ -417,7 +445,7 @@ window.onload = function () {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-title">Overview</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../examples/index.html">Examples</a></li><li class="breadcrumb-item"><a href="../../examples/propagation/index.html"><span class="chapter-title">Orbit Propagation</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -431,7 +459,7 @@ window.onload = function () {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="./index.html" class="sidebar-logo-link">
+      <a href="../../index.html" class="sidebar-logo-link">
       </a>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -443,12 +471,12 @@ window.onload = function () {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Overview</span></a>
+  <a href="../../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Overview</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="./examples/index.html" class="sidebar-item-text sidebar-link">
+            <a href="../../examples/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Examples</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -457,22 +485,22 @@ window.onload = function () {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./examples/propagation/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Orbit Propagation</span></a>
+  <a href="../../examples/propagation/index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Orbit Propagation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./examples/periodic-orbits/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Periodic Orbits</span></a>
+  <a href="../../examples/periodic-orbits/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Periodic Orbits</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./examples/manifolds/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">index.html</span></a>
+  <a href="../../examples/manifolds/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">index.html</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./examples/plotting/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Plotting</span></a>
+  <a href="../../examples/plotting/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Plotting</span></a>
   </div>
 </li>
       </ul>
@@ -491,11 +519,8 @@ window.onload = function () {
     <h2 id="toc-title">Table of Contents</h2>
    
   <ul>
-  <li><a href="#astrodynamicalsolvers.jl" id="toc-astrodynamicalsolvers.jl" class="nav-link active" data-scroll-target="#astrodynamicalsolvers.jl"><code>AstrodynamicalSolvers.jl</code></a>
-  <ul class="collapse">
-  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a></li>
-  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">Overview</a></li>
-  </ul></li>
+  <li><a href="#r2b-propagation" id="toc-r2b-propagation" class="nav-link active" data-scroll-target="#r2b-propagation">R2B Propagation</a></li>
+  <li><a href="#cr3b-propagation" id="toc-cr3b-propagation" class="nav-link" data-scroll-target="#cr3b-propagation">CR3B Propagation</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/JuliaAstro/GeneralAstrodynamics.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -503,28 +528,16 @@ window.onload = function () {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../examples/index.html">Examples</a></li><li class="breadcrumb-item"><a href="../../examples/propagation/index.html"><span class="chapter-title">Orbit Propagation</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">AstrodynamicalSolvers</h1>
+<h1 class="title"><span class="chapter-title">Orbit Propagation</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Joey Carpinelli <a href="mailto:joey@loopy.codes" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">August 17, 2025</p>
-    </div>
-  </div>
   
     
   </div>
@@ -534,29 +547,438 @@ window.onload = function () {
 </header>
 
 
-<section id="astrodynamicalsolvers.jl" class="level1">
-<h1><code>AstrodynamicalSolvers.jl</code></h1>
-<p><em>Common solvers relating to orbital mechanics and astrodynamics.</em></p>
-<section id="installation" class="level2">
-<h2 class="anchored" data-anchor-id="installation">Installation</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pkg<span class="op">&gt;</span> add AstrodynamicalSolvers</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Numerical integration via <a href="https://sciml.ai">SciML</a>.</em></p>
+<p>Given initial conditions at some time <span class="math inline">\(t_0\)</span>, where will an object in orbit be at time <span class="math inline">\(t_1\)</span>? In general, there is no analytical answer to this question. We can instead find the answer numerically with tools such as <code>DifferentialEquations.jl</code>, and other simulation codes in the <a href="https://sciml.ai">SciML</a> ecosystem. These numerical integration problems are abstracted by the <code>AstrodynamicalSolvers.propagate</code> function. Read on for more information about orbit propagation within <code>AstrodynamicalSolvers.jl</code>.</p>
+<div id="68b3f5e2" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalSolvers</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalModels</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalCalculations</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="r2b-propagation" class="level2">
+<h2 class="anchored" data-anchor-id="r2b-propagation">R2B Propagation</h2>
+<p>The restricted two-body problem describes a massless spacecraft in orbit about a single point mass. For example: an elliptical orbit about Earth.</p>
+<div id="0a8131a0" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>orbit <span class="op">=</span> <span class="kw">let</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    u <span class="op">=</span> <span class="fu">CartesianState</span>(; x <span class="op">=</span> <span class="fl">11e5</span>, y <span class="op">=</span> <span class="fl">5e5</span>, ẋ <span class="op">=</span> <span class="fl">1e3</span>, ẏ <span class="op">=</span> <span class="fl">1e3</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> <span class="fu">R2BParameters</span>(<span class="fl">4.00458e12</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Orbit</span>(u, p)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>Elliptical Orbit in Restricted Two Body Dynamics
+
+  CartesianState with eltype Float64
+  
+    x: 1.1e6
+    y: 500000.0
+    z: 0.0
+    ẋ: 1000.0
+    ẏ: 1000.0
+    ż: 0.0
+
+  R2BParameters with eltype Float64
+  
+    μ: 4.00458e12</code></pre>
+</div>
+</div>
+<p>Where will a spacecraft at this orbit be in one minute? To answer this question, we can use <code>propagate!</code> to numerically integrate for a set duration while mutating object in-place.</p>
+<div id="9c70f649" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">propagate!</span>(orbit, <span class="fl">60.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Let’s look at the orbit one minute later. It’s position (and velocity) have changed!</p>
+<div id="5bf9fcec" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>orbit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>Elliptical Orbit in Restricted Two Body Dynamics
+
+  CartesianState with eltype Float64
+  
+    x: 1.1557037284624088e6
+    y: 558006.5378867177
+    z: 0.0
+    ẋ: 859.85936099633
+    ẏ: 934.328685203485
+    ż: 0.0
+
+  R2BParameters with eltype Float64
+  
+    μ: 4.00458e12</code></pre>
+</div>
+</div>
+<p>We can also return orbit instances at many times along the path using <code>propagate</code>, which returns a <code>SciMLBase.ODESolution</code> instance. Let’s propagate the orbit for one hour, and see what we can do with the resulting trajectory.</p>
+<div id="24291e26" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>trajectory <span class="op">=</span> <span class="fu">propagate</span>(orbit, <span class="fl">60.0</span><span class="op">^</span><span class="fl">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>retcode: Success
+Interpolation: specialized 7th order lazy interpolation
+t: 377-element Vector{Float64}:
+    0.0
+    0.025673030564730494
+    0.14307030275804666
+    0.5293794293974958
+    1.6738429566587905
+    4.709981049960474
+   11.552648236455603
+   21.64699914078421
+   33.121498644506936
+   46.35455291715124
+   60.99008541314207
+   77.07415966663874
+   94.42717147382518
+    ⋮
+ 3183.255287964211
+ 3218.252079786347
+ 3255.3687446619156
+ 3294.347519534046
+ 3334.8565174755618
+ 3376.0691841818298
+ 3417.1358123432387
+ 3457.3760838581325
+ 3496.2774302115004
+ 3533.415694310821
+ 3568.3855101875224
+ 3600.0
+u: 377-element Vector{CartesianState{Float64}}:
+ CartesianState with eltype Float64
+
+  x: 1.1557037284624088e6
+  y: 558006.5378867177
+  z: 0.0
+  ẋ: 859.85936099633
+  ẏ: 934.328685203485
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.1557258029365074e6
+  y: 558030.5245872192
+  z: 0.0
+  ẋ: 859.8031501493746
+  ẏ: 934.3015446882089
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.155826726394631e6
+  y: 558140.2017554259
+  z: 0.0
+  ẋ: 859.546147035675
+  ẏ: 934.177446556064
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.1561586136272345e6
+  y: 558501.0041685504
+  z: 0.0
+  ẋ: 858.7008778829758
+  ẏ: 933.769199012459
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.1571399341588104e6
+  y: 559568.9773004056
+  z: 0.0
+  ẋ: 856.2005701559191
+  ẏ: 932.5607435635106
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.159729439827734e6
+  y: 562395.5020293393
+  z: 0.0
+  ẋ: 849.5952340083315
+  ẏ: 929.3620573363623
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.1654923877489627e6
+  y: 568730.2527742444
+  z: 0.0
+  ẋ: 834.8536017028694
+  ẏ: 922.1909222434713
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.1738113780647332e6
+  y: 577986.1567817484
+  z: 0.0
+  ẋ: 813.4625316183946
+  ẏ: 911.7053236444689
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.183008289032334e6
+  y: 588379.75237889
+  z: 0.0
+  ẋ: 789.6402792773547
+  ẏ: 899.916223630543
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.193279248613221e6
+  y: 600199.3326654691
+  z: 0.0
+  ẋ: 762.7861312124904
+  ẏ: 886.4846415032946
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.2042301195340913e6
+  y: 613065.9833667568
+  z: 0.0
+  ẋ: 733.8150261678811
+  ẏ: 871.8242581684513
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.2157823516135125e6
+  y: 626960.389328674
+  z: 0.0
+  ẋ: 702.8059488350477
+  ẏ: 855.935677897501
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.2276944551105013e6
+  y: 641666.4936133759
+  z: 0.0
+  ẋ: 670.2610529349756
+  ẏ: 839.0394331052676
+  ż: 0.0
+
+ ⋮
+ CartesianState with eltype Float64
+
+  x: 1.3673210770708474e6
+  y: 974683.0431347428
+  z: 0.0
+  ẋ: -112.31354355797241
+  ẏ: 358.7525284335678
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.3626845106365762e6
+  y: 986732.3554698828
+  z: 0.0
+  ẋ: -152.59546689501286
+  ẏ: 329.81156827468016
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.356233520412903e6
+  y: 998400.7249158546
+  z: 0.0
+  ẋ: -194.95614668810396
+  ẏ: 298.88336759026004
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.3477724056886847e6
+  y: 1.009412632129588e6
+  z: 0.0
+  ẋ: -239.14035437018518
+  ẏ: 266.07512064587337
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.3371588651132502e6
+  y: 1.0194932450678061e6
+  z: 0.0
+  ẋ: -284.8409247836336
+  ẏ: 231.54062642960767
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.3244638534418591e6
+  y: 1.0283023727662738e6
+  z: 0.0
+  ẋ: -331.22339834962327
+  ẏ: 195.8544907717012
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.309912717407725e6
+  y: 1.0356042650338674e6
+  z: 0.0
+  ẋ: -377.44738747272885
+  ẏ: 159.6395492069025
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.2938109747716514e6
+  y: 1.0413019592806736e6
+  z: 0.0
+  ẋ: -422.86220181901194
+  ẏ: 123.41274255175566
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.2765036625106488e6
+  y: 1.0454087993821087e6
+  z: 0.0
+  ẋ: -466.988646919647
+  ẏ: 87.58765257183912
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.258373682396986e6
+  y: 1.0480136499268843e6
+  z: 0.0
+  ẋ: -509.41963519560727
+  ẏ: 52.54501878034081
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.2398556215327065e6
+  y: 1.0492618982808415e6
+  z: 0.0
+  ẋ: -549.7343880936046
+  ẏ: 18.699477581101885
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.2218950307148262e6
+  y: 1.049358958604758e6
+  z: 0.0
+  ẋ: -586.5561729139935
+  ẏ: -12.691740601597912
+  ż: 0.0</code></pre>
+</div>
+</div>
+<p>The trajectory can be indexed for the precise state at an algorithmically chosen instance in time. Let’s inspect next-to-last state in the trajectory.</p>
+<div id="2d6a11ab" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>trajectory.t[<span class="kw">end</span><span class="op">-</span><span class="fl">1</span>] <span class="op">=&gt;</span> trajectory.u[<span class="kw">end</span><span class="op">-</span><span class="fl">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>3568.3855101875224 =&gt; CartesianState with eltype Float64
+
+  x: 1.2398556215327065e6
+  y: 1.0492618982808415e6
+  z: 0.0
+  ẋ: -549.7343880936046
+  ẏ: 18.699477581101885
+  ż: 0.0</code></pre>
+</div>
+</div>
+<p>To find the orbital state at an arbitrary point in time, you can use the built-in interpolation feature in <code>ODESolution</code>.</p>
+<div id="d589131e" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">trajectory</span>(<span class="fl">2000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>CartesianState with eltype Float64
+
+  x: -56218.67474197927
+  y: 50823.681789725
+  z: 0.0
+  ẋ: -714.0540498124235
+  ẏ: -10027.07991212651
+  ż: 0.0</code></pre>
+</div>
+</div>
+<p>To retrieve more <code>Orbit</code> instances, you can use Julia’s list comprehension syntax.</p>
+<div id="6113b5fd" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>orbits <span class="op">=</span> [</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Orbit</span>(state, <span class="fu">parameters</span>(orbit))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    for state <span class="kw">in</span> trajectory.u</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>eccentricities <span class="op">=</span> <span class="fu">eccentricity</span>.(orbits)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    avg <span class="op">=</span> <span class="fu">mean</span>(eccentricities)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    dev <span class="op">=</span> <span class="fu">std</span>(eccentricities)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">println</span>(avg, <span class="st">" ± "</span>, dev)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.9466247626515262 ± 2.7084753950949553e-14</code></pre>
+</div>
+</div>
 </section>
-<section id="overview" class="level2">
-<h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>This package contains most of the solvers you (I) encountered in your (my) first year of graduate astrodynamics coursework. Right now, the primary functionality is iterative solvers for periodic orbits within CR3BP dynamics. ## Getting Stated</p>
-<p>Please refer to the <a href="https://cadojo.github.io/AstrodynamicalSolvers.jl">documentation</a> for more detailed instructions, and usage examples.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> μ <span class="op">=</span> <span class="fl">0.012150584395829193</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fl">0.012150584395829193</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> u, T <span class="op">=</span> <span class="fu">halo</span>(μ, <span class="fl">1</span>) <span class="co"># lyapunov (planar) orbit</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>([<span class="fl">0.8567678285004178</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="op">-</span><span class="fl">0.14693135696819282</span>, <span class="fl">0.0</span>], <span class="fl">2.7536820160579087</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> u, T <span class="op">=</span> <span class="fu">halo</span>(μ, <span class="fl">2</span>; amplitude<span class="op">=</span><span class="fl">0.005</span>) <span class="co"># halo (non-planar) orbit</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>([<span class="fl">1.180859455641048</span>, <span class="fl">0.0</span>, <span class="op">-</span><span class="fl">0.006335144846688764</span>, <span class="fl">0.0</span>, <span class="op">-</span><span class="fl">0.15608881601817765</span>, <span class="fl">0.0</span>], <span class="fl">3.415202902714686</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="cr3b-propagation" class="level2">
+<h2 class="anchored" data-anchor-id="cr3b-propagation">CR3B Propagation</h2>
+<p>The circular-restricted three-body problem denotes a massless spacecraft in orbit about a two point masses which orbit their common center of mass. For example: a spacecraft traveling between the Earth and the moon. States in this description are typically described in units scaled by the distance between the two massive bodies and the (circular) orbital period of the massive bodies. In addition, states are typically described in a special frame known as the Synodic frame: a rotating frame which places both massive bodies along its <span class="math inline">\(x\)</span> axis. With these caveats out of the way, let’s construct a <code>CR3BOrbit</code> instance which <em>roughly</em> describes a spacecraft traveling due to the gravity of the Earth and the Sun.</p>
+<div id="5da0c3b2" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>orbit <span class="op">=</span> <span class="fu">Orbit</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rand</span>(CartesianState),</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">CR3BParameters</span>(<span class="fl">0.012</span>),</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>Orbit in Circular Restricted Three Body Dynamics
+
+  CartesianState with eltype Float64
+  
+    x: 0.46776205400673143
+    y: 0.42154679387357996
+    z: 0.688392825738213
+    ẋ: 0.9651408450959188
+    ẏ: 0.6354792037059039
+    ż: 0.26406035017131846
+
+  CR3BParameters with eltype Float64
+  
+    μ: 0.012</code></pre>
+</div>
+</div>
+<p>Three-body orbits are classic examples of chaotic systems. Let’s see the spacecraft’s state at every <span class="math inline">\(0.01\)</span> units of (dimensionless) time (approximately <span class="math inline">\(4\)</span> days). For clarity, let’s stack each state as a row in a tall matrix. Note how much the values change down a single column!</p>
+<div id="d8727803" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>trajectory <span class="op">=</span> <span class="fu">propagate</span>(orbit, <span class="fl">1.0</span>; saveat<span class="op">=</span><span class="fl">0.01</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> states <span class="op">=</span> <span class="fu">hcat</span>(trajectory.u<span class="op">...</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Matrix</span>(<span class="fu">transpose</span>(states))</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>101×6 Matrix{Float64}:
+ 0.467762  0.421547   0.688393  0.965141   0.635479   0.26406
+ 0.477472  0.427801   0.690992  0.97675    0.615259   0.255863
+ 0.487296  0.433852   0.693511  0.988112   0.59495    0.24788
+ 0.497233  0.439699   0.695951  0.999221   0.574556   0.240104
+ 0.50728   0.445343   0.698314  1.01008    0.554077   0.232526
+ 0.517434  0.450781   0.700602  1.02068    0.533518   0.225139
+ 0.527692  0.456013   0.702817  1.03102    0.512882   0.217937
+ 0.538053  0.461038   0.704961  1.0411     0.49217    0.210913
+ 0.548514  0.465856   0.707036  1.05091    0.471385   0.20406
+ 0.559071  0.470465   0.709043  1.06047    0.45053    0.197372
+ 0.569722  0.474866   0.710984  1.06975    0.429608   0.190843
+ 0.580465  0.479057   0.71286   1.07877    0.408621   0.184468
+ 0.591296  0.483038   0.714674  1.08751    0.387572   0.178242
+ ⋮                                                    ⋮
+ 1.4688    0.152217   0.735403  0.916243  -1.19671   -0.0719666
+ 1.47789   0.140165   0.734675  0.903603  -1.21379   -0.0736675
+ 1.48687   0.127942   0.73393   0.890732  -1.2307    -0.0753468
+ 1.49571   0.115551   0.733168  0.877631  -1.24744   -0.0770046
+ 1.50442   0.102994   0.73239   0.864304  -1.26401   -0.0786415
+ 1.51299   0.0902716  0.731595  0.850752  -1.28041   -0.0802576
+ 1.52143   0.0773862  0.730785  0.836977  -1.29663   -0.0818533
+ 1.52973   0.0643396  0.729958  0.822982  -1.31267   -0.0834289
+ 1.53789   0.0511334  0.729116  0.808769  -1.32854   -0.0849847
+ 1.54591   0.0377694  0.728259  0.79434   -1.34422   -0.086521
+ 1.55378   0.0242496  0.727386  0.779698  -1.35971   -0.088038
+ 1.5615    0.0105758  0.726498  0.764844  -1.37502   -0.0895361</code></pre>
+</div>
+</div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -975,10 +1397,13 @@ window.onload = function () {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="../../examples/index.html" class="pagination-link" aria-label="Examples">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Examples</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./examples/index.html" class="pagination-link" aria-label="Examples">
-        <span class="nav-page-text">Examples</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../examples/periodic-orbits/index.html" class="pagination-link" aria-label="Periodic Orbits">
+        <span class="nav-page-text"><span class="chapter-title">Periodic Orbits</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
