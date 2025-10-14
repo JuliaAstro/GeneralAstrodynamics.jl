@@ -187,7 +187,7 @@ function monodromy(
             1,
         ],
         (zero(T), T),
-        (μ,),
+        SVector(μ),
     )
     solution = solve(
         problem,

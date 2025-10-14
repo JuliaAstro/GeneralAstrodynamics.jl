@@ -1,66 +1,66 @@
 project:
-    type: book
-    output-dir: "../build"
+  type: book
+  output-dir: "../build"
 
 book:
-    title: "AstrodynamicalSolvers"
-    author:
-        name: "Joey Carpinelli"
-        email: "joey@loopy.codes"
-    date: "2025-08-17"
-    chapters:
-        - index.md
-        - part: examples/index.qmd
-          chapters:
-            - examples/propagation/index.qmd
-            - examples/periodic-orbits/index.qmd
-            - examples/manifolds/index.qmd
-            - examples/plotting/index.qmd
-        - part: api/index.qmd
+  title: "AstrodynamicalSolvers"
+  author:
+    name: "Joey Carpinelli"
+    email: "joey@loopy.codes"
+  date: "2025-08-17"
+  chapters:
+    - index.md
+    - part: examples/index.qmd
+      chapters:
+        - examples/propagation/index.qmd
+        - examples/periodic-orbits/index.qmd
+        - examples/manifolds/index.qmd
+        - examples/plotting/index.qmd
+    - part: api/index.qmd
 
-    navbar:
-        background: primary
-        right:
-        - text: Version
-          menu:
-            - text: dev
+  navbar:
+    background: primary
+    right:
+      - text: Version
+        menu:
+          - text: dev
 
-    search:
-        location: sidebar
-        type: textbox
+  search:
+    location: sidebar
+    type: textbox
 
-    twitter-card: true
-    open-graph: true
-    repo-url: https://github.com/JuliaAstro/GeneralAstrodynamics.jl
-    repo-actions: [issue]
+  twitter-card: true
+  open-graph: true
+  repo-url: https://github.com/JuliaAstro/GeneralAstrodynamics.jl
+  repo-actions: [issue]
 
 toc-title: "Table of Contents"
 
 engine: julia
 
 execute:
-    echo: true
-    output: true
-    cache: false
-    freeze: false
+  echo: true
+  output: true
+  cache: false
+  freeze: false
 
 bibliography: references.bib
 
 format:
-    html:
-        include-in-header:
-            file: _static/versions.html
-        code-link: true
-        number-sections: false
-        css: _static/style.css
-        resources:
-            - _static/style.css
-            - _static/versions.html
-            - _static/theme.scss
-        theme:
-            light:
-                - _static/theme.scss
-                - default
-            dark:
-                - _static/theme.scss
-                - darkly
+  html:
+    include-in-header:
+      file: _static/versions.html
+    code-link: true
+    number-sections: false
+    css: _static/style.css
+    resources:
+      - _static/style.css
+      - _static/versions.html
+      - _static/theme.scss
+    theme:
+      light:
+        - _static/theme.scss
+        - default
+      dark:
+        - _static/theme.scss
+        - darkly

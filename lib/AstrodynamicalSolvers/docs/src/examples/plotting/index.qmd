@@ -18,16 +18,24 @@ using OrdinaryDiffEq
 
 planar = let
     ic = halo(μ, 1) # lyapunov (planar) orbit about L1
-    u = Vector(CartesianState(ic))
-    problem = ODEProblem(CR3BFunction(), u, (0, ic.Δt), (μ,))
-    solution = solve(problem, Vern9(), reltol = 1e-14, abstol = 1e-14)
+
+    orbit = Orbit(
+        CartesianState(ic),
+        CR3BParameters(μ),
+    )
+
+    propagate(orbit, ic.Δt)
 end
 
 extraplanar = let
     ic = halo(μ, 2; amplitude = 0.01) # halo (non-planar) orbit about L2
-    u = Vector(CartesianState(ic))
-    problem = ODEProblem(CR3BFunction(), u, (0, ic.Δt), (μ,))
-    solution = solve(problem, Vern9(), reltol = 1e-14, abstol = 1e-14)
+
+    orbit = Orbit(
+        CartesianState(ic),
+        CR3BParameters(μ),
+    )
+
+    propagate(orbit, ic.Δt)
 end
 ```
 
@@ -115,6 +123,7 @@ using AstrodynamicalCalculations
 using AstrodynamicalModels
 using OrdinaryDiffEq
 using LinearAlgebra
+using StaticArrays
 using Plots
 
 μ = 0.012150584395829193
@@ -126,7 +135,7 @@ unstable = let
     Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))
 
     ics = let
-        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), (μ,))
+        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), SVector(μ))
         solution = solve(
             problem,
             Vern9(),
@@ -142,7 +151,7 @@ unstable = let
         [diverge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps = -1e-7) for ic in ics]
 
     problem = EnsembleProblem(
-        ODEProblem(CR3BFunction(), u, (0.0, 2 * ic.Δt), (μ,)),
+        ODEProblem(CR3BFunction(), u, (0.0, 2 * ic.Δt), SVector(μ)),
         prob_func = (prob, i, repeat) -> remake(prob; u0 = perturbations[i]),
     )
 
@@ -162,7 +171,7 @@ stable = let
     Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))
 
     ics = let
-        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), (μ,))
+        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), SVector(μ))
         solution = solve(
             problem,
             Vern9(),
@@ -178,7 +187,7 @@ stable = let
         [converge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps = 1e-7) for ic in ics]
 
     problem = EnsembleProblem(
-        ODEProblem(CR3BFunction(), u, (0.0, -2.1 * ic.Δt), (μ,)),
+        ODEProblem(CR3BFunction(), u, (0.0, -2.1 * ic.Δt), SVector(μ)),
         prob_func = (prob, i, repeat) -> remake(prob; u0 = perturbations[i]),
     )
 
@@ -239,6 +248,7 @@ using AstrodynamicalModels
 using OrdinaryDiffEq
 using LinearAlgebra
 using CairoMakie
+using StaticArrays
 
 μ = 0.012150584395829193
 
@@ -249,7 +259,7 @@ unstable = let
     Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))
 
     ics = let
-        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), (μ,))
+        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), SVector(μ))
         solution = solve(
             problem,
             Vern9(),
@@ -265,7 +275,7 @@ unstable = let
         [diverge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps = -1e-7) for ic in ics]
 
     problem = EnsembleProblem(
-        ODEProblem(CR3BFunction(), u, (0.0, 2 * ic.Δt), (μ,)),
+        ODEProblem(CR3BFunction(), u, (0.0, 2 * ic.Δt), SVector(μ)),
         prob_func = (prob, i, repeat) -> remake(prob; u0 = perturbations[i]),
     )
 
@@ -285,7 +295,7 @@ stable = let
     Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))
 
     ics = let
-        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), (μ,))
+        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), SVector(μ))
         solution = solve(
             problem,
             Vern9(),
@@ -301,7 +311,7 @@ stable = let
         [converge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps = 1e-7) for ic in ics]
 
     problem = EnsembleProblem(
-        ODEProblem(CR3BFunction(), u, (0.0, -2.1 * ic.Δt), (μ,)),
+        ODEProblem(CR3BFunction(), u, (0.0, -2.1 * ic.Δt), SVector(μ)),
         prob_func = (prob, i, repeat) -> remake(prob; u0 = perturbations[i]),
     )
 
