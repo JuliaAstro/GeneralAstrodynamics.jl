@@ -570,7 +570,7 @@ window.Quarto = {
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div id="eaf0f001" class="cell" data-execution_count="2">
+<div id="c556e580" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">R2BSystem</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="3">
 <p><span class="math display">\[ \begin{align}
@@ -595,7 +595,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div id="1f8b63cf" class="cell" data-execution_count="3">
+<div id="a1f2e542" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">R2BSystem</span>(; stm<span class="op">=</span><span class="cn">true</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
 <p><span class="math display">\[ \begin{align}
@@ -646,7 +646,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Let’s compute the Jacobian for these dynamics.</p>
-<div id="56d33d72" class="cell" data-execution_count="4">
+<div id="412d00b5" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>J <span class="op">=</span> <span class="fu">calculate_jacobian</span>(<span class="fu">R2BSystem</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="5">
 <p><span class="math display">\[ \begin{equation}
@@ -665,19 +665,19 @@ window.Quarto = {
 </div>
 </div>
 <p>Finally, let’s construct a Julia function which implements these dynamics!</p>
-<div id="f3a744ab" class="cell" data-execution_count="5">
+<div id="9de2ee82" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">R2BFunction</span>()</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">6</span>), p <span class="op">=</span> [<span class="fl">3e6</span>], t <span class="op">=</span> <span class="fl">0</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, p, t)</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>6-element Vector{Float64}:
-       0.45085586007496675
-      -0.04254566431077567
-       1.8353637255139357
-      -1.3527017011516213e6
- -323284.35176259815
-  274875.0211059726</code></pre>
+       1.1177291422224716
+      -0.5512125046897096
+       0.2586775939515631
+  460783.95669569
+ -684500.937817726
+ -195792.90912386056</code></pre>
 </div>
 </div>
 
