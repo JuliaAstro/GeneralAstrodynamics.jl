@@ -19,7 +19,7 @@ jobs:
           - AstrodynamicalModels
           - AstrodynamicalSolvers
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: julia-actions/setup-julia@latest
       - uses: quarto-dev/quarto-actions/setup@v2
       - uses: actions/setup-python@v4
