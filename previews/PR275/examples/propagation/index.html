@@ -549,7 +549,7 @@ window.Quarto = {
 
 <p><em>Numerical integration via <a href="https://sciml.ai">SciML</a>.</em></p>
 <p>Given initial conditions at some time <span class="math inline">\(t_0\)</span>, where will an object in orbit be at time <span class="math inline">\(t_1\)</span>? In general, there is no analytical answer to this question. We can instead find the answer numerically with tools such as <code>DifferentialEquations.jl</code>, and other simulation codes in the <a href="https://sciml.ai">SciML</a> ecosystem. These numerical integration problems are abstracted by the <code>AstrodynamicalSolvers.propagate</code> function. Read on for more information about orbit propagation within <code>AstrodynamicalSolvers.jl</code>.</p>
-<div id="1b4f9f78" class="cell" data-execution_count="1">
+<div id="04b37dc4" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalSolvers</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalModels</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalCalculations</span></span>
@@ -558,7 +558,7 @@ window.Quarto = {
 <section id="r2b-propagation" class="level2">
 <h2 class="anchored" data-anchor-id="r2b-propagation">R2B Propagation</h2>
 <p>The restricted two-body problem describes a massless spacecraft in orbit about a single point mass. For example: an elliptical orbit about Earth.</p>
-<div id="50acc75f" class="cell" data-execution_count="2">
+<div id="2507f752" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>orbit <span class="op">=</span> <span class="kw">let</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    u <span class="op">=</span> <span class="fu">CartesianState</span>(; x <span class="op">=</span> <span class="fl">11e5</span>, y <span class="op">=</span> <span class="fl">5e5</span>, ẋ <span class="op">=</span> <span class="fl">1e3</span>, ẏ <span class="op">=</span> <span class="fl">1e3</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> <span class="fu">R2BParameters</span>(<span class="fl">4.00458e12</span>)</span>
@@ -583,11 +583,11 @@ window.Quarto = {
 </div>
 </div>
 <p>Where will a spacecraft at this orbit be in one minute? To answer this question, we can use <code>propagate!</code> to numerically integrate for a set duration while mutating object in-place.</p>
-<div id="4e4ed715" class="cell" data-execution_count="3">
+<div id="6a8fe1c7" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">propagate!</span>(orbit, <span class="fl">60.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Let’s look at the orbit one minute later. It’s position (and velocity) have changed!</p>
-<div id="8b6aa774" class="cell" data-execution_count="4">
+<div id="7fff6877" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>orbit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>Elliptical Orbit in Restricted Two Body Dynamics
@@ -607,7 +607,7 @@ window.Quarto = {
 </div>
 </div>
 <p>We can also return orbit instances at many times along the path using <code>propagate</code>, which returns a <code>SciMLBase.ODESolution</code> instance. Let’s propagate the orbit for one hour, and see what we can do with the resulting trajectory.</p>
-<div id="691ecdd6" class="cell" data-execution_count="5">
+<div id="874a7f2c" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>trajectory <span class="op">=</span> <span class="fu">propagate</span>(orbit, <span class="fl">60.0</span><span class="op">^</span><span class="fl">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>retcode: Success
@@ -868,7 +868,7 @@ u: 377-element Vector{CartesianState{Float64}}:
 </div>
 </div>
 <p>The trajectory can be indexed for the precise state at an algorithmically chosen instance in time. Let’s inspect next-to-last state in the trajectory.</p>
-<div id="5b7bc8ae" class="cell" data-execution_count="6">
+<div id="083981c1" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>trajectory.t[<span class="kw">end</span><span class="op">-</span><span class="fl">1</span>] <span class="op">=&gt;</span> trajectory.u[<span class="kw">end</span><span class="op">-</span><span class="fl">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>3568.3855101875224 =&gt; CartesianState with eltype Float64
@@ -882,7 +882,7 @@ u: 377-element Vector{CartesianState{Float64}}:
 </div>
 </div>
 <p>To find the orbital state at an arbitrary point in time, you can use the built-in interpolation feature in <code>ODESolution</code>.</p>
-<div id="c489b666" class="cell" data-execution_count="7">
+<div id="21e0a573" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">trajectory</span>(<span class="fl">2000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <pre><code>CartesianState with eltype Float64
@@ -896,7 +896,7 @@ u: 377-element Vector{CartesianState{Float64}}:
 </div>
 </div>
 <p>To retrieve more <code>Orbit</code> instances, you can use Julia’s list comprehension syntax.</p>
-<div id="8ebfdb51" class="cell" data-execution_count="8">
+<div id="79723851" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>orbits <span class="op">=</span> [</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Orbit</span>(state, <span class="fu">parameters</span>(orbit))</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    for state <span class="kw">in</span> trajectory.u</span>
@@ -918,7 +918,7 @@ u: 377-element Vector{CartesianState{Float64}}:
 <section id="cr3b-propagation" class="level2">
 <h2 class="anchored" data-anchor-id="cr3b-propagation">CR3B Propagation</h2>
 <p>The circular-restricted three-body problem denotes a massless spacecraft in orbit about a two point masses which orbit their common center of mass. For example: a spacecraft traveling between the Earth and the moon. States in this description are typically described in units scaled by the distance between the two massive bodies and the (circular) orbital period of the massive bodies. In addition, states are typically described in a special frame known as the Synodic frame: a rotating frame which places both massive bodies along its <span class="math inline">\(x\)</span> axis. With these caveats out of the way, let’s construct a <code>CR3BOrbit</code> instance which <em>roughly</em> describes a spacecraft traveling due to the gravity of the Earth and the Sun.</p>
-<div id="0e7a6206" class="cell" data-execution_count="9">
+<div id="b1d9e9a1" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>orbit <span class="op">=</span> <span class="fu">Orbit</span>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rand</span>(CartesianState),</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">CR3BParameters</span>(<span class="fl">0.012</span>),</span>
@@ -928,12 +928,12 @@ u: 377-element Vector{CartesianState{Float64}}:
 
   CartesianState with eltype Float64
   
-    x: 0.4304025203763895
-    y: 0.45917600454291374
-    z: 0.8811858289514647
-    ẋ: 0.3359342892816112
-    ẏ: 0.5122029212914629
-    ż: 0.5045525309697247
+    x: 0.8430291415899331
+    y: 0.3260897621357426
+    z: 0.3192294203776034
+    ẋ: 0.9889578510079131
+    ẏ: 0.42263926381629524
+    ż: 0.29606859632464466
 
   CR3BParameters with eltype Float64
   
@@ -941,7 +941,7 @@ u: 377-element Vector{CartesianState{Float64}}:
 </div>
 </div>
 <p>Three-body orbits are classic examples of chaotic systems. Let’s see the spacecraft’s state at every <span class="math inline">\(0.01\)</span> units of (dimensionless) time (approximately <span class="math inline">\(4\)</span> days). For clarity, let’s stack each state as a row in a tall matrix. Note how much the values change down a single column!</p>
-<div id="f519bbf6" class="cell" data-execution_count="10">
+<div id="96e54160" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>trajectory <span class="op">=</span> <span class="fu">propagate</span>(orbit, <span class="fl">1.0</span>; saveat<span class="op">=</span><span class="fl">0.01</span>)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> states <span class="op">=</span> <span class="fu">hcat</span>(trajectory.u<span class="op">...</span>)</span>
@@ -949,32 +949,32 @@ u: 377-element Vector{CartesianState{Float64}}:
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>101×6 Matrix{Float64}:
- 0.430403  0.459176  0.881186  0.335934   0.512203  0.504553
- 0.433818  0.464269  0.886197  0.347112   0.506444  0.497767
- 0.437345  0.469304  0.891142  0.358252   0.500547  0.491082
- 0.440983  0.47428   0.896019  0.369348   0.494512  0.484497
- 0.444731  0.479194  0.900832  0.380399   0.488339  0.478009
- 0.44859   0.484046  0.90558   0.3914     0.482028  0.471615
- 0.452559  0.488834  0.910264  0.402348   0.475579  0.465315
- 0.456637  0.493557  0.914886  0.413241   0.468993  0.459104
- 0.460824  0.498214  0.919447  0.424074   0.462269  0.452983
- 0.465119  0.502802  0.923946  0.434845   0.455407  0.446948
- 0.469521  0.507321  0.928386  0.445551   0.448409  0.440997
- 0.474029  0.51177   0.932767  0.456189   0.441274  0.43513
- 0.478644  0.516146  0.937089  0.466755   0.434004  0.429344
- ⋮                                                  ⋮
- 1.06211   0.545177  1.14017   0.903068  -0.443903  0.137722
- 1.07114   0.540669  1.14153   0.902389  -0.457731  0.135195
- 1.08016   0.536023  1.14287   0.901525  -0.471567  0.13269
- 1.08917   0.531238  1.14418   0.900478  -0.485411  0.130204
- 1.09817   0.526314  1.14547   0.899246  -0.49926   0.127739
- 1.10715   0.521253  1.14674   0.897829  -0.513111  0.125293
- 1.11612   0.516052  1.14798   0.896228  -0.526962  0.122867
- 1.12508   0.510713  1.1492    0.894442  -0.540811  0.120459
- 1.13401   0.505236  1.15039   0.89247   -0.554656  0.118071
- 1.14293   0.49962   1.15156   0.890314  -0.568494  0.115701
- 1.15182   0.493866  1.1527    0.887972  -0.582324  0.113349
- 1.16068   0.487974  1.15383   0.885446  -0.596142  0.111015</code></pre>
+ 0.843029   0.32609   0.319229  0.988958   0.422639  0.296069
+ 0.852957   0.330214  0.322171  0.996664   0.402207  0.292299
+ 0.862962   0.334134  0.325076  1.00425    0.381737  0.288614
+ 0.873042   0.337849  0.327944  1.01171    0.361231  0.285012
+ 0.883196   0.341358  0.330776  1.01904    0.340687  0.28149
+ 0.893422   0.344662  0.333574  1.02623    0.320108  0.278045
+ 0.90372    0.34776   0.336337  1.03328    0.299492  0.274676
+ 0.914087   0.350652  0.339068  1.04017    0.278841  0.27138
+ 0.924523   0.353337  0.341765  1.0469     0.258156  0.268155
+ 0.935025   0.355815  0.344431  1.05347    0.237435  0.264999
+ 0.945592   0.358086  0.347065  1.05987    0.216682  0.261909
+ 0.956222   0.360149  0.349669  1.06609    0.195895  0.258884
+ 0.966913   0.362003  0.352243  1.07214    0.175076  0.255923
+ ⋮                                                   ⋮
+ 1.795     -0.121633  0.492728  0.83349   -1.39293   0.134737
+ 1.80327   -0.13565   0.494071  0.820649  -1.41055   0.133938
+ 1.81141   -0.149843  0.495407  0.807569  -1.42803   0.133149
+ 1.81942   -0.16421   0.496734  0.794251  -1.44537   0.132371
+ 1.82729   -0.17875   0.498054  0.780695  -1.46257   0.131603
+ 1.83503   -0.193461  0.499367  0.766904  -1.47963   0.130845
+ 1.84263   -0.208342  0.500671  0.752877  -1.49653   0.130096
+ 1.85009   -0.223391  0.501969  0.738618  -1.51329   0.129357
+ 1.8574    -0.238607  0.503258  0.724126  -1.52989   0.128628
+ 1.86457   -0.253989  0.504541  0.709404  -1.54634   0.127908
+ 1.87159   -0.269534  0.505817  0.694453  -1.56263   0.127197
+ 1.87846   -0.285241  0.507085  0.679273  -1.57875   0.126494</code></pre>
 </div>
 </div>
 
