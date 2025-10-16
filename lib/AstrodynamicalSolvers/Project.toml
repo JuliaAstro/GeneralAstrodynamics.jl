@@ -1,7 +1,7 @@
 name = "AstrodynamicalSolvers"
 uuid = "636ee813-9c9e-4a0a-af07-88b3043dcb77"
 authors = ["Joseph Carpinelli <joseph.d.carpinelli@loopy.codes>"]
-version = "1.0.0"
+version = "1.0.1"
 
 [deps]
 AstrodynamicalCalculations = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
