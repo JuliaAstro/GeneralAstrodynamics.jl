@@ -24,7 +24,7 @@
   "separate-pull-requests": false,
   "pull-request-title-pattern": "release: ${component} v${version}",
   "pull-request-header": "Automated Release",
-  "pull-request-footer": "This release was generated with [Release Please][1]\n\n[1]: https://github.com/googleapis/release-please",
+  "pull-request-footer": "This release was generated with [Release Please][1].\n\n[1]: https://github.com/googleapis/release-please",
   "draft-pull-request": true,
   "packages": {
     ".": {
