@@ -1,0 +1,6 @@
+{
+  ".": "0.11.0",
+  "lib/AstrodynamicalCalculations": "1.0.0",
+  "lib/AstrodynamicalModels": "3.8.0",
+  "lib/AstrodynamicalSolvers": "1.0.0"
+}

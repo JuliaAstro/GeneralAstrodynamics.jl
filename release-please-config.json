@@ -1,0 +1,41 @@
+{
+  "release-type": "julia",
+  "changelog-sections": [
+    { "type": "feat", "section": "Features" },
+    { "type": "feature", "section": "Features" },
+    { "type": "fix", "section": "Bug Fixes" },
+    { "type": "bug", "section": "Bug Fixes" },
+    { "type": "chore", "section": "Repository" },
+    { "type": "ci", "section": "Continuous Integration" },
+    { "type": "dep", "section": "Dependency" },
+    { "type": "deps", "section": "Dependency" },
+    { "type": "perf", "section": "Performance" },
+    { "type": "performance", "section": "Performance" },
+    { "type": "refactor", "section": "Code" },
+    { "type": "doc", "section": "Documentation" },
+    { "type": "docs", "section": "Documentation" },
+    { "type": "cov", "section": "Test Coverage" },
+    { "type": "test", "section": "Testing" },
+    { "type": "tests", "section": "Testing" }
+  ],
+  "include-component-in-tag": true,
+  "include-v-in-tag": true,
+  "separate-pull-requests": false,
+  "pull-request-title-pattern": "release: ${component} v${version}",
+  "pull-request-header": "Automated Release",
+  "pull-request-footer": "This release was generated with [Release Please][1]\n\n[1]: https://github.com/googleapis/release-please",
+  "draft-pull-request": true,
+  "packages": {
+    ".": {},
+    "lib/AstrodynamicalCalculations": {
+      "changelog-path": "lib/AstrodynamicalCalculations/CHANGELOG.md"
+    },
+    "lib/AstrodynamicalModels": {
+      "changelog-path": "lib/AstrodynamicalModels/CHANGELOG.md"
+    },
+    "lib/AstrodynamicalSolvers": {
+      "changelog-path": "lib/AstrodynamicalSolvers/CHANGELOG.md"
+    }
+  },
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
+}
