@@ -581,7 +581,7 @@ window.Quarto = {
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div id="9b830002" class="cell" data-execution_count="2">
+<div id="a861433d" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">AttitudeSystem</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="3">
 <p><span class="math display">\[ \begin{align}
@@ -597,7 +597,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Let’s compute the Jacobian for these dynamics.</p>
-<div id="b864a1d8" class="cell" data-execution_count="3">
+<div id="32144edd" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>J <span class="op">=</span> <span class="fu">calculate_jacobian</span>(<span class="fu">AttitudeSystem</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
 <p><span class="math display">\[ \begin{equation}
@@ -617,20 +617,20 @@ window.Quarto = {
 </div>
 </div>
 <p>Finally, let’s construct a Julia function which implements these dynamics!</p>
-<div id="72e08168" class="cell" data-execution_count="4">
+<div id="f53649e6" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">AttitudeFunction</span>()</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">7</span>), p <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">15</span>), t <span class="op">=</span> <span class="fl">0</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, p, t)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>7-element Vector{Float64}:
-  0.15314783254331393
-  0.17408547405236954
- -0.06705747673866402
-  0.1017409540057063
-  2.2631268331604506
- -1.285318106964053
- -1.4423536030443864</code></pre>
+ -0.19992172216714776
+ -0.6449038572609547
+  0.45853737529393024
+  0.5628283944515259
+ -0.9626278980375454
+  2.375750136538404
+ -1.2503466705364799</code></pre>
 </div>
 </div>
 
