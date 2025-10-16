@@ -18,6 +18,7 @@
     { "type": "test", "section": "Testing" },
     { "type": "tests", "section": "Testing" }
   ],
+  "plugins": [{ "type": "sentence-case" }],
   "include-component-in-tag": true,
   "include-v-in-tag": true,
   "separate-pull-requests": false,
@@ -28,12 +29,15 @@
   "packages": {
     ".": {},
     "lib/AstrodynamicalCalculations": {
+      "component": "AstrodynamicalCalculations",
       "changelog-path": "lib/AstrodynamicalCalculations/CHANGELOG.md"
     },
     "lib/AstrodynamicalModels": {
+      "component": "AstrodynamicalModels",
       "changelog-path": "lib/AstrodynamicalModels/CHANGELOG.md"
     },
     "lib/AstrodynamicalSolvers": {
+      "component": "AstrodynamicalSolvers",
       "changelog-path": "lib/AstrodynamicalSolvers/CHANGELOG.md"
     }
   },
