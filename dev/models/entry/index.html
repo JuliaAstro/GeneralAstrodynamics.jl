@@ -568,7 +568,7 @@ window.Quarto = {
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div id="f8411d42" class="cell" data-execution_count="2">
+<div id="c7112d66" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">PlanarEntrySystem</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="3">
 <p><span class="math display">\[ \begin{align}
@@ -581,14 +581,14 @@ window.Quarto = {
 </div>
 </div>
 <p>Let’s compute the Jacobian for these dynamics.</p>
-<div id="998ef00d" class="cell" data-execution_count="3">
+<div id="331e55a2" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>J <span class="op">=</span> <span class="fu">calculate_jacobian</span>(<span class="fu">PlanarEntrySystem</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
 <p><span class="math display">\[ \begin{equation}
 \left[
 \begin{array}{cccc}
 \frac{\left( \frac{R}{r\left( t \right)} \right)^{2} \sin\left( \gamma\left( t \right) \right) \left( 1 - \left( \frac{v\left( t \right)}{\sqrt{\frac{\mu}{r\left( t \right)}}} \right)^{2} \right) \mu}{R^{2} v\left( t \right)} &amp; \frac{\frac{ - 2 m}{\left( v\left( t \right) \right)^{2} A P e^{\frac{R - r\left( t \right)}{H}}} + \frac{\left( \frac{R}{r\left( t \right)} \right)^{2} \cos\left( \gamma\left( t \right) \right) \left( 1 - \left( \frac{v\left( t \right)}{\sqrt{\frac{\mu}{r\left( t \right)}}} \right)^{2} \right) \mu}{R^{2}}}{\left( v\left( t \right) \right)^{2}} + \frac{\frac{2 \left( \frac{R}{r\left( t \right)} \right)^{2} v\left( t \right) \cos\left( \gamma\left( t \right) \right) \mu}{\left( \sqrt{\frac{\mu}{r\left( t \right)}} \right)^{2} R^{2}} - A P v\left( t \right) e^{\frac{R - r\left( t \right)}{H}} \frac{m}{\frac{1}{4} \left( e^{\frac{R - r\left( t \right)}{H}} \right)^{2} \left( v\left( t \right) \right)^{4} P^{2} A^{2}}}{v\left( t \right)} &amp; \frac{\frac{\frac{1}{2} \left( v\left( t \right) \right)^{2} A P e^{\frac{R - r\left( t \right)}{H}} \frac{m}{\frac{1}{4} \left( e^{\frac{R - r\left( t \right)}{H}} \right)^{2} \left( v\left( t \right) \right)^{4} P^{2} A^{2}}}{H} + \frac{\frac{\left( \frac{R}{r\left( t \right)} \right)^{2} \frac{\mu}{\left( r\left( t \right) \right)^{2}} v\left( t \right) \cos\left( \gamma\left( t \right) \right) \frac{v\left( t \right)}{\left( \sqrt{\frac{\mu}{r\left( t \right)}} \right)^{2}} \mu}{\left( \sqrt{\frac{\mu}{r\left( t \right)}} \right)^{2}} + \frac{2 R \cos\left( \gamma\left( t \right) \right) \left( 1 - \left( \frac{v\left( t \right)}{\sqrt{\frac{\mu}{r\left( t \right)}}} \right)^{2} \right) \frac{R}{\left( r\left( t \right) \right)^{2}} \mu}{r\left( t \right)}}{R^{2}}}{v\left( t \right)} &amp; 0 \\
-\frac{ - \left( \frac{R}{r\left( t \right)} \right)^{2} \cos\left( \gamma\left( t \right) \right) \mu}{R^{2}} &amp; \frac{ - A C P v\left( t \right) e^{\frac{R - r\left( t \right)}{H}}}{m} &amp; \frac{2 \sin\left( \gamma\left( t \right) \right) \frac{R}{\left( r\left( t \right) \right)^{2}} \mu}{R r\left( t \right)} + \frac{\left( v\left( t \right) \right)^{2} A C P e^{\frac{R - r\left( t \right)}{H}}}{2 H m} &amp; 0 \\
+\frac{ - \left( \frac{R}{r\left( t \right)} \right)^{2} \cos\left( \gamma\left( t \right) \right) \mu}{R^{2}} &amp; \frac{ - A C P v\left( t \right) e^{\frac{R - r\left( t \right)}{H}}}{m} &amp; \frac{\left( v\left( t \right) \right)^{2} A C P e^{\frac{R - r\left( t \right)}{H}}}{2 H m} + \frac{2 \sin\left( \gamma\left( t \right) \right) \frac{R}{\left( r\left( t \right) \right)^{2}} \mu}{R r\left( t \right)} &amp; 0 \\
 v\left( t \right) \cos\left( \gamma\left( t \right) \right) &amp; \sin\left( \gamma\left( t \right) \right) &amp; 0 &amp; 0 \\
 \frac{ - \sin\left( \gamma\left( t \right) \right) v\left( t \right)}{r\left( t \right)} &amp; \frac{\cos\left( \gamma\left( t \right) \right)}{r\left( t \right)} &amp;  - \frac{v\left( t \right) \cos\left( \gamma\left( t \right) \right)}{\left( r\left( t \right) \right)^{2}} &amp; 0 \\
 \end{array}
@@ -598,17 +598,17 @@ v\left( t \right) \cos\left( \gamma\left( t \right) \right) &amp; \sin\left( \ga
 </div>
 </div>
 <p>Finally, let’s construct a Julia function which implements these dynamics!</p>
-<div id="e1f4a735" class="cell" data-execution_count="4">
+<div id="a0d62ec9" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">PlanarEntryFunction</span>()</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">abs</span>.(<span class="fu">randn</span>(<span class="fl">4</span>)), p <span class="op">=</span> <span class="fu">abs</span>.(<span class="fu">randn</span>(<span class="fl">7</span>)), t <span class="op">=</span> <span class="fl">0</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, p, t)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>4-element Vector{Float64}:
- -1.9197853485829401
- -2.1195659040564424e93
-  0.27236403862998815
-  2.7293514863949646</code></pre>
+ 32.61076730100867
+ -1.8489737986570078
+  0.17173149873559812
+  1.095374810796211</code></pre>
 </div>
 </div>
 
