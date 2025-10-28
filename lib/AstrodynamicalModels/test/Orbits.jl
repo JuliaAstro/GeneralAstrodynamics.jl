@@ -3,7 +3,20 @@ Tests for orbit types.
 """
 module OrbitTests
 
-using AstrodynamicalModels, ModelingToolkit, AstrodynamicalCalculations, Test
+using AstrodynamicalModels:
+    AstrodynamicalModels,
+    CartesianState,
+    CR3BParameters,
+    KeplerianOrbit,
+    KeplerianParameters,
+    KeplerianState,
+    Orbit,
+    R2BOrbit,
+    R2BParameters,
+    dynamics,
+    system
+
+using AstrodynamicalCalculations, ModelingToolkit, Test
 
 @testset "CartesianState Constructors" begin
     @test rand(CartesianState) isa CartesianState
