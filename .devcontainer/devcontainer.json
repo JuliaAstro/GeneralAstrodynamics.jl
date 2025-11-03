@@ -8,7 +8,7 @@
 		"JULIA_DEPOT_PATH": "/home/vscode/.julia"
 	},
 	"features": {
-		"ghcr.io/devcontainers/features/python:1": {
+		"ghcr.io/devcontainers/features/python:": {
 			"installTools": true,
 			"enableShared": true,
 			"installJupyterlab": true,
