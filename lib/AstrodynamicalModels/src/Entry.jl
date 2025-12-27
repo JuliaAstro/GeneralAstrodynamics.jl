@@ -77,26 +77,25 @@ model = PlanarEntrySystem()
 """
 @memoize function PlanarEntrySystem(;
     name = :PlanarEntry,
-    defaults = Pair{ModelingToolkit.Num,<:Number}[],
     kwargs...,
 )
 
-    @independent_variables t
+    @variables begin
+        γ(t), [description = "flight path angle in degrees"]
+        v(t), [description = "airspeed in meters per second"]
+        r(t), [description = "polar distance relative to planet center in meters"]
+        θ(t), [description = "polar angle relative to planet horizontal in degrees"]
+    end
 
-    @variables γ(t) [description = "flight path angle in degrees"]
-    @variables v(t) [description = "airspeed in meters per second"]
-    @variables r(t) [description = "polar distance relative to planet center in meters"]
-    @variables θ(t) [description = "polar angle relative to planet horizontal in degrees"]
-    @parameters R [description = "spherical planet radius"]
-    @parameters P [
-        description = "atmospheric density at sea level in kilograms per meter cubed",
-    ]
-    @parameters H [description = "scale factor for exponential atmosphere in meters"]
-    @parameters m [description = "entry vehicle mass in kilograms"]
-    @parameters A [description = "entry vehicle surface area in square meters"]
-    @parameters C [description = "lift to drag ratio in meters squared per quartic second"]
-    @parameters μ [description = "planet mass parameter in meters per second cubed"]
-    δ = Differential(t)
+    @parameters begin
+        R,    [description = "spherical planet radius"]
+        P,    [description = "atmospheric density at sea level in kilograms per meter cubed"]
+        H,    [description = "scale factor for exponential atmosphere in meters"]
+        m,    [description = "entry vehicle mass in kilograms"]
+        A,    [description = "entry vehicle surface area in square meters"]
+        C,    [description = "lift to drag ratio in meters squared per quartic second"]
+        μ,    [description = "planet mass parameter in meters per second cubed"]
+    end
 
     β = m / (C * A)
     vc = √(μ / r)
@@ -108,19 +107,14 @@ model = PlanarEntrySystem()
     Lₘ = C / Dₘ
 
     eqs = [
-        δ(γ) ~ (one(v) / v) * (Lₘ - (1 - (v / vc)^2) * g * cos(γ)),
-        δ(v) ~ -Dₘ - g * sin(γ),
-        δ(r) ~ v * sin(γ),
-        δ(θ) ~ (v / r) * cos(γ),
+        D(γ) ~ (one(v) / v) * (Lₘ - (1 - (v / vc)^2) * g * cos(γ)),
+        D(v) ~ -Dₘ - g * sin(γ),
+        D(r) ~ v * sin(γ),
+        D(θ) ~ (v / r) * cos(γ),
     ]
 
-    model = System(
-        eqs,
-        t,
-        [γ, v, r, θ],
-        [R, P, H, m, A, C, μ];
-        name = name,
-        defaults = defaults,
+    model = System(eqs, t;
+        name,
         kwargs...,
     )
 
