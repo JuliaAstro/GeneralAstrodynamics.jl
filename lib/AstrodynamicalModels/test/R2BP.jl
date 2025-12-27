@@ -37,7 +37,7 @@ end
     @test isapprox(
         vectorfield(u0, p, NaN),
         [0.0, 0.0, 0.0, 0.00248543, -0.0, -0.00112974];
-        atol=1e-8
+        atol = 1e-8
     )
 end
 

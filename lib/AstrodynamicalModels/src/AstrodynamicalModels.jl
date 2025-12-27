@@ -50,12 +50,13 @@ using SciMLBase
 using Memoize
 using LinearAlgebra
 using ModelingToolkit:
-    ModelingToolkit,
     @variables,
     @parameters,
+    System,
     complete,
     t_nounits as t,
     D_nounits as D
+import ModelingToolkit
 using StaticArrays
 
 using DocStringExtensions
