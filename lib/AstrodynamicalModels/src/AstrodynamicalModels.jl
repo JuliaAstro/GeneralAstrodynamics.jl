@@ -50,12 +50,12 @@ using SciMLBase
 using Memoize
 using LinearAlgebra
 using ModelingToolkit:
+    ModelingToolkit,
     @variables,
     @parameters,
     complete,
     t_nounits as t,
     D_nounits as D
-import ModelingToolkit: System, ODEFunction
 using StaticArrays
 
 using DocStringExtensions
@@ -602,9 +602,9 @@ include("NBP.jl")
 include("Entry.jl")
 include("Attitude.jl")
 
-System(orbit::AstrodynamicalOrbit, args...; kwargs...) =
+ModelingToolkit.System(orbit::AstrodynamicalOrbit, args...; kwargs...) =
     system(orbit, args...; kwargs...)
-ODEFunction(orbit::AstrodynamicalOrbit, args...; kwargs...) =
+ModelingToolkit.ODEFunction(orbit::AstrodynamicalOrbit, args...; kwargs...) =
     dynamics(orbit, args...; kwargs...)
 
 end # module
