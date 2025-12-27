@@ -213,10 +213,8 @@ model = Attitude()
         modelname = name
     end
 
-    return System(
-        eqs,
-        t;
-        name,
+    return System(eqs, t;
+        name = modelname,
         kwargs...,
     )
 end
@@ -242,7 +240,7 @@ end
 @memoize function AttitudeFunction(; stm = false, name = :Attitude, kwargs...)
     defaults = (; jac = true)
     options = merge(defaults, kwargs)
-    sys = complete(AttitudeSystem(; stm, name))
+    sys = complete(AttitudeSystem(; stm, name); split = true)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
         sys;
         options...,
