@@ -200,7 +200,7 @@ model = Attitude()
     ]
 
     if stm
-        @variables (Φ(t))[1:7, 1:7] [description = "state transition matrix estimate"]
+        @variables Φ(t)[1:7, 1:7], [description = "state transition matrix estimate"]
 
         u = [q; ω]
         A = jacobian(map(el -> el.rhs, eqs), u)
