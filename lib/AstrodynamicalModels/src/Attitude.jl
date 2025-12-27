@@ -200,16 +200,11 @@ model = Attitude()
     ]
 
     if stm
-        u = [q; ω]
         @variables (Φ(t))[1:7, 1:7] [description = "state transition matrix estimate"]
+
+        u = [q; ω]
         A = jacobian(map(el -> el.rhs, eqs), u)
-
-        Φ = scalarize(Φ)
-
-        LHS = D(Φ)
-        RHS = A * Φ
-
-        eqs = vcat(eqs, vec([LHS[i] ~ RHS[i] for i in eachindex(LHS)]))
+        eqs = [eqs; vec(scalarize(D(Φ) ~ A * Φ))]
     end
 
     if string(name) == "Attitude" && stm
@@ -218,23 +213,12 @@ model = Attitude()
         modelname = name
     end
 
-    if stm
-        return System(
-            eqs,
-            t,
-            vcat(u, vec(Φ)),
-            vcat(vec(J), L, f);
-            name = name,
-            kwargs...,
-        )
-    else
-        return System(
-            eqs,
-            t;
-            name,
-            kwargs...,
-        )
-    end
+    return System(
+        eqs,
+        t;
+        name,
+        kwargs...,
+    )
 end
 
 
