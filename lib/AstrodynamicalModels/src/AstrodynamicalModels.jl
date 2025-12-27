@@ -45,11 +45,19 @@ export Orbit, R2BOrbit, CR3BOrbit, CartesianOrbit, KeplerianOrbit
 # Export every method
 export state, parameters, dynamics, system
 
-using Symbolics
+using Symbolics: scalarize, jacobian
 using SciMLBase
 using Memoize
 using LinearAlgebra
 using ModelingToolkit
+using ModelingToolkit:
+    @variables,
+    @parameters,
+    ODEFunction,
+    System,
+    complete,
+    t_nounits as t,
+    D_nounits as D
 using StaticArrays
 
 using DocStringExtensions
