@@ -107,62 +107,28 @@ function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
     ż = zero(ẏ)
     τ = T / 2
 
-    ic = [
-        x,
-        y,
-        z,
-        ẋ,
-        ẏ,
-        ż,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
+    sys = CR3BFunction(; stm = true).sys
+
+    op = [
+        sys.x => x
+        sys.y => y
+        sys.z => z
+        sys.ẋ => ẋ
+        sys.ẏ => ẏ
+        sys.ż => ż
+        vec(sys.Φ) .=> vec(diagm(ones(Int, 6)))
+        sys.μ => μ
     ]
-    p = @SVector [μ]
+
     tspan = (zero(τ), τ)
 
-    problem = ODEProblem(CR3BFunction(stm = true), ic, tspan, p)
+    problem = ODEProblem(sys, op, tspan)
 
     for _ = 1:maxiters
 
-        solution = solve(
-            problem,
-            Vern9(),
-            reltol = reltol,
-            abstol = abstol,
+        solution = solve(problem, Vern9();
+            reltol,
+            abstol,
             save_everystep = false,
         )
         global fc = solution.u[end]
@@ -181,55 +147,23 @@ function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
         ẏ = _ẏ
         τ = _τ
 
-        ic = [
-            x,
-            y,
-            z,
-            ẋ,
-            ẏ,
-            ż,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
+        u0 = [
+            sys.x => x
+            sys.y => y
+            sys.z => z
+            sys.ẋ => ẋ
+            sys.ẏ => ẏ
+            sys.ż => ż
+            vec(sys.Φ) .=> vec(diagm(ones(Int, 6)))
+        ]
+        p = [
+            sys.μ => μ
         ]
 
         tspan = (zero(τ), τ)
-        _problem = remake(problem; u0 = ic, tspan, p)
-        problem = _problem
 
+        _problem = remake(problem; u0, p, tspan)
+        problem = _problem
     end
 
     if abs(fc[4]) <= abstol && abs(fc[6]) <= abstol
@@ -258,65 +192,28 @@ function halo(x, z, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
     ż = zero(ẏ)
     τ = T / 2
 
+    sys = CR3BFunction(; stm = true).sys
 
-    ic = [
-        x,
-        y,
-        z,
-        ẋ,
-        ẏ,
-        ż,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
+    op = [
+        sys.x => x
+        sys.y => y
+        sys.z => z
+        sys.ẋ => ẋ
+        sys.ẏ => ẏ
+        sys.ż => ż
+        vec(sys.Φ) .=> vec(diagm(ones(Int, 6)))
+        sys.μ => μ
     ]
 
-    p = SVector(μ)
     tspan = (zero(τ), τ)
 
-    f = CR3BFunction()
-    problem = ODEProblem(CR3BFunction(stm = true), ic, tspan, p)
+    problem = ODEProblem(sys, op, tspan)
 
     for _ = 1:maxiters
 
-        solution = solve(
-            problem,
-            Vern9(),
-            reltol = reltol,
-            abstol = abstol,
+        solution = solve(problem, Vern9();
+            reltol,
+            abstol,
             save_everystep = false,
         )
         global fc = solution.u[end]
@@ -343,53 +240,23 @@ function halo(x, z, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
 
                """
 
-        ic = [
-            x,
-            y,
-            z,
-            ẋ,
-            ẏ,
-            ż,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
+        u0 = [
+            sys.x => x
+            sys.y => y
+            sys.z => z
+            sys.ẋ => ẋ
+            sys.ẏ => ẏ
+            sys.ż => ż
+            vec(sys.Φ) .=> vec(diagm(ones(Int, 6)))
+        ]
+
+        p = [
+            sys.μ => μ
         ]
 
         tspan = (zero(τ), τ)
-        _problem = remake(problem; u0 = ic, tspan, p)
+
+        _problem = remake(problem; u0, p, tspan)
         problem = _problem
 
     end
