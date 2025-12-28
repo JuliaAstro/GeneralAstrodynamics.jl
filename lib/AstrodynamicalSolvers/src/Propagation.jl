@@ -49,11 +49,8 @@ function SciMLBase.ODEProblem(
 
     p = AstrodynamicalModels.parameters(orbit)
 
-    #op = []
-
     tspan = (Δt isa AbstractArray || Δt isa Tuple) ? Δt : (zero(Δt), Δt)
 
-    #return ODEProblem(sys, op, tspan; kwargs...)
     return ODEProblem(f, u, tspan, p; kwargs...)
 end
 
