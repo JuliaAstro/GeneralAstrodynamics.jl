@@ -8,10 +8,12 @@ using ModelingToolkit: ODEFunction, System, get_p, get_u0
 using AstrodynamicalModels:
     CartesianState,
     CR3BParameters,
+    R2BOrbit,
     R2BParameters,
     KeplerianOrbit,
     KeplerianState,
     KeplerianParameters,
+    Orbit,
     system,
     dynamics,
     parameters

@@ -116,7 +116,7 @@ end
 @memoize function CR3BFunction(; stm = false, name = :CR3B, kwargs...)
     defaults = (; jac = true)
     options = merge(defaults, kwargs)
-    sys = complete(CR3BSystem(; stm = stm, name = name); split = true)
+    sys = complete(CR3BSystem(; stm, name); split = true)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
         sys;
         options...,
