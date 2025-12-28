@@ -30,6 +30,7 @@ using AstrodynamicalCalculations
 using AstrodynamicalModels
 using ModelingToolkit, OrdinaryDiffEqVerner, SciMLBase
 using StaticArrays
+using LinearAlgebra
 
 export propagate, propagate!, monodromy, convergent_manifold, divergent_manifold
 
@@ -39,7 +40,7 @@ function SciMLBase.ODEProblem(
     stm = false,
     kwargs...,
 )
-    f = dynamics(orbit, stm = stm)
+    f = dynamics(orbit; stm)
     u = AstrodynamicalModels.state(orbit)
 
     if stm
@@ -47,8 +48,12 @@ function SciMLBase.ODEProblem(
     end
 
     p = AstrodynamicalModels.parameters(orbit)
+
+    #op = []
+
     tspan = (Δt isa AbstractArray || Δt isa Tuple) ? Δt : (zero(Δt), Δt)
 
+    #return ODEProblem(sys, op, tspan; kwargs...)
     return ODEProblem(f, u, tspan, p; kwargs...)
 end
 
@@ -65,7 +70,7 @@ function propagate(
     abstol = 1e-12,
     kwargs...,
 )
-    problem = ODEProblem(orbit, Δt, stm = stm)
+    problem = ODEProblem(orbit, Δt; stm)
     return solve(problem, algorithm; reltol = reltol, abstol = abstol, kwargs...)
 end
 
@@ -140,60 +145,26 @@ function monodromy(
     save_everystep = false,
     kwargs...,
 )
-    problem = ODEProblem(
-        f,
-        [
-            u[begin],
-            u[begin+1],
-            u[begin+2],
-            u[begin+3],
-            u[begin+4],
-            u[begin+5],
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-        ],
-        (zero(T), T),
-        SVector(μ),
-    )
-    solution = solve(
-        problem,
-        algorithm;
-        reltol = reltol,
-        abstol = abstol,
+    sys = f.sys
+
+    op = [
+            :x => u[begin]
+            :y => u[begin+1]
+            :z => u[begin+2]
+            :ẋ => u[begin+3]
+            :ẏ => u[begin+4]
+            :ż => u[begin+5]
+            vec(sys.Φ) .=> vec(diagm(ones(Int, 6)))
+            sys.μ => μ
+    ]
+
+    tspan = (zero(T), T)
+
+    problem = ODEProblem(sys, op, tspan)
+
+    solution = solve(problem, algorithm;
+        reltol,
+        abstol,
         save_everystep = save_everystep,
         kwargs...,
     )
