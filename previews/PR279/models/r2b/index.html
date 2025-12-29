@@ -564,7 +564,7 @@ window.Quarto = {
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div id="74cbebeb" class="cell" data-execution_count="2">
+<div id="cee76b43" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">R2BSystem</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <div class="ansi-escaped-output">
@@ -594,7 +594,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div id="1f5b00e6" class="cell" data-execution_count="3">
+<div id="d659f725" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">R2BSystem</span>(; stm<span class="op">=</span><span class="cn">true</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <div class="ansi-escaped-output">
@@ -615,7 +615,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Let’s compute the Jacobian for these dynamics.</p>
-<div id="691cb670" class="cell" data-execution_count="4">
+<div id="4dae94aa" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>J <span class="op">=</span> <span class="fu">calculate_jacobian</span>(<span class="fu">R2BSystem</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <div class="ansi-escaped-output">
@@ -623,14 +623,14 @@ window.Quarto = {
  <span class="ansi-blue-fg">0</span>                                                                                                                                                                     …  <span class="ansi-blue-fg">1</span>  <span class="ansi-blue-fg">0</span>  <span class="ansi-blue-fg">0</span>
  <span class="ansi-blue-fg">0</span>                                                                                                                                                                        <span class="ansi-blue-fg">0</span>  <span class="ansi-blue-fg">1</span>  <span class="ansi-blue-fg">0</span>
  <span class="ansi-blue-fg">0</span>                                                                                                                                                                        <span class="ansi-blue-fg">0</span>  <span class="ansi-blue-fg">0</span>  <span class="ansi-blue-fg">1</span>
- (<span class="ansi-blue-fg">3</span>(x(t)^<span class="ansi-blue-fg">2</span>)*μ) / (((abs2(z(t)) + abs2(y(t)) + abs2(x(t)))^<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">2//1</span><span class="ansi-blue-fg">)</span>)*sqrt(abs2(z(t)) + abs2(y(t)) + abs2(x(t)))) + (-μ) / (sqrt(abs2(z(t)) + abs2(y(t)) + abs2(x(t)))^<span class="ansi-blue-fg">3</span>)     <span class="ansi-blue-fg">0</span>  <span class="ansi-blue-fg">0</span>  <span class="ansi-blue-fg">0</span>
+ (-μ) / (sqrt(abs2(z(t)) + abs2(y(t)) + abs2(x(t)))^<span class="ansi-blue-fg">3</span>) + (<span class="ansi-blue-fg">3</span>(x(t)^<span class="ansi-blue-fg">2</span>)*μ) / (((abs2(z(t)) + abs2(y(t)) + abs2(x(t)))^<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">2//1</span><span class="ansi-blue-fg">)</span>)*sqrt(abs2(z(t)) + abs2(y(t)) + abs2(x(t))))     <span class="ansi-blue-fg">0</span>  <span class="ansi-blue-fg">0</span>  <span class="ansi-blue-fg">0</span>
  (<span class="ansi-blue-fg">3</span>y(t)*x(t)*μ) / (((abs2(z(t)) + abs2(y(t)) + abs2(x(t)))^<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">2//1</span><span class="ansi-blue-fg">)</span>)*sqrt(abs2(z(t)) + abs2(y(t)) + abs2(x(t))))                                                            <span class="ansi-blue-fg">0</span>  <span class="ansi-blue-fg">0</span>  <span class="ansi-blue-fg">0</span>
  (<span class="ansi-blue-fg">3</span>z(t)*x(t)*μ) / (((abs2(z(t)) + abs2(y(t)) + abs2(x(t)))^<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">2//1</span><span class="ansi-blue-fg">)</span>)*sqrt(abs2(z(t)) + abs2(y(t)) + abs2(x(t))))                                                         …  <span class="ansi-blue-fg">0</span>  <span class="ansi-blue-fg">0</span>  <span class="ansi-blue-fg">0</span></pre>
 </div>
 </div>
 </div>
 <p>Finally, let’s construct a Julia function which implements these dynamics!</p>
-<div id="a7615b4b" class="cell" data-execution_count="5">
+<div id="4f7e6114" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">R2BFunction</span>()</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">6</span>), p <span class="op">=</span> <span class="fl">3e6</span>, t <span class="op">=</span> <span class="fl">0</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    sys <span class="op">=</span> f.sys</span>
@@ -640,12 +640,12 @@ window.Quarto = {
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>6-element Vector{Float64}:
-      0.6103623052239344
-      0.38216087873058174
-     -1.6514980276905697
-  43426.32151429997
- 533383.9178101427
- 433013.4014708629</code></pre>
+      1.2397039791912414
+      0.657667860407352
+     -0.20748352553687477
+     -1.0650540783967883e6
+ -29986.14269234606
+ 487511.71796109</code></pre>
 </div>
 </div>
 
