@@ -32,6 +32,12 @@ using AstrodynamicalCalculations:
 using LinearAlgebra: norm
 using StaticArrays: SVector
 
+@testset "Aqua tests" begin
+    using Aqua: test_all
+    using AstrodynamicalCalculations
+    test_all(AstrodynamicalCalculations)
+end
+
 @testset verbose = false "R2BP Calculations" begin
     @test conic(0) == :Circular
     @test conic(1) == :Parabolic

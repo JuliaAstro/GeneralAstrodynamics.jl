@@ -1,4 +1,5 @@
 [deps]
+Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 AstrodynamicalCalculations = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
 AstrodynamicalModels = "4282b555-f590-4262-b575-3e516e1493a7"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"

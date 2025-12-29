@@ -15,6 +15,12 @@ using OrdinaryDiffEqVerner: ODEProblem, ODESolution, Vern9, solve
 using AstrodynamicalModels: CR3BFunction, CartesianState, Orbit, R2BParameters
 using LinearAlgebra: I
 
+@testset "Aqua tests" begin
+    using Aqua: test_all
+    using AstrodynamicalSolvers
+    test_all(AstrodynamicalSolvers)
+end
+
 @testset "Orbit Propagation" begin
 
     orbit = Orbit(rand(CartesianState), rand(R2BParameters))
