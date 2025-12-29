@@ -31,9 +31,9 @@ end
     μ = 398600.4354360959
 
     @test isapprox(
-        vectorfield(vcat(r, v), [μ], NaN),
+        vectorfield([r; v], [μ], NaN),
         [0.0, 0.0, 0.0, 0.00248543, -0.0, -0.00112974];
-        atol=1e-8
+        atol = 1e-8
     )
 end
 

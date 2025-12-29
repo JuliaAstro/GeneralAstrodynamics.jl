@@ -32,12 +32,12 @@ end
 
     q = [0, 0, 0, 1]
     ω = [0.1, 0.1, 0.1]
-    x = vcat(q, ω)
+    x = [q; ω]
 
     J = diagm([0.1, 0.2, 0.3])
     L = [0, 0, 0]
     f = [0, 0, 0]
-    p = vcat(vec(J), L, f)
+    p = [vec(J); L; f]
 
     # see #270
     @test isapprox(

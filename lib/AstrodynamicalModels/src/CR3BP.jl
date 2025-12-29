@@ -49,41 +49,44 @@ model = CR3BSystem(; stm=true)
     defaults = Pair{ModelingToolkit.Num,<:Number}[],
     kwargs...,
 )
-    @independent_variables t
     @parameters μ
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
-    δ = Differential(t)
     r = [x, y, z]
     v = [ẋ, ẏ, ż]
 
-    eqs = vcat(
-        δ.(r) .~ v,
-        δ(ẋ) ~
+    eqs = [
+        D.(r) .~ v;
+        D(ẋ) ~
             x + 2ẏ - (μ * (x + μ - 1) * (sqrt(y^2 + z^2 + (x + μ - 1)^2)^-3)) -
-            ((x + μ) * (sqrt(y^2 + z^2 + (x + μ)^2)^-3) * (1 - μ)),
-        δ(ẏ) ~
+            ((x + μ) * (sqrt(y^2 + z^2 + (x + μ)^2)^-3) * (1 - μ));
+        D(ẏ) ~
             y - (2ẋ) - (
                 y * (
                     μ * (sqrt(y^2 + z^2 + (x + μ - 1)^2)^-3) +
                     (sqrt(y^2 + z^2 + (x + μ)^2)^-3) * (1 - μ)
                 )
-            ),
-        δ(ż) ~
+            );
+        D(ż) ~
             z * (
                 -μ * (sqrt(y^2 + z^2 + (x + μ - 1)^2)^-3) -
                 ((sqrt(y^2 + z^2 + (x + μ)^2)^-3) * (1 - μ))
-            ),
-    )
+            );
+    ]
+
+    u = [r; v]
 
     if stm
-        @variables (Φ(t))[1:6, 1:6] [description = "state transition matrix estimate"]
-        A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(r, v))
+        @variables Φ(t)[1:6, 1:6], [description = "state transition matrix estimate"]
+        A = Symbolics.jacobian(map(el -> el.rhs, eqs), u)
 
         Φ = Symbolics.scalarize(Φ)
-        LHS = δ.(Φ)
+        LHS = D.(Φ)
         RHS = A * Φ
 
-        eqs = vcat(eqs, vec([LHS[i] ~ RHS[i] for i in eachindex(LHS)]))
+        eqs = [eqs; vec([LHS[i] ~ RHS[i] for i in eachindex(LHS)])]
+
+        u = [u; vec(Φ)]
+        defaults = [defaults; vec(Φ .=> Float64.(I(6)))]
     end
 
     if string(name) == "CR3B" && stm
@@ -92,28 +95,11 @@ model = CR3BSystem(; stm=true)
         modelname = name
     end
 
-    if stm
-        defaults = vcat(defaults, vec(Φ .=> Float64.(I(6))))
-        return System(
-            eqs,
-            t,
-            vcat(r, v, vec(Φ)),
-            [μ];
-            name = modelname,
-            defaults = defaults,
-            kwargs...,
-        )
-    else
-        return System(
-            eqs,
-            t,
-            vcat(r, v),
-            [μ];
-            name = modelname,
-            defaults = defaults,
-            kwargs...,
-        )
-    end
+    return System(eqs, t, u, [μ];
+        name = modelname,
+        defaults,
+        kwargs...,
+    )
 end
 
 """
@@ -170,4 +156,4 @@ CR3BProblem(orbit::AstrodynamicalOrbit, tspan::Union{<:Tuple,<:AbstractArray}; k
         kwargs...,
     )
 CR3BProblem(orbit::AstrodynamicalOrbit, Δt; kwargs...) =
-    CR3BProblem(orbit, (zero(Δt), δt); kwargs...)
+    CR3BProblem(orbit, (zero(Δt), Dt); kwargs...)

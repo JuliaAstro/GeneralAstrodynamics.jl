@@ -51,25 +51,28 @@ model = R2BSystem()
     kwargs...,
 )
 
-    @independent_variables t
     @parameters μ
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
-    δ = Differential(t)
     r = [x, y, z]
     v = [ẋ, ẏ, ż]
 
-    eqs = vcat(δ.(r) .~ v, δ.(v) .~ -μ .* (r ./ norm(r)^3))
+    eqs = [D.(r) .~ v; D.(v) .~ -μ .* (r ./ norm(r)^3)]
+
+    u = [r; v]
 
     if stm
-        @variables (Φ(t))[1:6, 1:6] [description = "state transition matrix estimate"]
-        A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(r, v))
+        @variables Φ(t)[1:6, 1:6] [description = "state transition matrix estimate"]
+        A = Symbolics.jacobian(map(el -> el.rhs, eqs), u)
 
         Φ = Symbolics.scalarize(Φ)
 
-        LHS = δ.(Φ)
+        LHS = D.(Φ)
         RHS = A * Φ
 
-        eqs = vcat(eqs, vec([LHS[i] ~ RHS[i] for i in eachindex(LHS)]))
+        eqs = [eqs; vec([LHS[i] ~ RHS[i] for i in eachindex(LHS)])]
+
+        u = [u; vec(Φ)]
+        defaults = [defaults; vec(Φ .=> Float64.(I(6)))]
     end
 
     if string(name) == "R2B" && stm
@@ -78,28 +81,15 @@ model = R2BSystem()
         modelname = name
     end
 
-    if stm
-        defaults = vcat(defaults, vec(Φ .=> Float64.(I(6))))
-        return System(
-            eqs,
-            t,
-            vcat(r, v, vec(Φ)),
-            [μ];
-            name = modelname,
-            defaults = defaults,
-            kwargs...,
-        )
-    else
-        return System(
-            eqs,
-            t,
-            vcat(r, v),
-            [μ];
-            name = modelname,
-            defaults = defaults,
-            kwargs...,
-        )
-    end
+    return System(
+        eqs,
+        t,
+        u,
+        [μ];
+        name = modelname,
+        defaults,
+        kwargs...,
+    )
 end
 
 """
@@ -155,4 +145,4 @@ R2BProblem(
     kwargs...,
 )
 R2BProblem(orbit::AstrodynamicalOrbit{<:CartesianState}, Δt; kwargs...) =
-    R2BProblem(orbit, (zero(Δt), δt); kwargs...)
+    R2BProblem(orbit, (zero(Δt), Dt); kwargs...)

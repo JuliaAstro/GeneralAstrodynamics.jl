@@ -50,9 +50,11 @@ using Memoize: @memoize
 using LinearAlgebra: I, norm
 using ModelingToolkit:
     @independent_variables,
+    Differential,
     @parameters,
     @variables,
-    Differential,
+    t_nounits as t,
+    D_nounits as D,
     ODEFunction,
     ODEProblem,
     Symbolics,
