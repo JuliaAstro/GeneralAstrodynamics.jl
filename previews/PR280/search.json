@@ -250,7 +250,7 @@
     "href": "api/r2b/index.html#r2bpcalculations",
     "title": "Restricted Two Body Calculations",
     "section": "",
-    "text": "Common calculations within Restricted Two Body Problem dynamics.\n\nExtended Help\n\nImports\n\nBase\nDocStringExtensions\nLinearAlgebra\nStaticArrays\n\n\n\nExports\n\napoapsis_radius\nargument_of_periapsis\nc3\ncartesian_to_keplerian\ncartesian_to_perifocal\nconic\neccentricity\neccentricity_vector\nhohmann\ninclination\nkepler\nkeplerian_to_cartesian\nkeplerian_to_perifocal\nlambert\nmean_motion\norbital_period\norbital_radius\norbital_speed\nperiapsis_radius\nperifocal_to_cartesian\nright_ascension_ascending_node\nsemi_parameter\nsemimajor_axis\nspecific_angular_momentum\nspecific_angular_momentum_vector\nspecific_energy\nspecific_potential_energy\nsphere_of_activity\nsphere_of_influence\ntime_since_periapsis\ntrue_anomaly\nv_infinity",
+    "text": "Common calculations within Restricted Two Body Problem dynamics.\n\nExtended Help\n\nImports\n\nBase\n\n\n\nExports\n\napoapsis_radius\nargument_of_periapsis\nc3\ncartesian_to_keplerian\ncartesian_to_perifocal\nconic\neccentricity\neccentricity_vector\nhohmann\ninclination\nkepler\nkeplerian_to_cartesian\nkeplerian_to_perifocal\nlambert\nmean_motion\norbital_period\norbital_radius\norbital_speed\nperiapsis_radius\nperifocal_to_cartesian\nright_ascension_ascending_node\nsemi_parameter\nsemimajor_axis\nspecific_angular_momentum\nspecific_angular_momentum_vector\nspecific_energy\nspecific_potential_energy\nsphere_of_activity\nsphere_of_influence\ntime_since_periapsis\ntrue_anomaly\nv_infinity",
     "crumbs": [
       "Reference",
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Restricted Two Body Calculations</span>"
@@ -624,7 +624,7 @@
     "href": "api/cr3b/index.html#cr3bpcalculations",
     "title": "Circular Restricted Three Body Calculations",
     "section": "",
-    "text": "Common calculations within Circular Restricted Three Body Problem dynamics.\n\nExtended Help\n\nImports\n\nBase\nDocStringExtensions\nLinearAlgebra\nRoots\nStaticArrays\n\n\n\nExports\n\nconverge\nconverge!\nconvergent_direction\ndistance_scaling\ndistance_to_primary\ndistance_to_secondary\ndiverge\ndiverge!\ndivergent_direction\ninertial_to_synodic\njacobi_constant\nlagrange_point\nnondimensional\nnondimensional_radii\nperturb\nperturb!\nperturbation\npotential_energy\nprimary_synodic_position\nredimensioned\nreduced_mass\nrichardson_halo\nrichardson_ic\nsecondary_synodic_position\nsynodic_to_inertial\ntime_scaling\nvelocity_scaling\nzero_velocity_curves",
+    "text": "Common calculations within Circular Restricted Three Body Problem dynamics.\n\nExtended Help\n\nImports\n\nBase\n\n\n\nExports\n\nconverge\nconverge!\nconvergent_direction\ndistance_scaling\ndistance_to_primary\ndistance_to_secondary\ndiverge\ndiverge!\ndivergent_direction\ninertial_to_synodic\njacobi_constant\nlagrange_point\nnondimensional\nnondimensional_radii\nperturb\nperturb!\nperturbation\npotential_energy\nprimary_synodic_position\nredimensioned\nreduced_mass\nrichardson_halo\nrichardson_ic\nsecondary_synodic_position\nsynodic_to_inertial\ntime_scaling\nvelocity_scaling\nzero_velocity_curves",
     "crumbs": [
       "Reference",
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Circular Restricted Three Body Calculations</span>"
