@@ -3,15 +3,8 @@ Tests for R2BP dynamics.
 """
 module R2BPTests
 
-using Test
-using ModelingToolkit: ODEFunction, System, get_p, get_u0
-using AstrodynamicalModels:
-    R2BSystem,
-    R2BState,
-    R2BParameters,
-    R2BFunction,
-    system,
-    dynamics
+using AstrodynamicalModels, ModelingToolkit, Test
+using ModelingToolkit: get_p, get_u0
 
 @testset "R2BP Model Constructors" begin
     @test R2BSystem(; stm=false) isa System
@@ -37,7 +30,7 @@ end
     @test isapprox(
         vectorfield(u0, p, NaN),
         [0.0, 0.0, 0.0, 0.00248543, -0.0, -0.00112974];
-        atol = 1e-8
+        atol=1e-8
     )
 end
 

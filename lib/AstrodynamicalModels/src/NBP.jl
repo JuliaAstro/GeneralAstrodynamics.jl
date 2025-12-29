@@ -62,7 +62,7 @@ model = NBSystem(9)
         ],
     )
 
-    eqs = [poseqs; veleqs]
+    eqs = vcat(poseqs, veleqs)
 
     if stm
         if N ≥ 3
@@ -75,8 +75,8 @@ model = NBSystem(9)
         end
 
         @variables Φ(t)[1:length(eqs), 1:length(eqs)], [description = "state transition matrix estimate"]
-        A = jacobian(map(el -> el.rhs, eqs), [r...; v...])
-        eqs = [eqs; vec(scalarize(D(Φ) ~ A * Φ))]
+        A = Symbolics.jacobian(map(el -> el.rhs, eqs), [r...; v...])
+        eqs = vcat(eqs, vec(Symbolics.scalarize(D(Φ) ~ A * Φ)))
     end
 
     if string(name) == "NBP" && stm
@@ -146,7 +146,7 @@ end
         calculations! Consider setting `jac=false`, `stm=false`, or both.
         """
     end
-    sys = complete(NBSystem(N; stm, name); split = true)
+    sys = complete(NBSystem(N; stm = stm, name = name); split = true)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
         sys;
         options...,

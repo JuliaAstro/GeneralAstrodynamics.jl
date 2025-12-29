@@ -3,15 +3,8 @@ Tests for R2BP dynamics.
 """
 module EntryTests
 
-using Test
-using ModelingToolkit: ODEFunction, System, get_p, get_u0
-using AstrodynamicalModels:
-    PlanarEntrySystem,
-    PlanarEntryState,
-    PlanarEntryParameters,
-    PlanarEntryFunction,
-    system,
-    dynamics
+using AstrodynamicalModels, ModelingToolkit, Test
+using ModelingToolkit: get_p, get_u0
 
 @testset "Entry Model Constructors" begin
     model = PlanarEntrySystem()
@@ -48,7 +41,7 @@ end
     @test isapprox(
         vectorfield(u0, p, NaN),
         [1909.7027707373823, -0.7780223808324279, 0.01996668332936563, 0.6633361101853507];
-        atol = 1e-8
+        atol=1e-8
     )
 end
 

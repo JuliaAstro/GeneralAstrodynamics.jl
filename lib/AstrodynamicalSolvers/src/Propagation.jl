@@ -30,7 +30,6 @@ using AstrodynamicalCalculations
 using AstrodynamicalModels
 using ModelingToolkit, OrdinaryDiffEqVerner, SciMLBase
 using StaticArrays
-using LinearAlgebra
 
 export propagate, propagate!, monodromy, convergent_manifold, divergent_manifold
 
@@ -65,7 +64,7 @@ function propagate(
     abstol = 1e-12,
     kwargs...,
 )
-    problem = ODEProblem(orbit, Δt; stm)
+    problem = ODEProblem(orbit, Δt; stm = stm)
     return solve(problem, algorithm; reltol = reltol, abstol = abstol, kwargs...)
 end
 
@@ -151,9 +150,11 @@ function monodromy(
 
     problem = ODEProblem(f.sys, op, tspan)
 
-    solution = solve(problem, algorithm;
-        reltol,
-        abstol,
+    solution = solve(
+        problem,
+        algorithm;
+        reltol = reltol,
+        abstol = abstol,
         save_everystep = save_everystep,
         kwargs...,
     )

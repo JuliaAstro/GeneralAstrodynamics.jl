@@ -182,29 +182,28 @@ model = Attitude()
     end
 
     A = [
-            0  ω[3] -ω[2] ω[1]
-        -ω[3]     0  ω[1] ω[2]
-         ω[2] -ω[1]     0 ω[3]
-        -ω[1] -ω[2] -ω[3]    0
+        0 ω[3] -ω[2] ω[1]
+        -ω[3] 0 ω[1] ω[2]
+        ω[2] -ω[1] 0 ω[3]
+        -ω[1] -ω[2] -ω[3] 0
     ]
 
     ωx = [
-            0 -ω[3]  ω[2]
-         ω[3]     0 -ω[1]
-        -ω[2]  ω[1]     0
+        0 -ω[3] ω[2]
+        ω[3] 0 -ω[1]
+        -ω[2] ω[1] 0
     ]
 
     eqs = [
-        scalarize(D(q) ~ (1 // 2) * (A * q)) ;
-        scalarize(D(ω) ~ -inv(J) * ωx * (J * ω) + inv(J) * L + f)
+        Symbolics.scalarize(D(q) ~ (1 // 2) * (A * q)) ;
+        Symbolics.scalarize(D(ω) ~ -inv(J) * ωx * (J * ω) + inv(J) * L + f)
     ]
 
     if stm
         @variables Φ(t)[1:7, 1:7], [description = "state transition matrix estimate"]
 
-        u = [q; ω]
-        A = jacobian(map(el -> el.rhs, eqs), u)
-        eqs = [eqs; vec(scalarize(D(Φ) ~ A * Φ))]
+        A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(q, ω))
+        eqs = vcat(eqs, vec(Symbolics.scalarize(D(Φ) ~ A * Φ)))
     end
 
     if string(name) == "Attitude" && stm
@@ -240,7 +239,7 @@ end
 @memoize function AttitudeFunction(; stm = false, name = :Attitude, kwargs...)
     defaults = (; jac = true)
     options = merge(defaults, kwargs)
-    sys = complete(AttitudeSystem(; stm, name); split = true)
+    sys = complete(AttitudeSystem(; stm = stm, name = name); split = true)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
         sys;
         options...,

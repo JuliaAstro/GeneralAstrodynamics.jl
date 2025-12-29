@@ -70,7 +70,7 @@ end
     ic = halo(μ, 1; amplitude = 0.005)
     u = CartesianState(ic)
 
-    @test monodromy(u, μ, ic.Δt, CR3BFunction(; stm = true)) ≈ [
+    @test monodromy(u, μ, ic.Δt, CR3BFunction(stm = true)) ≈ [
         1317.472125300217 -339.26725145920585 -22.23471304682866 388.2455372345198 126.49047353668445 -3.3779594177227
         -429.7764385389933 111.53280315746214 7.269431052432993 -126.49047353678779 -41.404653982215095 1.0977750840404263
         -11.440384647744368 2.9348175664641527 1.1929568568249131 -3.3779594177162653 -1.0977750840374354 -0.05845992955397675
@@ -121,11 +121,8 @@ end
 
         problem = ODEProblem(sys, op, tspan)
 
-        solution = solve(problem, Vern9();
-            reltol = 1e-12,
-            abstol = 1e-12,
-            saveat = (T / 10),
-        )
+        solution =
+            solve(problem, Vern9(), reltol = 1e-12, abstol = 1e-12, saveat = (T / 10))
 
         solution.u[begin:begin+9]
     end
@@ -744,4 +741,4 @@ end
     ]
 end
 
-end # module
+end

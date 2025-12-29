@@ -3,15 +3,8 @@ Tests for CR3BP dynamics.
 """
 module CR3BPTests
 
-using Test
-using ModelingToolkit: ODEFunction, System, get_p, get_u0
-using AstrodynamicalModels:
-    CR3BSystem,
-    CR3BState,
-    CR3BParameters,
-    CR3BFunction,
-    system,
-    dynamics
+using AstrodynamicalModels, ModelingToolkit, Test
+using ModelingToolkit: get_p, get_u0
 
 @testset "CR3BP Model Constructors" begin
     @test CR3BSystem(; stm=false) isa System
@@ -37,7 +30,7 @@ end
     @test isapprox(
         vectorfield(u0, p, NaN),
         [0.0, 0.05852663414965813, 0.0, 0.053265045303684255, 0.0, -0.0];
-        atol = 1e-8
+        atol=1e-8
     )
 end
 

@@ -110,25 +110,30 @@ function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
     sys = CR3BFunction(; stm = true).sys
 
     op = [
-        sys.x => x
-        sys.y => y
-        sys.z => z
-        sys.ẋ => ẋ
-        sys.ẏ => ẏ
-        sys.ż => ż
-        vec(sys.Φ) .=> vec(diagm(ones(Int, 6)))
-        sys.μ => μ
+        :x => x
+        :y => y
+        :z => z
+        :ẋ => ẋ
+        :ẏ => ẏ
+        :ż => ż
+        :Φ => AstrodynamicalModels.CartesianSTM() 
+        :μ => μ
     ]
+
 
     tspan = (zero(τ), τ)
 
     problem = ODEProblem(sys, op, tspan)
 
+    p = [:μ => μ]
+
     for _ = 1:maxiters
 
-        solution = solve(problem, Vern9();
-            reltol,
-            abstol,
+        solution = solve(
+            problem,
+            Vern9(),
+            reltol = reltol,
+            abstol = abstol,
             save_everystep = false,
         )
         global fc = solution.u[end]
@@ -148,16 +153,13 @@ function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
         τ = _τ
 
         u0 = [
-            sys.x => x
-            sys.y => y
-            sys.z => z
-            sys.ẋ => ẋ
-            sys.ẏ => ẏ
-            sys.ż => ż
-            vec(sys.Φ) .=> vec(diagm(ones(Int, 6)))
-        ]
-        p = [
-            sys.μ => μ
+            :x => x
+            :y => y
+            :z => z
+            :ẋ => ẋ
+            :ẏ => ẏ
+            :ż => ż
+            :Φ => AstrodynamicalModels.CartesianSTM() 
         ]
 
         tspan = (zero(τ), τ)
@@ -195,25 +197,29 @@ function halo(x, z, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
     sys = CR3BFunction(; stm = true).sys
 
     op = [
-        sys.x => x
-        sys.y => y
-        sys.z => z
-        sys.ẋ => ẋ
-        sys.ẏ => ẏ
-        sys.ż => ż
-        vec(sys.Φ) .=> vec(diagm(ones(Int, 6)))
-        sys.μ => μ
+        :x => x
+        :y => y
+        :z => z
+        :ẋ => ẋ
+        :ẏ => ẏ
+        :ż => ż
+        :Φ => AstrodynamicalModels.CartesianSTM() 
+        :μ => μ
     ]
 
     tspan = (zero(τ), τ)
 
     problem = ODEProblem(sys, op, tspan)
 
+    p = [:μ => μ]
+
     for _ = 1:maxiters
 
-        solution = solve(problem, Vern9();
-            reltol,
-            abstol,
+        solution = solve(
+            problem,
+            Vern9(),
+            reltol = reltol,
+            abstol = abstol,
             save_everystep = false,
         )
         global fc = solution.u[end]
@@ -241,21 +247,16 @@ function halo(x, z, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
                """
 
         u0 = [
-            sys.x => x
-            sys.y => y
-            sys.z => z
-            sys.ẋ => ẋ
-            sys.ẏ => ẏ
-            sys.ż => ż
-            vec(sys.Φ) .=> vec(diagm(ones(Int, 6)))
-        ]
-
-        p = [
-            sys.μ => μ
+            :x => x
+            :y => y
+            :z => z
+            :ẋ => ẋ
+            :ẏ => ẏ
+            :ż => ż
+            :Φ => AstrodynamicalModels.CartesianSTM() 
         ]
 
         tspan = (zero(τ), τ)
-
         _problem = remake(problem; u0, p, tspan)
         problem = _problem
 

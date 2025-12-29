@@ -74,9 +74,8 @@ model = CR3BSystem(; stm=true)
 
     if stm
         @variables Φ(t)[1:6, 1:6], [description = "state transition matrix estimate"]
-
-        A = jacobian(map(el -> el.rhs, eqs), [r; v])
-        eqs = [eqs; vec(scalarize(D(Φ) ~ A * Φ))]
+        A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(r, v))
+        eqs = vcat(eqs, vec(Symbolics.scalarize(D(Φ) ~ A * Φ)))
     end
 
     if string(name) == "CR3B" && stm
@@ -116,7 +115,7 @@ end
 @memoize function CR3BFunction(; stm = false, name = :CR3B, kwargs...)
     defaults = (; jac = true)
     options = merge(defaults, kwargs)
-    sys = complete(CR3BSystem(; stm, name); split = true)
+    sys = complete(CR3BSystem(; stm = stm, name = name); split = true)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
         sys;
         options...,
@@ -136,12 +135,15 @@ AstrodynamicalModels.CR3BOrbit(; state::AbstractVector, parameters::AbstractVect
 Return an `ODEProblem` for the provided CR3B system.
 """
 CR3BProblem(op, tspan; kwargs...) = ODEProblem(CR3BFunction().sys, op, tspan; kwargs...)
-CR3BProblem(
-    orbit::AstrodynamicalOrbit,
-    tspan::Union{<:Tuple,<:AbstractArray};
-    kwargs...
-) = ODEProblem(CR3BFunction().sys, AstrodynamicalModels.op(orbit), tspan; kwargs...)
-CR3BProblem(orbit::AstrodynamicalOrbit, Δt; kwargs...) = CR3BProblem(orbit, (zero(Δt), Δt); kwargs...)
+CR3BProblem(orbit::AstrodynamicalOrbit, tspan::Union{<:Tuple,<:AbstractArray}; kwargs...) =
+    ODEProblem(
+        CR3BFunction().sys,
+        AstrodynamicalModels.op(orbit),
+        tspan;
+        kwargs...,
+    )
+CR3BProblem(orbit::AstrodynamicalOrbit, Δt; kwargs...) =
+    CR3BProblem(orbit, (zero(Δt), Δt); kwargs...)
 
 # TODO: Deprecate old methods? https://github.com/SciML/ModelingToolkit.jl/blob/master/NEWS.md#new-problem-and-constructors
 #CR3BProblem(u0, tspan, p; kwargs...) = ODEProblem(CR3BFunction(), u0, tspan, p; kwargs...)

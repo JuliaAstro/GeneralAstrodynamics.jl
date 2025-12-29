@@ -60,8 +60,8 @@ model = R2BSystem()
     if stm
         @variables Φ(t)[1:6, 1:6], [description = "state transition matrix estimate"]
 
-        A = jacobian(map(el -> el.rhs, eqs), [r; v])
-        eqs = [eqs; vec(scalarize(D(Φ) ~ A * Φ))]
+        A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(r, v))
+        eqs = vcat(eqs, vec(Symbolics.scalarize(D(Φ) ~ A * Φ)))
     end
 
     if string(name) == "R2B" && stm
@@ -101,7 +101,7 @@ end
 @memoize function R2BFunction(; stm = false, name = :R2B, kwargs...)
     defaults = (; jac = true)
     options = merge(defaults, kwargs)
-    sys = complete(R2BSystem(; stm, name); split = true)
+    sys = complete(R2BSystem(; stm = stm, name = name); split = true)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
         sys;
         options...,
@@ -121,8 +121,14 @@ R2BProblem(
     orbit::AstrodynamicalOrbit{<:CartesianState},
     tspan::Union{<:Tuple,<:AbstractArray};
     kwargs...,
-) = ODEProblem(R2BFunction().sys, AstrodynamicalModels.op(orbit), tspan; kwargs...)
-R2BProblem(orbit::AstrodynamicalOrbit{<:CartesianState}, Δt; kwargs...) = R2BProblem(orbit, (zero(Δt), Δt); kwargs...)
+) = ODEProblem(
+    R2BFunction().sys,
+    AstrodynamicalModels.op(orbit),
+    tspan;
+    kwargs...,
+)
+R2BProblem(orbit::AstrodynamicalOrbit{<:CartesianState}, Δt; kwargs...) =
+    R2BProblem(orbit, (zero(Δt), Δt); kwargs...)
 
 # TODO: Deprecate old methods? https://github.com/SciML/ModelingToolkit.jl/blob/master/NEWS.md#new-problem-and-constructors
 #R2BProblem(u0, tspan, p; kwargs...) = ODEProblem(R2BFunction(), u0, tspan, p; kwargs...)
