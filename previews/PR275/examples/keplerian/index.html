@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.25">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -74,9 +74,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-707d8167ce6003fca903bfe2be84ab7f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-b758ccaa5987ceb1b75504551e579abf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap-b9efe103605aac5501d162c1b35daf72.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
@@ -413,8 +413,6 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    </a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">AstrodynamicalCalculations</span>
     </a>
@@ -458,10 +456,6 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="../../index.html" class="sidebar-logo-link">
-      </a>
-      </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
@@ -566,7 +560,7 @@ window.Quarto = {
 
 
 <p><em>Hot off the (first generation) printing presses.</em></p>
-<div id="d2450e62" class="cell" data-execution_count="1">
+<div id="26a181dc" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">LinearAlgebra</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalCalculations</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -600,7 +594,7 @@ window.Quarto = {
 </tbody>
 </table>
 <p>We can confirm these categories using the <code>conic</code> function.</p>
-<div id="c77014c1" class="cell" data-execution_count="2">
+<div id="213b0aad" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="cn">e</span> <span class="op">=</span> [<span class="fl">0</span>, <span class="fl">0.25</span>, <span class="fl">1</span>, <span class="fl">1.25</span>]</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cn">e</span> <span class="op">.=&gt;</span> <span class="fu">conic</span>.(<span class="cn">e</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -613,7 +607,7 @@ window.Quarto = {
 </div>
 </div>
 <p>We can construct a fully specified orbit by specifying Keplerian parameters (orbital elements). The mass parameter <code>μ</code> is the mass of the body we are orbiting multiplied by gravitational constant <span class="math inline">\(G\)</span>.</p>
-<div id="5901f619" class="cell" data-execution_count="3">
+<div id="eac75504" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> (; <span class="cn">e</span> <span class="op">=</span> <span class="fl">0.25</span>, a <span class="op">=</span> <span class="fl">10e5</span>, i <span class="op">=</span> <span class="cn">π</span> <span class="op">/</span> <span class="fl">4</span>, Ω <span class="op">=</span> <span class="fl">0</span>, ω <span class="op">=</span> <span class="fl">0</span>, ν <span class="op">=</span> <span class="cn">π</span> <span class="op">/</span> <span class="fl">2</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>μ <span class="op">=</span> <span class="fl">3.1e10</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
@@ -621,49 +615,49 @@ window.Quarto = {
 </div>
 </div>
 <p>All calculations which are computed for circular orbits are also relevant for Keplerian orbits more generally.</p>
-<div id="a47955f0" class="cell" data-execution_count="4">
+<div id="794660a0" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> <span class="fu">keplerian_to_cartesian</span>(k<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>(x = 5.740531871003218e-11, y = 662912.6073623884, z = 662912.6073623883, ẋ = -181.84242262647808, ẏ = 32.14550253664319, ż = 32.145502536643185)</code></pre>
 </div>
 </div>
-<div id="43bf2559" class="cell" data-execution_count="5">
+<div id="f25060c0" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cartesian_to_keplerian</span>(c<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>(e = 0.25, a = 1.0000000000000009e6, i = 0.7853981633974483, Ω = 6.283185307179586, ω = 0.0, ν = 1.570796326794896)</code></pre>
 </div>
 </div>
-<div id="044777aa" class="cell" data-execution_count="6">
+<div id="086b2604" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">specific_energy</span>(c<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>-15499.999999999989</code></pre>
 </div>
 </div>
-<div id="73c3229c" class="cell" data-execution_count="7">
+<div id="b33eeb15" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c3</span>(c<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <pre><code>-30999.999999999978</code></pre>
 </div>
 </div>
-<div id="85cf0261" class="cell" data-execution_count="8">
+<div id="7db1f28c" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>P <span class="op">=</span> <span class="fu">specific_potential_energy</span>(c<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>33066.666666666664</code></pre>
 </div>
 </div>
-<div id="bc7dafdf" class="cell" data-execution_count="9">
+<div id="64cb1aca" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> <span class="fu">orbital_radius</span>(c<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <pre><code>750000.0000000007</code></pre>
 </div>
 </div>
-<div id="2f5caf3b" class="cell" data-execution_count="10">
+<div id="5f70e6b1" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> <span class="fu">orbital_speed</span>(c<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>187.43887892679405</code></pre>
 </div>
 </div>
-<div id="2e4283a2" class="cell" data-execution_count="11">
+<div id="8c5a20c2" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fu">semi_parameter</span>(c<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="12">
 <pre><code>937500.0000000009</code></pre>
@@ -683,7 +677,7 @@ window.Quarto = {
 <section id="shape-calculations" class="level2">
 <h2 class="anchored" data-anchor-id="shape-calculations">Shape Calculations</h2>
 <p>The <em>shape</em> of a Keplerian orbit is completely described by its <em>eccentricity</em>. The full eccentricity vector <span class="math inline">\(\overrightarrow{e}\)</span> is found through the <code>eccentricity_vector</code> function, and the norm of this vector can be conveniently found using the <code>eccentricity</code> function.</p>
-<div id="c6f2a97c" class="cell" data-execution_count="12">
+<div id="fb8f15d8" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>ē <span class="op">=</span> <span class="fu">eccentricity_vector</span>(c<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
 <pre><code>3-element StaticArraysCore.SVector{3, Float64} with indices SOneTo(3):
@@ -692,7 +686,7 @@ window.Quarto = {
  1.2305475050403225e-16</code></pre>
 </div>
 </div>
-<div id="51a769f8" class="cell" data-execution_count="13">
+<div id="98355ee0" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@assert</span> <span class="fu">norm</span>(ē) <span class="op">≈</span> <span class="fu">eccentricity</span>(c<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>For elliptical orbits, there exists some concepts of apoapsis and periapsis. An orbit’s point of apoapsis is the point along the orbit where the orbital radius is maximized. The point of periapsis is the point along the orbit where the orbital radius is minimized.</p>
@@ -706,13 +700,13 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div id="3743357c" class="cell" data-execution_count="14">
+<div id="24a9a428" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">periapsis_radius</span>(c<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="15">
 <pre><code>750000.0000000007</code></pre>
 </div>
 </div>
-<div id="c97d585b" class="cell" data-execution_count="15">
+<div id="7dd02f73" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apoapsis_radius</span>(c<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="16">
 <pre><code>1.2500000000000012e6</code></pre>
@@ -726,7 +720,7 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="keplers-problem">Kepler’s Problem</h3>
 <p>Kepler’s problem answers the following question: given a full orbital state at any instance in time, what will the orbital state be after some time duration <span class="math inline">\(\Delta t\)</span>?</p>
 <p>We have an example state for an elliptical orbit already (defined above): (x = 5.740531871003218e-11, y = 662912.6073623884, z = 662912.6073623883, ẋ = -181.84242262647808, ẏ = 32.14550253664319, ż = 32.145502536643185). For a spacecraft along this orbit, where can we find the spacecraft after <span class="math inline">\(100\)</span> seconds? We can use the <code>kepler</code> function to answer this question.</p>
-<div id="e9333471" class="cell" data-execution_count="16">
+<div id="3777b7a2" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>c₁₀₀ <span class="op">=</span> <span class="fu">kepler</span>(c<span class="op">...</span>, μ, <span class="fl">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="18">
 <pre><code>(x = -18183.110300938046, y = 666002.8609349633, z = 666002.8609349632, ẋ = -181.80854616812246, ẏ = 29.663647695968862, ż = 29.66364769596886)</code></pre>
@@ -736,7 +730,7 @@ window.Quarto = {
 <section id="lamberts-problem" class="level3">
 <h3 class="anchored" data-anchor-id="lamberts-problem">Lambert’s Problem</h3>
 <p>Kepler’s problem is a drop-in replacement for numerical integration (for restricted two-body dynamics). Lambert’s problem answers a different question: given a starting position and an ending position, what change in velocity is required to <em>transfer</em> from the first orbit to the second in some amount of time? Note that the second position is <em>not</em> a position along the first orbit. The velocities returned by Lambert’s problem tell you how much you need to <em>speed up</em> along your starting orbit, and how much you need to <em>slow down</em> upon arriving at your ending orbit. We can calculate these values using the <code>lambert</code> function. Let’s assume we want to increase our <span class="math inline">\(x\)</span> position by <span class="math inline">\(100\)</span> km over the course of <span class="math inline">\(1\)</span> hour, or <span class="math inline">\(86,400\)</span> seconds.</p>
-<div id="7b0996eb" class="cell" data-execution_count="17">
+<div id="f182d7f3" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>r₁ <span class="op">=</span> [c.x, c.y, c.z]</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>r₂ <span class="op">=</span> [c.x <span class="op">+</span> <span class="fl">100</span>, c.y, c.z]</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>Δt <span class="op">=</span> <span class="fl">86400</span></span>
@@ -747,7 +741,7 @@ window.Quarto = {
 </div>
 </div>
 <p>The total change in speed can be described by the sum of the norms of <span class="math inline">\(\Delta v_1\)</span> and <span class="math inline">\(\Delta v_2\)</span>.</p>
-<div id="ec7a7148" class="cell" data-execution_count="18">
+<div id="92024ab2" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>Δv <span class="op">=</span> <span class="fu">norm</span>(Δv₁) <span class="op">+</span> <span class="fu">norm</span>(Δv₂)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="20">
 <pre><code>445.454235062724</code></pre>
