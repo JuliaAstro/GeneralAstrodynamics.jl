@@ -577,12 +577,10 @@ parameters(orbit::Orbit) = orbit.parameters
 
 """
 Return the operating point for an `Orbit`.
-
-TODO: Add Φ?
 """
 op(orbit::Orbit) = [
     [:x, :y, :z, :ẋ, :ẏ, :ż] .=> orbit.state
-    :μ => Vector(orbit.parameters)
+    :μ => orbit.parameters[1]
 ]
 
 Base.getindex(orbit::AstrodynamicalOrbit, args...) = Base.getindex(state(orbit), args...)

@@ -40,18 +40,16 @@ function SciMLBase.ODEProblem(
     stm = false,
     kwargs...,
 )
-    f = dynamics(orbit; stm)
-    u = AstrodynamicalModels.state(orbit)
+    sys = dynamics(orbit, stm = stm).sys
 
+    op = AstrodynamicalModels.op(orbit)
     if stm
-        u = Vector(vcat(u, vec(AstrodynamicalModels.CartesianSTM())))
+        op = [op; :Φ => AstrodynamicalModels.CartesianSTM()]
     end
-
-    p = AstrodynamicalModels.parameters(orbit)
 
     tspan = (Δt isa AbstractArray || Δt isa Tuple) ? Δt : (zero(Δt), Δt)
 
-    return ODEProblem(f, u, tspan, p; kwargs...)
+    return ODEProblem(sys, op, tspan; kwargs...)
 end
 
 """
