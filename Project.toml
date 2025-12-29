@@ -19,7 +19,7 @@ AstrodynamicalSolvers = {path="lib/AstrodynamicalSolvers"}
 
 [compat]
 AstrodynamicalCalculations = "0.5, 1"
-AstrodynamicalModels = "3.4"
+AstrodynamicalModels = "3.4, 3.8"
 AstrodynamicalSolvers = "0.5, 1"
 DocStringExtensions = "0.9"
 EphemerisSources = "1.0.0"

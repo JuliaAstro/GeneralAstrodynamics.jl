@@ -231,8 +231,11 @@ are passed directly to `SciMLBase.ODEFunction`.
 
 ```julia
 f = AttitudeFunction()
-let u = randn(7), p = randn(15), t = NaN # time invariant
-    f(u, p, t)
+let u = randn(7), p = [randn(9), randn(3), rand(3)], t = NaN
+    sys = f.sys
+    u0 = get_u0(sys, ModelingToolkit.unknowns(sys) .=> u)
+    p = get_p(sys, [:J => p[1], :L => p[2], :f => p[3]]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=> p)
+    f(u0, p, t)
 end
 ```
 """

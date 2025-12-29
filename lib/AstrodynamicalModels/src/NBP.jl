@@ -130,8 +130,11 @@ directly to `SciMLBase.ODEFunction`.
 
 ```julia
 f = NBFunction(3; stm=false, name=:NBP, jac=false, sparse=false)
-let u = randn(3*6), p = randn(1 + 3), t = 0
-    f(u, p, t)
+let u = randn(3*6), p = [randn(3), randn()], t = 0
+    sys = f.sys
+    u0 = get_u0(sys, ModelingToolkit.unknowns(sys) .=> u)
+    p = get_p(sys, [:m => p[1], :G => p[2]]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=> p)
+    f(u0, p, t)
 end
 ```
 """

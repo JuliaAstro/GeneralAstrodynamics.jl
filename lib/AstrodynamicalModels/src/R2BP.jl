@@ -93,8 +93,11 @@ directly to `SciMLBase.ODEFunction`.
 
 ```julia
 f = R2BFunction(; stm=false, name=:R2B, jac=true)
-let u = randn(6), p = randn(1), t = 0
-    f(u, p, t)
+let u = randn(6), p = randn(), t = 0
+    sys = f.sys
+    u0 = get_u0(sys, [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u) # Or get_u0(sys, ModelingToolkit.unknowns(sys) .=> u)
+    p = get_p(sys, [:μ => p]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=> p)
+    f(u0, p, t)
 end
 ```
 """
