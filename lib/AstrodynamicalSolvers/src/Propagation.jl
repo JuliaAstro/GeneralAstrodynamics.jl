@@ -142,22 +142,16 @@ function monodromy(
     save_everystep = false,
     kwargs...,
 )
-    sys = f.sys
 
     op = [
-            :x => u[begin]
-            :y => u[begin+1]
-            :z => u[begin+2]
-            :ẋ => u[begin+3]
-            :ẏ => u[begin+4]
-            :ż => u[begin+5]
-            vec(sys.Φ) .=> vec(diagm(ones(Int, 6)))
-            sys.μ => μ
+        [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u
+        :Φ => AstrodynamicalModels.CartesianSTM()
+        :μ => μ
     ]
 
     tspan = (zero(T), T)
 
-    problem = ODEProblem(sys, op, tspan)
+    problem = ODEProblem(f.sys, op, tspan)
 
     solution = solve(problem, algorithm;
         reltol,

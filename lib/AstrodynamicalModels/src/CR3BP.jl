@@ -135,14 +135,23 @@ AstrodynamicalModels.CR3BOrbit(; state::AbstractVector, parameters::AbstractVect
 """
 Return an `ODEProblem` for the provided CR3B system.
 """
-CR3BProblem(u0, tspan, p; kwargs...) = ODEProblem(CR3BFunction(), u0, tspan, p; kwargs...)
-CR3BProblem(orbit::AstrodynamicalOrbit, tspan::Union{<:Tuple,<:AbstractArray}; kwargs...) =
-    ODEProblem(
-        CR3BFunction(),
-        AstrodynamicalModels.state(orbit),
-        tspan,
-        AstrodynamicalModels.parameters(orbit);
-        kwargs...,
-    )
-CR3BProblem(orbit::AstrodynamicalOrbit, Δt; kwargs...) =
-    CR3BProblem(orbit, (zero(Δt), Dt); kwargs...)
+CR3BProblem(op, tspan; kwargs...) = ODEProblem(CR3BFunction().sys, op, tspan; kwargs...)
+CR3BProblem(
+    orbit::AstrodynamicalOrbit,
+    tspan::Union{<:Tuple,<:AbstractArray};
+    kwargs...
+) = ODEProblem(CR3BFunction().sys, AstrodynamicalModels.op(orbit), tspan; kwargs...)
+CR3BProblem(orbit::AstrodynamicalOrbit, Δt; kwargs...) = CR3BProblem(orbit, (zero(Δt), Δt); kwargs...)
+
+# TODO: Deprecate old methods? https://github.com/SciML/ModelingToolkit.jl/blob/master/NEWS.md#new-problem-and-constructors
+#CR3BProblem(u0, tspan, p; kwargs...) = ODEProblem(CR3BFunction(), u0, tspan, p; kwargs...)
+#CR3BProblem(orbit::AstrodynamicalOrbit, tspan::Union{<:Tuple,<:AbstractArray}; kwargs...) =
+#    ODEProblem(
+#        CR3BFunction(),
+#        AstrodynamicalModels.state(orbit),
+#        tspan,
+#        AstrodynamicalModels.parameters(orbit);
+#        kwargs...,
+#    )
+#CR3BProblem(orbit::AstrodynamicalOrbit, Δt; kwargs...) =
+#    CR3BProblem(orbit, (zero(Δt), δt); kwargs...)

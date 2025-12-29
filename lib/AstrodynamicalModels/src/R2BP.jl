@@ -116,17 +116,26 @@ const R2BOrbit = Orbit{<:CartesianState,<:R2BParameters}
 """
 Return an `ODEProblem` for the provided R2B system.
 """
-R2BProblem(u0, tspan, p; kwargs...) = ODEProblem(R2BFunction(), u0, tspan, p; kwargs...)
+R2BProblem(op, tspan; kwargs...) = ODEProblem(R2BFunction().sys, op, tspan; kwargs...)
 R2BProblem(
     orbit::AstrodynamicalOrbit{<:CartesianState},
     tspan::Union{<:Tuple,<:AbstractArray};
     kwargs...,
-) = ODEProblem(
-    R2BFunction(),
-    AstrodynamicalModels.state(orbit),
-    tspan,
-    AstrodynamicalModels.parameters(orbit);
-    kwargs...,
-)
-R2BProblem(orbit::AstrodynamicalOrbit{<:CartesianState}, Δt; kwargs...) =
-    R2BProblem(orbit, (zero(Δt), Dt); kwargs...)
+) = ODEProblem(R2BFunction().sys, AstrodynamicalModels.op(orbit), tspan; kwargs...)
+R2BProblem(orbit::AstrodynamicalOrbit{<:CartesianState}, Δt; kwargs...) = R2BProblem(orbit, (zero(Δt), Δt); kwargs...)
+
+# TODO: Deprecate old methods? https://github.com/SciML/ModelingToolkit.jl/blob/master/NEWS.md#new-problem-and-constructors
+#R2BProblem(u0, tspan, p; kwargs...) = ODEProblem(R2BFunction(), u0, tspan, p; kwargs...)
+#R2BProblem(
+#    orbit::AstrodynamicalOrbit{<:CartesianState},
+#    tspan::Union{<:Tuple,<:AbstractArray};
+#    kwargs...,
+#) = ODEProblem(
+#    R2BFunction(),
+#    AstrodynamicalModels.state(orbit),
+#    tspan,
+#    AstrodynamicalModels.parameters(orbit);
+#    kwargs...,
+#)
+#R2BProblem(orbit::AstrodynamicalOrbit{<:CartesianState}, Δt; kwargs...) =
+#    R2BProblem(orbit, (zero(Δt), δt); kwargs...)

@@ -113,8 +113,8 @@ end
                 :ẋ => u.ẋ
                 :ẏ => u.ẏ
                 :ż => u.ż
-                vec(sys.Φ) .=> vec(I(6))
-                sys.μ => μ
+                :Φ => I(6)
+                :μ => μ
         ]
 
         tspan = (0, T)
