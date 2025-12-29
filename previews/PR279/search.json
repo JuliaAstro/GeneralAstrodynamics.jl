@@ -1,0 +1,513 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "AstrodynamicalModels",
+    "section": "",
+    "text": "AstrodynamicalModels.jl\nAn extension of ModelingToolkit.jl which provides common astrodynamics models.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#installation",
+    "href": "index.html#installation",
+    "title": "AstrodynamicalModels",
+    "section": "Installation",
+    "text": "Installation\nChoose one of the two lines below!\nPkg.add(\"AstrodynamicalModels\")  # in Julia code\npkg&gt; add AstrodynamicalModels    # in Julia's REPL",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#currently-implemented",
+    "href": "index.html#currently-implemented",
+    "title": "AstrodynamicalModels",
+    "section": "Currently Implemented",
+    "text": "Currently Implemented\nNote – for all non-entry models below, you can optionally append state transition matrix dynamics.\n\nRestricted Two-body Problem\nCircular Restricted Three-body Problem\nN-body Problem\nPlanar Entry\nAttitude Kinematics & Dynamics",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#future-additions",
+    "href": "index.html#future-additions",
+    "title": "AstrodynamicalModels",
+    "section": "Future Additions",
+    "text": "Future Additions\n\nAspherical Restricted Two-body Problem\nSolar radiation pressure dynamics\nOthers? Let me know about, or submit a PR with, your desired astrodynamics models!",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "models/index.html",
+    "href": "models/index.html",
+    "title": "Models",
+    "section": "",
+    "text": "What models are available?",
+    "crumbs": [
+      "Models"
+    ]
+  },
+  {
+    "objectID": "models/attitude/index.html",
+    "href": "models/attitude/index.html",
+    "title": "Attitude Dynamics",
+    "section": "",
+    "text": "Overview\nQuaternion kinematics, and dynamics!\nThe Attitude model assumes a spacecraft with some orientation described by a scalar-last quaternion, and body rates which are small enough such that they appear constant for small numerical integration tolerance values.\n\\[\n\\begin{aligned}\n    \\dot{q} &= \\frac{1}{2} \\begin{bmatrix}\n        0 && \\omega_3 && -\\omega_2 && \\omega_1 \\\\\n        -\\omega_3 && 0 && \\omega_1 && \\omega_2 \\\\\n        \\omega_2 && -\\omega_1 && 0 && \\omega_3 \\\\\n        -\\omega_1 && -\\omega_2 && -\\omega_3 && 0\n    \\end{bmatrix} q \\\\\n    \\dot{\\omega} &= -J^{-1} (\\omega\\times) J \\omega + J^{-1} L + u \\\\\n\\end{aligned}\n\\]",
+    "crumbs": [
+      "Models",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Attitude Dynamics</span>"
+    ]
+  },
+  {
+    "objectID": "models/attitude/index.html#overview",
+    "href": "models/attitude/index.html#overview",
+    "title": "Attitude Dynamics",
+    "section": "",
+    "text": "You should normalize the quaternion vector at each time step using a ManifoldCallback or DiscreteCallback when simulating this model! Without normalizing, the solution will drift such that the quaternion state vector is no longer a unit quaternion. The dynamics in this model assume a unit quaternion norm!",
+    "crumbs": [
+      "Models",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Attitude Dynamics</span>"
+    ]
+  },
+  {
+    "objectID": "models/attitude/index.html#examples",
+    "href": "models/attitude/index.html#examples",
+    "title": "Attitude Dynamics",
+    "section": "Examples",
+    "text": "Examples\n\nmodel = AttitudeSystem()\n\n\nModel Attitude:\nEquations (7):\n  7 standard: see equations(Attitude)\nUnknowns (7): see unknowns(Attitude)\n  (q(t))[1]: scalar-last attitude quaternion\n  (q(t))[2]: scalar-last attitude quaternion\n  (q(t))[3]: scalar-last attitude quaternion\n  (q(t))[4]: scalar-last attitude quaternion\n  (ω(t))[1]: body rates in radians per second\n  (ω(t))[2]: body rates in radians per second\n  ⋮\nParameters (3): see parameters(Attitude)\n  J: moment of inertial matrix\n  L: lever arm where input torque is applied\n  f: input torque\n\n\n\nLet’s compute the Jacobian for these dynamics.\n\nJ = calculate_jacobian(AttitudeSystem())\n\n\n7×7 Matrix{SymbolicUtils.BasicSymbolicImpl.var\"typeof(BasicSymbolicImpl)\"{SymReal}}:\n 0                  …  (1//2)*(q(t))[2]\n (-1//2)*(ω(t))[3]     (-1//2)*(q(t))[1]\n (1//2)*(ω(t))[2]      (1//2)*(q(t))[4]\n (-1//2)*(ω(t))[1]     (-1//2)*(q(t))[3]\n 0                     (-J[1, 1]*(inv(J))[1, 2] + J[2, 1]*(inv(J))[1, 1])*(ω(t))[1] + (-J[1, 2]*(inv(J))[1, 2] + J[2, 2]*(inv(J))[1, 1])*(ω(t))[2] + J[1, 3]*((ω(t))[2]*(inv(J))[1, 3] - (ω(t))[3]*(inv(J))[1, 2]) + (-J[1, 3]*(inv(J))[1, 2] + J[2, 3]*(inv(J))[1, 1])*(ω(t))[3] + J[2, 3]*(-(ω(t))[1]*(inv(J))[1, 3] + (ω(t))[3]*(inv(J))[1, 1]) + J[3, 3]*((ω(t))[1]*(inv(J))[1, 2] - (ω(t))[2]*(inv(J))[1, 1])\n 0                  …  (-J[1, 1]*(inv(J))[2, 2] + J[2, 1]*(inv(J))[2, 1])*(ω(t))[1] + (-J[1, 2]*(inv(J))[2, 2] + J[2, 2]*(inv(J))[2, 1])*(ω(t))[2] + J[1, 3]*((ω(t))[2]*(inv(J))[2, 3] - (ω(t))[3]*(inv(J))[2, 2]) + (-J[1, 3]*(inv(J))[2, 2] + J[2, 3]*(inv(J))[2, 1])*(ω(t))[3] + J[2, 3]*(-(ω(t))[1]*(inv(J))[2, 3] + (ω(t))[3]*(inv(J))[2, 1]) + J[3, 3]*((ω(t))[1]*(inv(J))[2, 2] - (ω(t))[2]*(inv(J))[2, 1])\n 0                     (-J[1, 1]*(inv(J))[3, 2] + J[2, 1]*(inv(J))[3, 1])*(ω(t))[1] + (-J[1, 2]*(inv(J))[3, 2] + J[2, 2]*(inv(J))[3, 1])*(ω(t))[2] + J[1, 3]*((ω(t))[2]*(inv(J))[3, 3] - (ω(t))[3]*(inv(J))[3, 2]) + (-J[1, 3]*(inv(J))[3, 2] + J[2, 3]*(inv(J))[3, 1])*(ω(t))[3] + J[2, 3]*(-(ω(t))[1]*(inv(J))[3, 3] + (ω(t))[3]*(inv(J))[3, 1]) + J[3, 3]*((ω(t))[1]*(inv(J))[3, 2] - (ω(t))[2]*(inv(J))[3, 1])\n\n\n\nFinally, let’s construct a Julia function which implements these dynamics!\n\nf = AttitudeFunction()\nlet u = randn(7), p = [randn(9), randn(3), rand(3)], t = 0\n    sys = f.sys\n    u0 = get_u0(sys, ModelingToolkit.unknowns(sys) .=&gt; u)\n    p = get_p(sys, [:J =&gt; p[1], :L =&gt; p[2], :f =&gt; p[3]]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=&gt; p)\n    f(u0, p, t)\nend\n\n7-element Vector{Float64}:\n  -1.9603227324886845\n   0.6271357068208231\n  -0.46792793534841925\n   0.6965593708961184\n   0.17977182949129156\n   7.859545027992633\n -10.48863453509355",
+    "crumbs": [
+      "Models",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Attitude Dynamics</span>"
+    ]
+  },
+  {
+    "objectID": "models/entry/index.html",
+    "href": "models/entry/index.html",
+    "title": "Planar Entry Dynamics",
+    "section": "",
+    "text": "Overview\nAlso known as canonical entry dynamics!\nThe Planar Entry model assumes a spacecraft moving in an exponential atmosphere about a spherical planet. Acceleration due to gravity is ignored. The equations of motion are shown below.\n\\[\n\\begin{aligned}\n  \\dot{\\gamma} &= \\frac{1}{v} \\left( L_m - (1 - \\frac{v^2}{v_c^2}) g \\cos{\\gamma} \\right) \\\\\n  \\dot{v} &= -D_m - g \\sin{\\gamma} \\\\\n  \\dot{r} &= v \\sin{\\gamma} \\\\\n  \\dot{\\theta} &= \\frac{v}{r} \\cos{\\gamma} \\\\\n\\end{aligned}\n\\]",
+    "crumbs": [
+      "Models",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Planar Entry Dynamics</span>"
+    ]
+  },
+  {
+    "objectID": "models/entry/index.html#examples",
+    "href": "models/entry/index.html#examples",
+    "title": "Planar Entry Dynamics",
+    "section": "Examples",
+    "text": "Examples\n\nmodel = PlanarEntrySystem()\n\n\nModel PlanarEntry:\nEquations (4):\n  4 standard: see equations(PlanarEntry)\nUnknowns (4): see unknowns(PlanarEntry)\n  γ(t): flight path angle in degrees\n  v(t): airspeed in meters per second\n  r(t): polar distance relative to planet center in meters\n  θ(t): polar angle relative to planet horizontal in degrees\nParameters (7): see parameters(PlanarEntry)\n  m: entry vehicle mass in kilograms\n  R: spherical planet radius\n  H: scale factor for exponential atmosphere in meters\n  P: atmospheric density at sea level in kilograms per meter cubed\n  A: entry vehicle surface area in square meters\n  μ: planet mass parameter in meters per second cubed\n  ⋮\n\n\n\nLet’s compute the Jacobian for these dynamics.\n\nJ = calculate_jacobian(PlanarEntrySystem())\n\n\n4×4 Matrix{SymbolicUtils.BasicSymbolicImpl.var\"typeof(BasicSymbolicImpl)\"{SymReal}}:\n (((R / r(t))^2)*sin(γ(t))*(1 - ((v(t) / sqrt(μ / r(t)))^2))*μ) / ((R^2)*v(t))  …  0\n (-((R / r(t))^2)*cos(γ(t))*μ) / (R^2)                                             0\n v(t)*cos(γ(t))                                                                    0\n (-v(t)*sin(γ(t))) / r(t)                                                          0\n\n\n\nFinally, let’s construct a Julia function which implements these dynamics!\n\nf = PlanarEntryFunction()\nlet u = abs.(randn(4)), p = abs.(randn(7)), t = 0\n    sys = f.sys\n    u0 = get_u0(sys, [:γ, :v, :r, :θ] .=&gt; u) # Or get_u0(sys, ModelingToolkit.unknowns(sys) .=&gt; u)\n    p = get_p(sys, ModelingToolkit.parameters(sys) .=&gt; p)\n    f(u0, p, t)\nend\n\n4-element Vector{Float64}:\n  3.071645374933004\n -1.1861190889033768\n  0.828594735491243\n  0.2034760657084313",
+    "crumbs": [
+      "Models",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Planar Entry Dynamics</span>"
+    ]
+  },
+  {
+    "objectID": "models/r2b/index.html",
+    "href": "models/r2b/index.html",
+    "title": "Restricted Two-body Dynamics",
+    "section": "",
+    "text": "Overview\nAlso known as R2BP dynamics!\nThe Restricted Two-body Problem (R2BP) assumes a massless spacecraft which moves due to the gravity of one celestial body: one star, or one planet, or one moon, or one asteroid. The equations of motion for R2BP dynamics are shown below.\n\\[\n\\begin{aligned}\n\\frac{dx(t)}{dt} =& ẋ\\left( t \\right) \\\\\n\\frac{dy(t)}{dt} =& ẏ\\left( t \\right) \\\\\n\\frac{dz(t)}{dt} =& ż\\left( t \\right) \\\\\n\\frac{dẋ(t)}{dt} =& \\frac{ - \\mu x\\left( t \\right)}{\\left( \\sqrt{x^2\\left(t\\right) + y^2\\left(t\\right) + z^2\\left(t\\right)} \\right)^{3}} \\\\\n\\frac{dẏ(t)}{dt} =& \\frac{ - \\mu y\\left( t \\right)}{\\left( \\sqrt{x^2\\left(t\\right) + y^2\\left(t\\right) + z^2\\left(t\\right)} \\right)^{3}} \\\\\n\\frac{dż(t)}{dt} =& \\frac{ - \\mu z\\left( t \\right)}{\\left( \\sqrt{x^2\\left(t\\right) + y^2\\left(t\\right) + z^2\\left(t\\right)} \\right)^{3}}\n\\end{aligned}\n\\]",
+    "crumbs": [
+      "Models",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Restricted Two-body Dynamics</span>"
+    ]
+  },
+  {
+    "objectID": "models/r2b/index.html#examples",
+    "href": "models/r2b/index.html#examples",
+    "title": "Restricted Two-body Dynamics",
+    "section": "Examples",
+    "text": "Examples\n\nmodel = R2BSystem()\n\n\nModel R2B:\nEquations (6):\n  6 standard: see equations(R2B)\nUnknowns (6): see unknowns(R2B)\n  x(t)\n  y(t)\n  z(t)\n  ẋ(t)\n  ẏ(t)\n  ż(t)\nParameters (1): see parameters(R2B)\n  μ\n\n\n\nEvery model also offers optional state transition matrix dynamics. Use stm=true to append the state transition matrix dynamics to your model’s equations of motion. State transition dynamics can also be thought of the model’s local linearization.\n\n\n\n\n\n\nThe state transition dynamics for R2BSystem are not nearly as useful as the state transition dynamics within CR3BP models. Within CR3BP dynamics, a spacecraft’s local linearization offers stability characteristics for periodic orbits, and provides stable and unstable directions (in state-space) for invariant manifolds about periodic orbits and Lagrange points.\n\n\n\n\nmodel = R2BSystem(; stm=true)\n\n\nModel R2BWithSTM:\nEquations (42):\n  42 standard: see equations(R2BWithSTM)\nUnknowns (42): see unknowns(R2BWithSTM)\n  x(t)\n  y(t)\n  z(t)\n  ẋ(t)\n  ẏ(t)\n  ż(t)\n  ⋮\nParameters (1): see parameters(R2BWithSTM)\n  μ\n\n\n\nLet’s compute the Jacobian for these dynamics.\n\nJ = calculate_jacobian(R2BSystem())\n\n\n6×6 Matrix{SymbolicUtils.BasicSymbolicImpl.var\"typeof(BasicSymbolicImpl)\"{SymReal}}:\n 0                                                                                                                                                                     …  1  0  0\n 0                                                                                                                                                                        0  1  0\n 0                                                                                                                                                                        0  0  1\n (-μ) / (sqrt(abs2(z(t)) + abs2(y(t)) + abs2(x(t)))^3) + (3(x(t)^2)*μ) / (((abs2(z(t)) + abs2(y(t)) + abs2(x(t)))^(2//1))*sqrt(abs2(z(t)) + abs2(y(t)) + abs2(x(t))))     0  0  0\n (3y(t)*x(t)*μ) / (((abs2(z(t)) + abs2(y(t)) + abs2(x(t)))^(2//1))*sqrt(abs2(z(t)) + abs2(y(t)) + abs2(x(t))))                                                            0  0  0\n (3z(t)*x(t)*μ) / (((abs2(z(t)) + abs2(y(t)) + abs2(x(t)))^(2//1))*sqrt(abs2(z(t)) + abs2(y(t)) + abs2(x(t))))                                                         …  0  0  0\n\n\n\nFinally, let’s construct a Julia function which implements these dynamics!\n\nf = R2BFunction()\nlet u = randn(6), p = 3e6, t = 0\n    sys = f.sys\n    u0 = get_u0(sys, [:x, :y, :z, :ẋ, :ẏ, :ż] .=&gt; u) # Or get_u0(sys, ModelingToolkit.unknowns(sys) .=&gt; u)\n    p = get_p(sys, [:μ =&gt; p]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=&gt; p)\n    f(u0, p, t)\nend\n\n6-element Vector{Float64}:\n       0.7586728828234104\n      -1.5040480198312391\n       0.8335993345914814\n  262312.9902942084\n -521307.3223350014\n  739321.537114923",
+    "crumbs": [
+      "Models",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Restricted Two-body Dynamics</span>"
+    ]
+  },
+  {
+    "objectID": "models/cr3b/index.html",
+    "href": "models/cr3b/index.html",
+    "title": "Circular Restricted Three-body Dynamics",
+    "section": "",
+    "text": "Overview\nAlso known as CR3BP dynamics!\nThe Circular Restricted Three-body Problem (CR3BP) assumes a massless spacecraft which moves due to the gravity of two celestial bodies which orbit their common center of mass. This may seem like an arbitrary model, but it’s actually a pretty decent approximation for how a spacecraft moves nearby the Earth and the Sun, the Earth and the Moon, the Sun and Jupiter, and other systems in our solar system! The equations of motion are provided below.\n\\[\n\\begin{aligned}\n\\frac{dx(t)}{dt} =& ẋ\\left( t \\right) \\\\\n\\frac{dy(t)}{dt} =& ẏ\\left( t \\right) \\\\\n\\frac{dz(t)}{dt} =& ż\\left( t \\right) \\\\\n\\frac{dẋ(t)}{dt} =& 2 ẏ\\left( t \\right) - \\left( \\frac{1}{\\sqrt{\\left( \\mu + x\\left( t \\right) \\right)^{2} + \\left( y\\left( t \\right) \\right)^{2} + \\left( z\\left( t \\right) \\right)^{2}}} \\right)^{3} \\left( 1 - \\mu \\right) \\left( \\mu + x\\left( t \\right) \\right) - \\left( \\frac{1}{\\sqrt{\\left( -1 + \\mu + x\\left( t \\right) \\right)^{2} + \\left( y\\left( t \\right) \\right)^{2} + \\left( z\\left( t \\right) \\right)^{2}}} \\right)^{3} \\mu \\left( -1 + \\mu + x\\left( t \\right) \\right) + x\\left( t \\right) \\\\\n\\frac{dẏ(t)}{dt} =&  - 2 ẋ\\left( t \\right) - \\left( \\left( \\frac{1}{\\sqrt{\\left( \\mu + x\\left( t \\right) \\right)^{2} + \\left( y\\left( t \\right) \\right)^{2} + \\left( z\\left( t \\right) \\right)^{2}}} \\right)^{3} \\left( 1 - \\mu \\right) + \\left( \\frac{1}{\\sqrt{\\left( -1 + \\mu + x\\left( t \\right) \\right)^{2} + \\left( y\\left( t \\right) \\right)^{2} + \\left( z\\left( t \\right) \\right)^{2}}} \\right)^{3} \\mu \\right) y\\left( t \\right) + y\\left( t \\right) \\\\\n\\frac{dż(t)}{dt} =& \\left(  - \\left( \\frac{1}{\\sqrt{\\left( \\mu + x\\left( t \\right) \\right)^{2} + \\left( y\\left( t \\right) \\right)^{2} + \\left( z\\left( t \\right) \\right)^{2}}} \\right)^{3} \\left( 1 - \\mu \\right) - \\left( \\frac{1}{\\sqrt{\\left( -1 + \\mu + x\\left( t \\right) \\right)^{2} + \\left( y\\left( t \\right) \\right)^{2} + \\left( z\\left( t \\right) \\right)^{2}}} \\right)^{3} \\mu \\right) z\\left( t \\right)\n\\end{aligned}\n\\]",
+    "crumbs": [
+      "Models",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Circular Restricted Three-body Dynamics</span>"
+    ]
+  },
+  {
+    "objectID": "models/cr3b/index.html#examples",
+    "href": "models/cr3b/index.html#examples",
+    "title": "Circular Restricted Three-body Dynamics",
+    "section": "Examples",
+    "text": "Examples\nState transition dynamics are particularly valuable for CR3BP models. Recall that the state transition matrix is simply the local linearization of a spacecraft within CR3BP dynamics. Let’s look at the Jacobian (another word for “local linearization”) below, evaluated at some random state.\n\nf = CR3BFunction(; jac=true)\nlet x = randn(6), p = rand((0.0, 0.5)), t = 0\n    f.jac(x, p, t)\nend\n\n6×6 Matrix{Float64}:\n 0.0       0.0        0.0        1.0  0.0  0.0\n 0.0       0.0        0.0        0.0  1.0  0.0\n 0.0       0.0        0.0        0.0  0.0  1.0\n 2.43542   0.49024    1.71942    0.0  2.0  0.0\n 0.49024  -0.213868   0.307964  -2.0  0.0  0.0\n 1.71942   0.307964  -0.221556   0.0  0.0  0.0\n\n\nThe Jacobian will always have this form (zeros in the top-left, the identity matrix in the top-right, a dense matrix in the bottom-left, and the same sparse “-2, 2” matrix in the bottom-right). We can include the state transition dynamics in our model with stm=true, initialize the state transition matrix states to the identity matrix, and propagate our spacecraft for one periodic orbit: the result is known as the Monodromy Matrix! The Monodromy Matrix provides stability characteristics for the entire periodic orbit.\n\nmodel = CR3BSystem(; stm=true)\n\n\nModel CR3BWithSTM:\nEquations (42):\n  42 standard: see equations(CR3BWithSTM)\nUnknowns (42): see unknowns(CR3BWithSTM)\n  x(t)\n  y(t)\n  z(t)\n  ẋ(t)\n  ẏ(t)\n  ż(t)\n  ⋮\nParameters (1): see parameters(CR3BWithSTM)\n  μ\n\n\n\nNote that periodic orbits are not easy to find within CR3BP dynamics. Various algorithms have been developed to analytically approximate, and numerically refine, periodic CR3BP orbits. Some of those algorithms have already been implemented in Julia! See OrbitalTrajectories and GeneralAstrodynamics.",
+    "crumbs": [
+      "Models",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Circular Restricted Three-body Dynamics</span>"
+    ]
+  },
+  {
+    "objectID": "models/nb/index.html",
+    "href": "models/nb/index.html",
+    "title": "N-body Problem Dynamics",
+    "section": "",
+    "text": "Overview\nAlso known as NBP dynamics!\nIn an astrodynamical context, the N-body problem assumes \\(N\\) celestial bodies which move with respect to some common origin. A body \\(i\\) moves due to the cumulative gravity of every other body in the system. This problem is notoriously difficult because it cannot be solved analytically for \\(N\\geq3\\)!",
+    "crumbs": [
+      "Models",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>N-body Problem Dynamics</span>"
+    ]
+  },
+  {
+    "objectID": "models/nb/index.html#examples",
+    "href": "models/nb/index.html#examples",
+    "title": "N-body Problem Dynamics",
+    "section": "Examples",
+    "text": "Examples\nAll NBSystem calls require the number of bodies to be specified as the first argument, like so. As always, use the stm argument at your leisure. Beware, though! using stm=true for N-body systems with more than 5 bodies may cause NBSystem to compute for a really, really long time! True story – v1.0.1 of this package had a version of these docs which tried to compute NBSystem(30; stm=true). That resulted in GitHub and JuliaHub failing the job on a timeout after several hours – at first I was surprised, until I realized that appending state transition matrix dynamics to a 30-body system results in a total of 32580 states!\nIf you’re curious, the number of states of an N-body system with state transition matrix dynamics appended is equivalent to N*6 + (N*6)^2.\n\nmodel = NBSystem(2; stm=true)\n\n\nModel NBPWithSTM:\nEquations (156):\n  156 standard: see equations(NBPWithSTM)\nUnknowns (156): see unknowns(NBPWithSTM)\n  (x(t))[1]\n  (y(t))[1]\n  (z(t))[1]\n  (x(t))[2]\n  (y(t))[2]\n  (z(t))[2]\n  ⋮\nParameters (2): see parameters(NBPWithSTM)\n  m\n  G\n\n\n\nLike other models, we can compute the Jacobian for these dynamics.\n\nusing SparseArrays\nJ = sparse(calculate_jacobian(NBSystem(4)))\n\n24×24 SparseMatrixCSC{SymbolicUtils.BasicSymbolicImpl.var\"typeof(BasicSymbolicImpl)\"{SymReal}, Int64} with 576 stored entries:\n⎡⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⎤\n⎢⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⎥\n⎢⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⎥\n⎢⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⎥\n⎢⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⎥\n⎣⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⎦\n\n\nFinally, let’s construct a Julia function which implements these dynamics!\n\nf = NBFunction(2)\nlet u = randn(12), m = randn(2), G = randn(), t = 0\n    sys = f.sys\n    u0 = get_u0(sys, ModelingToolkit.unknowns(sys) .=&gt; u)\n    p = get_p(sys, [:m =&gt; m, :G =&gt; G]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=&gt; [m, G])\n    f(u0, p, t)\nend\n\n12-element Vector{Float64}:\n -0.6905594526870165\n  0.11447967286553531\n -1.0039711139639074\n  1.35598254448062\n -0.4490975644865455\n  0.9840782012596262\n  0.12102011200083712\n -0.02996639800543774\n  0.083563545154725\n  0.05606091230575464\n -0.013881524177490145\n  0.038709669817894414",
+    "crumbs": [
+      "Models",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>N-body Problem Dynamics</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html",
+    "href": "api/index.html",
+    "title": "Reference",
+    "section": "",
+    "text": "AstrodynamicalModels\nDocstrings for AstrodynamicalModels.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#astrodynamicalmodels",
+    "href": "api/index.html#astrodynamicalmodels",
+    "title": "Reference",
+    "section": "",
+    "text": "Provides astrodynamical models as AstrodynamicalModels.System instances. Check out the ModelingToolkit docs to learn how to use these systems for orbit propagation with DifferentialEquations, or see GeneralAstrodynamics for some convenient orbit propagation wrappers.\n\nExtended help\n\nLicense\nMIT License\nCopyright (c) 2023 Joseph D Carpinelli\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n\nExports\n\nAttitudeFunction\nAttitudeParameters\nAttitudeState\nAttitudeSystem\nCR3BFunction\nCR3BOrbit\nCR3BParameters\nCR3BState\nCR3BSystem\nCartesianOrbit\nCartesianSTM\nCartesianState\nKeplerianOrbit\nKeplerianParameters\nKeplerianState\nNBFunction\nNBSystem\nOrbit\nOrbitalElements\nPlanarEntryFunction\nPlanarEntryParameters\nPlanarEntryState\nPlanarEntrySystem\nR2BFunction\nR2BOrbit\nR2BParameters\nR2BState\nR2BSystem\ndynamics\nparameters\nstate\nsystem\n\n\n\nImports\n\nBase\nDocStringExtensions\nLinearAlgebra\nMemoize\nModelingToolkit\nSciMLBase\nStaticArrays\nSymbolics",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#attitudefunction",
+    "href": "api/index.html#attitudefunction",
+    "title": "Reference",
+    "section": "AttitudeFunction",
+    "text": "AttitudeFunction\n\n\n\n\n\n\nAttitudeFunction(; stm, name, kwargs...)\nReturns an ODEFunction for spacecraft attitude dynamics.\n\nExtended Help\n\nUsage\nThe stm and name keyword arguments are passed to Attitude. All other keyword arguments are passed directly to SciMLBase.ODEFunction.\nf = AttitudeFunction()\nlet u = randn(7), p = [randn(9), randn(3), rand(3)], t = NaN\n    sys = f.sys\n    u0 = get_u0(sys, ModelingToolkit.unknowns(sys) .=&gt; u)\n    p = get_p(sys, [:J =&gt; p[1], :L =&gt; p[2], :f =&gt; p[3]]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=&gt; p)\n    f(u0, p, t)\nend",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#attitudeparameters",
+    "href": "api/index.html#attitudeparameters",
+    "title": "Reference",
+    "section": "AttitudeParameters",
+    "text": "AttitudeParameters\n\n\n\n\n\n\nstruct AttitudeParameters{F} &lt;: AstrodynamicalModels.AstrodynamicalParameters{F, 15}\nA parameter vector for attitude dynamics.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#attitudestate",
+    "href": "api/index.html#attitudestate",
+    "title": "Reference",
+    "section": "AttitudeState",
+    "text": "AttitudeState\n\n\n\n\n\n\nmutable struct AttitudeState{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 7}\nA mutable state vector for attitude dynamics.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#attitudesystem",
+    "href": "api/index.html#attitudesystem",
+    "title": "Reference",
+    "section": "AttitudeSystem",
+    "text": "AttitudeSystem\n\n\n\n\n\n\nAttitudeSystem(; stm, name, kwargs...)\nA ModelingToolkit.System for atmospheric entry. Currently, only exponential atmosphere models are provided! The output model is cached with Memoize.jl. Planet-specific parameters default to Earth values.\nThe order of the states follows: [q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃].\nThe order of the parameters follows: []\n\nExtended Help\nThis model describes how an object moves through an exponential atmosphere, above a spherical planet.\n\nStates\n\nq: scalar-last attitude quaternion\nω: body rates (radians per second)\n\n\n\nParameters\n\nJ: inertial matrix\nL: lever arm where input torque is applied\nf: torques on the vehicle body (Newton-meters)\n\n\nUsage\nmodel = Attitude()",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#cr3bfunction",
+    "href": "api/index.html#cr3bfunction",
+    "title": "Reference",
+    "section": "CR3BFunction",
+    "text": "CR3BFunction\n\n\n\n\n\n\nCR3BFunction(; stm, name, kwargs...)\nReturns an ODEFunction for CR3B dynamics.\nThe order of the states follows: [μ].\nThe order of the parameters follows: [μ].\n\nExtended Help\n\nUsage\nThe stm, and name keyword arguments are passed to CR3B. All other keyword arguments are passed directly to SciMLBase.ODEFunction.\nf = CR3BFunction(; stm=false, jac=true)\nlet u = randn(6), p = randn(), t = 0\n    sys = f.sys\n    u0 = get_u0(sys, [:x, :y, :z, :ẋ, :ẏ, :ż] .=&gt; u) # Or get_u0(sys, ModelingToolkit.unknowns(sys) .=&gt; u)\n    p = get_p(sys, [:μ =&gt; p]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=&gt; p)\n    f(u0, p, t)\nend",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#cr3borbit",
+    "href": "api/index.html#cr3borbit",
+    "title": "Reference",
+    "section": "CR3BOrbit",
+    "text": "CR3BOrbit\n\n\n\n\n\n\nstruct Orbit{var\"#s83\"&lt;:CartesianState, var\"#s82\"&lt;:CR3BParameters} &lt;: AstrodynamicalModels.AstrodynamicalOrbit{var\"#s83\"&lt;:CartesianState, var\"#s82\"&lt;:CR3BParameters}\nAn Orbit which exists within CR3BP dynamics.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#cr3bparameters",
+    "href": "api/index.html#cr3bparameters",
+    "title": "Reference",
+    "section": "CR3BParameters",
+    "text": "CR3BParameters\n\n\n\n\n\n\nstruct CR3BParameters{F} &lt;: AstrodynamicalModels.AstrodynamicalParameters{F, 1}\nA parameter vector for CR3BP dynamics.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#cr3bstate",
+    "href": "api/index.html#cr3bstate",
+    "title": "Reference",
+    "section": "CR3BState",
+    "text": "CR3BState\n\n\n\n\n\n\nmutable struct CartesianState{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 6}\nCartesianState",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#cr3bsystem",
+    "href": "api/index.html#cr3bsystem",
+    "title": "Reference",
+    "section": "CR3BSystem",
+    "text": "CR3BSystem\n\n\n\n\n\n\nCR3BSystem(; stm, name, kwargs...)\nA ModelingToolkit.System for the Circular Restricted Three-body Problem.\nThe order of the states follows: [x, y, z, ẋ, ẏ, ż].\nThe order of the parameters follows: [μ].\n\nExtended Help\nThe Circular Restricted Three-body Problem is a simplified dynamical model describing one small body (spacecraft, etc.) and two celestial bodies moving in a circle about their common center of mass. This may seem like an arbitrary simplification, but this assumption holds reasonably well for the Earth-Moon, Sun-Earth, and many other systems in our solar system.\n\nUsage\nmodel = CR3BSystem(; stm=true)",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#cartesianorbit",
+    "href": "api/index.html#cartesianorbit",
+    "title": "Reference",
+    "section": "CartesianOrbit",
+    "text": "CartesianOrbit\n\n\n\n\n\n\nstruct Orbit{var\"#s83\"&lt;:CartesianState, P&lt;:(AbstractVector)} &lt;: AstrodynamicalModels.AstrodynamicalOrbit{var\"#s83\"&lt;:CartesianState, P&lt;:(AbstractVector)}\nAn Orbit which exists within R2BP dynamics.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#cartesianstm",
+    "href": "api/index.html#cartesianstm",
+    "title": "Reference",
+    "section": "CartesianSTM",
+    "text": "CartesianSTM\n\n\n\n\n\n\nmutable struct CartesianSTM{F} &lt;: StaticArraysCore.FieldMatrix{6, 6, F}\nA mutable matrix, with labels, for a 6DOF Cartesian state transition matrix.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#cartesianstate",
+    "href": "api/index.html#cartesianstate",
+    "title": "Reference",
+    "section": "CartesianState",
+    "text": "CartesianState\n\n\n\n\n\n\nmutable struct CartesianState{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 6}\nA mutable vector, with labels, for 6DOF Cartesian states.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#keplerianorbit",
+    "href": "api/index.html#keplerianorbit",
+    "title": "Reference",
+    "section": "KeplerianOrbit",
+    "text": "KeplerianOrbit\n\n\n\n\n\n\nstruct Orbit{var\"#s83\"&lt;:OrbitalElements, var\"#s82\"&lt;:KeplerianParameters} &lt;: AstrodynamicalModels.AstrodynamicalOrbit{var\"#s83\"&lt;:OrbitalElements, var\"#s82\"&lt;:KeplerianParameters}\nAn Orbit which exists within Keplerian dynamics.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#keplerianparameters",
+    "href": "api/index.html#keplerianparameters",
+    "title": "Reference",
+    "section": "KeplerianParameters",
+    "text": "KeplerianParameters\n\n\n\n\n\n\nstruct KeplerianParameters{F} &lt;: AstrodynamicalModels.AstrodynamicalParameters{F, 1}\nA parameter vector for Keplerian dynamics.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#keplerianstate",
+    "href": "api/index.html#keplerianstate",
+    "title": "Reference",
+    "section": "KeplerianState",
+    "text": "KeplerianState\n\n\n\n\n\n\nmutable struct OrbitalElements{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 6}\nOrbitalElements",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#nbfunction",
+    "href": "api/index.html#nbfunction",
+    "title": "Reference",
+    "section": "NBFunction",
+    "text": "NBFunction\n\n\n\n\n\n\nNBFunction(N; stm, name, kwargs...)\nReturns an ODEFunction for NBP dynamics. The order of states and parameters in the ODEFunction arguments are equivalent to the order of states and parameters for the system produced with NBP(N). As a general rule, the order of the states follows: [x₁, y₁, z₁, ..., xₙ, yₙ, zₙ, ẋ₁, ẏ₁, ż₁, ..., ẋₙ, ẏₙ, żₙ].\n\n\n\n\n\n\nNoteNote\n\n\n\nUnlike R2BP and CR3BP, jac is set to false by default. The number of states for NBP systems can be very large for relatively small numbers of bodies (N). Enabling jac=true by default would cause unnecessarily long waiting times for this (memoize?) function to return for N ≥ 3 or so. If N=2 and stm=true, setting jac=true could still result in several minutes of calculations, depending on the computer you’re using.\n\n\n\n\n\n\n\n\nWarningWarning\n\n\n\nBe careful about specifying stm=true for systems with N ≥ 3! If state transition matrix dynamics are enabled, you can calculate the total number of system states with N*6 + (N*6)^2. Note that this increases exponentially as N grows! For N == 6, unless you’re using parallelization, your computer may run for several hours.\n\n\n\nExtended Help\n\nUsage\nThe stm, and name keyword arguments are passed to NBP. All other keyword arguments are passed directly to SciMLBase.ODEFunction.\nf = NBFunction(3; stm=false, name=:NBP, jac=false, sparse=false)\nlet u = randn(3*6), p = [randn(3), randn()], t = 0\n    sys = f.sys\n    u0 = get_u0(sys, ModelingToolkit.unknowns(sys) .=&gt; u)\n    p = get_p(sys, [:m =&gt; p[1], :G =&gt; p[2]]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=&gt; p)\n    f(u0, p, t)\nend",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#nbsystem",
+    "href": "api/index.html#nbsystem",
+    "title": "Reference",
+    "section": "NBSystem",
+    "text": "NBSystem\n\n\n\n\n\n\nNBSystem(N; stm, name, kwargs...)\nA ModelingToolkit.System for the Newtonian N-body Problem.\nThe order of the states follows: [x₁, y₁, z₁, ..., xₙ, yₙ, zₙ, ẋ₁, ẏ₁, ż₁, ..., ẋₙ, ẏₙ, żₙ].\nThe order of the parameters follows: [G, m₁, m₂, ..., mₙ].\n\n\n\n\n\n\nWarningWarning\n\n\n\nBe careful about specifying stm=true for systems with N ≥ 3! If state transition matrix dynamics are enabled, you can calculate the total number of system states with N*6 + (N*6)^2. Note that this increases exponentially as N grows! For N == 6, unless you’re using parallelization, your computer may run for several hours.\n\n\n\nExtended Help\nThe N-body problem is a model which describes how N bodies will move with respect to a common origin. This problem typically involves many bodies which act due to one force: electromagentism, gravity, etc. This model applies most closely to many celestial bodies moving due to gravity. That’s about right for a model in a package called AstrodynamicalModels!\n\nUsage\n# One model for ALL the planets in our solar system 😎\nmodel = NBSystem(9)",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#orbit",
+    "href": "api/index.html#orbit",
+    "title": "Reference",
+    "section": "Orbit",
+    "text": "Orbit\n\n\n\n\n\n\nstruct Orbit{U&lt;:(AbstractVector), P&lt;:(AbstractVector)} &lt;: AstrodynamicalModels.AstrodynamicalOrbit{U&lt;:(AbstractVector), P&lt;:(AbstractVector)}\nA full representation of an orbit, including a numerical state, and the parameters of the system.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#orbitalelements",
+    "href": "api/index.html#orbitalelements",
+    "title": "Reference",
+    "section": "OrbitalElements",
+    "text": "OrbitalElements\n\n\n\n\n\n\nmutable struct OrbitalElements{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 6}\nA mutable vector, with labels, for 6DOF Keplerian states.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#planarentryfunction",
+    "href": "api/index.html#planarentryfunction",
+    "title": "Reference",
+    "section": "PlanarEntryFunction",
+    "text": "PlanarEntryFunction\n\n\n\n\n\n\nPlanarEntryFunction(; name, kwargs...)\nReturns an ODEFunction for Planar Entry dynamics. Results are cached with Memoize.jl.\nThe order of the states follows: [γ, v, r, θ].\nThe order of the parameters follows: [R, P, H, m, A, C, μ]\n\nExtended Help\n\nUsage\nThe name keyword argument is ]passed to PlanarEntry. All other keyword arguments are passed directly to SciMLBase.ODEFunction.\nf = PlanarEntryFunction()\nlet u = randn(4), p = randn(7), t = NaN # time invariant\n    sys = f.sys\n    u0 = get_u0(sys, [:γ, :v, :r, :θ] .=&gt; u) # Or get_u0(sys, ModelingToolkit.unknowns(sys) .=&gt; u)\n    p = get_p(sys, ModelingToolkit.parameters(sys) .=&gt; p)\n    f(u0, p, t)\nend",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#planarentryparameters",
+    "href": "api/index.html#planarentryparameters",
+    "title": "Reference",
+    "section": "PlanarEntryParameters",
+    "text": "PlanarEntryParameters\n\n\n\n\n\n\nstruct PlanarEntryParameters{F} &lt;: AstrodynamicalModels.AstrodynamicalParameters{F, 7}\nA parameter vector for planar entry dynamics.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#planarentrystate",
+    "href": "api/index.html#planarentrystate",
+    "title": "Reference",
+    "section": "PlanarEntryState",
+    "text": "PlanarEntryState\n\n\n\n\n\n\nmutable struct PlanarEntryState{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 4}\nA state vector for planar entry dynamics.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#planarentrysystem",
+    "href": "api/index.html#planarentrysystem",
+    "title": "Reference",
+    "section": "PlanarEntrySystem",
+    "text": "PlanarEntrySystem\n\n\n\n\n\n\nPlanarEntrySystem(; name, kwargs...)\nA ModelingToolkit.System for atmospheric entry. Currently, only exponential atmosphere models are provided! The output model is cached with Memoize.jl. Planet-specific parameters default to Earth values.\nThe order of the states follows: [γ, v, r, θ].\nThe order of the parameters follows: [R, P, H, m, A, C, μ]\n\nExtended Help\nThis model describes how an object moves through an exponential atmosphere, above a spherical planet.\n\nUsage\nmodel = PlanarEntrySystem()",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#r2bfunction",
+    "href": "api/index.html#r2bfunction",
+    "title": "Reference",
+    "section": "R2BFunction",
+    "text": "R2BFunction\n\n\n\n\n\n\nR2BFunction(; stm, name, kwargs...)\nReturns an ODEFunction for R2B dynamics.\nThe order of the states follows: [x, y, z, ẋ, ẏ, ż].\nThe order of the parameters follows: [μ].\n\nExtended Help\n\nUsage\nThe stm, and name keyword arguments are passed to R2B. All other keyword arguments are passed directly to SciMLBase.ODEFunction.\nf = R2BFunction(; stm=false, name=:R2B, jac=true)\nlet u = randn(6), p = randn(), t = 0\n    sys = f.sys\n    u0 = get_u0(sys, [:x, :y, :z, :ẋ, :ẏ, :ż] .=&gt; u) # Or get_u0(sys, ModelingToolkit.unknowns(sys) .=&gt; u)\n    p = get_p(sys, [:μ =&gt; p]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=&gt; p)\n    f(u0, p, t)\nend",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#r2borbit",
+    "href": "api/index.html#r2borbit",
+    "title": "Reference",
+    "section": "R2BOrbit",
+    "text": "R2BOrbit\n\n\n\n\n\n\nstruct Orbit{var\"#s83\"&lt;:CartesianState, var\"#s82\"&lt;:R2BParameters} &lt;: AstrodynamicalModels.AstrodynamicalOrbit{var\"#s83\"&lt;:CartesianState, var\"#s82\"&lt;:R2BParameters}\nAn Orbit which exists within R2BP dynamics.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#r2bparameters",
+    "href": "api/index.html#r2bparameters",
+    "title": "Reference",
+    "section": "R2BParameters",
+    "text": "R2BParameters\n\n\n\n\n\n\nstruct R2BParameters{F} &lt;: AstrodynamicalModels.AstrodynamicalParameters{F, 1}\nA parameter vector for R2BP dynamics.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#r2bstate",
+    "href": "api/index.html#r2bstate",
+    "title": "Reference",
+    "section": "R2BState",
+    "text": "R2BState\n\n\n\n\n\n\nmutable struct CartesianState{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 6}\nCartesianState",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#r2bsystem",
+    "href": "api/index.html#r2bsystem",
+    "title": "Reference",
+    "section": "R2BSystem",
+    "text": "R2BSystem\n\n\n\n\n\n\nR2BSystem(; stm, name, kwargs...)\nA ModelingToolkit.System for the Restricted Two-body Problem.\nThe order of the states follows: [x, y, z, ẋ, ẏ, ż].\nThe order of the parameters follows: [μ].\n\nExtended Help\nThe Restricted Two-body Problem is a simplified dynamical model describing one small body (spacecraft, etc.) and one celestial body. The gravity of the celestial body exhibits a force on the small body. This model is commonly used as a simplification to describe our solar systems’ planets orbiting our sun, or a spacecraft orbiting Earth.\n\nUsage\nmodel = R2BSystem()",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#dynamics",
+    "href": "api/index.html#dynamics",
+    "title": "Reference",
+    "section": "dynamics",
+    "text": "dynamics\n\n\n\n\n\n\ndynamics(orbit, args; kwargs...)\nReturn the underlying dynamics of the system in the form of a ModelingToolkit.ODEFunction.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#parameters-1",
+    "href": "api/index.html#parameters-1",
+    "title": "Reference",
+    "section": "parameters",
+    "text": "parameters\n\n\n\n\n\n\nparameters(orbit)\nReturn the parameter vector for an Orbit.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#state",
+    "href": "api/index.html#state",
+    "title": "Reference",
+    "section": "state",
+    "text": "state\n\n\n\n\n\n\nstate(orbit)\nReturn the state vector for an Orbit.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#system",
+    "href": "api/index.html#system",
+    "title": "Reference",
+    "section": "system",
+    "text": "system\n\n\n\n\n\n\nsystem(orbit, args; kwargs...)\nReturn the underlying dynamics of the system in the form of a ModelingToolkit.System.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  }
+]
