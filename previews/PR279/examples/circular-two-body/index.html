@@ -556,14 +556,14 @@ window.Quarto = {
 
 
 <p><em>The simplest possible orbit.</em></p>
-<div id="fd525923" class="cell" data-execution_count="1">
+<div id="4a8a6a39" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">LinearAlgebra</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalCalculations</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="coordinate-conversions" class="level2">
 <h2 class="anchored" data-anchor-id="coordinate-conversions">Coordinate Conversions</h2>
 <p>If we assume a mass-less spacecraft orbiting a point mass, perfectly circular orbits are possible. The eccentricity of circular orbits is (by definition) zero. We can confirm this using the <code>conic</code> function.</p>
-<div id="846775d2" class="cell" data-execution_count="2">
+<div id="be86bd23" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="cn">e</span> <span class="op">=</span> <span class="fl">0</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">conic</span>(<span class="cn">e</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -572,7 +572,7 @@ window.Quarto = {
 </div>
 </div>
 <p>We can construct a fully specified circular orbit by specifying Keplerian parameters (orbital elements). The mass parameter <code>μ</code> is the mass of the body we are orbiting multiplied by gravitational constant <span class="math inline">\(G\)</span>.</p>
-<div id="8809ad7a" class="cell" data-execution_count="3">
+<div id="3a58b110" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> (; <span class="cn">e</span> <span class="op">=</span> <span class="fl">0</span>, a <span class="op">=</span> <span class="fl">10e5</span>, i <span class="op">=</span> <span class="cn">π</span> <span class="op">/</span> <span class="fl">4</span>, Ω <span class="op">=</span> <span class="fl">0</span>, ω <span class="op">=</span> <span class="fl">0</span>, ν <span class="op">=</span> <span class="cn">π</span> <span class="op">/</span> <span class="fl">2</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>μ <span class="op">=</span> <span class="fl">3.1e10</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
@@ -583,7 +583,7 @@ window.Quarto = {
 <div class="callout-info" data-appearance="simple">
 <p>The Cartesian coordinates are defined <em>with respect to</em> the center of the primary body (the body that is being orbited), and <em>expressed in</em> the coordinate frame defined by the primary body.</p>
 </div>
-<div id="1c1a082d" class="cell" data-execution_count="4">
+<div id="3796a2a3" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> <span class="fu">keplerian_to_cartesian</span>(k<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>(x = 6.123233995736767e-11, y = 707106.7811865476, z = 707106.7811865475, ẋ = -176.0681686165901, ẏ = 7.623364846191411e-15, ż = 7.623364846191411e-15)</code></pre>
@@ -600,7 +600,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div id="5d2d63b2" class="cell" data-execution_count="5">
+<div id="3922a21b" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cartesian_to_keplerian</span>(c<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>(e = 1.7402569707723985e-16, a = 1.0000000000000002e6, i = 0.7853981633974484, Ω = 0.0, ω = 1.5707963267948966, ν = 0.0)</code></pre>
@@ -610,45 +610,45 @@ window.Quarto = {
 <section id="energy-calculations" class="level2">
 <h2 class="anchored" data-anchor-id="energy-calculations">Energy Calculations</h2>
 <p>Every (restricted) orbit has an associated specific energy: the energy of the orbit per unit mass. An associated parameter is the <span class="math inline">\(C_3\)</span> energy, which is defined as <span class="math inline">\(v^2 - \frac{2\mu}{r}\)</span>, where <span class="math inline">\(v\)</span> and <span class="math inline">\(r\)</span> are the scalar instantaneous orbital speed and radius values respectively.</p>
-<div id="4eeb64f2" class="cell" data-execution_count="6">
+<div id="171add8d" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">specific_energy</span>(c<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>-15499.999999999998</code></pre>
 </div>
 </div>
-<div id="cdc1bdb1" class="cell" data-execution_count="7">
+<div id="67dc4d07" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c3</span>(c<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <pre><code>-30999.999999999996</code></pre>
 </div>
 </div>
 <p>The specific potential energy includes the potential energy per unit mass. Of course, the velocity components of the Cartesian state are not relevant to the calculation! For convenience, you can still provide the full Cartesian state in the method: the calculation will simply discard the velocity components.</p>
-<div id="5c0ac364" class="cell" data-execution_count="8">
+<div id="c01f8321" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>P <span class="op">=</span> <span class="fu">specific_potential_energy</span>(c<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>31000.0</code></pre>
 </div>
 </div>
-<div id="3b3bff45" class="cell" data-execution_count="9">
+<div id="d2c0779b" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@assert</span> P <span class="op">==</span> <span class="fu">specific_potential_energy</span>(<span class="fu">norm</span>([c.x, c.y, c.z]), μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="orbital-characterizations" class="level2">
 <h2 class="anchored" data-anchor-id="orbital-characterizations">Orbital Characterizations</h2>
 <p>Simple characterizations, such as the instantaneous orbital speed, orbital radius, or semi-parameter, are also available.</p>
-<div id="40daf0ea" class="cell" data-execution_count="10">
+<div id="98748ff2" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> <span class="fu">orbital_radius</span>(c<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>1.0000000000000002e6</code></pre>
 </div>
 </div>
-<div id="bea9d4bc" class="cell" data-execution_count="11">
+<div id="0af699ca" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> <span class="fu">orbital_speed</span>(c<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="12">
 <pre><code>176.0681686165901</code></pre>
 </div>
 </div>
-<div id="e0b3a8c0" class="cell" data-execution_count="12">
+<div id="994fad80" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fu">semi_parameter</span>(c<span class="op">...</span>, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
 <pre><code>1.0000000000000002e6</code></pre>
