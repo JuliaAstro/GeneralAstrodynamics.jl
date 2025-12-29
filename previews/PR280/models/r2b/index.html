@@ -564,7 +564,7 @@ window.Quarto = {
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div id="bb39176b" class="cell" data-execution_count="2">
+<div id="3438ca04" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">R2BSystem</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="3">
 <p><span class="math display">\[ \begin{align}
@@ -589,7 +589,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div id="d987877f" class="cell" data-execution_count="3">
+<div id="7f61468d" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">R2BSystem</span>(; stm<span class="op">=</span><span class="cn">true</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
 <p><span class="math display">\[ \begin{align}
@@ -640,7 +640,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Let’s compute the Jacobian for these dynamics.</p>
-<div id="54780711" class="cell" data-execution_count="4">
+<div id="42cece14" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>J <span class="op">=</span> <span class="fu">calculate_jacobian</span>(<span class="fu">R2BSystem</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="5">
 <p><span class="math display">\[ \begin{equation}
@@ -659,19 +659,19 @@ window.Quarto = {
 </div>
 </div>
 <p>Finally, let’s construct a Julia function which implements these dynamics!</p>
-<div id="b498659d" class="cell" data-execution_count="5">
+<div id="f146bdf8" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">R2BFunction</span>()</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">6</span>), p <span class="op">=</span> [<span class="fl">3e6</span>], t <span class="op">=</span> <span class="fl">0</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, p, t)</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>6-element Vector{Float64}:
-       0.7124878178516906
-       1.1542230109720117
-      -0.6355785889148665
-  202449.4053696862
- -462543.4220716936
-       1.0900403722936704e6</code></pre>
+     -0.4497809674920602
+     -0.04142570550752071
+     -1.0980249113782223
+     -1.0371350671959596e6
+ 351826.9994774301
+ 738301.9349516209</code></pre>
 </div>
 </div>
 
