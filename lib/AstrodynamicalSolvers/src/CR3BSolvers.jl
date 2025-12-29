@@ -120,7 +120,6 @@ function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
         :μ => μ
     ]
 
-
     tspan = (zero(τ), τ)
 
     problem = ODEProblem(sys, op, tspan)

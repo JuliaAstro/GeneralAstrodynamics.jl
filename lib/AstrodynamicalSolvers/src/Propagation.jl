@@ -64,7 +64,7 @@ function propagate(
     abstol = 1e-12,
     kwargs...,
 )
-    problem = ODEProblem(orbit, Δt; stm = stm)
+    problem = ODEProblem(orbit, Δt, stm = stm)
     return solve(problem, algorithm; reltol = reltol, abstol = abstol, kwargs...)
 end
 
