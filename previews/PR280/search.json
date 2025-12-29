@@ -40,6 +40,16 @@
     ]
   },
   {
+    "objectID": "index.html#developer-documentation",
+    "href": "index.html#developer-documentation",
+    "title": "GeneralAstrodynamics",
+    "section": "Developer documentation",
+    "text": "Developer documentation\n\nTests\nRun all tests from top-level of monorepo:\n&gt; j --proj\n\n(GeneralAstrodynamics) pkg&gt; test\nRun all tests for &lt;subpackage&gt; from top-level of monorepo:\n&gt; j --proj\n\nENV[\"GROUP\"] = &lt;subpackage&gt;\n\n(GeneralAstrodynamics) pkg&gt; test\nor navigate to top-level of &lt;subpackage&gt; and run tests as usual:\n&gt; j --proj\n\n(GeneralAstrodynamics/lib/AstrodynamicalCalculations) pkg&gt; test\n\n\nExplicit imports\nSee the documentation for ExplicitImports.jl for standard usage. For non-package files at path &lt;fpath&gt; relative to the top-level of &lt;subpackage&gt;, run the following:\n&gt; julia --proj\n\njulia&gt; using ExplicitImports, &lt;subpackage&gt;\n\njulia&gt; include(&lt;fpath&gt;)\n\njulia&gt; print_explicit_imports(Main.&lt;subpackage&gt;Tests, &lt;fpath&gt;)",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
     "objectID": "api/index.html",
     "href": "api/index.html",
     "title": "Reference",
@@ -86,7 +96,7 @@
     "href": "api/calculations/index.html#cr3bpcalculations",
     "title": "Calculations",
     "section": "CR3BPCalculations",
-    "text": "CR3BPCalculations\n\n\n\n\n\n\nCommon calculations within Circular Restricted Three Body Problem dynamics.\n\nExtended Help\n\nImports\n\nBase\nDocStringExtensions\nLinearAlgebra\nRoots\nStaticArrays\n\n\n\nExports\n\nconverge\nconverge!\nconvergent_direction\ndistance_scaling\ndistance_to_primary\ndistance_to_secondary\ndiverge\ndiverge!\ndivergent_direction\ninertial_to_synodic\njacobi_constant\nlagrange_point\nnondimensional\nnondimensional_radii\nperturb\nperturb!\nperturbation\npotential_energy\nprimary_synodic_position\nredimensioned\nreduced_mass\nrichardson_halo\nrichardson_ic\nsecondary_synodic_position\nsynodic_to_inertial\ntime_scaling\nvelocity_scaling\nzero_velocity_curves",
+    "text": "CR3BPCalculations\n\n\n\n\n\n\nCommon calculations within Circular Restricted Three Body Problem dynamics.\n\nExtended Help\n\nImports\n\nBase\n\n\n\nExports\n\nconverge\nconverge!\nconvergent_direction\ndistance_scaling\ndistance_to_primary\ndistance_to_secondary\ndiverge\ndiverge!\ndivergent_direction\ninertial_to_synodic\njacobi_constant\nlagrange_point\nnondimensional\nnondimensional_radii\nperturb\nperturb!\nperturbation\npotential_energy\nprimary_synodic_position\nredimensioned\nreduced_mass\nrichardson_halo\nrichardson_ic\nsecondary_synodic_position\nsynodic_to_inertial\ntime_scaling\nvelocity_scaling\nzero_velocity_curves",
     "crumbs": [
       "Reference",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
@@ -97,7 +107,7 @@
     "href": "api/calculations/index.html#r2bpcalculations",
     "title": "Calculations",
     "section": "R2BPCalculations",
-    "text": "R2BPCalculations\n\n\n\n\n\n\nCommon calculations within Restricted Two Body Problem dynamics.\n\nExtended Help\n\nImports\n\nBase\nDocStringExtensions\nLinearAlgebra\nStaticArrays\n\n\n\nExports\n\napoapsis_radius\nargument_of_periapsis\nc3\ncartesian_to_keplerian\ncartesian_to_perifocal\nconic\neccentricity\neccentricity_vector\nhohmann\ninclination\nkepler\nkeplerian_to_cartesian\nkeplerian_to_perifocal\nlambert\nmean_motion\norbital_period\norbital_radius\norbital_speed\nperiapsis_radius\nperifocal_to_cartesian\nright_ascension_ascending_node\nsemi_parameter\nsemimajor_axis\nspecific_angular_momentum\nspecific_angular_momentum_vector\nspecific_energy\nspecific_potential_energy\nsphere_of_activity\nsphere_of_influence\ntime_since_periapsis\ntrue_anomaly\nv_infinity",
+    "text": "R2BPCalculations\n\n\n\n\n\n\nCommon calculations within Restricted Two Body Problem dynamics.\n\nExtended Help\n\nImports\n\nBase\n\n\n\nExports\n\napoapsis_radius\nargument_of_periapsis\nc3\ncartesian_to_keplerian\ncartesian_to_perifocal\nconic\neccentricity\neccentricity_vector\nhohmann\ninclination\nkepler\nkeplerian_to_cartesian\nkeplerian_to_perifocal\nlambert\nmean_motion\norbital_period\norbital_radius\norbital_speed\nperiapsis_radius\nperifocal_to_cartesian\nright_ascension_ascending_node\nsemi_parameter\nsemimajor_axis\nspecific_angular_momentum\nspecific_angular_momentum_vector\nspecific_energy\nspecific_potential_energy\nsphere_of_activity\nsphere_of_influence\ntime_since_periapsis\ntrue_anomaly\nv_infinity",
     "crumbs": [
       "Reference",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calculations</span>"
@@ -779,7 +789,7 @@
     "href": "api/models/index.html#astrodynamicalmodels",
     "title": "Models",
     "section": "",
-    "text": "Provides astrodynamical models as AstrodynamicalModels.System instances. Check out the ModelingToolkit docs to learn how to use these systems for orbit propagation with DifferentialEquations, or see GeneralAstrodynamics for some convenient orbit propagation wrappers.\n\nExtended help\n\nLicense\nMIT License\nCopyright (c) 2023 Joseph D Carpinelli\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n\nExports\n\nAttitudeFunction\nAttitudeParameters\nAttitudeState\nAttitudeSystem\nCR3BFunction\nCR3BOrbit\nCR3BParameters\nCR3BState\nCR3BSystem\nCartesianOrbit\nCartesianSTM\nCartesianState\nKeplerianOrbit\nKeplerianParameters\nKeplerianState\nNBFunction\nNBSystem\nOrbit\nOrbitalElements\nPlanarEntryFunction\nPlanarEntryParameters\nPlanarEntryState\nPlanarEntrySystem\nR2BFunction\nR2BOrbit\nR2BParameters\nR2BState\nR2BSystem\ndynamics\nparameters\nstate\nsystem\n\n\n\nImports\n\nBase\nDocStringExtensions\nLinearAlgebra\nMemoize\nModelingToolkit\nSciMLBase\nStaticArrays\nSymbolics",
+    "text": "Provides astrodynamical models as AstrodynamicalModels.System instances. Check out the ModelingToolkit docs to learn how to use these systems for orbit propagation with DifferentialEquations, or see GeneralAstrodynamics for some convenient orbit propagation wrappers.\n\nExtended help\n\nLicense\nMIT License\nCopyright (c) 2023 Joseph D Carpinelli\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n\nExports\n\nAttitudeFunction\nAttitudeParameters\nAttitudeState\nAttitudeSystem\nCR3BFunction\nCR3BOrbit\nCR3BParameters\nCR3BState\nCR3BSystem\nCartesianOrbit\nCartesianSTM\nCartesianState\nKeplerianOrbit\nKeplerianParameters\nKeplerianState\nNBFunction\nNBSystem\nOrbit\nOrbitalElements\nPlanarEntryFunction\nPlanarEntryParameters\nPlanarEntryState\nPlanarEntrySystem\nR2BFunction\nR2BOrbit\nR2BParameters\nR2BState\nR2BSystem\ndynamics\nparameters\nstate\nsystem\n\n\n\nImports\n\nBase",
     "crumbs": [
       "Reference",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Models</span>"
@@ -1153,7 +1163,7 @@
     "href": "api/solvers/index.html#astrodynamicalsolvers",
     "title": "Solvers",
     "section": "",
-    "text": "Provides astrodynamical solvers, including Lyapunov and halo orbit correctors.\n\nExtended help\n\nLicense\n\n\nExports\n\nCR3BSolvers\nPropagation\nconvergent_manifold\ndivergent_manifold\nhalo\nlyapunov\nmonodromy\npropagate\npropagate!\n\n\n\nImports\n\nAstrodynamicalSolvers.CR3BSolvers\nAstrodynamicalSolvers.Propagation\nBase\nDocStringExtensions\nReexport",
+    "text": "Provides astrodynamical solvers, including Lyapunov and halo orbit correctors.\n\nExtended help\n\nLicense\n\n\nExports\n\nCR3BSolvers\nPropagation\nconvergent_manifold\ndivergent_manifold\nhalo\nlyapunov\nmonodromy\npropagate\npropagate!\n\n\n\nImports\n\nAstrodynamicalSolvers.CR3BSolvers\nAstrodynamicalSolvers.Propagation\nBase",
     "crumbs": [
       "Reference",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Solvers</span>"
@@ -1164,7 +1174,7 @@
     "href": "api/solvers/index.html#cr3bsolvers",
     "title": "Solvers",
     "section": "CR3BSolvers",
-    "text": "CR3BSolvers\n\n\n\n\n\n\nSolvers specific to the Circular Restricted Three Body Problem.\n\nExtended Help\n\nExports\n\nhalo\nlyapunov\n\n\n\nImports\n\nAstrodynamicalCalculations\nAstrodynamicalModels\nBase\nDocStringExtensions\nLinearAlgebra\nModelingToolkit\nOrdinaryDiffEqVerner\nStaticArrays",
+    "text": "CR3BSolvers\n\n\n\n\n\n\nSolvers specific to the Circular Restricted Three Body Problem.\n\nExtended Help\n\nExports\n\nhalo\nlyapunov\n\n\n\nImports\n\nBase",
     "crumbs": [
       "Reference",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Solvers</span>"
@@ -1175,7 +1185,7 @@
     "href": "api/solvers/index.html#propagation",
     "title": "Solvers",
     "section": "Propagation",
-    "text": "Propagation\n\n\n\n\n\n\nWrappers around SciML differential equation solvers for fast and convenient orbit propagation.\n\nExtended Help\n\nExports\n\nconvergent_manifold\ndivergent_manifold\nmonodromy\npropagate\npropagate!\n\n\n\nImports\n\nAstrodynamicalCalculations\nAstrodynamicalModels\nBase\nDocStringExtensions\nModelingToolkit\nOrdinaryDiffEqVerner\nSciMLBase\nStaticArrays",
+    "text": "Propagation\n\n\n\n\n\n\nWrappers around SciML differential equation solvers for fast and convenient orbit propagation.\n\nExtended Help\n\nExports\n\nconvergent_manifold\ndivergent_manifold\nmonodromy\npropagate\npropagate!\n\n\n\nImports\n\nBase",
     "crumbs": [
       "Reference",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Solvers</span>"
