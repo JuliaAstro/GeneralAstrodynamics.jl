@@ -13,8 +13,8 @@ $(LICENSE)
 """
 module AstrodynamicalCalculations
 
-using Reexport
-using DocStringExtensions
+using Reexport: @reexport
+using DocStringExtensions: EXPORTS, IMPORTS, LICENSE
 
 include("R2BPCalculations.jl")
 @reexport using .R2BPCalculations

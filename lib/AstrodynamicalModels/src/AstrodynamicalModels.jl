@@ -45,14 +45,23 @@ export Orbit, R2BOrbit, CR3BOrbit, CartesianOrbit, KeplerianOrbit
 # Export every method
 export state, parameters, dynamics, system
 
-using Symbolics
-using SciMLBase
-using Memoize
-using LinearAlgebra
-using ModelingToolkit
-using StaticArrays
+using SciMLBase: SciMLBase
+using Memoize: @memoize
+using LinearAlgebra: I, norm
+using ModelingToolkit:
+    @independent_variables,
+    @parameters,
+    @variables,
+    Differential,
+    ODEFunction,
+    ODEProblem,
+    Symbolics,
+    System,
+    complete
+import ModelingToolkit
+using StaticArrays: FieldMatrix, FieldVector
 
-using DocStringExtensions
+using DocStringExtensions: @template, DOCSTRING, EXPORTS, IMPORTS, LICENSE, SIGNATURES, TYPEDEF
 @template (FUNCTIONS, METHODS, MACROS) = """
                                          $(SIGNATURES)
 

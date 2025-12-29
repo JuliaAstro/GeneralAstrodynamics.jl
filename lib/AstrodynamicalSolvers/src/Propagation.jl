@@ -12,7 +12,7 @@ $(IMPORTS)
 """
 module Propagation
 
-using DocStringExtensions
+using DocStringExtensions: @template, DOCSTRING, EXPORTS, IMPORTS, LICENSE, SIGNATURES, TYPEDEF
 
 @template (FUNCTIONS, METHODS, MACROS) = """
                                          $(SIGNATURES)
@@ -26,10 +26,11 @@ using DocStringExtensions
                                $(DOCSTRING)
                                """
 
-using AstrodynamicalCalculations
-using AstrodynamicalModels
-using ModelingToolkit, OrdinaryDiffEqVerner, SciMLBase
-using StaticArrays
+using AstrodynamicalCalculations: converge!, diverge!
+using AstrodynamicalModels: AstrodynamicalModels, CR3BParameters, CartesianSTM, CartesianState, Orbit, dynamics
+using OrdinaryDiffEqVerner: Vern7, Vern9
+using SciMLBase: SciMLBase, ODEProblem, solve
+using StaticArrays: SVector
 
 export propagate, propagate!, monodromy, convergent_manifold, divergent_manifold
 

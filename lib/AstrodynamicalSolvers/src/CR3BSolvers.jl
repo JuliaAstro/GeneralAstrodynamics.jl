@@ -13,13 +13,12 @@ module CR3BSolvers
 
 export halo, lyapunov
 
-using LinearAlgebra
-using StaticArrays
-using ModelingToolkit
-using AstrodynamicalModels
-using AstrodynamicalCalculations
-using OrdinaryDiffEqVerner
-using DocStringExtensions
+
+using StaticArrays: @SMatrix, @SVector, SVector
+using AstrodynamicalModels: CR3BFunction
+using AstrodynamicalCalculations: richardson_ic
+using OrdinaryDiffEqVerner: ODEProblem, Vern9, remake, solve
+using DocStringExtensions: @template, DOCSTRING, EXPORTS, IMPORTS, LICENSE, SIGNATURES, TYPEDEF
 
 @template (
     FUNCTIONS,

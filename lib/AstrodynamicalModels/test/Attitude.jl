@@ -3,7 +3,16 @@ Tests for R2BP dynamics.
 """
 module AttitudeTests
 
-using AstrodynamicalModels, ModelingToolkit, LinearAlgebra, Test
+using Test
+using AstrodynamicalModels:
+    AttitudeFunction,
+    AttitudeParameters,
+    AttitudeState,
+    AttitudeSystem,
+    dynamics,
+    system
+using ModelingToolkit: System, ODEFunction
+using LinearAlgebra: diagm
 
 @testset "Attitude Model Constructors" begin
     model = AttitudeSystem()
@@ -14,8 +23,8 @@ using AstrodynamicalModels, ModelingToolkit, LinearAlgebra, Test
 
     @test rand(AttitudeState) isa AttitudeState
     @test rand(AttitudeParameters) isa AttitudeParameters
-    @test system(rand(AttitudeParameters)) isa ModelingToolkit.System
-    @test dynamics(rand(AttitudeParameters)) isa ModelingToolkit.ODEFunction
+    @test system(rand(AttitudeParameters)) isa System
+    @test dynamics(rand(AttitudeParameters)) isa ODEFunction
 end
 
 @testset "Attitude Model Calculations" begin

@@ -1,7 +1,7 @@
 name = "GeneralAstrodynamics"
 uuid = "8068df5b-8501-4530-bd82-d24d3c9619db"
-authors = ["Joey Carpinelli <joey@loopy.codes>"]
 version = "0.11.0"
+authors = ["Joey Carpinelli <joey@loopy.codes>"]
 
 [workspace]
 projects = ["docs", "test", "lib/AstrodynamicalCalculations", "lib/AstrodynamicalModels", "lib/AstrodynamicalSolvers"]
