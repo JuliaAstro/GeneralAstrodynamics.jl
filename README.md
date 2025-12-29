@@ -64,3 +64,47 @@ end
 
 trajectory = propagate(orbit, T)
 ```
+
+## Developer documentation
+
+### Tests
+
+Run all tests from top-level of monorepo:
+
+```julia-repl
+> j --proj
+
+(GeneralAstrodynamics) pkg> test
+```
+
+Run all tests for `<subpackage>` from top-level of monorepo:
+
+```julia-repl
+> j --proj
+
+ENV["GROUP"] = <subpackage>
+
+(GeneralAstrodynamics) pkg> test
+```
+
+or navigate to top-level of `<subpackage>` and run tests as usual:
+
+```julia-repl
+> j --proj
+
+(GeneralAstrodynamics/lib/AstrodynamicalCalculations) pkg> test
+```
+
+### Explicit imports
+
+See the documentation for [`ExplicitImports.jl`]() for standard usage. For non-package files at path `<fpath>` relative to the top-level of `<subpackage>`, run the following:
+
+```julia-repl
+> julia --proj
+
+julia> using ExplicitImports, <subpackage>
+
+julia> include(<fpath>)
+
+julia> print_explicit_imports(Main.<subpackage>Tests, <fpath>)
+```
