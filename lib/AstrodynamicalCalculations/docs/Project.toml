@@ -4,3 +4,6 @@ Quarto = "d7167be5-f61b-4dc9-b75c-ab62374668c5"
 DocumenterQuarto = "73f83fcb-c367-40db-89b6-8fd94701aaf2"
 IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
 AstrodynamicalCalculations = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
+
+[sources]
+AstrodynamicalCalculations = {path=".."}
