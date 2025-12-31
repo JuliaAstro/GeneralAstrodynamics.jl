@@ -145,4 +145,4 @@ R2BProblem(
     kwargs...,
 )
 R2BProblem(orbit::AstrodynamicalOrbit{<:CartesianState}, Δt; kwargs...) =
-    R2BProblem(orbit, (zero(Δt), Dt); kwargs...)
+    R2BProblem(orbit, (zero(Δt), Δt); kwargs...)
