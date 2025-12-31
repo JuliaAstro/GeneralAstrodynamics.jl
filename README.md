@@ -1,3 +1,5 @@
+# `GeneralAstrodynamics.jl`
+
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaastro.org/GeneralAstrodynamics/stable/)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliaastro.org/GeneralAstrodynamics.jl/dev/)
 
@@ -6,8 +8,6 @@
 [![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 [![PkgEval](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/G/GeneralAstrodynamics.svg)](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-# `GeneralAstrodynamics.jl`
 
 _Common astrodynamics calculations, with hooks into the SciML ecosystem._
 
