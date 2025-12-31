@@ -1,6 +1,11 @@
-[![Tests](https://github.com/cadojo/GeneralAstrodynamics.jl/workflows/Tests/badge.svg)](https://github.com/cadojo/GeneralAstrodynamics.jl/actions?query=workflow%3ATests)
-[![Docs](https://github.com/cadojo/GeneralAstrodynamics.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/GeneralAstrodynamics.jl/)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaastro.org/GeneralAstrodynamics/stable/)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliaastro.org/GeneralAstrodynamics.jl/dev/)
+
+[![Tests](https://github.com/JuliaAstro/GeneralAstrodynamics.jl/actions/workflows/Tests.yml/badge.svg)](https://github.com/JuliaAstro/GeneralAstrodynamics.jl/actions/workflows/Tests.yml)
+[![Codecov](https://codecov.io/gh/JuliaAstro/GeneralAstrodynamics.jl/graph/badge.svg)](https://codecov.io/gh/JuliaAstro/GeneralAstrodynamics.jl)
 [![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
+[![PkgEval](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/G/GeneralAstrodynamics.svg)](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # `GeneralAstrodynamics.jl`
 
