@@ -42,7 +42,7 @@ function SciMLBase.ODEProblem(orbit::AstrodynamicalModels.AstrodynamicalOrbit, Î
     u = AstrodynamicalModels.state(orbit)
 
     if stm
-        u = Vector([u, vec(AstrodynamicalModels.CartesianSTM())])
+        u = Vector([u; vec(AstrodynamicalModels.CartesianSTM())])
     end
 
     p = AstrodynamicalModels.parameters(orbit)
