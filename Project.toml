@@ -3,9 +3,6 @@ uuid = "8068df5b-8501-4530-bd82-d24d3c9619db"
 authors = ["Joey Carpinelli <joey@loopy.codes>"]
 version = "0.11.0"
 
-[workspace]
-projects = ["docs", "test", "lib/AstrodynamicalCalculations", "lib/AstrodynamicalModels", "lib/AstrodynamicalSolvers"]
-
 [deps]
 AstrodynamicalCalculations = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
 AstrodynamicalModels = "4282b555-f590-4262-b575-3e516e1493a7"
@@ -15,6 +12,11 @@ EphemerisSources = "858900df-f7ae-402a-aa8c-3e4ef85aa271"
 Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 SPICE = "5bab7191-041a-5c2e-a744-024b9c3a5062"
 
+[sources]
+AstrodynamicalCalculations = {path="lib/AstrodynamicalCalculations"}
+AstrodynamicalModels = {path="lib/AstrodynamicalModels"}
+AstrodynamicalSolvers = {path="lib/AstrodynamicalSolvers"}
+
 [compat]
 AstrodynamicalCalculations = "0.5, 1"
 AstrodynamicalModels = "3.4"
@@ -23,4 +25,11 @@ DocStringExtensions = "0.9"
 EphemerisSources = "1.0.0"
 Reexport = "1.2"
 SPICE = "0.2"
-julia = "1.10"
+julia = "1.7"
+
+[extras]
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test", "Pkg"]

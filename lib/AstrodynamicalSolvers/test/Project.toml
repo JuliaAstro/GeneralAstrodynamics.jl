@@ -1,9 +1,0 @@
-[deps]
-AstrodynamicalCalculations = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
-AstrodynamicalModels = "4282b555-f590-4262-b575-3e516e1493a7"
-AstrodynamicalSolvers = "636ee813-9c9e-4a0a-af07-88b3043dcb77"
-LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
-OrdinaryDiffEqVerner = "79d7bb75-1356-48c1-b8c0-6832512096c2"
-ParallelTestRunner = "d3525ed8-44d0-4b2c-a655-542cee43accc"
-StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

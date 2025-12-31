@@ -1,6 +1,0 @@
-[deps]
-AstrodynamicalCalculations = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
-LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
-ParallelTestRunner = "d3525ed8-44d0-4b2c-a655-542cee43accc"
-StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
