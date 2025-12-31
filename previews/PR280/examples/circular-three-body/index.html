@@ -556,7 +556,7 @@ window.Quarto = {
 
 
 <p><em>Orbits in e.g.&nbsp;the Earth-Moon system.</em></p>
-<div id="5599562c" class="cell" data-execution_count="1">
+<div id="62544e96" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">LinearAlgebra</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalCalculations</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -564,7 +564,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="coordinate-conversions">Coordinate Conversions</h2>
 <p>The Circular Restricted Three Body (CR3B) Problem describes a massless spacecraft experiencing gravitational forces due to <em>two</em> point masses which orbit their common center of mass. There’s a good bit there, so let’s unpack that statement further. Consider the Earth and its moon. The Earth and the Moon both orbit the Sun, but if we neglect the Sun and watch the positions of the Earth and the Moon with respect to their common center of mass (in a rotating reference frame where the <span class="math inline">\(\hat{x}\)</span> axis points from the Earth to the Moon) then both the Earth and the Moon appear to move along <em>circular</em> orbits.</p>
 <p>When we analyze orbits within this problem, we typically use non-dimensional units: we scale all distance units by the distance <span class="math inline">\(a\)</span> between the two massive bodies, and we scale all time distances by the following function of <span class="math inline">\(a\)</span> and each body’s mass parameter: <span class="math inline">\(2\pi \sqrt{\frac{a^3}{\mu_1 + \mu_2}}\)</span>.</p>
-<div id="34d4ec09" class="cell" data-execution_count="2">
+<div id="ed4f6240" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="fl">1e5</span> <span class="co"># </span><span class="al">TODO</span><span class="co"> replace with real value</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>μ₁ <span class="op">=</span> <span class="fl">1e5</span> <span class="co"># </span><span class="al">TODO</span><span class="co"> replace with real value</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>μ₂ <span class="op">=</span> <span class="fl">14</span> <span class="co"># </span><span class="al">TODO</span><span class="co"> replace with real value</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -573,26 +573,26 @@ window.Quarto = {
 </div>
 </div>
 <p>Both of these scalings are provided by the <code>distance_scaling</code> and <code>time_scaling</code> functions. The <code>velocity_scaling</code> is simply the result of the <code>distance_scaling</code> divided by the <code>time_scaling</code>.</p>
-<div id="5a7748e7" class="cell" data-execution_count="3">
+<div id="6b83a8c4" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>L <span class="op">=</span> <span class="fu">distance_scaling</span>(a, μ₁, μ₂)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <pre><code>100000.0</code></pre>
 </div>
 </div>
-<div id="1d78f334" class="cell" data-execution_count="4">
+<div id="5ed0e321" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> <span class="fu">time_scaling</span>(a, μ₁, μ₂)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>628274.553038411</code></pre>
 </div>
 </div>
-<div id="f8768da7" class="cell" data-execution_count="5">
+<div id="edf3a68a" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>V <span class="op">=</span> <span class="fu">velocity_scaling</span>(a, μ₁, μ₂)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>0.15916608354800943</code></pre>
 </div>
 </div>
 <p>These scalings are applied to Cartesian state vectors in CR3B dynamics.</p>
-<div id="5555301c" class="cell" data-execution_count="6">
+<div id="f870003f" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> (; x <span class="op">=</span> <span class="fl">1e6</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">1e2</span>, z <span class="op">=</span> <span class="fl">3e3</span>, ẋ <span class="op">=</span> <span class="fl">1e2</span>, ẏ <span class="op">=</span> <span class="op">-</span><span class="fl">1e3</span>, ż <span class="op">=</span> <span class="fl">0.0</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> <span class="fl">1e9</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -612,26 +612,26 @@ window.Quarto = {
 </div>
 </div>
 <p>Given a particular Synodic (rotating reference frame) position <span class="math inline">\(\overrightarrow{x}\)</span>, we can also compute the corresponding distance to the primary and secondary bodies using <code>distance_to_primary</code> and <code>distance_to_secondary</code> respectively.</p>
-<div id="3dd2925a" class="cell" data-execution_count="7">
+<div id="473025cd" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> <span class="fu">norm</span>((c.x, c.y, c.z))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <pre><code>10.000045049898524</code></pre>
 </div>
 </div>
-<div id="d7f98da2" class="cell" data-execution_count="8">
+<div id="a18ef049" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>r₁ <span class="op">=</span> <span class="fu">distance_to_primary</span>(r, c.μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>10.000185030301267</code></pre>
 </div>
 </div>
-<div id="3515853c" class="cell" data-execution_count="9">
+<div id="24476066" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>r₂ <span class="op">=</span> <span class="fu">distance_to_secondary</span>(r, c.μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <pre><code>9.000185030301267</code></pre>
 </div>
 </div>
 <p>As mentioned above, all calculations are performed in the Synodic (rotating) reference frame. We can convert nondimensional Cartesian coordinates expressed in the Synodic frame to the barycentric inertial frame (an inertial frame centered at the center of mass of the system) using the <code>synodic_to_inertial</code> function with two additional pieces of information: the time <span class="math inline">\(t\)</span> since the coordinate frame epoch and the angular speed of the massive bodies <span class="math inline">\(\omega\)</span>.</p>
-<div id="92df900c" class="cell" data-execution_count="10">
+<div id="4564fe58" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> t <span class="op">=</span> <span class="fl">0.1</span>, ω <span class="op">=</span> <span class="fl">1.0</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">synodic_to_inertial</span>(c.x, c.y, c.z, t, ω)</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -643,14 +643,14 @@ window.Quarto = {
 <section id="energy-calculations" class="level2">
 <h2 class="anchored" data-anchor-id="energy-calculations">Energy Calculations</h2>
 <p>As always, we can compute the potential energy of the orbit using the <code>potential_energy</code> function.</p>
-<div id="76ccb0c6" class="cell" data-execution_count="11">
+<div id="ffd73438" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>P <span class="op">=</span> <span class="fu">potential_energy</span>(c.x, c.y, c.z, c.μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="12">
 <pre><code>50.100000205005934</code></pre>
 </div>
 </div>
 <p>There is a second metric for measuring orbital energies in CR3B dynamics: the so-called Jacobi constant <span class="math inline">\(C \triangleq 2 P - v^2\)</span>. We can use the <code>jacobi_constant</code> function to compute this value.</p>
-<div id="a65fdb1b" class="cell" data-execution_count="12">
+<div id="93494583" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> <span class="fu">jacobi_constant</span>(c.x, c.y, c.z, c.ẋ, c.ẏ, c.ż, c.μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
 <pre><code>-3.986752011355671e7</code></pre>
@@ -662,7 +662,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="lagrange-points">Lagrange Points</h2>
 <p>As is the case for all nonlinear dynamical systems, there are special positions in state space where the induced accelerations are null. In CR3B dynamics, these points are known as Lagrange points. In theory, a spacecraft placed at one of these points will stay there for all time. In practice, of course, no system perfectly satisfies the assumptions set by the CR3B definition. Still, these points <em>are</em> practically useful, as demonstrated by e.g.&nbsp;the James Webb Space Telescope’s orbit about an Earth-Moon Lagrange point.</p>
 <p>There are <span class="math inline">\(5\)</span> Lagrange points for every CR3B system: three along the <span class="math inline">\(x\)</span> axis, and two offset points which are mirrored across the <span class="math inline">\(x\)</span> axis. The positions for each of these points can be found using the <code>lagrange_point</code> function, given the nondimensional mass parameter <span class="math inline">\(\mu\)</span> for the CR3B system.</p>
-<div id="59fa92fd" class="cell" data-execution_count="13">
+<div id="3f9277db" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> L <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    L <span class="op">.=&gt;</span> <span class="fu">lagrange_point</span>.(c.μ, L)</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -679,7 +679,7 @@ window.Quarto = {
 <section id="approximate-periodic-orbits" class="level2">
 <h2 class="anchored" data-anchor-id="approximate-periodic-orbits">Approximate Periodic Orbits</h2>
 <p>There exist periodic orbits about Lagrange points in CR3B dynamics. Periodic orbits in three dimensions (extra-planar orbits) are known as <em>halo</em> orbits. Periodic orbits in two dimensions (planar orbits) are known as <em>Lyapunov</em> orbits. These orbits can only be found using (quite sensitive) numerical methods: these capabilities are provided by <code>AstrodynamicalSolvers.jl</code>, and are described in the package <a href="https://JuliaAstro.org/GeneralAstrodynamics/lib/AstrodynamicalSolvers">documentation</a>. Approximations for periodic initial conditions are available analytically, and this is provided in <code>AstrodynamicalCalculations</code> through the <code>richardson_ic</code> function.</p>
-<div id="a99024a4" class="cell" data-execution_count="14">
+<div id="609b9922" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> L <span class="op">=</span> <span class="fl">2</span>, Z <span class="op">=</span> <span class="fl">1e-3</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    ic <span class="op">=</span> <span class="fu">richardson_ic</span>(c.μ, L; Z <span class="op">=</span> Z)</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
