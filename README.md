@@ -1,6 +1,6 @@
 # `GeneralAstrodynamics.jl`
 
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaastro.org/GeneralAstrodynamics/stable/)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaastro.org/GeneralAstrodynamics.jl/stable/)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliaastro.org/GeneralAstrodynamics.jl/dev/)
 
 [![Tests](https://github.com/JuliaAstro/GeneralAstrodynamics.jl/actions/workflows/Tests.yml/badge.svg)](https://github.com/JuliaAstro/GeneralAstrodynamics.jl/actions/workflows/Tests.yml)
