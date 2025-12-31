@@ -10,7 +10,7 @@ const init_code = quote
     # TODO: use explicit imports in each test file after
     # https://github.com/JuliaAstro/GeneralAstrodynamics.jl/pull/280
     # is in
-    using AstrodynamicalModels, ModelingToolkit, LinearAlgebra, Test
+    #using AstrodynamicalModels, ModelingToolkit, LinearAlgebra, Test
 end
 
 args = parse_args(Base.ARGS)
