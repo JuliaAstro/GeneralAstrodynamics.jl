@@ -46,7 +46,7 @@ model = NBSystem(9)
     N > 0 || throw(ArgumentError("`N` must be a number greater than zero!"))
     T = N * 6 + (N * 6)^2
     @parameters G m[1:N]
-    @variables x(t)[1:N] y(t)[1:N] z(t)[1:N] ẋ(t)[1:N] ẏ(t)[1:N] ż(t)[1:N]
+    @variables (x(t))[1:N] y(t)[1:N] z(t)[1:N] ẋ(t)[1:N] ẏ(t)[1:N] ż(t)[1:N]
 
     r = [[x[i], y[i], z[i]] for i = 1:N]
     v = [[ẋ[i], ẏ[i], ż[i]] for i = 1:N]
