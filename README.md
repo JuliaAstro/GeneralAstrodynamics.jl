@@ -64,3 +64,55 @@ end
 
 trajectory = propagate(orbit, T)
 ```
+
+## Developer documentation
+
+### Tests
+
+Run all tests from top-level of monorepo:
+
+```julia-repl
+> j --proj
+
+(GeneralAstrodynamics) pkg> test
+```
+
+Run all tests for `<subpackage>` from top-level of monorepo:
+
+```julia-repl
+> j --proj
+
+ENV["GROUP"] = <subpackage>
+
+(GeneralAstrodynamics) pkg> test
+```
+
+or navigate to top-level of `<subpackage>` and run tests as usual:
+
+```julia-repl
+> j --proj
+
+(GeneralAstrodynamics/lib/AstrodynamicalCalculations) pkg> test
+```
+
+List available tests for a given <subpackage>:
+
+```julia-repl
+> julia --proj
+
+julia> using Pkg
+
+julia> Pkg.test("<subpackage>"; test_args = `--list`)
+```
+
+Run specific tests for a given <subpackage>:
+
+```julia-repl
+> julia --proj
+
+julia> using Pkg
+
+julia> Pkg.test("<subpackage>"; test_args = `--verbose <filename>`)
+```
+
+for a given filename listed in the previous usage example. Partial matches for the start of the filename are also accepted.
