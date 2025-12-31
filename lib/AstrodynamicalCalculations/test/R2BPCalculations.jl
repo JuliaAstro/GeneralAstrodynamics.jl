@@ -1,21 +1,3 @@
-using AstrodynamicalCalculations:
-    AstrodynamicalCalculations,
-    argument_of_periapsis,
-    cartesian_to_keplerian,
-    cartesian_to_perifocal,
-    conic,
-    inclination,
-    kepler,
-    keplerian_to_cartesian,
-    lambert,
-    orbital_period,
-    orbital_radius,
-    right_ascension_ascending_node,
-    specific_energy,
-    specific_angular_momentum,
-    specific_angular_momentum_vector,
-    semimajor_axis
-
 @testset "R2BP Calculations" begin
     @test conic(0) == :Circular
     @test conic(1) == :Parabolic

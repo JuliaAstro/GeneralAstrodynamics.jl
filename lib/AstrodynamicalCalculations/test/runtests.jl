@@ -7,6 +7,10 @@ using ParallelTestRunner: runtests, find_tests, parse_args
 import AstrodynamicalCalculations
 
 const init_code = quote
+    # TODO: Use explicit imports in each test file after
+    # # https://github.com/JuliaAstro/GeneralAstrodynamics.jl/pull/280
+    # # is in
+    using AstrodynamicalCalculations
     using LinearAlgebra
     using StaticArrays
 end

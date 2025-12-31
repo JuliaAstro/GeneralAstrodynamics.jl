@@ -32,10 +32,11 @@ julia = "1.7"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+ParallelTestRunner = "d3525ed8-44d0-4b2c-a655-542cee43accc"
 AstrodynamicalCalculations = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
 
 [targets]
-test = ["Test", "SPICEBodies", "AstrodynamicalCalculations"]
+test = ["Test", "ParallelTestRunner", "SPICEBodies", "AstrodynamicalCalculations"]
 
 [sources]
 AstrodynamicalCalculations = {path="../AstrodynamicalCalculations"}

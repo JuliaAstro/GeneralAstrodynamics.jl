@@ -3,8 +3,6 @@ Tests for orbit types.
 """
 module OrbitTests
 
-using AstrodynamicalModels, ModelingToolkit, AstrodynamicalCalculations, Test
-
 @testset "CartesianState Constructors" begin
     @test rand(CartesianState) isa CartesianState
     @test CartesianState(undef) isa CartesianState

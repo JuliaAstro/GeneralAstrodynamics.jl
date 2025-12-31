@@ -7,7 +7,10 @@ using ParallelTestRunner: runtests, find_tests, parse_args
 import AstrodynamicalModels
 
 const init_code = quote
-    # Shared modules here
+    # TODO: use explicit imports in each test file after
+    # https://github.com/JuliaAstro/GeneralAstrodynamics.jl/pull/280
+    # is in
+    using AstrodynamicalModels, ModelingToolkit, LinearAlgebra, Test
 end
 
 args = parse_args(Base.ARGS)

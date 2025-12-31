@@ -1,7 +1,3 @@
-using AstrodynamicalSolvers:
-    halo,
-    monodromy
-
 @testset "Manifold Computations" begin
 
     μ = 3.0034805945423635e-6

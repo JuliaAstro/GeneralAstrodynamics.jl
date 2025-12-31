@@ -3,8 +3,6 @@ Tests for CR3BP dynamics.
 """
 module CR3BPTests
 
-using AstrodynamicalModels, ModelingToolkit, Test
-
 @testset "CR3BP Model Constructors" begin
     @test CR3BSystem(; stm=false) isa System
     @test CR3BSystem(; stm=true) isa System

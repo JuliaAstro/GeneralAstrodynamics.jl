@@ -1,10 +1,3 @@
-using AstrodynamicalCalculations:
-    converge,
-    diverge,
-    jacobi_constant,
-    richardson_ic,
-    richardson_halo
-
 @testset "CR3BP Calculations" begin
     r = [
         1.007988

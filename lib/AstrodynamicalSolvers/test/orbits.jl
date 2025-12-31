@@ -1,11 +1,3 @@
-using AstrodynamicalSolvers:
-    AstrodynamicalSolvers,
-    halo,
-    monodromy,
-    propagate,
-    propagate!
-
-
 @testset "Orbit Propagation" begin
 
     orbit = Orbit(rand(CartesianState), rand(R2BParameters))

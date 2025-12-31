@@ -7,6 +7,10 @@ using ParallelTestRunner: runtests, find_tests, parse_args
 import AstrodynamicalSolvers
 
 const init_code = quote
+    # TODO: Use explicit imports after
+    # https://github.com/JuliaAstro/GeneralAstrodynamics.jl/pull/280
+    # is in
+    using AstrodynamicalSolvers
     using AstrodynamicalCalculations
     using AstrodynamicalModels
     using LinearAlgebra

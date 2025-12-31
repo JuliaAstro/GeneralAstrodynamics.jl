@@ -3,8 +3,6 @@ Tests for R2BP dynamics.
 """
 module R2BPTests
 
-using AstrodynamicalModels, ModelingToolkit, Test
-
 @testset "R2BP Model Constructors" begin
     @test R2BSystem(; stm=false) isa System
     @test R2BSystem(; stm=true) isa System

@@ -3,9 +3,6 @@ uuid = "636ee813-9c9e-4a0a-af07-88b3043dcb77"
 authors = ["Joseph Carpinelli <joseph.d.carpinelli@loopy.codes>"]
 version = "1.0.0"
 
-[workspace]
-projects = ["docs", "test", "../AstrodynamicalCalculations", "../AstrodynamicalModels"]
-
 [deps]
 AstrodynamicalCalculations = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
 AstrodynamicalModels = "4282b555-f590-4262-b575-3e516e1493a7"
@@ -17,6 +14,10 @@ Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 SciMLBase = "0bca4576-84f4-4d90-8ffe-ffa030f20462"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
+[sources]
+AstrodynamicalModels = {path="../AstrodynamicalModels"}
+AstrodynamicalCalculations = {path="../AstrodynamicalCalculations"}
+
 [compat]
 AstrodynamicalCalculations = "1"
 AstrodynamicalModels = "3.8"
@@ -26,4 +27,11 @@ OrdinaryDiffEqVerner = "1.1.1"
 Reexport = "1"
 SciMLBase = "2"
 StaticArrays = "1.6"
-julia = "1.10"
+julia = "1.7"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+ParallelTestRunner = "d3525ed8-44d0-4b2c-a655-542cee43accc"
+
+[targets]
+test = ["Test", "ParallelTestRunner"]

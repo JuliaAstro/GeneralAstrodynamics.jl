@@ -3,8 +3,6 @@ Tests for NBP dynamics.
 """
 module NBPTests
 
-using AstrodynamicalModels, ModelingToolkit, Test
-
 @testset "NBP Model Constructors" begin
     @test NBSystem(10; stm=false) isa System
     @test NBSystem(2; stm=true) isa System
