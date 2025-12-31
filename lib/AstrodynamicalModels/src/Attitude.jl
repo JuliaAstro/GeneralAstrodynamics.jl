@@ -208,7 +208,7 @@ model = Attitude()
     u = [q; ω]
 
     if stm
-        @variables Φ(t)[1:7, 1:7], [description = "state transition matrix estimate"]
+        @variables (Φ(t))[1:7, 1:7], [description = "state transition matrix estimate"]
         A = Symbolics.jacobian(map(el -> el.rhs, eqs), u)
 
         Φ = Symbolics.scalarize(Φ)

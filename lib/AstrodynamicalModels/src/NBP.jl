@@ -76,7 +76,7 @@ model = NBSystem(9)
             """
         end
 
-        @variables Φ(t)[1:length(eqs), 1:length(eqs)], [
+        @variables (Φ(t))[1:length(eqs), 1:length(eqs)], [
             description = "state transition matrix estimate",
         ]
         A = Symbolics.jacobian(map(el -> el.rhs, eqs), u)

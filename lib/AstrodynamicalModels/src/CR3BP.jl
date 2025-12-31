@@ -76,7 +76,7 @@ model = CR3BSystem(; stm=true)
     u = [r; v]
 
     if stm
-        @variables Φ(t)[1:6, 1:6], [description = "state transition matrix estimate"]
+        @variables (Φ(t))[1:6, 1:6], [description = "state transition matrix estimate"]
         A = Symbolics.jacobian(map(el -> el.rhs, eqs), u)
 
         Φ = Symbolics.scalarize(Φ)
