@@ -202,7 +202,7 @@ model = Attitude()
 
     eqs = [
         D.(q) .~ (1 // 2) * (A * q) ;
-        D.(ω) .~ -inv(J) * ωx * (J * ω) + inv(J) * L + f
+        D.(ω) .~ (-inv(J) * ωx * J * ω + inv(J) * L + f)
     ]
 
     u = [q; ω]
