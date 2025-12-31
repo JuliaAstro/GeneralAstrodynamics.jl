@@ -13,7 +13,6 @@ module CR3BSolvers
 
 export halo, lyapunov
 
-
 using StaticArrays: @SMatrix, @SVector, SVector
 using AstrodynamicalModels: CR3BFunction
 using AstrodynamicalCalculations: richardson_ic
