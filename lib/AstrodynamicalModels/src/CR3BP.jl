@@ -156,4 +156,4 @@ CR3BProblem(orbit::AstrodynamicalOrbit, tspan::Union{<:Tuple,<:AbstractArray}; k
         kwargs...,
     )
 CR3BProblem(orbit::AstrodynamicalOrbit, Δt; kwargs...) =
-    CR3BProblem(orbit, (zero(Δt), Dt); kwargs...)
+    CR3BProblem(orbit, (zero(Δt), Δt); kwargs...)
