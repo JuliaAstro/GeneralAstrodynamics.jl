@@ -562,7 +562,7 @@ window.Quarto = {
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div id="b7c0650d" class="cell" data-execution_count="2">
+<div id="595c8632" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">PlanarEntrySystem</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <div class="ansi-escaped-output">
@@ -576,9 +576,9 @@ window.Quarto = {
   θ(t): polar angle relative to planet horizontal in degrees
 <span class="ansi-bold">Parameters (7):</span> see parameters(PlanarEntry)
   m: entry vehicle mass in kilograms
+  P: atmospheric density at sea level in kilograms per meter cubed
   R: spherical planet radius
   H: scale factor for exponential atmosphere in meters
-  P: atmospheric density at sea level in kilograms per meter cubed
   A: entry vehicle surface area in square meters
   μ: planet mass parameter in meters per second cubed
   ⋮</pre>
@@ -586,12 +586,12 @@ window.Quarto = {
 </div>
 </div>
 <p>Let’s compute the Jacobian for these dynamics.</p>
-<div id="f98db62f" class="cell" data-execution_count="3">
+<div id="c97e867e" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>J <span class="op">=</span> <span class="fu">calculate_jacobian</span>(<span class="fu">PlanarEntrySystem</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <div class="ansi-escaped-output">
 <pre>4×4 Matrix{SymbolicUtils.BasicSymbolicImpl.var"typeof(BasicSymbolicImpl)"{SymReal}}:
- ((<span class="ansi-blue-fg">1</span> - ((v(t) / sqrt(μ / r(t)))^<span class="ansi-blue-fg">2</span>))*((R / r(t))^<span class="ansi-blue-fg">2</span>)*sin(γ(t))*μ) / ((R^<span class="ansi-blue-fg">2</span>)*v(t))  …  <span class="ansi-blue-fg">0</span>
+ (((R / r(t))^<span class="ansi-blue-fg">2</span>)*(<span class="ansi-blue-fg">1</span> - ((v(t) / sqrt(μ / r(t)))^<span class="ansi-blue-fg">2</span>))*sin(γ(t))*μ) / ((R^<span class="ansi-blue-fg">2</span>)*v(t))  …  <span class="ansi-blue-fg">0</span>
  (-((R / r(t))^<span class="ansi-blue-fg">2</span>)*cos(γ(t))*μ) / (R^<span class="ansi-blue-fg">2</span>)                                             <span class="ansi-blue-fg">0</span>
  v(t)*cos(γ(t))                                                                    <span class="ansi-blue-fg">0</span>
  (-v(t)*sin(γ(t))) / r(t)                                                          <span class="ansi-blue-fg">0</span></pre>
@@ -599,7 +599,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Finally, let’s construct a Julia function which implements these dynamics!</p>
-<div id="101d62a3" class="cell" data-execution_count="4">
+<div id="6d0ac780" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">PlanarEntryFunction</span>()</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">abs</span>.(<span class="fu">randn</span>(<span class="fl">4</span>)), p <span class="op">=</span> <span class="fu">abs</span>.(<span class="fu">randn</span>(<span class="fl">7</span>)), t <span class="op">=</span> <span class="fl">0</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    sys <span class="op">=</span> f.sys</span>
@@ -609,10 +609,10 @@ window.Quarto = {
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>4-element Vector{Float64}:
-  6.245022184863733
- -0.2253014253675231
-  1.306343556458666
-  0.6595639554439328</code></pre>
+ 542.8766892317367
+  -2.816778827447672
+   0.558363441722853
+   1.560891109836966</code></pre>
 </div>
 </div>
 
