@@ -543,7 +543,7 @@ window.Quarto = {
 
 <p><em>Finding orbits where positions and velocities repeat.</em></p>
 <p>Can you find some duration <span class="math inline">\(\Delta t\)</span> such that a spacecraft in orbit at time <span class="math inline">\(t\)</span> will return to its previous position (and velocity) at time <span class="math inline">\(t + \Delta t\)</span>? If so, your orbit is <em>periodic</em>. The name <em>orbit</em> probably puts the image of a <em>periodic orbit</em> in your head. Picture an orbit about Earth: you’re probably thinking of a circle, kind of like a halo or a sash, wrapping Earth. In reality, most orbits are not periodic. There are varying degrees of difficulty required for finding periodic orbits. Let’s explore this problem for two example systems: the restricted two-body system, and the circular-restricted three-body system.</p>
-<div id="014dcd02" class="cell" data-execution_count="1">
+<div id="c8706d48" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalSolvers</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalModels</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalCalculations</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -551,7 +551,7 @@ window.Quarto = {
 <section id="periodic-orbits-in-r2b-dynamics" class="level2">
 <h2 class="anchored" data-anchor-id="periodic-orbits-in-r2b-dynamics">Periodic Orbits in R2B Dynamics</h2>
 <p>An orbit in the restricted two-body problem is periodic if and only if its eccentricity is less than one. There are no negative eccentricities, so you may say the orbit is periodic when its eccentricity <span class="math inline">\(e\)</span> satisfies the following inequality: <span class="math inline">\(0 \leq e &lt; 1\)</span>. Let’s try this for an example orbit.</p>
-<div id="f3fbc49b" class="cell" data-execution_count="2">
+<div id="8e7d5534" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>orbit <span class="op">=</span> <span class="kw">let</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    u <span class="op">=</span> <span class="fu">CartesianState</span>(; x <span class="op">=</span> <span class="fl">11e5</span>, y <span class="op">=</span> <span class="fl">5e5</span>, ẋ <span class="op">=</span> <span class="fl">1e3</span>, ẏ <span class="op">=</span> <span class="fl">1e3</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> <span class="fu">R2BParameters</span>(<span class="fl">4.00458e12</span>)</span>
@@ -576,7 +576,7 @@ window.Quarto = {
 </div>
 </div>
 <p>The print-out states that the orbit is elliptical, so we already know it’s periodic. Let’s make sure!</p>
-<div id="19b1dbdc" class="cell" data-execution_count="3">
+<div id="e66c3571" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fl">0</span> <span class="op">≤</span> <span class="fu">eccentricity</span>(orbit) <span class="op">&lt;</span> <span class="fl">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <pre><code>true</code></pre>
@@ -587,7 +587,7 @@ window.Quarto = {
 <section id="periodic-orbits-in-cr3b-dynamics" class="level2">
 <h2 class="anchored" data-anchor-id="periodic-orbits-in-cr3b-dynamics">Periodic Orbits in CR3B Dynamics</h2>
 <p>Three-body systems are a bit more complicated. There is no simple inequality to check for periodicity. Instead, you have to propagate the orbit and see if it’s periodic. Let’s pick an orbit at random and see if it ever repeats.</p>
-<div id="770f7c86" class="cell" data-execution_count="4">
+<div id="b0404a3c" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>orbit <span class="op">=</span> <span class="fu">Orbit</span>(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rand</span>(CartesianState),</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">CR3BParameters</span>(<span class="fl">0.012</span>),</span>
@@ -619,7 +619,7 @@ window.Quarto = {
 <p>That didn’t work. Now, we didn’t try <em>that</em> hard. You might wonder: what if we tried <span class="math inline">\(2000\)</span> times? Or <span class="math inline">\(10000\)</span>? Or one million?</p>
 <p>The chances that this routine will work for a random orbit are vanishingly small. Three-body orbits are chaotic, and so they are not generally periodic at all. There are cases where periodic orbits can be found, however. One such case is an orbit about a Lagrange point.</p>
 <p>Differential correction techniques can be used to find an orbit that is periodic nearby a Lagrange point. One such technique is implemented in <code>AstrodynamicalSolvers</code> via the <code>halo</code> function. The <code>halo</code> function can find two-dimensional (rigorously called Lyapunov) orbits, or three-dimensional (so-called Halo) orbits. Let’s try a couple of examples. First, a Lyapunov (planar) orbit. Then, a halo (extra-planar) orbit. In both cases, a named tuple is returned with Cartesian state values for an initial condition, and an orbital period.</p>
-<div id="f3455411" class="cell" data-execution_count="6">
+<div id="217f9623" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> L <span class="op">=</span> <span class="fl">2</span>, μ <span class="op">=</span> orbit.parameters.μ</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    (; x, ẏ, Δt) <span class="op">=</span> <span class="fu">halo</span>(μ, L)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -639,11 +639,11 @@ window.Quarto = {
 
   CartesianState with eltype Float64
   
-    x: 1.123936108689526
-    y: 1.0790811333613667e-12
+    x: 1.123936108689724
+    y: 8.774402911977308e-13
     z: 0.0
-    ẋ: -2.9834789597217785e-12
-    ẏ: 0.15644803336637056
+    ẋ: -2.423718288590634e-12
+    ẏ: 0.15644803336600402
     ż: 0.0
 
   CR3BParameters with eltype Float64
@@ -652,7 +652,7 @@ window.Quarto = {
 </div>
 </div>
 <p>The planar orbit is periodic! As shown below, the extra-planar orbit is periodic as well.</p>
-<div id="08ca3f38" class="cell" data-execution_count="7">
+<div id="99d0f9ae" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> L <span class="op">=</span> <span class="fl">1</span>, μ <span class="op">=</span> orbit.parameters.μ</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    (; x, z, ẏ, Δt) <span class="op">=</span> <span class="fu">halo</span>(μ, L; amplitude <span class="op">=</span> <span class="fl">1e-6</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -672,11 +672,11 @@ window.Quarto = {
 
   CartesianState with eltype Float64
   
-    x: 0.8241722626565504
-    y: -8.159743958607407e-10
+    x: 0.8241722626563688
+    y: -8.159143039895823e-10
     z: 0.0
-    ẋ: 6.8404151203639e-9
-    ẏ: 0.12586360332313123
+    ẋ: 6.839916806880244e-9
+    ẏ: 0.12586360332333368
     ż: 0.0
 
   CR3BParameters with eltype Float64
