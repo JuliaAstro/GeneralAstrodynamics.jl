@@ -17,8 +17,3 @@ SPICE = "5bab7191-041a-5c2e-a744-024b9c3a5062"
 SPICEKernels = "8e9d28ce-e483-4ef7-bfd9-45b8fef6369c"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Symbolics = "0c5d862f-8b57-4792-8d23-62f2024744c7"
-
-[sources]
-AstrodynamicalCalculations = {path="../../AstrodynamicalCalculations"}
-AstrodynamicalModels = {path="../../AstrodynamicalModels"}
-AstrodynamicalSolvers = {path=".."}
