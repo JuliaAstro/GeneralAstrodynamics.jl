@@ -14,7 +14,7 @@ module CR3BSolvers
 export halo, lyapunov
 
 using StaticArrays: @SMatrix, @SVector, SVector
-using AstrodynamicalModels: CR3BFunction
+using AstrodynamicalModels: CR3BFunction, CartesianSTM
 using AstrodynamicalCalculations: richardson_ic
 using OrdinaryDiffEqVerner: ODEProblem, Vern9, remake, solve
 using DocStringExtensions: @template, DOCSTRING, EXPORTS, IMPORTS, LICENSE, SIGNATURES, TYPEDEF
@@ -114,7 +114,7 @@ function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
         :ẋ => ẋ
         :ẏ => ẏ
         :ż => ż
-        :Φ => AstrodynamicalModels.CartesianSTM() 
+        :Φ => CartesianSTM() 
         :μ => μ
     ]
 
@@ -154,7 +154,7 @@ function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
             :ẋ => ẋ
             :ẏ => ẏ
             :ż => ż
-            :Φ => AstrodynamicalModels.CartesianSTM() 
+            :Φ => CartesianSTM() 
         ]
 
         tspan = (zero(τ), τ)
@@ -198,7 +198,7 @@ function halo(x, z, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
         :ẋ => ẋ
         :ẏ => ẏ
         :ż => ż
-        :Φ => AstrodynamicalModels.CartesianSTM() 
+        :Φ => CartesianSTM() 
         :μ => μ
     ]
 
@@ -246,7 +246,7 @@ function halo(x, z, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
             :ẋ => ẋ
             :ẏ => ẏ
             :ż => ż
-            :Φ => AstrodynamicalModels.CartesianSTM() 
+            :Φ => CartesianSTM() 
         ]
 
         tspan = (zero(τ), τ)
