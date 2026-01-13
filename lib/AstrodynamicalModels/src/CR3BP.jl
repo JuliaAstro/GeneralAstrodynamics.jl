@@ -72,12 +72,10 @@ model = CR3BSystem(; stm=true)
             );
     ]
 
-    u = [r; v]
-
     if stm
         @variables Φ(t)[1:6, 1:6], [description = "state transition matrix estimate"]
-        A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(r, v))
-        eqs = vcat(eqs, vec(Symbolics.scalarize(D(Φ) ~ A * Φ)))
+        A = Symbolics.jacobian(map(el -> el.rhs, eqs), [r; v])
+        eqs = [eqs; vec(Symbolics.scalarize(D(Φ) ~ A * Φ))]
     end
 
     if string(name) == "CR3B" && stm
