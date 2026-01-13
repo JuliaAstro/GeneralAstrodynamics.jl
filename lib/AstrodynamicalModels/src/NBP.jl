@@ -45,28 +45,26 @@ model = NBSystem(9)
 
     N > 0 || throw(ArgumentError("`N` must be a number greater than zero!"))
     T = N * 6 + (N * 6)^2
-    @independent_variables t
     @parameters G m[1:N]
-    @variables (x(t))[1:N] (y(t))[1:N] (z(t))[1:N] (ẋ(t))[1:N] (ẏ(t))[1:N] (ż(t))[1:N]
-    δ = Differential(t)
+    @variables (x(t))[1:N] y(t)[1:N] z(t)[1:N] ẋ(t)[1:N] ẏ(t)[1:N] ż(t)[1:N]
 
     r = [[x[i], y[i], z[i]] for i = 1:N]
     v = [[ẋ[i], ẏ[i], ż[i]] for i = 1:N]
 
-    poseqs = reduce(vcat, [δ.(r[i]) .~ v[i] for i ∈ 1:N])
+    poseqs = reduce(vcat, [D.(r[i]) .~ v[i] for i ∈ 1:N])
 
     veleqs = reduce(
         vcat,
         [
-            δ.(v[i]) .~ sum((
+            D.(v[i]) .~ sum((
                 ((m[i] * m[j]) / norm(r[j] .- r[i])^3 * (r[j] .- r[i])) .*
                 (j == N ? G / m[i] : 1) for j ∈ 1:N if j ≢ i
             )) for i ∈ 1:N
         ],
     )
 
-    eqs = vcat(poseqs, veleqs)
-    u = vcat(r..., v...)
+    eqs = [poseqs; veleqs]
+    u = [r...; v...]
 
     if stm
         if N ≥ 3
@@ -78,17 +76,20 @@ model = NBSystem(9)
             """
         end
 
-        @variables (Φ(t))[1:length(eqs), 1:length(eqs)] [
+        @variables (Φ(t))[1:length(eqs), 1:length(eqs)], [
             description = "state transition matrix estimate",
         ]
         A = Symbolics.jacobian(map(el -> el.rhs, eqs), u)
 
         Φ = Symbolics.scalarize(Φ)
 
-        LHS = δ.(Φ)
+        LHS = D.(Φ)
         RHS = A * Φ
 
-        eqs = vcat(eqs, vec([LHS[i] ~ RHS[i] for i in eachindex(LHS)]))
+        eqs = [eqs; vec([LHS[i] ~ RHS[i] for i in eachindex(LHS)])]
+
+        u = [u; vec(Φ)]
+        defaults = [defaults; vec(Φ .=> Float64.(I(6N)))]
     end
 
     if string(name) == "NBP" && stm
@@ -97,28 +98,15 @@ model = NBSystem(9)
         modelname = name
     end
 
-    if stm
-        defaults = vcat(defaults, vec(Φ .=> Float64.(I(6N))))
-        return System(
-            eqs,
-            t,
-            vcat(u, Φ...),
-            vcat(G, m...);
-            name = modelname,
-            defaults = defaults,
-            kwargs...,
-        )
-    else
-        return System(
-            eqs,
-            t,
-            u,
-            vcat(G, m...);
-            name = modelname,
-            defaults = defaults,
-            kwargs...,
-        )
-    end
+    return System(
+        eqs,
+        t,
+        u,
+        [G, vec(m)];
+        name = modelname,
+        defaults,
+        kwargs...,
+    )
 end
 
 """
