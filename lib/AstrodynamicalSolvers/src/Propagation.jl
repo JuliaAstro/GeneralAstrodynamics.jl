@@ -12,7 +12,7 @@ $(IMPORTS)
 """
 module Propagation
 
-using DocStringExtensions
+using DocStringExtensions: @template, DOCSTRING, EXPORTS, IMPORTS, LICENSE, SIGNATURES, TYPEDEF
 
 @template (FUNCTIONS, METHODS, MACROS) = """
                                          $(SIGNATURES)
@@ -26,16 +26,15 @@ using DocStringExtensions
                                $(DOCSTRING)
                                """
 
-using AstrodynamicalCalculations
-using AstrodynamicalModels
-using ModelingToolkit, OrdinaryDiffEqVerner, SciMLBase
-using StaticArrays
+using AstrodynamicalCalculations: converge!, diverge!
+using AstrodynamicalModels: AstrodynamicalModels, CR3BParameters, CartesianSTM, CartesianState, Orbit, dynamics
+using OrdinaryDiffEqVerner: Vern7, Vern9
+using SciMLBase: SciMLBase, ODEProblem, solve
+using StaticArrays: SVector
 
 export propagate, propagate!, monodromy, convergent_manifold, divergent_manifold
 
-function SciMLBase.ODEProblem(
-    orbit::AstrodynamicalModels.AstrodynamicalOrbit,
-    Δt;
+function SciMLBase.ODEProblem(orbit::AstrodynamicalModels.AstrodynamicalOrbit, Δt;
     stm = false,
     kwargs...,
 )
@@ -55,26 +54,22 @@ end
 Numerically integrate the orbit forward (or backward) in time, and return a new
 `AstrodynamicalOrbit` instance with identical parameters to the provided orbit.
 """
-function propagate(
-    orbit::AstrodynamicalModels.AstrodynamicalOrbit,
-    Δt;
+function propagate(orbit::AstrodynamicalModels.AstrodynamicalOrbit, Δt;
     stm = false,
     algorithm = Vern7(),
     reltol = 1e-12,
     abstol = 1e-12,
     kwargs...,
 )
-    problem = ODEProblem(orbit, Δt, stm = stm)
-    return solve(problem, algorithm; reltol = reltol, abstol = abstol, kwargs...)
+    problem = ODEProblem(orbit, Δt; stm)
+    return solve(problem, algorithm; reltol, abstol, kwargs...)
 end
 
 """
 Numerically integrate the orbit forward (or backward) in time, modifying the
 state vector in-place within the `AstrodynamicalOrbit` instance.
 """
-function propagate!(
-    orbit::AstrodynamicalModels.AstrodynamicalOrbit,
-    Δt;
+function propagate!(orbit::AstrodynamicalModels.AstrodynamicalOrbit, Δt;
     stm = false,
     algorithm = Vern7(),
     reltol = 1e-12,
@@ -83,13 +78,11 @@ function propagate!(
 )
     overrides = (; save_everystep = false, save_start = false, save_end = true)
     options = (; kwargs..., overrides...)
-    solution = propagate(
-        orbit,
-        Δt;
-        stm = stm,
-        algorithm = algorithm,
-        reltol = reltol,
-        abstol = abstol,
+    solution = propagate(orbit, Δt;
+        stm,
+        algorithm,
+        reltol,
+        abstol,
         options...,
     )
     AstrodynamicalModels.state(orbit) .= solution.u[end]
@@ -99,9 +92,7 @@ end
 """
 Compute the monodromy matrix for any periodic orbit.
 """
-function monodromy(
-    orbit::AstrodynamicalModels.AstrodynamicalOrbit,
-    Δt;
+function monodromy(orbit::AstrodynamicalModels.AstrodynamicalOrbit, Δt;
     algorithm = Vern7(),
     reltol = 1e-12,
     abstol = 1e-12,
@@ -113,9 +104,9 @@ function monodromy(
         orbit,
         Δt;
         stm = true,
-        algorithm = algorithm,
-        reltol = reltol,
-        abstol = abstol,
+        algorithm,
+        reltol,
+        abstol,
         options...,
     )
 
@@ -128,18 +119,13 @@ end
 """
 Solve for the monodromy matrix of the periodic orbit.
 """
-function monodromy(
-    u::AbstractVector,
-    μ,
-    T,
-    f;
+function monodromy(u::AbstractVector, μ, T, f;
     algorithm = Vern9(),
     reltol = 1e-12,
     abstol = 1e-12,
     save_everystep = false,
     kwargs...,
 )
-
     op = [
         [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u
         :Φ => AstrodynamicalModels.CartesianSTM()

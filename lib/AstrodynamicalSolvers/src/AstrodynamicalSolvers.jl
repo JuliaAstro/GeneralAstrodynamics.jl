@@ -14,8 +14,8 @@ $(IMPORTS)
 """
 module AstrodynamicalSolvers
 
-using Reexport
-using DocStringExtensions
+using Reexport: @reexport
+using DocStringExtensions: @template, DOCSTRING, EXPORTS, IMPORTS, LICENSE, SIGNATURES, TYPEDEF
 
 @template (FUNCTIONS, METHODS, MACROS) = """
                                          $(SIGNATURES)

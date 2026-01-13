@@ -62,7 +62,8 @@ model = NBSystem(9)
         ],
     )
 
-    eqs = vcat(poseqs, veleqs)
+    eqs = [poseqs; veleqs]
+    u = [r...; v...]
 
     if stm
         if N ≥ 3

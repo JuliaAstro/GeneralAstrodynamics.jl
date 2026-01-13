@@ -14,10 +14,10 @@ $(EXPORTS)
 """
 module CR3BPCalculations
 
-using StaticArrays
-using LinearAlgebra
-using DocStringExtensions
-using Roots
+using StaticArrays: SMatrix, SVector
+using LinearAlgebra: eigen, isposdef, normalize, ⋅
+using DocStringExtensions: @template, DOCSTRING, EXPORTS, IMPORTS, LICENSE, SIGNATURES
+using Roots: find_zero
 
 @template (
     FUNCTIONS,

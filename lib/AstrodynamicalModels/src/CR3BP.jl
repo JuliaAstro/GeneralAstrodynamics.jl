@@ -53,24 +53,26 @@ model = CR3BSystem(; stm=true)
     r = [x, y, z]
     v = [ẋ, ẏ, ż]
 
-    eqs = vcat(
-        D.(r) .~ v,
+    eqs = [
+        D.(r) .~ v;
         D(ẋ) ~
             x + 2ẏ - (μ * (x + μ - 1) * (sqrt(y^2 + z^2 + (x + μ - 1)^2)^-3)) -
-            ((x + μ) * (sqrt(y^2 + z^2 + (x + μ)^2)^-3) * (1 - μ)),
+            ((x + μ) * (sqrt(y^2 + z^2 + (x + μ)^2)^-3) * (1 - μ));
         D(ẏ) ~
             y - (2ẋ) - (
                 y * (
                     μ * (sqrt(y^2 + z^2 + (x + μ - 1)^2)^-3) +
                     (sqrt(y^2 + z^2 + (x + μ)^2)^-3) * (1 - μ)
                 )
-            ),
+            );
         D(ż) ~
             z * (
                 -μ * (sqrt(y^2 + z^2 + (x + μ - 1)^2)^-3) -
                 ((sqrt(y^2 + z^2 + (x + μ)^2)^-3) * (1 - μ))
-            ),
-    )
+            );
+    ]
+
+    u = [r; v]
 
     if stm
         @variables Φ(t)[1:6, 1:6], [description = "state transition matrix estimate"]
@@ -147,16 +149,3 @@ CR3BProblem(orbit::AstrodynamicalOrbit, tspan::Union{<:Tuple,<:AbstractArray}; k
     )
 CR3BProblem(orbit::AstrodynamicalOrbit, Δt; kwargs...) =
     CR3BProblem(orbit, (zero(Δt), Δt); kwargs...)
-
-# TODO: Deprecate old methods? https://github.com/SciML/ModelingToolkit.jl/blob/master/NEWS.md#new-problem-and-constructors
-#CR3BProblem(u0, tspan, p; kwargs...) = ODEProblem(CR3BFunction(), u0, tspan, p; kwargs...)
-#CR3BProblem(orbit::AstrodynamicalOrbit, tspan::Union{<:Tuple,<:AbstractArray}; kwargs...) =
-#    ODEProblem(
-#        CR3BFunction(),
-#        AstrodynamicalModels.state(orbit),
-#        tspan,
-#        AstrodynamicalModels.parameters(orbit);
-#        kwargs...,
-#    )
-#CR3BProblem(orbit::AstrodynamicalOrbit, Δt; kwargs...) =
-#    CR3BProblem(orbit, (zero(Δt), δt); kwargs...)

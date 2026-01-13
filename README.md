@@ -1,16 +1,19 @@
-[![Tests](https://github.com/cadojo/GeneralAstrodynamics.jl/workflows/Tests/badge.svg)](https://github.com/cadojo/GeneralAstrodynamics.jl/actions?query=workflow%3ATests)
-[![Docs](https://github.com/cadojo/GeneralAstrodynamics.jl/workflows/Documentation/badge.svg)](https://cadojo.github.io/GeneralAstrodynamics.jl/)
-
 # `GeneralAstrodynamics.jl`
+
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaastro.org/GeneralAstrodynamics.jl/stable/)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliaastro.org/GeneralAstrodynamics.jl/dev/)
+
+[![Tests](https://github.com/JuliaAstro/GeneralAstrodynamics.jl/actions/workflows/Tests.yml/badge.svg)](https://github.com/JuliaAstro/GeneralAstrodynamics.jl/actions/workflows/Tests.yml)
+[![Codecov](https://codecov.io/gh/JuliaAstro/GeneralAstrodynamics.jl/graph/badge.svg)](https://codecov.io/gh/JuliaAstro/GeneralAstrodynamics.jl)
+[![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
+[![PkgEval](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/G/GeneralAstrodynamics.svg)](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 _Common astrodynamics calculations, with hooks into the SciML ecosystem._
 
 ## JuliaCon Talk
 
-Check out `GeneralAstrodynamics` in action at JuliaCon 2021! The talk
-[_Going to Jupiter with Julia_](https://www.youtube.com/watch?v=WnvKaUsGv8w)
-walks through a simple Jupiter mission design while gently introducing
-astrodynamics, Julia, and `GeneralAstrodynamics`.
+Check out `GeneralAstrodynamics` in action at JuliaCon 2021! The talk [_Going to Jupiter with Julia_](https://www.youtube.com/watch?v=WnvKaUsGv8w) walks through a simple Jupiter mission design while gently introducing astrodynamics, Julia, and `GeneralAstrodynamics`.
 
 ## Features
 
@@ -23,8 +26,7 @@ astrodynamics, Julia, and `GeneralAstrodynamics`.
 
 ### Circular Restricted Three-body Problem (CR3BP)
 
-- Structures for dimensioned and normalized Cartesian states, and dimensioned
-  and normalized CR3BP systems
+- Structures for dimensioned and normalized Cartesian states, and dimensioned and normalized CR3BP systems
 - Functions which implement common CR3BP equations
 - Analytical and iterative (numerical) Halo orbit solvers
 - Unstable and stable Halo orbit manifold computation
@@ -33,8 +35,7 @@ astrodynamics, Julia, and `GeneralAstrodynamics`.
 
 ### N-body Problem (NBP)
 
-- This was implemented in a previous package version, and is currently being
-  refactored
+- This was implemented in a previous package version, and is currently being refactored
 
 ## Usage
 
@@ -63,4 +64,48 @@ orbit, T = let
 end
 
 trajectory = propagate(orbit, T)
+```
+
+## Developer documentation
+
+### Tests
+
+Run all tests from top-level of monorepo:
+
+```julia-repl
+> j --proj
+
+(GeneralAstrodynamics) pkg> test
+```
+
+Run all tests for `<subpackage>` from top-level of monorepo:
+
+```julia-repl
+> j --proj
+
+ENV["GROUP"] = <subpackage>
+
+(GeneralAstrodynamics) pkg> test
+```
+
+or navigate to top-level of `<subpackage>` and run tests as usual:
+
+```julia-repl
+> j --proj
+
+(GeneralAstrodynamics/lib/AstrodynamicalCalculations) pkg> test
+```
+
+### Explicit imports
+
+See the documentation for [`ExplicitImports.jl`]() for standard usage. For non-package files at path `<fpath>` relative to the top-level of `<subpackage>`, run the following:
+
+```julia-repl
+> julia --proj
+
+julia> using ExplicitImports, <subpackage>
+
+julia> include(<fpath>)
+
+julia> print_explicit_imports(Main.<subpackage>Tests, <fpath>)
 ```

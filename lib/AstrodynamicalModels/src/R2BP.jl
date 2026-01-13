@@ -55,7 +55,9 @@ model = R2BSystem()
     r = [x, y, z]
     v = [ẋ, ẏ, ż]
 
-    eqs = vcat(D.(r) .~ v, D.(v) .~ -μ .* (r ./ norm(r)^3))
+    eqs = [D.(r) .~ v; D.(v) .~ -μ .* (r ./ norm(r)^3)]
+
+    u = [r; v]
 
     if stm
         @variables Φ(t)[1:6, 1:6], [description = "state transition matrix estimate"]
@@ -132,19 +134,3 @@ R2BProblem(
 )
 R2BProblem(orbit::AstrodynamicalOrbit{<:CartesianState}, Δt; kwargs...) =
     R2BProblem(orbit, (zero(Δt), Δt); kwargs...)
-
-# TODO: Deprecate old methods? https://github.com/SciML/ModelingToolkit.jl/blob/master/NEWS.md#new-problem-and-constructors
-#R2BProblem(u0, tspan, p; kwargs...) = ODEProblem(R2BFunction(), u0, tspan, p; kwargs...)
-#R2BProblem(
-#    orbit::AstrodynamicalOrbit{<:CartesianState},
-#    tspan::Union{<:Tuple,<:AbstractArray};
-#    kwargs...,
-#) = ODEProblem(
-#    R2BFunction(),
-#    AstrodynamicalModels.state(orbit),
-#    tspan,
-#    AstrodynamicalModels.parameters(orbit);
-#    kwargs...,
-#)
-#R2BProblem(orbit::AstrodynamicalOrbit{<:CartesianState}, Δt; kwargs...) =
-#    R2BProblem(orbit, (zero(Δt), δt); kwargs...)

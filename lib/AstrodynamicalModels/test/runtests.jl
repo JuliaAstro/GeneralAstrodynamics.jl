@@ -2,6 +2,7 @@
 # Unit tests for AstrodynamicalModels.jl
 #
 
+include("Aqua.jl")
 include("R2BP.jl")
 include("CR3BP.jl")
 include("NBP.jl")
