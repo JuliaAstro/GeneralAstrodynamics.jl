@@ -556,7 +556,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
 <p>All <code>NBSystem</code> calls require the number of bodies to be specified as the first argument, like so. As always, use the <code>stm</code> argument at your leisure. Beware, though! using <code>stm=true</code> for N-body systems with more than 5 bodies may cause <code>NBSystem</code> to compute for a <em>really, really</em> long time! True story – <code>v1.0.1</code> of this package had a version of these docs which tried to compute <code>NBSystem(30; stm=true)</code>. That resulted in GitHub and JuliaHub failing the job on a timeout after <em>several hours</em> –&nbsp;at first I was surprised, until I realized that appending state transition matrix dynamics to a 30-body system results in a total of 32580 states!</p>
 <p>If you’re curious, the number of states of an N-body system with state transition matrix dynamics appended is equivalent to <code>N*6 + (N*6)^2</code>.</p>
-<div id="1be7676f" class="cell" data-execution_count="2">
+<div id="7fcb240d" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> <span class="fu">NBSystem</span>(<span class="fl">2</span>; stm<span class="op">=</span><span class="cn">true</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <div class="ansi-escaped-output">
@@ -578,7 +578,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Like other models, we can compute the Jacobian for these dynamics.</p>
-<div id="c3a374eb" class="cell" data-execution_count="3">
+<div id="dd295572" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SparseArrays</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>J <span class="op">=</span> <span class="fu">sparse</span>(<span class="fu">calculate_jacobian</span>(<span class="fu">NBSystem</span>(<span class="fl">4</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
@@ -592,7 +592,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Finally, let’s construct a Julia function which implements these dynamics!</p>
-<div id="c7c14813" class="cell" data-execution_count="4">
+<div id="15e5646d" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">NBFunction</span>(<span class="fl">2</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">12</span>), m <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">2</span>), G <span class="op">=</span> <span class="fu">randn</span>(), t <span class="op">=</span> <span class="fl">0</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    sys <span class="op">=</span> f.sys</span>
@@ -602,18 +602,18 @@ window.Quarto = {
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>12-element Vector{Float64}:
- -0.5506750621366898
-  1.0866151810286087
- -0.04182848839173122
-  0.19219051633011963
-  0.24358540507482895
- -0.3193234064441082
-  0.00027156788701600634
-  0.00019862698666433322
- -0.0027612913467116255
-  0.0004850300324160453
-  0.00035475495589367903
- -0.0049317658509702425</code></pre>
+ -0.28740152099546656
+  0.7970251781062859
+ -0.10048298016835266
+ -1.0570897596836593
+ -0.9656924582139804
+ -1.094365930858001
+ -0.04924869091368988
+  0.029830181850129714
+ -0.10612990171931799
+  0.04719190905044385
+ -0.02858437864463531
+  0.1016975797031464</code></pre>
 </div>
 </div>
 
