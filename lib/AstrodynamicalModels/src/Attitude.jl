@@ -242,7 +242,7 @@ end
 @memoize function AttitudeFunction(; stm = false, name = :Attitude, kwargs...)
     defaults = (; jac = true)
     options = merge(defaults, kwargs)
-    sys = complete(AttitudeSystem(; stm = stm, name = name); split = true)
+    sys = complete(AttitudeSystem(; stm, name); split = true)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
         sys;
         options...,

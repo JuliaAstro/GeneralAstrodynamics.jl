@@ -38,7 +38,7 @@ function SciMLBase.ODEProblem(orbit::AstrodynamicalModels.AstrodynamicalOrbit, Î
     stm = false,
     kwargs...,
 )
-    sys = dynamics(orbit, stm = stm).sys
+    sys = complete(system(orbit; stm))
 
     op = AstrodynamicalModels.op(orbit)
     if stm

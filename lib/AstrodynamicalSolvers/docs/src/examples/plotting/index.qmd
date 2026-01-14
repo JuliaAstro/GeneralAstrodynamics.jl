@@ -132,10 +132,10 @@ unstable = let
     ic = halo(μ, 1; amplitude = 0.005)
 
     u = CartesianState(ic)
-    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))
+    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(; stm = true))
 
     ics = let
-        sys = CR3BFunction(stm = true).sys
+        sys = complete(CR3BSystem(; stm = true))
         op = [
             [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u
             :Φ => I(6)
@@ -162,7 +162,7 @@ unstable = let
         :μ => μ
     ]
     problem = EnsembleProblem(
-        ODEProblem(CR3BFunction().sys, op, (0.0, 2 * ic.Δt)),
+        ODEProblem(complete(CR3BSystem()), op, (0.0, 2 * ic.Δt)),
         prob_func = (prob, i, repeat) -> remake(prob; u0 = perturbations[i]),
     )
 
@@ -179,10 +179,10 @@ stable = let
     ic = halo(μ, 2; amplitude = 0.005)
 
     u = CartesianState(ic)
-    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))
+    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(; stm = true))
 
     ics = let
-        sys = CR3BFunction(stm = true).sys
+        sys = complete(CR3BSystem(; stm = true))
         op = [
             [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u
             :Φ => I(6)
@@ -209,7 +209,7 @@ stable = let
         :μ => μ
     ]
     problem = EnsembleProblem(
-        ODEProblem(CR3BFunction().sys, op, (0.0, -2.1 * ic.Δt)),
+        ODEProblem(complete(CR3BSystem()), op, (0.0, -2.1 * ic.Δt)),
         prob_func = (prob, i, repeat) -> remake(prob; u0 = perturbations[i]),
     )
 
@@ -278,10 +278,10 @@ unstable = let
     ic = halo(μ, 1; amplitude = 0.005)
 
     u = CartesianState(ic)
-    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))
+    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(; stm = true))
 
     ics = let
-        sys = CR3BFunction(stm = true).sys
+        sys = complete(CR3BSystem(; stm = true))
         op = [
             [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u
             :Φ => I(6)
@@ -308,7 +308,7 @@ unstable = let
         :μ => μ
     ]
     problem = EnsembleProblem(
-        ODEProblem(CR3BFunction().sys, op, (0.0, 2 * ic.Δt)),
+        ODEProblem(complete(CR3BSystem()), op, (0.0, 2 * ic.Δt)),
         prob_func = (prob, i, repeat) -> remake(prob; u0 = perturbations[i]),
     )
 
@@ -325,10 +325,10 @@ stable = let
     ic = halo(μ, 2; amplitude = 0.005)
 
     u = CartesianState(ic)
-    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))
+    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(; stm = true))
 
     ics = let
-        sys = CR3BFunction(stm = true).sys
+        sys = complete(CR3BSystem(; stm = true))
         op = [
             [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u
             :Φ => I(6)
@@ -355,7 +355,7 @@ stable = let
         :μ => μ
     ]
     problem = EnsembleProblem(
-        ODEProblem(CR3BFunction().sys, op, (0.0, -2.1 * ic.Δt)),
+        ODEProblem(complete(CR3BSystem()), op, (0.0, -2.1 * ic.Δt)),
         prob_func = (prob, i, repeat) -> remake(prob; u0 = perturbations[i]),
     )
 

@@ -106,7 +106,7 @@ end
 @memoize function R2BFunction(; stm = false, name = :R2B, kwargs...)
     defaults = (; jac = true)
     options = merge(defaults, kwargs)
-    sys = complete(R2BSystem(; stm = stm, name = name); split = true)
+    sys = complete(R2BSystem(; stm, name); split = true)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
         sys;
         options...,
@@ -121,13 +121,13 @@ const R2BOrbit = Orbit{<:CartesianState,<:R2BParameters}
 """
 Return an `ODEProblem` for the provided R2B system.
 """
-R2BProblem(op, tspan; kwargs...) = ODEProblem(R2BFunction().sys, op, tspan; kwargs...)
+R2BProblem(op, tspan; kwargs...) = ODEProblem(complete(R2BSystem()), op, tspan; kwargs...)
 R2BProblem(
     orbit::AstrodynamicalOrbit{<:CartesianState},
     tspan::Union{<:Tuple,<:AbstractArray};
     kwargs...,
 ) = ODEProblem(
-    R2BFunction().sys,
+    complete(R2BSystem()),
     AstrodynamicalModels.op(orbit),
     tspan;
     kwargs...,

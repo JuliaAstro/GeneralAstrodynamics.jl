@@ -105,7 +105,7 @@ function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
     ż = zero(ẏ)
     τ = T / 2
 
-    sys = CR3BFunction(; stm = true).sys
+    sys = complete(CR3BSystem(; stm = true))
 
     op = [
         :x => x
@@ -189,7 +189,7 @@ function halo(x, z, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
     ż = zero(ẏ)
     τ = T / 2
 
-    sys = CR3BFunction(; stm = true).sys
+    sys = complete(CR3BSystem(; stm = true))
 
     op = [
         :x => x

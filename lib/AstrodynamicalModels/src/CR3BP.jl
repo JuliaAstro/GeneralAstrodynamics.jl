@@ -118,7 +118,7 @@ end
 @memoize function CR3BFunction(; stm = false, name = :CR3B, kwargs...)
     defaults = (; jac = true)
     options = merge(defaults, kwargs)
-    sys = complete(CR3BSystem(; stm = stm, name = name); split = true)
+    sys = complete(CR3BSystem(; stm, name); split = true)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
         sys;
         options...,
@@ -137,10 +137,10 @@ AstrodynamicalModels.CR3BOrbit(; state::AbstractVector, parameters::AbstractVect
 """
 Return an `ODEProblem` for the provided CR3B system.
 """
-CR3BProblem(op, tspan; kwargs...) = ODEProblem(CR3BFunction().sys, op, tspan; kwargs...)
+CR3BProblem(op, tspan; kwargs...) = ODEProblem(complete(CR3BSystem()), op, tspan; kwargs...)
 CR3BProblem(orbit::AstrodynamicalOrbit, tspan::Union{<:Tuple,<:AbstractArray}; kwargs...) =
     ODEProblem(
-        CR3BFunction().sys,
+        complete(CR3BSystem()),
         AstrodynamicalModels.op(orbit),
         tspan;
         kwargs...,
