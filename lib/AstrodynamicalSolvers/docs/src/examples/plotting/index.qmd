@@ -13,6 +13,7 @@ First, let's find two periodic orbits: one planar orbit, and one extraplanar (th
 using AstrodynamicalSolvers
 using AstrodynamicalModels
 using OrdinaryDiffEq
+using ModelingToolkit: complete
 
 μ = 0.012150584395829193
 

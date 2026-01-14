@@ -27,10 +27,11 @@ using DocStringExtensions: @template, DOCSTRING, EXPORTS, IMPORTS, LICENSE, SIGN
                                """
 
 using AstrodynamicalCalculations: converge!, diverge!
-using AstrodynamicalModels: AstrodynamicalModels, CR3BParameters, CartesianSTM, CartesianState, Orbit, dynamics
+using AstrodynamicalModels: AstrodynamicalModels, CR3BParameters, CartesianSTM, CartesianState, Orbit, system
 using OrdinaryDiffEqVerner: Vern7, Vern9
 using SciMLBase: SciMLBase, ODEProblem, solve
 using StaticArrays: SVector
+using ModelingToolkit: complete
 
 export propagate, propagate!, monodromy, convergent_manifold, divergent_manifold
 

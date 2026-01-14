@@ -12,8 +12,9 @@ using AstrodynamicalSolvers:
     propagate!
 using AstrodynamicalCalculations: converge, diverge, richardson_ic
 using OrdinaryDiffEqVerner: ODEProblem, ODESolution, Vern9, solve
-using AstrodynamicalModels: CR3BFunction, CartesianState, Orbit, R2BParameters
+using AstrodynamicalModels: CR3BFunction, CR3BSystem, CartesianState, Orbit, R2BParameters
 using LinearAlgebra: I
+using ModelingToolkit: complete
 
 @testset "Aqua tests" begin
     using Aqua: test_all
