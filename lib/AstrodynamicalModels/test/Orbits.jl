@@ -16,7 +16,7 @@ using AstrodynamicalModels:
     R2BParameters,
     dynamics,
     system
-using ModelingToolkit: System, ODEFunction
+using ModelingToolkit: System, ODEFunction, get_p, get_u0
 
 @testset "CartesianState Constructors" begin
     @test rand(CartesianState) isa CartesianState

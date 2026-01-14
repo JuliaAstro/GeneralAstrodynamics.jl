@@ -12,8 +12,9 @@ using AstrodynamicalSolvers:
     propagate!
 using AstrodynamicalCalculations: converge, diverge, richardson_ic
 using OrdinaryDiffEqVerner: ODEProblem, ODESolution, Vern9, solve
-using AstrodynamicalModels: CR3BFunction, CartesianState, Orbit, R2BParameters
+using AstrodynamicalModels: CR3BFunction, CR3BSystem, CartesianState, Orbit, R2BParameters
 using LinearAlgebra: I
+using ModelingToolkit: complete
 
 @testset "Aqua tests" begin
     using Aqua: test_all
@@ -81,7 +82,7 @@ end
     ic = halo(μ, 1; amplitude = 0.005)
     u = CartesianState(ic)
 
-    @test monodromy(u, μ, ic.Δt, CR3BFunction(stm = true)) ≈ [
+    @test monodromy(u, μ, ic.Δt, CR3BFunction(; stm = true)) ≈ [
         1317.472125300217 -339.26725145920585 -22.23471304682866 388.2455372345198 126.49047353668445 -3.3779594177227
         -429.7764385389933 111.53280315746214 7.269431052432993 -126.49047353678779 -41.404653982215095 1.0977750840404263
         -11.440384647744368 2.9348175664641527 1.1929568568249131 -3.3779594177162653 -1.0977750840374354 -0.05845992955397675
@@ -103,7 +104,7 @@ end
 
     T = u.Δt
     u = CartesianState(u)
-    Φ = monodromy(u, μ, T, CR3BFunction(stm = true))
+    Φ = monodromy(u, μ, T, CR3BFunction(; stm = true))
 
     @test Φ ≈ [
         363.5695646260086 -150.84678203289957 -110.89785303818041 147.89291423249102 39.776655263625734 -19.506758521645583
@@ -115,7 +116,23 @@ end
     ]
 
     ics = let
-        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, T), (μ,))
+        sys = complete(CR3BSystem(; stm = true))
+
+        op = [
+                :x => u.x
+                :y => u.y
+                :z => u.z
+                :ẋ => u.ẋ
+                :ẏ => u.ẏ
+                :ż => u.ż
+                :Φ => I(6)
+                :μ => μ
+        ]
+
+        tspan = (0, T)
+
+        problem = ODEProblem(sys, op, tspan)
+
         solution =
             solve(problem, Vern9(), reltol = 1e-12, abstol = 1e-12, saveat = (T / 10))
 

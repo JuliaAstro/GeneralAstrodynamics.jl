@@ -47,7 +47,6 @@ model = R2BSystem()
 @memoize function R2BSystem(;
     stm = false,
     name = :R2B,
-    defaults = Pair{ModelingToolkit.Num,<:Number}[],
     kwargs...,
 )
 
@@ -61,18 +60,10 @@ model = R2BSystem()
     u = [r; v]
 
     if stm
-        @variables (Φ(t))[1:6, 1:6] [description = "state transition matrix estimate"]
-        A = Symbolics.jacobian(map(el -> el.rhs, eqs), u)
+        @variables Φ(t)[1:6, 1:6], [description = "state transition matrix estimate"]
 
-        Φ = Symbolics.scalarize(Φ)
-
-        LHS = D.(Φ)
-        RHS = A * Φ
-
-        eqs = [eqs; vec([LHS[i] ~ RHS[i] for i in eachindex(LHS)])]
-
-        u = [u; vec(Φ)]
-        defaults = [defaults; vec(Φ .=> Float64.(I(6)))]
+        A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(r, v))
+        eqs = vcat(eqs, vec(Symbolics.scalarize(D(Φ) ~ A * Φ)))
     end
 
     if string(name) == "R2B" && stm
@@ -81,13 +72,8 @@ model = R2BSystem()
         modelname = name
     end
 
-    return System(
-        eqs,
-        t,
-        u,
-        [μ];
+    return System(eqs, t;
         name = modelname,
-        defaults,
         kwargs...,
     )
 end
@@ -109,15 +95,18 @@ directly to `SciMLBase.ODEFunction`.
 
 ```julia
 f = R2BFunction(; stm=false, name=:R2B, jac=true)
-let u = randn(6), p = randn(1), t = 0
-    f(u, p, t)
+let u = randn(6), p = randn(), t = 0
+    sys = f.sys
+    u0 = get_u0(sys, [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u) # Or get_u0(sys, ModelingToolkit.unknowns(sys) .=> u)
+    p = get_p(sys, [:μ => p]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=> p)
+    f(u0, p, t)
 end
 ```
 """
 @memoize function R2BFunction(; stm = false, name = :R2B, kwargs...)
     defaults = (; jac = true)
     options = merge(defaults, kwargs)
-    sys = complete(R2BSystem(; stm = stm, name = name); split = false)
+    sys = complete(R2BSystem(; stm, name); split = true)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
         sys;
         options...,
@@ -132,16 +121,15 @@ const R2BOrbit = Orbit{<:CartesianState,<:R2BParameters}
 """
 Return an `ODEProblem` for the provided R2B system.
 """
-R2BProblem(u0, tspan, p; kwargs...) = ODEProblem(R2BFunction(), u0, tspan, p; kwargs...)
+R2BProblem(op, tspan; kwargs...) = ODEProblem(complete(R2BSystem()), op, tspan; kwargs...)
 R2BProblem(
     orbit::AstrodynamicalOrbit{<:CartesianState},
     tspan::Union{<:Tuple,<:AbstractArray};
     kwargs...,
 ) = ODEProblem(
-    R2BFunction(),
-    AstrodynamicalModels.state(orbit),
-    tspan,
-    AstrodynamicalModels.parameters(orbit);
+    complete(R2BSystem()),
+    AstrodynamicalModels.op(orbit),
+    tspan;
     kwargs...,
 )
 R2BProblem(orbit::AstrodynamicalOrbit{<:CartesianState}, Δt; kwargs...) =

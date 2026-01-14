@@ -46,7 +46,6 @@ model = CR3BSystem(; stm=true)
 @memoize function CR3BSystem(;
     stm = false,
     name = :CR3B,
-    defaults = Pair{ModelingToolkit.Num,<:Number}[],
     kwargs...,
 )
     @parameters μ
@@ -73,20 +72,10 @@ model = CR3BSystem(; stm=true)
             );
     ]
 
-    u = [r; v]
-
     if stm
-        @variables (Φ(t))[1:6, 1:6], [description = "state transition matrix estimate"]
-        A = Symbolics.jacobian(map(el -> el.rhs, eqs), u)
-
-        Φ = Symbolics.scalarize(Φ)
-        LHS = D.(Φ)
-        RHS = A * Φ
-
-        eqs = [eqs; vec([LHS[i] ~ RHS[i] for i in eachindex(LHS)])]
-
-        u = [u; vec(Φ)]
-        defaults = [defaults; vec(Φ .=> Float64.(I(6)))]
+        @variables Φ(t)[1:6, 1:6], [description = "state transition matrix estimate"]
+        A = Symbolics.jacobian(map(el -> el.rhs, eqs), [r; v])
+        eqs = [eqs; vec(Symbolics.scalarize(D(Φ) ~ A * Φ))]
     end
 
     if string(name) == "CR3B" && stm
@@ -95,9 +84,8 @@ model = CR3BSystem(; stm=true)
         modelname = name
     end
 
-    return System(eqs, t, u, [μ];
+    return System(eqs, t;
         name = modelname,
-        defaults,
         kwargs...,
     )
 end
@@ -119,15 +107,18 @@ directly to `SciMLBase.ODEFunction`.
 
 ```julia
 f = CR3BFunction(; stm=false, jac=true)
-let u = randn(6), p = randn(1), t = 0
-    f(u, p, t)
+let u = randn(6), p = randn(), t = 0
+    sys = f.sys
+    u0 = get_u0(sys, [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u) # Or get_u0(sys, ModelingToolkit.unknowns(sys) .=> u)
+    p = get_p(sys, [:μ => p]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=> p)
+    f(u0, p, t)
 end
 ```
 """
 @memoize function CR3BFunction(; stm = false, name = :CR3B, kwargs...)
     defaults = (; jac = true)
     options = merge(defaults, kwargs)
-    sys = complete(CR3BSystem(; stm = stm, name = name); split = false)
+    sys = complete(CR3BSystem(; stm, name); split = true)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
         sys;
         options...,
@@ -146,13 +137,12 @@ AstrodynamicalModels.CR3BOrbit(; state::AbstractVector, parameters::AbstractVect
 """
 Return an `ODEProblem` for the provided CR3B system.
 """
-CR3BProblem(u0, tspan, p; kwargs...) = ODEProblem(CR3BFunction(), u0, tspan, p; kwargs...)
+CR3BProblem(op, tspan; kwargs...) = ODEProblem(complete(CR3BSystem()), op, tspan; kwargs...)
 CR3BProblem(orbit::AstrodynamicalOrbit, tspan::Union{<:Tuple,<:AbstractArray}; kwargs...) =
     ODEProblem(
-        CR3BFunction(),
-        AstrodynamicalModels.state(orbit),
-        tspan,
-        AstrodynamicalModels.parameters(orbit);
+        complete(CR3BSystem()),
+        AstrodynamicalModels.op(orbit),
+        tspan;
         kwargs...,
     )
 CR3BProblem(orbit::AstrodynamicalOrbit, Δt; kwargs...) =

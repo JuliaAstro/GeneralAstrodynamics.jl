@@ -167,7 +167,6 @@ model = Attitude()
 @memoize function AttitudeSystem(;
     stm = false,
     name = :Attitude,
-    defaults = Pair{ModelingToolkit.Num,<:Number}[],
     kwargs...,
 )
 
@@ -175,17 +174,12 @@ model = Attitude()
         q(t)[1:4],   [description = "scalar-last attitude quaternion"]
         ω(t)[1:3],   [description = "body rates in radians per second"]
     end
+
     @parameters begin
         J[1:3, 1:3], [description = "moment of inertial matrix"]
         L[1:3],      [description = "lever arm where input torque is applied"]
         f[1:3],      [description = "input torque"]
     end
-
-    q = Symbolics.scalarize(q)
-    ω = Symbolics.scalarize(ω)
-    J = Symbolics.scalarize(J)
-    L = Symbolics.scalarize(L)
-    f = Symbolics.scalarize(f)
 
     A = [
             0  ω[3] -ω[2] ω[1]
@@ -201,25 +195,15 @@ model = Attitude()
     ]
 
     eqs = [
-        D.(q) .~ (1 // 2) * (A * q) ;
-        D.(ω) .~ (-inv(J) * ωx * J * ω + inv(J) * L + f)
+        Symbolics.scalarize(D(q) ~ (1 // 2) * (A * q)) ;
+        Symbolics.scalarize(D(ω) ~ -inv(J) * ωx * (J * ω) + inv(J) * L + f)
     ]
 
-    u = [q; ω]
-
     if stm
-        @variables (Φ(t))[1:7, 1:7], [description = "state transition matrix estimate"]
-        A = Symbolics.jacobian(map(el -> el.rhs, eqs), u)
+        @variables Φ(t)[1:7, 1:7], [description = "state transition matrix estimate"]
 
-        Φ = Symbolics.scalarize(Φ)
-
-        LHS = D.(Φ)
-        RHS = A * Φ
-
-        eqs = [eqs; vec([LHS[i] ~ RHS[i] for i in eachindex(LHS)])]
-
-        u = [u; vec(Φ)]
-        defaults = [defaults; vec(Φ .=> Float64.(I(7)))]
+        A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(q, ω))
+        eqs = vcat(eqs, vec(Symbolics.scalarize(D(Φ) ~ A * Φ)))
     end
 
     if string(name) == "Attitude" && stm
@@ -228,9 +212,8 @@ model = Attitude()
         modelname = name
     end
 
-    return System(eqs, t, u, [vec(J); L; f];
+    return System(eqs, t;
         name = modelname,
-        defaults,
         kwargs...,
     )
 end
@@ -248,15 +231,18 @@ are passed directly to `SciMLBase.ODEFunction`.
 
 ```julia
 f = AttitudeFunction()
-let u = randn(7), p = randn(15), t = NaN # time invariant
-    f(u, p, t)
+let u = randn(7), p = [randn(9), randn(3), rand(3)], t = NaN
+    sys = f.sys
+    u0 = get_u0(sys, ModelingToolkit.unknowns(sys) .=> u)
+    p = get_p(sys, [:J => p[1], :L => p[2], :f => p[3]]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=> p)
+    f(u0, p, t)
 end
 ```
 """
 @memoize function AttitudeFunction(; stm = false, name = :Attitude, kwargs...)
     defaults = (; jac = true)
     options = merge(defaults, kwargs)
-    sys = complete(AttitudeSystem(; stm = stm, name = name); split = false)
+    sys = complete(AttitudeSystem(; stm, name); split = true)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
         sys;
         options...,

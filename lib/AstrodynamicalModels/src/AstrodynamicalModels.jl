@@ -579,6 +579,14 @@ Return the parameter vector for an `Orbit`.
 """
 parameters(orbit::Orbit) = orbit.parameters
 
+"""
+Return the operating point for an `Orbit`.
+"""
+op(orbit::Orbit) = [
+    [:x, :y, :z, :ẋ, :ẏ, :ż] .=> orbit.state
+    :μ => orbit.parameters[1]
+]
+
 Base.getindex(orbit::AstrodynamicalOrbit, args...) = Base.getindex(state(orbit), args...)
 Base.setindex!(orbit::AstrodynamicalOrbit, args...) = Base.setindex!(state(orbit), args...)
 

@@ -67,7 +67,7 @@ To retrieve more `Orbit` instances, you can use Julia's list comprehension synta
 
 ```{julia}
 orbits = [
-    Orbit(state, parameters(orbit))
+    Orbit(CartesianState(state), parameters(orbit))
     for state in trajectory.u
 ]
 

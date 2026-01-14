@@ -11,7 +11,7 @@ using AstrodynamicalModels:
     CR3BSystem,
     dynamics,
     system
-using ModelingToolkit: System, ODEFunction
+using ModelingToolkit: System, ODEFunction, get_p, get_u0
 
 @testset "CR3BP Model Constructors" begin
     @test CR3BSystem(; stm=false) isa System
@@ -25,13 +25,17 @@ end
 
 @testset "CR3BP Model Calculations" begin
     vectorfield = CR3BFunction()
+    sys = vectorfield.sys
 
-    r = [0.9253021269565836, 0, 0]
-    v = [0.0, 0.05852663414965813, 0.0]
-    μ = 0.0009536838895767625
+    u0 = get_u0(sys, [
+        [:x, :y, :z] .=> [0.9253021269565836, 0, 0]
+        [:ẋ, :ẏ, :ż] .=> [0.0, 0.05852663414965813, 0.0]
+    ])
+
+    p = get_p(sys, [:μ => 0.0009536838895767625])
 
     @test isapprox(
-        vectorfield([r; v], [μ], NaN),
+        vectorfield(u0, p, NaN),
         [0.0, 0.05852663414965813, 0.0, 0.053265045303684255, 0.0, -0.0];
         atol = 1e-8
     )
