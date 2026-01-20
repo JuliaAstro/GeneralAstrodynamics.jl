@@ -3,7 +3,20 @@ Tests for orbit types.
 """
 module OrbitTests
 
-using AstrodynamicalModels, ModelingToolkit, AstrodynamicalCalculations, Test
+using Test
+using AstrodynamicalModels:
+    AstrodynamicalModels,
+    CartesianState,
+    CR3BParameters,
+    KeplerianOrbit,
+    KeplerianParameters,
+    KeplerianState,
+    Orbit,
+    R2BOrbit,
+    R2BParameters,
+    dynamics,
+    system
+using ModelingToolkit: System, ODEFunction
 
 @testset "CartesianState Constructors" begin
     @test rand(CartesianState) isa CartesianState
@@ -41,12 +54,12 @@ end
     p = rand(CR3BParameters)
     orbit = Orbit(u, p)
 
-    @test system(AstrodynamicalModels.parameters(orbit)) isa ModelingToolkit.System
-    @test dynamics(AstrodynamicalModels.parameters(orbit)) isa ModelingToolkit.ODEFunction
-    @test system(orbit) isa ModelingToolkit.System
-    @test dynamics(orbit) isa ModelingToolkit.ODEFunction
-    @test ModelingToolkit.System(orbit) isa ModelingToolkit.System
-    @test ModelingToolkit.ODEFunction(orbit) isa ModelingToolkit.ODEFunction
+    @test system(AstrodynamicalModels.parameters(orbit)) isa System
+    @test dynamics(AstrodynamicalModels.parameters(orbit)) isa ODEFunction
+    @test system(orbit) isa System
+    @test dynamics(orbit) isa ODEFunction
+    @test System(orbit) isa System
+    @test ODEFunction(orbit) isa ODEFunction
 end
 
 end

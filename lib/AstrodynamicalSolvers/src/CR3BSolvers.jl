@@ -13,13 +13,11 @@ module CR3BSolvers
 
 export halo, lyapunov
 
-using LinearAlgebra
-using StaticArrays
-using ModelingToolkit
-using AstrodynamicalModels
-using AstrodynamicalCalculations
-using OrdinaryDiffEqVerner
-using DocStringExtensions
+using StaticArrays: @SMatrix, @SVector, SVector
+using AstrodynamicalModels: CR3BFunction
+using AstrodynamicalCalculations: richardson_ic
+using OrdinaryDiffEqVerner: ODEProblem, Vern9, remake, solve
+using DocStringExtensions: @template, DOCSTRING, EXPORTS, IMPORTS, LICENSE, SIGNATURES, TYPEDEF
 
 @template (
     FUNCTIONS,
@@ -158,11 +156,9 @@ function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
 
     for _ = 1:maxiters
 
-        solution = solve(
-            problem,
-            Vern9(),
-            reltol = reltol,
-            abstol = abstol,
+        solution = solve(problem, Vern9();
+            reltol,
+            abstol,
             save_everystep = false,
         )
         global fc = solution.u[end]
@@ -312,11 +308,9 @@ function halo(x, z, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
 
     for _ = 1:maxiters
 
-        solution = solve(
-            problem,
-            Vern9(),
-            reltol = reltol,
-            abstol = abstol,
+        solution = solve(problem, Vern9();
+            reltol,
+            abstol,
             save_everystep = false,
         )
         global fc = solution.u[end]
@@ -416,16 +410,14 @@ Given a nondimensional mass parameter `μ`, and orbit characteristics, construct
 an initial guess using Richardson's analytical solution, and iterate on that
 guess using a differential corrector.
 """
-function halo(
-    μ,
-    lagrange::Int;
+function halo(μ, lagrange::Int;
     amplitude = 0.0,
     phase = 0.0,
     hemisphere = :northern,
     kwargs...,
 )
 
-    u = richardson_ic(μ, lagrange; Z = amplitude, hemisphere = hemisphere, ϕ = phase)
+    u = richardson_ic(μ, lagrange; Z = amplitude, hemisphere, ϕ = phase)
 
     if u.z == 0
         return lyapunov(u.x, u.ẏ, μ, u.Δt; kwargs...)

@@ -3,12 +3,23 @@ Unit tests for various solvers.
 """
 module AstrodynamicalSolversTests
 
-using Test, AstrodynamicalSolvers
-using AstrodynamicalCalculations
-using StaticArrays
-using OrdinaryDiffEqVerner
-using AstrodynamicalModels
-using LinearAlgebra
+using Test
+using AstrodynamicalSolvers:
+    AstrodynamicalSolvers,
+    halo,
+    monodromy,
+    propagate,
+    propagate!
+using AstrodynamicalCalculations: converge, diverge, richardson_ic
+using OrdinaryDiffEqVerner: ODEProblem, ODESolution, Vern9, solve
+using AstrodynamicalModels: CR3BFunction, CartesianState, Orbit, R2BParameters
+using LinearAlgebra: I
+
+@testset "Aqua tests" begin
+    using Aqua: test_all
+    using AstrodynamicalSolvers
+    test_all(AstrodynamicalSolvers)
+end
 
 @testset "Orbit Propagation" begin
 
