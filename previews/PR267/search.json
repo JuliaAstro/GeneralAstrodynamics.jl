@@ -1,0 +1,240 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "AstrodynamicalSolvers",
+    "section": "",
+    "text": "AstrodynamicalSolvers.jl\nCommon solvers relating to orbital mechanics and astrodynamics.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#installation",
+    "href": "index.html#installation",
+    "title": "AstrodynamicalSolvers",
+    "section": "Installation",
+    "text": "Installation\npkg&gt; add AstrodynamicalSolvers",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#overview",
+    "href": "index.html#overview",
+    "title": "AstrodynamicalSolvers",
+    "section": "Overview",
+    "text": "Overview\nThis package contains most of the solvers you (I) encountered in your (my) first year of graduate astrodynamics coursework. Right now, the primary functionality is iterative solvers for periodic orbits within CR3BP dynamics. ## Getting Stated\nPlease refer to the documentation for more detailed instructions, and usage examples.\njulia&gt; μ = 0.012150584395829193\n0.012150584395829193\n\njulia&gt; u, T = halo(μ, 1) # lyapunov (planar) orbit\n\n([0.8567678285004178, 0.0, 0.0, 0.0, -0.14693135696819282, 0.0], 2.7536820160579087)\n\njulia&gt; u, T = halo(μ, 2; amplitude=0.005) # halo (non-planar) orbit\n([1.180859455641048, 0.0, -0.006335144846688764, 0.0, -0.15608881601817765, 0.0], 3.415202902714686)",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "examples/index.html",
+    "href": "examples/index.html",
+    "title": "Examples",
+    "section": "",
+    "text": "Usage examples.",
+    "crumbs": [
+      "Examples"
+    ]
+  },
+  {
+    "objectID": "examples/propagation/index.html",
+    "href": "examples/propagation/index.html",
+    "title": "Orbit Propagation",
+    "section": "",
+    "text": "R2B Propagation\nNumerical integration via SciML.\nGiven initial conditions at some time \\(t_0\\), where will an object in orbit be at time \\(t_1\\)? In general, there is no analytical answer to this question. We can instead find the answer numerically with tools such as DifferentialEquations.jl, and other simulation codes in the SciML ecosystem. These numerical integration problems are abstracted by the AstrodynamicalSolvers.propagate function. Read on for more information about orbit propagation within AstrodynamicalSolvers.jl.\nThe restricted two-body problem describes a massless spacecraft in orbit about a single point mass. For example: an elliptical orbit about Earth.\norbit = let\n    u = CartesianState(; x = 11e5, y = 5e5, ẋ = 1e3, ẏ = 1e3)\n    p = R2BParameters(4.00458e12)\n\n    Orbit(u, p)\nend\n\nElliptical Orbit in Restricted Two Body Dynamics\n\n  CartesianState with eltype Float64\n  \n    x: 1.1e6\n    y: 500000.0\n    z: 0.0\n    ẋ: 1000.0\n    ẏ: 1000.0\n    ż: 0.0\n\n  R2BParameters with eltype Float64\n  \n    μ: 4.00458e12\nWhere will a spacecraft at this orbit be in one minute? To answer this question, we can use propagate! to numerically integrate for a set duration while mutating object in-place.\npropagate!(orbit, 60.0)\nLet’s look at the orbit one minute later. It’s position (and velocity) have changed!\norbit\n\nElliptical Orbit in Restricted Two Body Dynamics\n\n  CartesianState with eltype Float64\n  \n    x: 1.1557037284624088e6\n    y: 558006.5378867177\n    z: 0.0\n    ẋ: 859.85936099633\n    ẏ: 934.328685203485\n    ż: 0.0\n\n  R2BParameters with eltype Float64\n  \n    μ: 4.00458e12\nWe can also return orbit instances at many times along the path using propagate, which returns a SciMLBase.ODESolution instance. Let’s propagate the orbit for one hour, and see what we can do with the resulting trajectory.\ntrajectory = propagate(orbit, 60.0^2)\n\nretcode: Success\nInterpolation: specialized 7th order lazy interpolation\nt: 377-element Vector{Float64}:\n    0.0\n    0.025673030564730494\n    0.14307030275804666\n    0.5293794293974958\n    1.6738429566587905\n    4.709981049960474\n   11.552648236455603\n   21.64699914078421\n   33.121498644506936\n   46.35455291715124\n   60.99008541314207\n   77.07415966663874\n   94.42717147382518\n    ⋮\n 3183.255287964211\n 3218.252079786347\n 3255.3687446619156\n 3294.347519534046\n 3334.8565174755618\n 3376.0691841818298\n 3417.1358123432387\n 3457.3760838581325\n 3496.2774302115004\n 3533.415694310821\n 3568.3855101875224\n 3600.0\nu: 377-element Vector{CartesianState{Float64}}:\n CartesianState with eltype Float64\n\n  x: 1.1557037284624088e6\n  y: 558006.5378867177\n  z: 0.0\n  ẋ: 859.85936099633\n  ẏ: 934.328685203485\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.1557258029365074e6\n  y: 558030.5245872192\n  z: 0.0\n  ẋ: 859.8031501493746\n  ẏ: 934.3015446882089\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.155826726394631e6\n  y: 558140.2017554259\n  z: 0.0\n  ẋ: 859.546147035675\n  ẏ: 934.177446556064\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.1561586136272345e6\n  y: 558501.0041685504\n  z: 0.0\n  ẋ: 858.7008778829758\n  ẏ: 933.769199012459\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.1571399341588104e6\n  y: 559568.9773004056\n  z: 0.0\n  ẋ: 856.2005701559191\n  ẏ: 932.5607435635106\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.159729439827734e6\n  y: 562395.5020293393\n  z: 0.0\n  ẋ: 849.5952340083315\n  ẏ: 929.3620573363623\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.1654923877489627e6\n  y: 568730.2527742444\n  z: 0.0\n  ẋ: 834.8536017028694\n  ẏ: 922.1909222434713\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.1738113780647332e6\n  y: 577986.1567817484\n  z: 0.0\n  ẋ: 813.4625316183946\n  ẏ: 911.7053236444689\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.183008289032334e6\n  y: 588379.75237889\n  z: 0.0\n  ẋ: 789.6402792773547\n  ẏ: 899.916223630543\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.193279248613221e6\n  y: 600199.3326654691\n  z: 0.0\n  ẋ: 762.7861312124904\n  ẏ: 886.4846415032946\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.2042301195340913e6\n  y: 613065.9833667568\n  z: 0.0\n  ẋ: 733.8150261678811\n  ẏ: 871.8242581684513\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.2157823516135125e6\n  y: 626960.389328674\n  z: 0.0\n  ẋ: 702.8059488350477\n  ẏ: 855.935677897501\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.2276944551105013e6\n  y: 641666.4936133759\n  z: 0.0\n  ẋ: 670.2610529349756\n  ẏ: 839.0394331052676\n  ż: 0.0\n\n ⋮\n CartesianState with eltype Float64\n\n  x: 1.3673210770708474e6\n  y: 974683.0431347428\n  z: 0.0\n  ẋ: -112.31354355797241\n  ẏ: 358.7525284335678\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.3626845106365762e6\n  y: 986732.3554698828\n  z: 0.0\n  ẋ: -152.59546689501286\n  ẏ: 329.81156827468016\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.356233520412903e6\n  y: 998400.7249158546\n  z: 0.0\n  ẋ: -194.95614668810396\n  ẏ: 298.88336759026004\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.3477724056886847e6\n  y: 1.009412632129588e6\n  z: 0.0\n  ẋ: -239.14035437018518\n  ẏ: 266.07512064587337\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.3371588651132502e6\n  y: 1.0194932450678061e6\n  z: 0.0\n  ẋ: -284.8409247836336\n  ẏ: 231.54062642960767\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.3244638534418591e6\n  y: 1.0283023727662738e6\n  z: 0.0\n  ẋ: -331.22339834962327\n  ẏ: 195.8544907717012\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.309912717407725e6\n  y: 1.0356042650338674e6\n  z: 0.0\n  ẋ: -377.44738747272885\n  ẏ: 159.6395492069025\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.2938109747716514e6\n  y: 1.0413019592806736e6\n  z: 0.0\n  ẋ: -422.86220181901194\n  ẏ: 123.41274255175566\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.2765036625106488e6\n  y: 1.0454087993821087e6\n  z: 0.0\n  ẋ: -466.988646919647\n  ẏ: 87.58765257183912\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.258373682396986e6\n  y: 1.0480136499268843e6\n  z: 0.0\n  ẋ: -509.41963519560727\n  ẏ: 52.54501878034081\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.2398556215327065e6\n  y: 1.0492618982808415e6\n  z: 0.0\n  ẋ: -549.7343880936046\n  ẏ: 18.699477581101885\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.2218950307148262e6\n  y: 1.049358958604758e6\n  z: 0.0\n  ẋ: -586.5561729139935\n  ẏ: -12.691740601597912\n  ż: 0.0\nThe trajectory can be indexed for the precise state at an algorithmically chosen instance in time. Let’s inspect next-to-last state in the trajectory.\ntrajectory.t[end-1] =&gt; trajectory.u[end-1]\n\n3568.3855101875224 =&gt; CartesianState with eltype Float64\n\n  x: 1.2398556215327065e6\n  y: 1.0492618982808415e6\n  z: 0.0\n  ẋ: -549.7343880936046\n  ẏ: 18.699477581101885\n  ż: 0.0\nTo find the orbital state at an arbitrary point in time, you can use the built-in interpolation feature in ODESolution.\ntrajectory(2000)\n\nCartesianState with eltype Float64\n\n  x: -56218.67474197927\n  y: 50823.681789725\n  z: 0.0\n  ẋ: -714.0540498124235\n  ẏ: -10027.07991212651\n  ż: 0.0\nTo retrieve more Orbit instances, you can use Julia’s list comprehension syntax.\norbits = [\n    Orbit(state, parameters(orbit))\n    for state in trajectory.u\n]\n\neccentricities = eccentricity.(orbits)\n\nlet\n    avg = mean(eccentricities)\n    dev = std(eccentricities)\n\n    println(avg, \" ± \", dev)\nend\n\n0.9466247626515262 ± 2.7084753950949553e-14",
+    "crumbs": [
+      "Examples",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Orbit Propagation</span>"
+    ]
+  },
+  {
+    "objectID": "examples/propagation/index.html#cr3b-propagation",
+    "href": "examples/propagation/index.html#cr3b-propagation",
+    "title": "Orbit Propagation",
+    "section": "CR3B Propagation",
+    "text": "CR3B Propagation\nThe circular-restricted three-body problem denotes a massless spacecraft in orbit about a two point masses which orbit their common center of mass. For example: a spacecraft traveling between the Earth and the moon. States in this description are typically described in units scaled by the distance between the two massive bodies and the (circular) orbital period of the massive bodies. In addition, states are typically described in a special frame known as the Synodic frame: a rotating frame which places both massive bodies along its \\(x\\) axis. With these caveats out of the way, let’s construct a CR3BOrbit instance which roughly describes a spacecraft traveling due to the gravity of the Earth and the Sun.\n\norbit = Orbit(\n    rand(CartesianState),\n    CR3BParameters(0.012),\n)\n\nOrbit in Circular Restricted Three Body Dynamics\n\n  CartesianState with eltype Float64\n  \n    x: 0.8975646339554462\n    y: 0.6297600744937883\n    z: 0.22731199547152448\n    ẋ: 0.38489151490338114\n    ẏ: 0.8857095344278288\n    ż: 0.7383956691992642\n\n  CR3BParameters with eltype Float64\n  \n    μ: 0.012\n\n\nThree-body orbits are classic examples of chaotic systems. Let’s see the spacecraft’s state at every \\(0.01\\) units of (dimensionless) time (approximately \\(4\\) days). For clarity, let’s stack each state as a row in a tall matrix. Note how much the values change down a single column!\n\ntrajectory = propagate(orbit, 1.0; saveat=0.01)\n\nlet states = hcat(trajectory.u...)\n    Matrix(transpose(states))\nend\n\n101×6 Matrix{Float64}:\n 0.897565  0.62976   0.227312  0.384892   0.88571   0.738396\n 0.901516  0.638587  0.234688  0.405402   0.879613  0.736744\n 0.905673  0.647351  0.242047  0.425954   0.873251  0.735084\n 0.910035  0.656051  0.249389  0.446542   0.866624  0.733417\n 0.914604  0.664683  0.256715  0.467161   0.859732  0.731747\n 0.919379  0.673245  0.264024  0.487805   0.852573  0.730074\n 0.92436   0.681734  0.271317  0.508467   0.845149  0.7284\n 0.929548  0.690147  0.278592  0.529143   0.837457  0.726727\n 0.934943  0.698482  0.285851  0.549826   0.829499  0.725056\n 0.940544  0.706736  0.293093  0.570511   0.821273  0.723388\n 0.946353  0.714906  0.300319  0.591191   0.812779  0.721724\n 0.952368  0.722991  0.307528  0.611861   0.804017  0.720067\n 0.95859   0.730986  0.31472   0.632514   0.794985  0.718416\n ⋮                                                  ⋮\n 1.96299   0.869223  0.829239  1.76498   -0.675578  0.63099\n 1.98066   0.862331  0.835546  1.76931   -0.702978  0.630304\n 1.99837   0.855163  0.841845  1.77328   -0.730511  0.629626\n 2.01612   0.84772   0.848138  1.7769    -0.758174  0.628956\n 2.03391   0.839999  0.854424  1.78015   -0.785963  0.628293\n 2.05172   0.832     0.860704  1.78304   -0.813874  0.627638\n 2.06957   0.823722  0.866977  1.78556   -0.841902  0.62699\n 2.08743   0.815162  0.873244  1.78772   -0.870044  0.62635\n 2.10532   0.80632   0.879504  1.7895    -0.898295  0.625717\n 2.12322   0.797196  0.885758  1.79092   -0.926651  0.625091\n 2.14114   0.787787  0.892006  1.79195   -0.955107  0.624472\n 2.15906   0.778093  0.898248  1.79262   -0.983659  0.62386",
+    "crumbs": [
+      "Examples",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Orbit Propagation</span>"
+    ]
+  },
+  {
+    "objectID": "examples/periodic-orbits/index.html",
+    "href": "examples/periodic-orbits/index.html",
+    "title": "Periodic Orbits",
+    "section": "",
+    "text": "Periodic Orbits in R2B Dynamics\nFinding orbits where positions and velocities repeat.\nCan you find some duration \\(\\Delta t\\) such that a spacecraft in orbit at time \\(t\\) will return to its previous position (and velocity) at time \\(t + \\Delta t\\)? If so, your orbit is periodic. The name orbit probably puts the image of a periodic orbit in your head. Picture an orbit about Earth: you’re probably thinking of a circle, kind of like a halo or a sash, wrapping Earth. In reality, most orbits are not periodic. There are varying degrees of difficulty required for finding periodic orbits. Let’s explore this problem for two example systems: the restricted two-body system, and the circular-restricted three-body system.\nAn orbit in the restricted two-body problem is periodic if and only if its eccentricity is less than one. There are no negative eccentricities, so you may say the orbit is periodic when its eccentricity \\(e\\) satisfies the following inequality: \\(0 \\leq e &lt; 1\\). Let’s try this for an example orbit.\norbit = let\n    u = CartesianState(; x = 11e5, y = 5e5, ẋ = 1e3, ẏ = 1e3)\n    p = R2BParameters(4.00458e12)\n\n    Orbit(u, p)\nend\n\nElliptical Orbit in Restricted Two Body Dynamics\n\n  CartesianState with eltype Float64\n  \n    x: 1.1e6\n    y: 500000.0\n    z: 0.0\n    ẋ: 1000.0\n    ẏ: 1000.0\n    ż: 0.0\n\n  R2BParameters with eltype Float64\n  \n    μ: 4.00458e12\nThe print-out states that the orbit is elliptical, so we already know it’s periodic. Let’s make sure!\n0 ≤ eccentricity(orbit) &lt; 1\n\ntrue\nWe now know the orbit is periodic! Its period can be found with the orbital_period function: 0.02924642822220008 days.",
+    "crumbs": [
+      "Examples",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Periodic Orbits</span>"
+    ]
+  },
+  {
+    "objectID": "examples/periodic-orbits/index.html#periodic-orbits-in-cr3b-dynamics",
+    "href": "examples/periodic-orbits/index.html#periodic-orbits-in-cr3b-dynamics",
+    "title": "Periodic Orbits",
+    "section": "Periodic Orbits in CR3B Dynamics",
+    "text": "Periodic Orbits in CR3B Dynamics\nThree-body systems are a bit more complicated. There is no simple inequality to check for periodicity. Instead, you have to propagate the orbit and see if it’s periodic. Let’s pick an orbit at random and see if it ever repeats.\n\norbit = Orbit(\n    rand(CartesianState),\n    CR3BParameters(0.012),\n)\n\nperiodic = false\ninitial = copy(state(orbit))\n\nlet tries = 1000\n    while tries &gt; 0\n        propagate!(orbit, 1e-3)\n\n        periodic = state(orbit) ≈ initial\n        periodic && break\n\n        tries -= 1\n    end\n\n    if periodic\n        println(\"This orbit is periodic!\")\n    else\n        println(\"This orbit is not periodic.\")\n    end\nend\n\nThis orbit is not periodic.\n\n\nThat didn’t work. Now, we didn’t try that hard. You might wonder: what if we tried \\(2000\\) times? Or \\(10000\\)? Or one million?\nThe chances that this routine will work for a random orbit are vanishingly small. Three-body orbits are chaotic, and so they are not generally periodic at all. There are cases where periodic orbits can be found, however. One such case is an orbit about a Lagrange point.\nDifferential correction techniques can be used to find an orbit that is periodic nearby a Lagrange point. One such technique is implemented in AstrodynamicalSolvers via the halo function. The halo function can find two-dimensional (rigorously called Lyapunov) orbits, or three-dimensional (so-called Halo) orbits. Let’s try a couple of examples. First, a Lyapunov (planar) orbit. Then, a halo (extra-planar) orbit. In both cases, a named tuple is returned with Cartesian state values for an initial condition, and an orbital period.\n\nlet L = 2, μ = orbit.parameters.μ\n    (; x, ẏ, Δt) = halo(μ, L)\n\n    start = CartesianState(; x, ẏ)\n\n    orbit = Orbit(start, CR3BParameters(μ))\n    propagate!(orbit, Δt)\n\n    periodic = state(orbit) ≈ start\n\n    @assert periodic\n\n    orbit\nend\n\nOrbit in Circular Restricted Three Body Dynamics\n\n  CartesianState with eltype Float64\n  \n    x: 1.1239361086891364\n    y: 1.478683495869437e-12\n    z: 0.0\n    ẋ: -4.0891270579052325e-12\n    ẏ: 0.15644803336709448\n    ż: 0.0\n\n  CR3BParameters with eltype Float64\n  \n    μ: 0.012\n\n\nThe planar orbit is periodic! As shown below, the extra-planar orbit is periodic as well.\n\nlet L = 1, μ = orbit.parameters.μ\n    (; x, z, ẏ, Δt) = halo(μ, L; amplitude = 1e-6)\n\n    start = CartesianState(; x, ẏ)\n\n    orbit = Orbit(start, CR3BParameters(μ))\n    propagate!(orbit, Δt)\n\n    periodic = state(orbit) ≈ start\n\n    @assert periodic\n\n    orbit\nend\n\nOrbit in Circular Restricted Three Body Dynamics\n\n  CartesianState with eltype Float64\n  \n    x: 0.8241722626564122\n    y: -8.159292161370596e-10\n    z: 0.0\n    ẋ: 6.8400348250481885e-9\n    ẏ: 0.12586360332328464\n    ż: 0.0\n\n  CR3BParameters with eltype Float64\n  \n    μ: 0.012",
+    "crumbs": [
+      "Examples",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Periodic Orbits</span>"
+    ]
+  },
+  {
+    "objectID": "examples/plotting/index.html",
+    "href": "examples/plotting/index.html",
+    "title": "Plotting",
+    "section": "",
+    "text": "Periodic Orbits\nAll orbit propagation is provided by SciML ecosystem packages. Therefore, trajectories generated from orbit propagation can be very simply plotted with Julia’s most popular plotting front-end packages: Plots.jl and Makie.jl.\nThis package provides differential correction methods and helpful wrapper function for finding periodic orbits within Circular Restricted Three Body Problem dynamics. First, let’s find two periodic orbits: one planar orbit, and one extraplanar (three dimensioned in the rotating / Synodic frame) orbit.\nusing AstrodynamicalSolvers\nusing AstrodynamicalModels\nusing OrdinaryDiffEq\n\nμ = 0.012150584395829193\n\nplanar = let\n    ic = halo(μ, 1) # lyapunov (planar) orbit about L1\n\n    orbit = Orbit(\n        CartesianState(ic),\n        CR3BParameters(μ),\n    )\n\n    propagate(orbit, ic.Δt)\nend\n\nextraplanar = let\n    ic = halo(μ, 2; amplitude = 0.01) # halo (non-planar) orbit about L2\n\n    orbit = Orbit(\n        CartesianState(ic),\n        CR3BParameters(μ),\n    )\n\n    propagate(orbit, ic.Δt)\nend\n\nretcode: Success\nInterpolation: specialized 7th order lazy interpolation\nt: 95-element Vector{Float64}:\n 0.0\n 0.011805535898772656\n 0.02639597743522805\n 0.04265807781922619\n 0.060942183705151046\n 0.08071042933484185\n 0.10189349234752082\n 0.12416789791747425\n 0.14736670961011686\n 0.17128161970709652\n 0.19577701255612026\n 0.22073722674395668\n 0.24609077655632097\n ⋮\n 3.11148563310194\n 3.1409799277596746\n 3.1698929636870172\n 3.198324332074592\n 3.226370625409383\n 3.2541252971403076\n 3.2816765970216775\n 3.3091051434216334\n 3.336481532566986\n 3.363863090930685\n 3.3912911266388304\n 3.4142130698280604\nu: 95-element Vector{CartesianState{Float64}}:\n CartesianState with eltype Float64\n\n  x: 1.1197765361019225\n  y: 0.0\n  z: 0.00917691357383155\n  ẋ: 0.0\n  ẏ: 0.1778109829713651\n  ż: 0.0\n\n CartesianState with eltype Float64\n\n  x: 1.1197773317761732\n  y: 0.0020989071131927357\n  z: 0.00917311890468122\n  ẋ: 0.0001350847139428087\n  ẏ: 0.17774826430635474\n  ż: -0.0006427813056164259\n\n CartesianState with eltype Float64\n\n  x: 1.1197805478101581\n  y: 0.004690737046475916\n  z: 0.009157952702620846\n  ẋ: 0.00030717480888524634\n  ẏ: 0.1774976949755626\n  ż: -0.001435740429787664\n\n CartesianState with eltype Float64\n\n  x: 1.1197871915802762\n  y: 0.007573446925588793\n  z: 0.00912744341125001\n  ẋ: 0.0005130705672601291\n  ẏ: 0.1769941125311507\n  ż: -0.002315559186428338\n\n CartesianState with eltype Float64\n\n  x: 1.1197988926990743\n  y: 0.010802342272059466\n  z: 0.009076119933405399\n  ẋ: 0.0007727559862586083\n  ẏ: 0.17614840586739322\n  ż: -0.0032967572625457976\n\n CartesianState with eltype Float64\n\n  x: 1.1198173143629453\n  y: 0.014272768582957342\n  z: 0.009000569247571229\n  ẋ: 0.0011002305852811428\n  ẏ: 0.17490671348709996\n  ż: -0.004344235002428409\n\n CartesianState with eltype Float64\n\n  x: 1.1198449306301277\n  y: 0.01796049772600805\n  z: 0.008896827744476194\n  ẋ: 0.0015203781654615934\n  ẏ: 0.1732078559976407\n  ż: -0.0054466873686794155\n\n CartesianState with eltype Float64\n\n  x: 1.1198845671166007\n  y: 0.021795019770871126\n  z: 0.008762843607839082\n  ẋ: 0.0020558756430123673\n  ẏ: 0.17102404284137585\n  ż: -0.006578529725542778\n\n CartesianState with eltype Float64\n\n  x: 1.1199398552263276\n  y: 0.025732178596916414\n  z: 0.008596889972611358\n  ẋ: 0.002731954110286711\n  ẏ: 0.16833475121868255\n  ż: -0.007722132660158539\n\n CartesianState with eltype Float64\n\n  x: 1.1200149117081009\n  y: 0.029720540183869576\n  z: 0.008398540191278614\n  ẋ: 0.0035699194563563836\n  ẏ: 0.16514225553739567\n  ż: -0.00885815977611613\n\n CartesianState with eltype Float64\n\n  x: 1.1201144917715593\n  y: 0.03372145786986359\n  z: 0.008167809556219457\n  ẋ: 0.004588375605075722\n  ẏ: 0.1614570578199088\n  ż: -0.009971724286667386\n\n CartesianState with eltype Float64\n\n  x: 1.1202437775640643\n  y: 0.037700391950982653\n  z: 0.007905333675888835\n  ẋ: 0.005800771154369636\n  ẏ: 0.15730007498729476\n  ż: -0.011050009631953748\n\n CartesianState with eltype Float64\n\n  x: 1.1204083982753918\n  y: 0.04163091036581064\n  z: 0.007611941488779372\n  ẋ: 0.007216163337927114\n  ẏ: 0.1526951231645529\n  ż: -0.01208341981229221\n\n ⋮\n CartesianState with eltype Float64\n\n  x: 1.1209210395956768\n  y: -0.04996055239845833\n  z: 0.00686735107192285\n  ẋ: -0.011034146652506302\n  ẏ: 0.14118580438519188\n  ż: 0.014154522722518782\n\n CartesianState with eltype Float64\n\n  x: 1.1206271217030885\n  y: -0.04570409710254232\n  z: 0.007269762068552855\n  ẋ: -0.008935318559692552\n  ẏ: 0.14737603685052247\n  ż: 0.013117626827636175\n\n CartesianState with eltype Float64\n\n  x: 1.1203957138051484\n  y: -0.041360242180332144\n  z: 0.007633275239643772\n  ẋ: -0.0071112942758401404\n  ẏ: 0.15302854902864457\n  ż: 0.01201333346399952\n\n CartesianState with eltype Float64\n\n  x: 1.1202162602358339\n  y: -0.03693568763135919\n  z: 0.007958413902308153\n  ẋ: -0.005551248059483734\n  ẏ: 0.1581378169663947\n  ż: 0.010845186504448188\n\n CartesianState with eltype Float64\n\n  x: 1.1200794781418995\n  y: -0.032435427040335314\n  z: 0.008245526698173432\n  ẋ: -0.004240173929465897\n  ẏ: 0.16269501900470143\n  ż: 0.009616834433797154\n\n CartesianState with eltype Float64\n\n  x: 1.1199772812346673\n  y: -0.02786322795084625\n  z: 0.00849476271728\n  ẋ: -0.003159067915894293\n  ẏ: 0.16668808428195128\n  ż: 0.00833215344842632\n\n CartesianState with eltype Float64\n\n  x: 1.1199027195797926\n  y: -0.023222425902709405\n  z: 0.008706042710539276\n  ẋ: -0.00228505017906846\n  ẏ: 0.17010166616375913\n  ż: 0.0069954782939480355\n\n CartesianState with eltype Float64\n\n  x: 1.1198499313115007\n  y: -0.01851679856201726\n  z: 0.008879054070915224\n  ẋ: -0.0015913510383507527\n  ẏ: 0.17291750084435029\n  ż: 0.005611878226507261\n\n CartesianState with eltype Float64\n\n  x: 1.1198141161678452\n  y: -0.013751427807088533\n  z: 0.009013276812835194\n  ẋ: -0.0010472384829265384\n  ẏ: 0.175115298442699\n  ż: 0.0041874375413829285\n\n CartesianState with eltype Float64\n\n  x: 1.1197915381406824\n  y: -0.008933671096179607\n  z: 0.009108039113512514\n  ẋ: -0.0006180382874048558\n  ẏ: 0.17667415873440817\n  ż: 0.002729556570969992\n\n CartesianState with eltype Float64\n\n  x: 1.1197795534577428\n  y: -0.004073967132953179\n  z: 0.009162613009671534\n  ẋ: -0.0002653765849570933\n  ẏ: 0.1775746736615172\n  ż: 0.0012471669948929992\n\n CartesianState with eltype Float64\n\n  x: 1.1197765361010839\n  y: 9.183228895186397e-13\n  z: 0.009176913573801756\n  ẋ: -2.4983166392051334e-12\n  ẏ: 0.17781098297297154\n  ż: -2.2190819888638784e-13",
+    "crumbs": [
+      "Examples",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Plotting</span>"
+    ]
+  },
+  {
+    "objectID": "examples/plotting/index.html#periodic-orbits",
+    "href": "examples/plotting/index.html#periodic-orbits",
+    "title": "Plotting",
+    "section": "",
+    "text": "Plots.jl\nBoth the planar orbit and the extraplanar orbit can be plotted with Plots.jl.\n\n\n\n\n\n\nUsing Plots.jl and Makie.jl simultaneously is uncommon! For this to work, you need to qualify their plot functions, e.g. Plots.plot.\n\n\n\n\nusing Plots\n\nlet\n    planar_plot = Plots.plot(\n        planar,\n        idxs = (:x, :y, :z),\n        title = \"Lyapunov Orbit\",\n        label = :none,\n        size = (1600, 900),\n        dpi = 400,\n        aspect_ratio = 1,\n    )\n\n    extraplanar_plot = Plots.plot(\n        extraplanar,\n        idxs = (:x, :y, :z),\n        title = \"Halo Orbit\",\n        label = :none,\n        size = (1600, 900),\n        dpi = 400,\n        aspect_ratio = 1,\n    )\n\n    Plots.plot(planar_plot, extraplanar_plot, layout = (1, 2))\nend\n\n\n\n\n  \n    \n  \n\n\n\n  \n    \n  \n\n\n  \n    \n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMakie.jl\n\nusing CairoMakie\n\nlet\n    fig = CairoMakie.Figure(size = (800, 400); fontsize = 11)\n\n    ax_kwargs_common = (; aspect = :equal, azimuth = -π / 3)\n\n    ax_left = CairoMakie.Axis3(\n        fig[1, 1];\n        title = \"Lyapunov Orbit\",\n        limits = (0.78, 0.90, -0.09, 0.09, -0.02, 1.04),\n        ax_kwargs_common...,\n    )\n    ax_right = CairoMakie.Axis3(\n        fig[1, 2];\n        title = \"Halo Orbit\",\n        limits = (1.05, 1.26, -0.1, 0.1, -0.02, 0.01),\n        protrusions = (30, 100, 0, 0),\n        ax_kwargs_common...,\n    )\n\n    CairoMakie.plot!(ax_left, planar; idxs = (:x, :y, :z))\n    CairoMakie.plot!(ax_right, extraplanar; idxs = (:x, :y, :z))\n\n    fig\nend\n\n\n┌ Warning: Found `resolution` in the theme when creating a `Scene`. The `resolution` keyword for `Scene`s and `Figure`s has been deprecated. Use `Figure(; size = ...` or `Scene(; size = ...)` instead, which better reflects that this is a unitless size and not a pixel resolution. The key could also come from `set_theme!` calls or related theming functions.\n\n└ @ Makie ~/.julia/packages/Makie/Vn16E/src/scenes.jl:264",
+    "crumbs": [
+      "Examples",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Plotting</span>"
+    ]
+  },
+  {
+    "objectID": "examples/plotting/index.html#manifold-computations",
+    "href": "examples/plotting/index.html#manifold-computations",
+    "title": "Plotting",
+    "section": "Manifold Computations",
+    "text": "Manifold Computations\nManifold computations, provided by AstrodynamicalCalculations.jl, can perturb halo orbits onto their unstable or stable manifolds.\n\nPlots.jl\n\nusing AstrodynamicalSolvers\nusing AstrodynamicalCalculations\nusing AstrodynamicalModels\nusing OrdinaryDiffEq\nusing LinearAlgebra\nusing StaticArrays\nusing Plots\n\nμ = 0.012150584395829193\n\nunstable = let\n    ic = halo(μ, 1; amplitude = 0.005)\n\n    u = CartesianState(ic)\n    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))\n\n    ics = let\n        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), SVector(μ))\n        solution = solve(\n            problem,\n            Vern9(),\n            reltol = 1e-12,\n            abstol = 1e-12,\n            saveat = (ic.Δt / 10),\n        )\n\n        solution.u\n    end\n\n    perturbations =\n        [diverge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps = -1e-7) for ic in ics]\n\n    problem = EnsembleProblem(\n        ODEProblem(CR3BFunction(), u, (0.0, 2 * ic.Δt), SVector(μ)),\n        prob_func = (prob, i, repeat) -&gt; remake(prob; u0 = perturbations[i]),\n    )\n\n    solution = solve(\n        problem,\n        Vern9(),\n        trajectories = length(perturbations),\n        reltol = 1e-14,\n        abstol = 1e-14,\n    )\nend\n\nstable = let\n    ic = halo(μ, 2; amplitude = 0.005)\n\n    u = CartesianState(ic)\n    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))\n\n    ics = let\n        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), SVector(μ))\n        solution = solve(\n            problem,\n            Vern9(),\n            reltol = 1e-12,\n            abstol = 1e-12,\n            saveat = (ic.Δt / 10),\n        )\n\n        solution.u\n    end\n\n    perturbations =\n        [converge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps = 1e-7) for ic in ics]\n\n    problem = EnsembleProblem(\n        ODEProblem(CR3BFunction(), u, (0.0, -2.1 * ic.Δt), SVector(μ)),\n        prob_func = (prob, i, repeat) -&gt; remake(prob; u0 = perturbations[i]),\n    )\n\n    solution = solve(\n        problem,\n        Vern9(),\n        trajectories = length(perturbations),\n        reltol = 1e-14,\n        abstol = 1e-14,\n    )\nend\n\nfigure = Plots.plot(;\n    aspect_ratio = 1.0,\n    background = :transparent,\n    grid = true,\n    title = \"Unstable and Stable Invariant Manifolds\",\n)\n\nPlots.plot!(\n    figure,\n    unstable,\n    idxs = (:x, :y),\n    aspect_ratio = 1,\n    label = :none,\n    palette = :blues,\n)\nPlots.plot!(\n    figure,\n    stable,\n    idxs = (:x, :y),\n    aspect_ratio = 1,\n    label = :none,\n    palette = :blues,\n)\nPlots.scatter!(\n    figure,\n    [1 - μ],\n    [0],\n    label = \"Moon\",\n    xlabel = \"X (Earth-Moon Distance)\",\n    ylabel = \"Y (Earth-Moon Distance)\",\n    marker = :x,\n    color = :black,\n    markersize = 10,\n)\n\nfigure # hide",
+    "crumbs": [
+      "Examples",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Plotting</span>"
+    ]
+  },
+  {
+    "objectID": "examples/plotting/index.html#makie.jl-1",
+    "href": "examples/plotting/index.html#makie.jl-1",
+    "title": "Plotting",
+    "section": "Makie.jl",
+    "text": "Makie.jl\n\nusing AstrodynamicalSolvers\nusing AstrodynamicalCalculations\nusing AstrodynamicalModels\nusing OrdinaryDiffEq\nusing LinearAlgebra\nusing CairoMakie\nusing StaticArrays\n\nμ = 0.012150584395829193\n\nunstable = let\n    ic = halo(μ, 1; amplitude = 0.005)\n\n    u = CartesianState(ic)\n    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))\n\n    ics = let\n        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), SVector(μ))\n        solution = solve(\n            problem,\n            Vern9(),\n            reltol = 1e-12,\n            abstol = 1e-12,\n            saveat = (ic.Δt / 10),\n        )\n\n        solution.u\n    end\n\n    perturbations =\n        [diverge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps = -1e-7) for ic in ics]\n\n    problem = EnsembleProblem(\n        ODEProblem(CR3BFunction(), u, (0.0, 2 * ic.Δt), SVector(μ)),\n        prob_func = (prob, i, repeat) -&gt; remake(prob; u0 = perturbations[i]),\n    )\n\n    solution = solve(\n        problem,\n        Vern9(),\n        trajectories = length(perturbations),\n        reltol = 1e-14,\n        abstol = 1e-14,\n    )\nend\n\nstable = let\n    ic = halo(μ, 2; amplitude = 0.005)\n\n    u = CartesianState(ic)\n    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))\n\n    ics = let\n        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), SVector(μ))\n        solution = solve(\n            problem,\n            Vern9(),\n            reltol = 1e-12,\n            abstol = 1e-12,\n            saveat = (ic.Δt / 10),\n        )\n\n        solution.u\n    end\n\n    perturbations =\n        [converge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps = 1e-7) for ic in ics]\n\n    problem = EnsembleProblem(\n        ODEProblem(CR3BFunction(), u, (0.0, -2.1 * ic.Δt), SVector(μ)),\n        prob_func = (prob, i, repeat) -&gt; remake(prob; u0 = perturbations[i]),\n    )\n\n    solution = solve(\n        problem,\n        Vern9(),\n        trajectories = length(perturbations),\n        reltol = 1e-14,\n        abstol = 1e-14,\n    )\nend\n\nfig = CairoMakie.Figure(size = (800, 400), fontsize = 20)\n\nax = CairoMakie.Axis(\n    fig[1, 1];\n    xreversed = true,\n    xticks = LinearTicks(5),\n    yticks = LinearTicks(5),\n    aspect = DataAspect(),\n    xlabel = \"X (Earth-Moon Distance)\",\n    ylabel = \"Y (Earth-Moon Distance)\",\n    title = \"Unstable and Stable Invariant Manifolds\",\n    titlesize = 24,\n)\n\nidxs = (:x, :y)\n\n# TODO: replace this manual workaround when\n# https://github.com/SciML/SciMLBase.jl/issues/697#issuecomment-2135801331\n# is addressed\nfor (traj, color) in zip(unstable, resample_cmap(:blues, length(unstable)))\n    CairoMakie.plot!(ax, traj; idxs, color)\nend\n\nfor (traj, color) in zip(stable, resample_cmap(:blues, length(stable)))\n    CairoMakie.plot!(ax, traj; idxs, color)\nend\n\nCairoMakie.scatter!(\n    ax,\n    [1 - μ],\n    [0];\n    marker = '⨯',\n    color = :black,\n    markersize = 50,\n    label = \"Moon\",\n)\n\nfig\n\n\n┌ Warning: Found `resolution` in the theme when creating a `Scene`. The `resolution` keyword for `Scene`s and `Figure`s has been deprecated. Use `Figure(; size = ...` or `Scene(; size = ...)` instead, which better reflects that this is a unitless size and not a pixel resolution. The key could also come from `set_theme!` calls or related theming functions.\n\n└ @ Makie ~/.julia/packages/Makie/Vn16E/src/scenes.jl:264",
+    "crumbs": [
+      "Examples",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Plotting</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html",
+    "href": "api/index.html",
+    "title": "Reference",
+    "section": "",
+    "text": "AstrodynamicalSolvers\nDocstrings for AstrodynamicalSolvers.",
+    "crumbs": [
+      "Reference"
+    ]
+  },
+  {
+    "objectID": "api/index.html#astrodynamicalsolvers",
+    "href": "api/index.html#astrodynamicalsolvers",
+    "title": "Reference",
+    "section": "",
+    "text": "Provides astrodynamical solvers, including Lyapunov and halo orbit correctors.\n\nExtended help\n\nLicense\n\n\nExports\n\nCR3BSolvers\nPropagation\nconvergent_manifold\ndivergent_manifold\nhalo\nlyapunov\nmonodromy\npropagate\npropagate!\n\n\n\nImports\n\nAstrodynamicalSolvers.CR3BSolvers\nAstrodynamicalSolvers.Propagation\nBase",
+    "crumbs": [
+      "Reference"
+    ]
+  },
+  {
+    "objectID": "api/index.html#cr3bsolvers",
+    "href": "api/index.html#cr3bsolvers",
+    "title": "Reference",
+    "section": "CR3BSolvers",
+    "text": "CR3BSolvers\n\n\n\n\n\n\nSolvers specific to the Circular Restricted Three Body Problem.\n\nExtended Help\n\nExports\n\nhalo\nlyapunov\n\n\n\nImports\n\nBase",
+    "crumbs": [
+      "Reference"
+    ]
+  },
+  {
+    "objectID": "api/index.html#propagation",
+    "href": "api/index.html#propagation",
+    "title": "Reference",
+    "section": "Propagation",
+    "text": "Propagation\n\n\n\n\n\n\nWrappers around SciML differential equation solvers for fast and convenient orbit propagation.\n\nExtended Help\n\nExports\n\nconvergent_manifold\ndivergent_manifold\nmonodromy\npropagate\npropagate!\n\n\n\nImports\n\nBase",
+    "crumbs": [
+      "Reference"
+    ]
+  },
+  {
+    "objectID": "api/index.html#convergent_manifold",
+    "href": "api/index.html#convergent_manifold",
+    "title": "Reference",
+    "section": "convergent_manifold",
+    "text": "convergent_manifold\n\n\n\n\n\n\nconvergent_manifold(u, μ, Δt; eps, trajectories, kwargs...)\nReturn a vector of orbits along the manifold which converges to the provided halo orbit.",
+    "crumbs": [
+      "Reference"
+    ]
+  },
+  {
+    "objectID": "api/index.html#divergent_manifold",
+    "href": "api/index.html#divergent_manifold",
+    "title": "Reference",
+    "section": "divergent_manifold",
+    "text": "divergent_manifold\n\n\n\n\n\n\ndivergent_manifold(u, μ, Δt; eps, trajectories, kwargs...)\nReturn a vector of orbits along the manifold which diverges from the provided halo orbit.",
+    "crumbs": [
+      "Reference"
+    ]
+  },
+  {
+    "objectID": "api/index.html#halo",
+    "href": "api/index.html#halo",
+    "title": "Reference",
+    "section": "halo",
+    "text": "halo\n\n\n\n\n\n\nhalo(x, z, ẏ, μ, T; reltol, abstol, maxiters)\n\n\n\n\n\n\nWarningCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nIterate on an initial guess for halo orbit conditions.\nhalo(μ, lagrange; amplitude, phase, hemisphere, kwargs...)\n\n\n\n\n\n\nWarningCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nGiven a nondimensional mass parameter μ, and orbit characteristics, construct an initial guess using Richardson’s analytical solution, and iterate on that guess using a differential corrector.",
+    "crumbs": [
+      "Reference"
+    ]
+  },
+  {
+    "objectID": "api/index.html#lyapunov",
+    "href": "api/index.html#lyapunov",
+    "title": "Reference",
+    "section": "lyapunov",
+    "text": "lyapunov\n\n\n\n\n\n\nlyapunov(x, ẏ, μ, T; reltol, abstol, maxiters)\n\n\n\n\n\n\nWarningCR3BP Dynamics\n\n\n\nThis computation is valid for Circular Restricted Three Body Problem dynamics.\n\n\nIterate on an initial guess for Lyapunov orbit conditions.",
+    "crumbs": [
+      "Reference"
+    ]
+  },
+  {
+    "objectID": "api/index.html#monodromy",
+    "href": "api/index.html#monodromy",
+    "title": "Reference",
+    "section": "monodromy",
+    "text": "monodromy\n\n\n\n\n\n\nmonodromy(orbit, Δt; algorithm, reltol, abstol, kwargs...)\nCompute the monodromy matrix for any periodic orbit.\nmonodromy(\n    u,\n    μ,\n    T,\n    f;\n    algorithm,\n    reltol,\n    abstol,\n    save_everystep,\n    kwargs...\n)\nSolve for the monodromy matrix of the periodic orbit.",
+    "crumbs": [
+      "Reference"
+    ]
+  },
+  {
+    "objectID": "api/index.html#propagate",
+    "href": "api/index.html#propagate",
+    "title": "Reference",
+    "section": "propagate",
+    "text": "propagate\n\n\n\n\n\n\npropagate(\n    orbit,\n    Δt;\n    stm,\n    algorithm,\n    reltol,\n    abstol,\n    kwargs...\n)\nNumerically integrate the orbit forward (or backward) in time, and return a new AstrodynamicalOrbit instance with identical parameters to the provided orbit.",
+    "crumbs": [
+      "Reference"
+    ]
+  },
+  {
+    "objectID": "api/index.html#propagate-1",
+    "href": "api/index.html#propagate-1",
+    "title": "Reference",
+    "section": "propagate!",
+    "text": "propagate!\n\n\n\n\n\n\npropagate!(\n    orbit,\n    Δt;\n    stm,\n    algorithm,\n    reltol,\n    abstol,\n    kwargs...\n)\nNumerically integrate the orbit forward (or backward) in time, modifying the state vector in-place within the AstrodynamicalOrbit instance.",
+    "crumbs": [
+      "Reference"
+    ]
+  }
+]
