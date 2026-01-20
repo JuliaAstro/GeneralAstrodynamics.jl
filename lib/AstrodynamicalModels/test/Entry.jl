@@ -3,7 +3,15 @@ Tests for R2BP dynamics.
 """
 module EntryTests
 
-using AstrodynamicalModels, ModelingToolkit, Test
+using Test
+using AstrodynamicalModels:
+    PlanarEntryFunction,
+    PlanarEntryParameters,
+    PlanarEntryState,
+    PlanarEntrySystem,
+    system,
+    dynamics
+using ModelingToolkit: System, ODEFunction
 
 @testset "Entry Model Constructors" begin
     model = PlanarEntrySystem()

@@ -25,10 +25,10 @@
       "resolved": "ghcr.io/devcontainers/features/github-cli@sha256:1ad1ec1a806cc9926c84ca5b147427bba03b97e14e91f9df89af83726039ecaf",
       "integrity": "sha256:1ad1ec1a806cc9926c84ca5b147427bba03b97e14e91f9df89af83726039ecaf"
     },
-    "ghcr.io/devcontainers/features/python:1": {
-      "version": "1.7.1",
-      "resolved": "ghcr.io/devcontainers/features/python@sha256:cf9b6d879790a594b459845b207c5e1762a0c8f954bb8033ff396e497f9c301b",
-      "integrity": "sha256:cf9b6d879790a594b459845b207c5e1762a0c8f954bb8033ff396e497f9c301b"
+    "ghcr.io/devcontainers/features/python:": {
+      "version": "1.8.0",
+      "resolved": "ghcr.io/devcontainers/features/python@sha256:fbcad6955caeecc5ad3f7886baf652e25cba5225a6c4c2287c536de2e5607511",
+      "integrity": "sha256:fbcad6955caeecc5ad3f7886baf652e25cba5225a6c4c2287c536de2e5607511"
     },
     "ghcr.io/julialang/devcontainer-features/julia:1": {
       "version": "1.2.0",
