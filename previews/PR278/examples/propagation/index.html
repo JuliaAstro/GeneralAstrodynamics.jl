@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Orbit Propagation – AstrodynamicalSolvers</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../examples/periodic-orbits/index.html" rel="next">
+<link href="../../examples/index.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-4d9afe2b8d18ee9fa5d0d57b5ed4214d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-7e47bf2f65756fe4f7936dc976dd9ae3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-baf3416d49bb030b557b486a9505ce7b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-7e47bf2f65756fe4f7936dc976dd9ae3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+//
+// The code below was originally written by the authors of Wflow.jl. Their
+// license is provided below. ChatGPT was used to iterately modify the code.
+//
+
+// MIT License for Wflow.jl
+//
+// Copyright (c) 2020 Deltares and contributors
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+window.onload = function () {
+    const versionsUrl = 'https://raw.githubusercontent.com/JuliaAstro/GeneralAstrodynamics.jl/gh-pages/lib/AstrodynamicalSolvers/versions.js';
+
+    // Fetch the versions.js file
+    fetch(versionsUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to fetch ${versionsUrl}: ${response.statusText}`);
+            }
+            return response.text();
+        })
+        .then(scriptContent => {
+            // Use a regular expression to find the DOC_VERSIONS array
+            const regex = /var DOC_VERSIONS = (\[.*?\]);/s;
+            const match = scriptContent.match(regex);
+
+            if (match && match[1]) {
+                // Remove trailing commas if they exist and fix the array syntax for JSON
+                let arrayString = match[1].trim();
+
+                // Remove any trailing comma before closing bracket
+                arrayString = arrayString.replace(/,\s*([\]}])/g, '$1');
+
+                // Parse the cleaned array string
+                try {
+                    const DOC_VERSIONS = JSON.parse(arrayString);
+
+                    console.log('DOC_VERSIONS loaded:', DOC_VERSIONS);
+
+                    // Process DOC_VERSIONS as usual
+                    const dropdown = document.querySelector('#nav-menu-version')?.nextElementSibling;
+                    if (!dropdown) {
+                        console.error('Dropdown element not found!');
+                        return;
+                    }
+
+                    dropdown.innerHTML = ''; // Clear existing items
+                    DOC_VERSIONS.forEach(version => {
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+                        a.className = 'dropdown-item';
+                        a.href = `../${version}/index.html`;
+
+                        // Wrap version text in a <code> element
+                        const code = document.createElement('code');
+                        code.textContent = version;
+
+                        // Add <code> to <a>
+                        a.appendChild(code);
+
+                        li.appendChild(a); // Add <a> to <li>
+                        dropdown.appendChild(li); // Add <li> to the dropdown
+                    });
+
+                    console.log('Dropdown populated:', dropdown);
+
+                } catch (error) {
+                    console.error('Error parsing DOC_VERSIONS:', error);
+                }
+            } else {
+                console.error('DOC_VERSIONS not found in script.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching versions.js:', error);
+        });
+};
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../_static/style.css">
+<meta property="og:title" content="Orbit Propagation – AstrodynamicalSolvers">
+<meta property="og:description" content="">
+<meta property="og:site_name" content="AstrodynamicalSolvers">
+<meta name="twitter:title" content="Orbit Propagation – AstrodynamicalSolvers">
+<meta name="twitter:description" content="">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">AstrodynamicalSolvers</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-version" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Version</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-version">    
+        <li class="dropdown-header">dev</li>
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+    <a href="https://github.com/JuliaAstro/GeneralAstrodynamics.jl" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../examples/index.html">Examples</a></li><li class="breadcrumb-item"><a href="../../examples/propagation/index.html"><span class="chapter-title">Orbit Propagation</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../examples/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Examples</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../examples/propagation/index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Orbit Propagation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../examples/periodic-orbits/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Periodic Orbits</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../examples/manifolds/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">index.html</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../examples/plotting/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Plotting</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Reference</span></span>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of Contents</h2>
+   
+  <ul>
+  <li><a href="#r2b-propagation" id="toc-r2b-propagation" class="nav-link active" data-scroll-target="#r2b-propagation">R2B Propagation</a></li>
+  <li><a href="#cr3b-propagation" id="toc-cr3b-propagation" class="nav-link" data-scroll-target="#cr3b-propagation">CR3B Propagation</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/JuliaAstro/GeneralAstrodynamics.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../examples/index.html">Examples</a></li><li class="breadcrumb-item"><a href="../../examples/propagation/index.html"><span class="chapter-title">Orbit Propagation</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">Orbit Propagation</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><em>Numerical integration via <a href="https://sciml.ai">SciML</a>.</em></p>
+<p>Given initial conditions at some time <span class="math inline">\(t_0\)</span>, where will an object in orbit be at time <span class="math inline">\(t_1\)</span>? In general, there is no analytical answer to this question. We can instead find the answer numerically with tools such as <code>DifferentialEquations.jl</code>, and other simulation codes in the <a href="https://sciml.ai">SciML</a> ecosystem. These numerical integration problems are abstracted by the <code>AstrodynamicalSolvers.propagate</code> function. Read on for more information about orbit propagation within <code>AstrodynamicalSolvers.jl</code>.</p>
+<div id="312bef0d" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalSolvers</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalModels</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AstrodynamicalCalculations</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Statistics</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="r2b-propagation" class="level2">
+<h2 class="anchored" data-anchor-id="r2b-propagation">R2B Propagation</h2>
+<p>The restricted two-body problem describes a massless spacecraft in orbit about a single point mass. For example: an elliptical orbit about Earth.</p>
+<div id="a3ee91b0" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>orbit <span class="op">=</span> <span class="kw">let</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    u <span class="op">=</span> <span class="fu">CartesianState</span>(; x <span class="op">=</span> <span class="fl">11e5</span>, y <span class="op">=</span> <span class="fl">5e5</span>, ẋ <span class="op">=</span> <span class="fl">1e3</span>, ẏ <span class="op">=</span> <span class="fl">1e3</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> <span class="fu">R2BParameters</span>(<span class="fl">4.00458e12</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Orbit</span>(u, p)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>Elliptical Orbit in Restricted Two Body Dynamics
+
+  CartesianState with eltype Float64
+  
+    x: 1.1e6
+    y: 500000.0
+    z: 0.0
+    ẋ: 1000.0
+    ẏ: 1000.0
+    ż: 0.0
+
+  R2BParameters with eltype Float64
+  
+    μ: 4.00458e12</code></pre>
+</div>
+</div>
+<p>Where will a spacecraft at this orbit be in one minute? To answer this question, we can use <code>propagate!</code> to numerically integrate for a set duration while mutating object in-place.</p>
+<div id="4974dd49" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">propagate!</span>(orbit, <span class="fl">60.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Let’s look at the orbit one minute later. It’s position (and velocity) have changed!</p>
+<div id="81cffda4" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>orbit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>Elliptical Orbit in Restricted Two Body Dynamics
+
+  CartesianState with eltype Float64
+  
+    x: 1.1557037284624088e6
+    y: 558006.5378867177
+    z: 0.0
+    ẋ: 859.85936099633
+    ẏ: 934.328685203485
+    ż: 0.0
+
+  R2BParameters with eltype Float64
+  
+    μ: 4.00458e12</code></pre>
+</div>
+</div>
+<p>We can also return orbit instances at many times along the path using <code>propagate</code>, which returns a <code>SciMLBase.ODESolution</code> instance. Let’s propagate the orbit for one hour, and see what we can do with the resulting trajectory.</p>
+<div id="af1363c7" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>trajectory <span class="op">=</span> <span class="fu">propagate</span>(orbit, <span class="fl">60.0</span><span class="op">^</span><span class="fl">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>retcode: Success
+Interpolation: specialized 7th order lazy interpolation
+t: 377-element Vector{Float64}:
+    0.0
+    0.025673030564730494
+    0.14307030275804666
+    0.5293794293974958
+    1.6738429566587905
+    4.709981049960474
+   11.552648236455603
+   21.64699914078421
+   33.121498644506936
+   46.35455291715124
+   60.99008541314207
+   77.07415966663874
+   94.42717147382518
+    ⋮
+ 3183.255287964211
+ 3218.252079786347
+ 3255.3687446619156
+ 3294.347519534046
+ 3334.8565174755618
+ 3376.0691841818298
+ 3417.1358123432387
+ 3457.3760838581325
+ 3496.2774302115004
+ 3533.415694310821
+ 3568.3855101875224
+ 3600.0
+u: 377-element Vector{CartesianState{Float64}}:
+ CartesianState with eltype Float64
+
+  x: 1.1557037284624088e6
+  y: 558006.5378867177
+  z: 0.0
+  ẋ: 859.85936099633
+  ẏ: 934.328685203485
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.1557258029365074e6
+  y: 558030.5245872192
+  z: 0.0
+  ẋ: 859.8031501493746
+  ẏ: 934.3015446882089
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.155826726394631e6
+  y: 558140.2017554259
+  z: 0.0
+  ẋ: 859.546147035675
+  ẏ: 934.177446556064
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.1561586136272345e6
+  y: 558501.0041685504
+  z: 0.0
+  ẋ: 858.7008778829758
+  ẏ: 933.769199012459
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.1571399341588104e6
+  y: 559568.9773004056
+  z: 0.0
+  ẋ: 856.2005701559191
+  ẏ: 932.5607435635106
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.159729439827734e6
+  y: 562395.5020293393
+  z: 0.0
+  ẋ: 849.5952340083315
+  ẏ: 929.3620573363623
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.1654923877489627e6
+  y: 568730.2527742444
+  z: 0.0
+  ẋ: 834.8536017028694
+  ẏ: 922.1909222434713
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.1738113780647332e6
+  y: 577986.1567817484
+  z: 0.0
+  ẋ: 813.4625316183946
+  ẏ: 911.7053236444689
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.183008289032334e6
+  y: 588379.75237889
+  z: 0.0
+  ẋ: 789.6402792773547
+  ẏ: 899.916223630543
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.193279248613221e6
+  y: 600199.3326654691
+  z: 0.0
+  ẋ: 762.7861312124904
+  ẏ: 886.4846415032946
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.2042301195340913e6
+  y: 613065.9833667568
+  z: 0.0
+  ẋ: 733.8150261678811
+  ẏ: 871.8242581684513
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.2157823516135125e6
+  y: 626960.389328674
+  z: 0.0
+  ẋ: 702.8059488350477
+  ẏ: 855.935677897501
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.2276944551105013e6
+  y: 641666.4936133759
+  z: 0.0
+  ẋ: 670.2610529349756
+  ẏ: 839.0394331052676
+  ż: 0.0
+
+ ⋮
+ CartesianState with eltype Float64
+
+  x: 1.3673210770708474e6
+  y: 974683.0431347428
+  z: 0.0
+  ẋ: -112.31354355797241
+  ẏ: 358.7525284335678
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.3626845106365762e6
+  y: 986732.3554698828
+  z: 0.0
+  ẋ: -152.59546689501286
+  ẏ: 329.81156827468016
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.356233520412903e6
+  y: 998400.7249158546
+  z: 0.0
+  ẋ: -194.95614668810396
+  ẏ: 298.88336759026004
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.3477724056886847e6
+  y: 1.009412632129588e6
+  z: 0.0
+  ẋ: -239.14035437018518
+  ẏ: 266.07512064587337
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.3371588651132502e6
+  y: 1.0194932450678061e6
+  z: 0.0
+  ẋ: -284.8409247836336
+  ẏ: 231.54062642960767
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.3244638534418591e6
+  y: 1.0283023727662738e6
+  z: 0.0
+  ẋ: -331.22339834962327
+  ẏ: 195.8544907717012
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.309912717407725e6
+  y: 1.0356042650338674e6
+  z: 0.0
+  ẋ: -377.44738747272885
+  ẏ: 159.6395492069025
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.2938109747716514e6
+  y: 1.0413019592806736e6
+  z: 0.0
+  ẋ: -422.86220181901194
+  ẏ: 123.41274255175566
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.2765036625106488e6
+  y: 1.0454087993821087e6
+  z: 0.0
+  ẋ: -466.988646919647
+  ẏ: 87.58765257183912
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.258373682396986e6
+  y: 1.0480136499268843e6
+  z: 0.0
+  ẋ: -509.41963519560727
+  ẏ: 52.54501878034081
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.2398556215327065e6
+  y: 1.0492618982808415e6
+  z: 0.0
+  ẋ: -549.7343880936046
+  ẏ: 18.699477581101885
+  ż: 0.0
+
+ CartesianState with eltype Float64
+
+  x: 1.2218950307148262e6
+  y: 1.049358958604758e6
+  z: 0.0
+  ẋ: -586.5561729139935
+  ẏ: -12.691740601597912
+  ż: 0.0</code></pre>
+</div>
+</div>
+<p>The trajectory can be indexed for the precise state at an algorithmically chosen instance in time. Let’s inspect next-to-last state in the trajectory.</p>
+<div id="fbf8fda1" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>trajectory.t[<span class="kw">end</span><span class="op">-</span><span class="fl">1</span>] <span class="op">=&gt;</span> trajectory.u[<span class="kw">end</span><span class="op">-</span><span class="fl">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>3568.3855101875224 =&gt; CartesianState with eltype Float64
+
+  x: 1.2398556215327065e6
+  y: 1.0492618982808415e6
+  z: 0.0
+  ẋ: -549.7343880936046
+  ẏ: 18.699477581101885
+  ż: 0.0</code></pre>
+</div>
+</div>
+<p>To find the orbital state at an arbitrary point in time, you can use the built-in interpolation feature in <code>ODESolution</code>.</p>
+<div id="cad8c5b6" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">trajectory</span>(<span class="fl">2000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>CartesianState with eltype Float64
+
+  x: -56218.67474197927
+  y: 50823.681789725
+  z: 0.0
+  ẋ: -714.0540498124235
+  ẏ: -10027.07991212651
+  ż: 0.0</code></pre>
+</div>
+</div>
+<p>To retrieve more <code>Orbit</code> instances, you can use Julia’s list comprehension syntax.</p>
+<div id="8e6c139c" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>orbits <span class="op">=</span> [</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Orbit</span>(state, <span class="fu">parameters</span>(orbit))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    for state <span class="kw">in</span> trajectory.u</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>eccentricities <span class="op">=</span> <span class="fu">eccentricity</span>.(orbits)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    avg <span class="op">=</span> <span class="fu">mean</span>(eccentricities)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    dev <span class="op">=</span> <span class="fu">std</span>(eccentricities)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">println</span>(avg, <span class="st">" ± "</span>, dev)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.9466247626515262 ± 2.7084753950949553e-14</code></pre>
+</div>
+</div>
+</section>
+<section id="cr3b-propagation" class="level2">
+<h2 class="anchored" data-anchor-id="cr3b-propagation">CR3B Propagation</h2>
+<p>The circular-restricted three-body problem denotes a massless spacecraft in orbit about a two point masses which orbit their common center of mass. For example: a spacecraft traveling between the Earth and the moon. States in this description are typically described in units scaled by the distance between the two massive bodies and the (circular) orbital period of the massive bodies. In addition, states are typically described in a special frame known as the Synodic frame: a rotating frame which places both massive bodies along its <span class="math inline">\(x\)</span> axis. With these caveats out of the way, let’s construct a <code>CR3BOrbit</code> instance which <em>roughly</em> describes a spacecraft traveling due to the gravity of the Earth and the Sun.</p>
+<div id="8235b72f" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>orbit <span class="op">=</span> <span class="fu">Orbit</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rand</span>(CartesianState),</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">CR3BParameters</span>(<span class="fl">0.012</span>),</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>Orbit in Circular Restricted Three Body Dynamics
+
+  CartesianState with eltype Float64
+  
+    x: 0.1493038613609663
+    y: 0.5424404597992805
+    z: 0.17291683349385711
+    ẋ: 0.5396265691891434
+    ẏ: 0.3035175262454154
+    ż: 0.5535229593661237
+
+  CR3BParameters with eltype Float64
+  
+    μ: 0.012</code></pre>
+</div>
+</div>
+<p>Three-body orbits are classic examples of chaotic systems. Let’s see the spacecraft’s state at every <span class="math inline">\(0.01\)</span> units of (dimensionless) time (approximately <span class="math inline">\(4\)</span> days). For clarity, let’s stack each state as a row in a tall matrix. Note how much the values change down a single column!</p>
+<div id="5291124a" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>trajectory <span class="op">=</span> <span class="fu">propagate</span>(orbit, <span class="fl">1.0</span>; saveat<span class="op">=</span><span class="fl">0.01</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> states <span class="op">=</span> <span class="fu">hcat</span>(trajectory.u<span class="op">...</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Matrix</span>(<span class="fu">transpose</span>(states))</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>101×6 Matrix{Float64}:
+  0.149304      0.54244      0.172917    0.539627    0.303518     0.553523
+  0.154699      0.54532      0.178411    0.539297    0.272545     0.545248
+  0.160088      0.547893     0.183822    0.538376    0.242198     0.536953
+  0.165465      0.550166     0.18915     0.536872    0.21245      0.528637
+  0.170823      0.552144     0.194394    0.534795    0.183277     0.520298
+  0.176159      0.553834     0.199556    0.532151    0.154657     0.511935
+  0.181465      0.555239     0.204633    0.52895     0.12657      0.503546
+  0.186736      0.556367     0.209626    0.525197    0.0989973    0.495128
+  0.191967      0.557221     0.214535    0.520899    0.0719236    0.486681
+  0.197152      0.557807     0.21936     0.516065    0.0453336    0.4782
+  0.202286      0.558129     0.224099    0.510698    0.019214     0.469684
+  0.207364      0.558193     0.228753    0.504807   -0.00644741   0.46113
+  0.212381      0.558002     0.233322    0.498395   -0.0316618    0.452535
+  ⋮                                                               ⋮
+  0.000946787   0.0478519    0.132123   -1.89503    -1.38669     -2.35055
+ -0.0182754     0.0332356    0.105894   -1.93545    -1.54819     -2.94414
+ -0.0370889     0.0165774    0.0717023  -1.75252    -1.80275     -4.01596
+ -0.0486515    -0.00290379   0.0215096   0.0798383  -2.00816     -6.27582
+ -0.0154528    -0.0133796   -0.037973    5.67768     0.281131    -3.69046
+  0.0373129    -0.00610012  -0.0564137   4.69072     0.894341    -0.720451
+  0.0794197     0.00269815  -0.0590261   3.80541     0.843235     0.0606498
+  0.114516      0.0106186   -0.0566739   3.25249     0.739849     0.370063
+  0.145037      0.0175105   -0.0521255   2.87262     0.640091     0.523741
+  0.172293      0.0234546   -0.0464195   2.59114     0.550443     0.609791
+  0.197063      0.0285517   -0.0400432   2.3711      0.47046      0.66126
+  0.219851      0.0328913   -0.0332591   2.19224     0.398722     0.693049</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../examples/index.html" class="pagination-link" aria-label="Examples">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Examples</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../examples/periodic-orbits/index.html" class="pagination-link" aria-label="Periodic Orbits">
+        <span class="nav-page-text"><span class="chapter-title">Periodic Orbits</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/JuliaAstro/GeneralAstrodynamics.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
