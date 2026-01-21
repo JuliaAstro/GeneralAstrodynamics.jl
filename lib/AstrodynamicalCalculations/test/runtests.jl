@@ -3,6 +3,9 @@ Restricted Two-body Model tests.
 """
 module AstrodynamicalCalculationsTests
 
+using ParallelTestRunner: runtests, find_tests, parse_args
+import AstrodynamicalCalculations
+
 const init_code = quote
     using Test
     using AstrodynamicalCalculations:

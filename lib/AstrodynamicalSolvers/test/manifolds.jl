@@ -10,7 +10,7 @@
 
     T = u.Δt
     u = CartesianState(u)
-    Φ = monodromy(u, μ, T, CR3BFunction(stm = true))
+    Φ = monodromy(u, μ, T, CR3BFunction(; stm = true))
 
     @test Φ ≈ [
         363.5695646260086 -150.84678203289957 -110.89785303818041 147.89291423249102 39.776655263625734 -19.506758521645583
@@ -22,7 +22,23 @@
     ]
 
     ics = let
-        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, T), (μ,))
+        sys = complete(CR3BSystem(; stm = true))
+
+        op = [
+                :x => u.x
+                :y => u.y
+                :z => u.z
+                :ẋ => u.ẋ
+                :ẏ => u.ẏ
+                :ż => u.ż
+                :Φ => I(6)
+                :μ => μ
+        ]
+
+        tspan = (0, T)
+
+        problem = ODEProblem(sys, op, tspan)
+
         solution =
             solve(problem, Vern9(), reltol = 1e-12, abstol = 1e-12, saveat = (T / 10))
 

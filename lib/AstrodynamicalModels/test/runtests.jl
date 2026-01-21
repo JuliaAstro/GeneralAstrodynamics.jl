@@ -7,6 +7,7 @@ using ParallelTestRunner: runtests, find_tests, parse_args
 import AstrodynamicalModels
 
 const init_code = quote
+    using Test
 end
 
 args = parse_args(Base.ARGS)

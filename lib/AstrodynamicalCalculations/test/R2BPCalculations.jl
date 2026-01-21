@@ -225,7 +225,7 @@ end
 
         K = kepler(r..., v..., μ, Δt; atol = 1e-12)
         # Unexported
-        V1, V2 = AstrodynamicalCalculations.R2BPCalculations.lambert_lancaster_blanchard(
+        V1, V2 = R2BPCalculations.lambert_lancaster_blanchard(
             r,
             SVector(K.x, K.y, K.z),
             Δt,

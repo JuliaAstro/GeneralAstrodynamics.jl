@@ -4,6 +4,7 @@ Unit tests for various solvers.
 module AstrodynamicalSolversTests
 
 using ParallelTestRunner: runtests, find_tests, parse_args
+import AstrodynamicalSolvers
 
 const init_code = quote
     using Test
