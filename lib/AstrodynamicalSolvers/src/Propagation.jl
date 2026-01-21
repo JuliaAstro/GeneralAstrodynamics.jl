@@ -27,10 +27,11 @@ using DocStringExtensions: @template, DOCSTRING, EXPORTS, IMPORTS, LICENSE, SIGN
                                """
 
 using AstrodynamicalCalculations: converge!, diverge!
-using AstrodynamicalModels: AstrodynamicalModels, CR3BParameters, CartesianSTM, CartesianState, Orbit, dynamics
+using AstrodynamicalModels: AstrodynamicalModels, CR3BParameters, CartesianSTM, CartesianState, Orbit, system
 using OrdinaryDiffEqVerner: Vern7, Vern9
 using SciMLBase: SciMLBase, ODEProblem, solve
 using StaticArrays: SVector
+using ModelingToolkit: complete
 
 export propagate, propagate!, monodromy, convergent_manifold, divergent_manifold
 
@@ -38,17 +39,16 @@ function SciMLBase.ODEProblem(orbit::AstrodynamicalModels.AstrodynamicalOrbit, �
     stm = false,
     kwargs...,
 )
-    f = dynamics(orbit; stm)
-    u = AstrodynamicalModels.state(orbit)
+    sys = complete(system(orbit; stm))
 
+    op = AstrodynamicalModels.op(orbit)
     if stm
-        u = Vector([u; vec(AstrodynamicalModels.CartesianSTM())])
+        op = [op; :Φ => AstrodynamicalModels.CartesianSTM()]
     end
 
-    p = AstrodynamicalModels.parameters(orbit)
     tspan = (Δt isa AbstractArray || Δt isa Tuple) ? Δt : (zero(Δt), Δt)
 
-    return ODEProblem(f, u, tspan, p; kwargs...)
+    return ODEProblem(sys, op, tspan; kwargs...)
 end
 
 """
@@ -127,59 +127,22 @@ function monodromy(u::AbstractVector, μ, T, f;
     save_everystep = false,
     kwargs...,
 )
-    problem = ODEProblem(
-        f,
-        [
-            u[begin],
-            u[begin+1],
-            u[begin+2],
-            u[begin+3],
-            u[begin+4],
-            u[begin+5],
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-        ],
-        (zero(T), T),
-        SVector(μ),
-    )
-    solution = solve(problem, algorithm;
-        reltol,
-        abstol,
-        save_everystep,
+    op = [
+        [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u
+        :Φ => AstrodynamicalModels.CartesianSTM()
+        :μ => μ
+    ]
+
+    tspan = (zero(T), T)
+
+    problem = ODEProblem(f.sys, op, tspan)
+
+    solution = solve(
+        problem,
+        algorithm;
+        reltol = reltol,
+        abstol = abstol,
+        save_everystep = save_everystep,
         kwargs...,
     )
 

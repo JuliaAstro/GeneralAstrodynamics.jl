@@ -77,7 +77,6 @@ model = PlanarEntrySystem()
 """
 @memoize function PlanarEntrySystem(;
     name = :PlanarEntry,
-    defaults = Pair{ModelingToolkit.Num,<:Number}[],
     kwargs...,
 )
 
@@ -114,9 +113,8 @@ model = PlanarEntrySystem()
         D(θ) ~ (v / r) * cos(γ),
     ]
 
-    model = System(eqs, t, [γ, v, r, θ], [R, P, H, m, A, C, μ];
-        name,
-        defaults,
+    model = System(eqs, t;
+        name = name,
         kwargs...,
     )
 
@@ -142,14 +140,17 @@ passed directly to `SciMLBase.ODEFunction`.
 ```julia
 f = PlanarEntryFunction()
 let u = randn(4), p = randn(7), t = NaN # time invariant
-    f(u, p, t)
+    sys = f.sys
+    u0 = get_u0(sys, [:γ, :v, :r, :θ] .=> u) # Or get_u0(sys, ModelingToolkit.unknowns(sys) .=> u)
+    p = get_p(sys, ModelingToolkit.parameters(sys) .=> p)
+    f(u0, p, t)
 end
 ```
 """
 @memoize function PlanarEntryFunction(; name = :PlanarEntry, kwargs...)
     defaults = (; jac = true)
     options = merge(defaults, kwargs)
-    sys = complete(PlanarEntrySystem(; name = name); split = false)
+    sys = complete(PlanarEntrySystem(; name); split = true)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
         sys;
         options...,

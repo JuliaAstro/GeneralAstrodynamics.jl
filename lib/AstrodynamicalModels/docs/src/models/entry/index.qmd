@@ -7,6 +7,7 @@ _Also known as canonical entry dynamics!_
 #| output: false
 using AstrodynamicalModels
 using ModelingToolkit
+using ModelingToolkit: get_u0, get_p
 ```
 
 ## Overview
@@ -44,6 +45,9 @@ Finally, let's construct a Julia function which implements these dynamics!
 #| echo: true
 f = PlanarEntryFunction()
 let u = abs.(randn(4)), p = abs.(randn(7)), t = 0
-    f(u, p, t)
+    sys = f.sys
+    u0 = get_u0(sys, [:γ, :v, :r, :θ] .=> u) # Or get_u0(sys, ModelingToolkit.unknowns(sys) .=> u)
+    p = get_p(sys, ModelingToolkit.parameters(sys) .=> p)
+    f(u0, p, t)
 end
 ```

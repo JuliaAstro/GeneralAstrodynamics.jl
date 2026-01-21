@@ -7,6 +7,7 @@ _Also known as R2BP dynamics!_
 #| output: false
 using AstrodynamicalModels
 using ModelingToolkit
+using ModelingToolkit: get_u0, get_p
 ```
 
 ## Overview
@@ -65,7 +66,10 @@ Finally, let's construct a Julia function which implements these dynamics!
 ```{julia}
 #| echo: true
 f = R2BFunction()
-let u = randn(6), p = [3e6], t = 0
-    f(u, p, t)
+let u = randn(6), p = 3e6, t = 0
+    sys = f.sys
+    u0 = get_u0(sys, [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u) # Or get_u0(sys, ModelingToolkit.unknowns(sys) .=> u)
+    p = get_p(sys, [:μ => p]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=> p)
+    f(u0, p, t)
 end
 ```

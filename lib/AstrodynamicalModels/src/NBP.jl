@@ -39,14 +39,13 @@ model = NBSystem(9)
     N::Int;
     stm = false,
     name = :NBP,
-    defaults = Pair{ModelingToolkit.Num,<:Number}[],
     kwargs...,
 )
 
     N > 0 || throw(ArgumentError("`N` must be a number greater than zero!"))
     T = N * 6 + (N * 6)^2
     @parameters G m[1:N]
-    @variables (x(t))[1:N] y(t)[1:N] z(t)[1:N] ẋ(t)[1:N] ẏ(t)[1:N] ż(t)[1:N]
+    @variables x(t)[1:N] y(t)[1:N] z(t)[1:N] ẋ(t)[1:N] ẏ(t)[1:N] ż(t)[1:N]
 
     r = [[x[i], y[i], z[i]] for i = 1:N]
     v = [[ẋ[i], ẏ[i], ż[i]] for i = 1:N]
@@ -76,20 +75,9 @@ model = NBSystem(9)
             """
         end
 
-        @variables (Φ(t))[1:length(eqs), 1:length(eqs)], [
-            description = "state transition matrix estimate",
-        ]
-        A = Symbolics.jacobian(map(el -> el.rhs, eqs), u)
-
-        Φ = Symbolics.scalarize(Φ)
-
-        LHS = D.(Φ)
-        RHS = A * Φ
-
-        eqs = [eqs; vec([LHS[i] ~ RHS[i] for i in eachindex(LHS)])]
-
-        u = [u; vec(Φ)]
-        defaults = [defaults; vec(Φ .=> Float64.(I(6N)))]
+        @variables Φ(t)[1:length(eqs), 1:length(eqs)], [description = "state transition matrix estimate"]
+        A = Symbolics.jacobian(map(el -> el.rhs, eqs), [r...; v...])
+        eqs = vcat(eqs, vec(Symbolics.scalarize(D(Φ) ~ A * Φ)))
     end
 
     if string(name) == "NBP" && stm
@@ -98,13 +86,8 @@ model = NBSystem(9)
         modelname = name
     end
 
-    return System(
-        eqs,
-        t,
-        u,
-        [G, vec(m)];
+    return System(eqs, t;
         name = modelname,
-        defaults,
         kwargs...,
     )
 end
@@ -148,8 +131,11 @@ directly to `SciMLBase.ODEFunction`.
 
 ```julia
 f = NBFunction(3; stm=false, name=:NBP, jac=false, sparse=false)
-let u = randn(3*6), p = randn(1 + 3), t = 0
-    f(u, p, t)
+let u = randn(3*6), p = [randn(3), randn()], t = 0
+    sys = f.sys
+    u0 = get_u0(sys, ModelingToolkit.unknowns(sys) .=> u)
+    p = get_p(sys, [:m => p[1], :G => p[2]]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=> p)
+    f(u0, p, t)
 end
 ```
 """
@@ -164,7 +150,7 @@ end
         calculations! Consider setting `jac=false`, `stm=false`, or both.
         """
     end
-    sys = complete(NBSystem(N; stm = stm, name = name); split = false)
+    sys = complete(NBSystem(N; stm, name); split = true)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
         sys;
         options...,

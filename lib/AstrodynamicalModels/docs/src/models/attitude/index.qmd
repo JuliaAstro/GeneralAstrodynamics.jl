@@ -7,6 +7,7 @@ _Quaternion kinematics, and dynamics!_
 #| echo: false
 using AstrodynamicalModels
 using ModelingToolkit
+using ModelingToolkit: get_u0, get_p
 ```
 
 ## Overview
@@ -57,7 +58,10 @@ Finally, let's construct a Julia function which implements these dynamics!
 #| echo: true
 #| output: true
 f = AttitudeFunction()
-let u = randn(7), p = randn(15), t = 0
-    f(u, p, t)
+let u = randn(7), p = [randn(9), randn(3), rand(3)], t = 0
+    sys = f.sys
+    u0 = get_u0(sys, ModelingToolkit.unknowns(sys) .=> u)
+    p = get_p(sys, [:J => p[1], :L => p[2], :f => p[3]]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=> p)
+    f(u0, p, t)
 end
 ```
