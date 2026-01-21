@@ -46,44 +46,36 @@ model = CR3BSystem(; stm=true)
 @memoize function CR3BSystem(;
     stm = false,
     name = :CR3B,
-    defaults = Pair{ModelingToolkit.Num,<:Number}[],
     kwargs...,
 )
-    @independent_variables t
     @parameters μ
     @variables x(t) y(t) z(t) ẋ(t) ẏ(t) ż(t)
-    δ = Differential(t)
     r = [x, y, z]
     v = [ẋ, ẏ, ż]
 
-    eqs = vcat(
-        δ.(r) .~ v,
-        δ(ẋ) ~
+    eqs = [
+        D.(r) .~ v;
+        D(ẋ) ~
             x + 2ẏ - (μ * (x + μ - 1) * (sqrt(y^2 + z^2 + (x + μ - 1)^2)^-3)) -
-            ((x + μ) * (sqrt(y^2 + z^2 + (x + μ)^2)^-3) * (1 - μ)),
-        δ(ẏ) ~
+            ((x + μ) * (sqrt(y^2 + z^2 + (x + μ)^2)^-3) * (1 - μ));
+        D(ẏ) ~
             y - (2ẋ) - (
                 y * (
                     μ * (sqrt(y^2 + z^2 + (x + μ - 1)^2)^-3) +
                     (sqrt(y^2 + z^2 + (x + μ)^2)^-3) * (1 - μ)
                 )
-            ),
-        δ(ż) ~
+            );
+        D(ż) ~
             z * (
                 -μ * (sqrt(y^2 + z^2 + (x + μ - 1)^2)^-3) -
                 ((sqrt(y^2 + z^2 + (x + μ)^2)^-3) * (1 - μ))
-            ),
-    )
+            );
+    ]
 
     if stm
-        @variables (Φ(t))[1:6, 1:6] [description = "state transition matrix estimate"]
-        A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(r, v))
-
-        Φ = Symbolics.scalarize(Φ)
-        LHS = δ.(Φ)
-        RHS = A * Φ
-
-        eqs = vcat(eqs, vec([LHS[i] ~ RHS[i] for i in eachindex(LHS)]))
+        @variables Φ(t)[1:6, 1:6], [description = "state transition matrix estimate"]
+        A = Symbolics.jacobian(map(el -> el.rhs, eqs), [r; v])
+        eqs = [eqs; vec(Symbolics.scalarize(D(Φ) ~ A * Φ))]
     end
 
     if string(name) == "CR3B" && stm
@@ -92,28 +84,10 @@ model = CR3BSystem(; stm=true)
         modelname = name
     end
 
-    if stm
-        defaults = vcat(defaults, vec(Φ .=> Float64.(I(6))))
-        return System(
-            eqs,
-            t,
-            vcat(r, v, vec(Φ)),
-            [μ];
-            name = modelname,
-            defaults = defaults,
-            kwargs...,
-        )
-    else
-        return System(
-            eqs,
-            t,
-            vcat(r, v),
-            [μ];
-            name = modelname,
-            defaults = defaults,
-            kwargs...,
-        )
-    end
+    return System(eqs, t;
+        name = modelname,
+        kwargs...,
+    )
 end
 
 """
@@ -133,15 +107,18 @@ directly to `SciMLBase.ODEFunction`.
 
 ```julia
 f = CR3BFunction(; stm=false, jac=true)
-let u = randn(6), p = randn(1), t = 0
-    f(u, p, t)
+let u = randn(6), p = randn(), t = 0
+    sys = f.sys
+    u0 = get_u0(sys, [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u) # Or get_u0(sys, ModelingToolkit.unknowns(sys) .=> u)
+    p = get_p(sys, [:μ => p]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=> p)
+    f(u0, p, t)
 end
 ```
 """
 @memoize function CR3BFunction(; stm = false, name = :CR3B, kwargs...)
     defaults = (; jac = true)
     options = merge(defaults, kwargs)
-    sys = complete(CR3BSystem(; stm = stm, name = name); split = false)
+    sys = complete(CR3BSystem(; stm, name); split = true)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
         sys;
         options...,
@@ -160,14 +137,13 @@ AstrodynamicalModels.CR3BOrbit(; state::AbstractVector, parameters::AbstractVect
 """
 Return an `ODEProblem` for the provided CR3B system.
 """
-CR3BProblem(u0, tspan, p; kwargs...) = ODEProblem(CR3BFunction(), u0, tspan, p; kwargs...)
+CR3BProblem(op, tspan; kwargs...) = ODEProblem(complete(CR3BSystem()), op, tspan; kwargs...)
 CR3BProblem(orbit::AstrodynamicalOrbit, tspan::Union{<:Tuple,<:AbstractArray}; kwargs...) =
     ODEProblem(
-        CR3BFunction(),
-        AstrodynamicalModels.state(orbit),
-        tspan,
-        AstrodynamicalModels.parameters(orbit);
+        complete(CR3BSystem()),
+        AstrodynamicalModels.op(orbit),
+        tspan;
         kwargs...,
     )
 CR3BProblem(orbit::AstrodynamicalOrbit, Δt; kwargs...) =
-    CR3BProblem(orbit, (zero(Δt), δt); kwargs...)
+    CR3BProblem(orbit, (zero(Δt), Δt); kwargs...)

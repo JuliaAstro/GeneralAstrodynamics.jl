@@ -3,6 +3,9 @@ uuid = "4282b555-f590-4262-b575-3e516e1493a7"
 version = "3.8.0"
 authors = ["Joseph D Carpinelli <joey@loopy.codes>"]
 
+[workspace]
+projects = ["docs", "test"]
+
 [deps]
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
@@ -23,20 +26,11 @@ SPICEBodiesExt = "SPICEBodies"
 [compat]
 AstrodynamicalCalculations = "1"
 DocStringExtensions = "0.9"
+LinearAlgebra = "1"
 Memoize = "0.4"
-ModelingToolkit = "9"
+ModelingToolkit = "11"
+SPICEBodies = "1"
 SciMLBase = "2"
 StaticArrays = "1"
-Symbolics = "5, 6"
-julia = "1.7"
-
-[extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-ParallelTestRunner = "d3525ed8-44d0-4b2c-a655-542cee43accc"
-AstrodynamicalCalculations = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
-
-[targets]
-test = ["Test", "ParallelTestRunner", "SPICEBodies", "AstrodynamicalCalculations"]
-
-[sources]
-AstrodynamicalCalculations = {path="../AstrodynamicalCalculations"}
+Symbolics = "7"
+julia = "1.10"

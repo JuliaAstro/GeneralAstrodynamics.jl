@@ -13,13 +13,12 @@ module CR3BSolvers
 
 export halo, lyapunov
 
-using LinearAlgebra
-using StaticArrays
-using ModelingToolkit
-using AstrodynamicalModels
-using AstrodynamicalCalculations
-using OrdinaryDiffEqVerner
-using DocStringExtensions
+using StaticArrays: @SMatrix, @SVector, SVector
+using AstrodynamicalModels: CR3BFunction, CR3BSystem, CartesianSTM
+using AstrodynamicalCalculations: richardson_ic
+using OrdinaryDiffEqVerner: ODEProblem, Vern9, remake, solve
+using DocStringExtensions: @template, DOCSTRING, EXPORTS, IMPORTS, LICENSE, SIGNATURES, TYPEDEF
+using ModelingToolkit: complete
 
 @template (
     FUNCTIONS,
@@ -107,62 +106,30 @@ function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
     ż = zero(ẏ)
     τ = T / 2
 
-    ic = [
-        x,
-        y,
-        z,
-        ẋ,
-        ẏ,
-        ż,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
+    sys = complete(CR3BSystem(; stm = true))
+
+    op = [
+        :x => x
+        :y => y
+        :z => z
+        :ẋ => ẋ
+        :ẏ => ẏ
+        :ż => ż
+        :Φ => CartesianSTM() 
+        :μ => μ
     ]
-    p = @SVector [μ]
+
     tspan = (zero(τ), τ)
 
-    problem = ODEProblem(CR3BFunction(stm = true), ic, tspan, p)
+    problem = ODEProblem(sys, op, tspan)
+
+    p = [:μ => μ]
 
     for _ = 1:maxiters
 
-        solution = solve(
-            problem,
-            Vern9(),
-            reltol = reltol,
-            abstol = abstol,
+        solution = solve(problem, Vern9();
+            reltol,
+            abstol,
             save_everystep = false,
         )
         global fc = solution.u[end]
@@ -181,55 +148,20 @@ function lyapunov(x, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
         ẏ = _ẏ
         τ = _τ
 
-        ic = [
-            x,
-            y,
-            z,
-            ẋ,
-            ẏ,
-            ż,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
+        u0 = [
+            :x => x
+            :y => y
+            :z => z
+            :ẋ => ẋ
+            :ẏ => ẏ
+            :ż => ż
+            :Φ => CartesianSTM() 
         ]
 
         tspan = (zero(τ), τ)
-        _problem = remake(problem; u0 = ic, tspan, p)
-        problem = _problem
 
+        _problem = remake(problem; u0, p, tspan)
+        problem = _problem
     end
 
     if abs(fc[4]) <= abstol && abs(fc[6]) <= abstol
@@ -258,65 +190,30 @@ function halo(x, z, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
     ż = zero(ẏ)
     τ = T / 2
 
+    sys = complete(CR3BSystem(; stm = true))
 
-    ic = [
-        x,
-        y,
-        z,
-        ẋ,
-        ẏ,
-        ż,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
+    op = [
+        :x => x
+        :y => y
+        :z => z
+        :ẋ => ẋ
+        :ẏ => ẏ
+        :ż => ż
+        :Φ => CartesianSTM() 
+        :μ => μ
     ]
 
-    p = SVector(μ)
     tspan = (zero(τ), τ)
 
-    f = CR3BFunction()
-    problem = ODEProblem(CR3BFunction(stm = true), ic, tspan, p)
+    problem = ODEProblem(sys, op, tspan)
+
+    p = [:μ => μ]
 
     for _ = 1:maxiters
 
-        solution = solve(
-            problem,
-            Vern9(),
-            reltol = reltol,
-            abstol = abstol,
+        solution = solve(problem, Vern9();
+            reltol,
+            abstol,
             save_everystep = false,
         )
         global fc = solution.u[end]
@@ -343,53 +240,18 @@ function halo(x, z, ẏ, μ, T; reltol = 1e-12, abstol = 1e-12, maxiters = 10)
 
                """
 
-        ic = [
-            x,
-            y,
-            z,
-            ẋ,
-            ẏ,
-            ż,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
+        u0 = [
+            :x => x
+            :y => y
+            :z => z
+            :ẋ => ẋ
+            :ẏ => ẏ
+            :ż => ż
+            :Φ => CartesianSTM() 
         ]
 
         tspan = (zero(τ), τ)
-        _problem = remake(problem; u0 = ic, tspan, p)
+        _problem = remake(problem; u0, p, tspan)
         problem = _problem
 
     end
@@ -416,16 +278,14 @@ Given a nondimensional mass parameter `μ`, and orbit characteristics, construct
 an initial guess using Richardson's analytical solution, and iterate on that
 guess using a differential corrector.
 """
-function halo(
-    μ,
-    lagrange::Int;
+function halo(μ, lagrange::Int;
     amplitude = 0.0,
     phase = 0.0,
     hemisphere = :northern,
     kwargs...,
 )
 
-    u = richardson_ic(μ, lagrange; Z = amplitude, hemisphere = hemisphere, ϕ = phase)
+    u = richardson_ic(μ, lagrange; Z = amplitude, hemisphere, ϕ = phase)
 
     if u.z == 0
         return lyapunov(u.x, u.ẏ, μ, u.Δt; kwargs...)

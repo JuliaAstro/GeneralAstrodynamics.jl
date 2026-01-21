@@ -13,6 +13,7 @@ First, let's find two periodic orbits: one planar orbit, and one extraplanar (th
 using AstrodynamicalSolvers
 using AstrodynamicalModels
 using OrdinaryDiffEq
+using ModelingToolkit: complete
 
 μ = 0.012150584395829193
 
@@ -132,10 +133,17 @@ unstable = let
     ic = halo(μ, 1; amplitude = 0.005)
 
     u = CartesianState(ic)
-    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))
+    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(; stm = true))
 
     ics = let
-        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), SVector(μ))
+        sys = complete(CR3BSystem(; stm = true))
+        op = [
+            [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u
+            :Φ => I(6)
+            :μ => μ
+        ]
+        tspan = (0, ic.Δt)
+        problem = ODEProblem(sys, op, tspan)
         solution = solve(
             problem,
             Vern9(),
@@ -150,8 +158,12 @@ unstable = let
     perturbations =
         [diverge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps = -1e-7) for ic in ics]
 
+    op = [
+        [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u
+        :μ => μ
+    ]
     problem = EnsembleProblem(
-        ODEProblem(CR3BFunction(), u, (0.0, 2 * ic.Δt), SVector(μ)),
+        ODEProblem(complete(CR3BSystem()), op, (0.0, 2 * ic.Δt)),
         prob_func = (prob, i, repeat) -> remake(prob; u0 = perturbations[i]),
     )
 
@@ -168,10 +180,17 @@ stable = let
     ic = halo(μ, 2; amplitude = 0.005)
 
     u = CartesianState(ic)
-    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))
+    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(; stm = true))
 
     ics = let
-        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), SVector(μ))
+        sys = complete(CR3BSystem(; stm = true))
+        op = [
+            [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u
+            :Φ => I(6)
+            :μ => μ
+        ]
+        tspan = (0, ic.Δt)
+        problem = ODEProblem(sys, op, tspan)
         solution = solve(
             problem,
             Vern9(),
@@ -186,8 +205,12 @@ stable = let
     perturbations =
         [converge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps = 1e-7) for ic in ics]
 
+    op = [
+        [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u
+        :μ => μ
+    ]
     problem = EnsembleProblem(
-        ODEProblem(CR3BFunction(), u, (0.0, -2.1 * ic.Δt), SVector(μ)),
+        ODEProblem(complete(CR3BSystem()), op, (0.0, -2.1 * ic.Δt)),
         prob_func = (prob, i, repeat) -> remake(prob; u0 = perturbations[i]),
     )
 
@@ -256,10 +279,17 @@ unstable = let
     ic = halo(μ, 1; amplitude = 0.005)
 
     u = CartesianState(ic)
-    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))
+    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(; stm = true))
 
     ics = let
-        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), SVector(μ))
+        sys = complete(CR3BSystem(; stm = true))
+        op = [
+            [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u
+            :Φ => I(6)
+            :μ => μ
+        ]
+        tspan = (0, ic.Δt)
+        problem = ODEProblem(sys, op, tspan)
         solution = solve(
             problem,
             Vern9(),
@@ -274,8 +304,12 @@ unstable = let
     perturbations =
         [diverge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps = -1e-7) for ic in ics]
 
+    op = [
+        [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u
+        :μ => μ
+    ]
     problem = EnsembleProblem(
-        ODEProblem(CR3BFunction(), u, (0.0, 2 * ic.Δt), SVector(μ)),
+        ODEProblem(complete(CR3BSystem()), op, (0.0, 2 * ic.Δt)),
         prob_func = (prob, i, repeat) -> remake(prob; u0 = perturbations[i]),
     )
 
@@ -292,10 +326,17 @@ stable = let
     ic = halo(μ, 2; amplitude = 0.005)
 
     u = CartesianState(ic)
-    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(stm = true))
+    Φ = monodromy(u, μ, ic.Δt, CR3BFunction(; stm = true))
 
     ics = let
-        problem = ODEProblem(CR3BFunction(stm = true), vcat(u, vec(I(6))), (0, ic.Δt), SVector(μ))
+        sys = complete(CR3BSystem(; stm = true))
+        op = [
+            [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u
+            :Φ => I(6)
+            :μ => μ
+        ]
+        tspan = (0, ic.Δt)
+        problem = ODEProblem(sys, op, tspan)
         solution = solve(
             problem,
             Vern9(),
@@ -310,8 +351,12 @@ stable = let
     perturbations =
         [converge(ic[1:6], reshape(ic[7:end], 6, 6), Φ; eps = 1e-7) for ic in ics]
 
+    op = [
+        [:x, :y, :z, :ẋ, :ẏ, :ż] .=> u
+        :μ => μ
+    ]
     problem = EnsembleProblem(
-        ODEProblem(CR3BFunction(), u, (0.0, -2.1 * ic.Δt), SVector(μ)),
+        ODEProblem(complete(CR3BSystem()), op, (0.0, -2.1 * ic.Δt)),
         prob_func = (prob, i, repeat) -> remake(prob; u0 = perturbations[i]),
     )
 

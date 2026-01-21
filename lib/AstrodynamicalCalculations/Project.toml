@@ -1,7 +1,10 @@
 name = "AstrodynamicalCalculations"
 uuid = "c0cf9fb7-f496-4999-a425-c50785d1b88b"
-authors = ["Joey Carpinelli <joey@loopy.codes>"]
 version = "1.0.0"
+authors = ["Joey Carpinelli <joey@loopy.codes>"]
+
+[workspace]
+projects = ["docs", "test"]
 
 [deps]
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
@@ -12,14 +15,8 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
 DocStringExtensions = "0.9"
+LinearAlgebra = "1"
 Reexport = "1.2"
-StaticArrays = "1.6"
 Roots = "2.0"
-julia = "1.6"
-
-[extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-ParallelTestRunner = "d3525ed8-44d0-4b2c-a655-542cee43accc"
-
-[targets]
-test = ["Test", "ParallelTestRunner"]
+StaticArrays = "1.6"
+julia = "1.10"

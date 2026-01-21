@@ -4,18 +4,20 @@ Unit tests for various solvers.
 module AstrodynamicalSolversTests
 
 using ParallelTestRunner: runtests, find_tests, parse_args
-import AstrodynamicalSolvers
 
 const init_code = quote
-    # TODO: Use explicit imports after
-    # https://github.com/JuliaAstro/GeneralAstrodynamics.jl/pull/280
-    # is in
-    using AstrodynamicalSolvers
-    using AstrodynamicalCalculations
-    using AstrodynamicalModels
-    using LinearAlgebra
-    using OrdinaryDiffEqVerner
-    using StaticArrays
+    using Test
+    using AstrodynamicalSolvers:
+        AstrodynamicalSolvers,
+        halo,
+        monodromy,
+        propagate,
+        propagate!
+    using AstrodynamicalCalculations: converge, diverge, richardson_ic
+    using OrdinaryDiffEqVerner: ODEProblem, ODESolution, Vern9, solve
+    using AstrodynamicalModels: CR3BFunction, CR3BSystem, CartesianState, Orbit, R2BParameters
+    using LinearAlgebra: I
+    using ModelingToolkit: complete
 end
 
 args = parse_args(Base.ARGS)

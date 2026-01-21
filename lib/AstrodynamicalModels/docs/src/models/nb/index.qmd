@@ -7,6 +7,7 @@ _Also known as NBP dynamics!_
 #| output: false
 using AstrodynamicalModels
 using ModelingToolkit
+using ModelingToolkit: get_u0, get_p
 ```
 
 ## Overview
@@ -49,7 +50,10 @@ Finally, let's construct a Julia function which implements these dynamics!
 ```{julia}
 #| echo: true
 f = NBFunction(2)
-let u = randn(12), m = randn(2), G = rand(), t = 0
-    f(u, [G, m...], t)
+let u = randn(12), m = randn(2), G = randn(), t = 0
+    sys = f.sys
+    u0 = get_u0(sys, ModelingToolkit.unknowns(sys) .=> u)
+    p = get_p(sys, [:m => m, :G => G]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=> [m, G])
+    f(u0, p, t)
 end
 ```
