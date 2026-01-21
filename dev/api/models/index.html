@@ -626,9 +626,12 @@ window.onload = function () {
 <h5 class="unnumbered anchored" data-anchor-id="usage">Usage</h5>
 <p>The <code>stm</code> and <code>name</code> keyword arguments are passed to <code>Attitude</code>. All other keyword arguments are passed directly to <code>SciMLBase.ODEFunction</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">AttitudeFunction</span>()</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">7</span>), p <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">15</span>), t <span class="op">=</span> <span class="cn">NaN</span> <span class="co"># time invariant</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, p, t)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">7</span>), p <span class="op">=</span> [<span class="fu">randn</span>(<span class="fl">9</span>), <span class="fu">randn</span>(<span class="fl">3</span>), <span class="fu">rand</span>(<span class="fl">3</span>)], t <span class="op">=</span> <span class="cn">NaN</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    sys <span class="op">=</span> f.sys</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    u0 <span class="op">=</span> <span class="fu">get_u0</span>(sys, ModelingToolkit.<span class="fu">unknowns</span>(sys) <span class="op">.=&gt;</span> u)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> <span class="fu">get_p</span>(sys, [<span class="op">:</span>J <span class="op">=&gt;</span> p[<span class="fl">1</span>], <span class="op">:</span>L <span class="op">=&gt;</span> p[<span class="fl">2</span>], <span class="op">:</span>f <span class="op">=&gt;</span> p[<span class="fl">3</span>]]) <span class="co"># Or get_p(sys, ModelingToolkit.parameters(sys) .=&gt; p)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u0, p, t)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </div>
@@ -674,7 +677,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AttitudeSystem</span>(; stm, name, defaults, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AttitudeSystem</span>(; stm, name, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A <code>ModelingToolkit.System</code> for atmospheric entry. Currently, only exponential atmosphere models are provided! The output model is cached with <code>Memoize.jl</code>. Planet-specific parameters default to Earth values.</p>
 <p>The order of the states follows: <code>[q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃]</code>.</p>
 <p>The order of the parameters follows: <code>[]</code></p>
@@ -724,9 +727,12 @@ window.onload = function () {
 <h5 class="unnumbered anchored" data-anchor-id="usage-2">Usage</h5>
 <p>The <code>stm</code>, and <code>name</code> keyword arguments are passed to <code>CR3B</code>. All other keyword arguments are passed directly to <code>SciMLBase.ODEFunction</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">CR3BFunction</span>(; stm<span class="op">=</span><span class="cn">false</span>, jac<span class="op">=</span><span class="cn">true</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">6</span>), p <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">1</span>), t <span class="op">=</span> <span class="fl">0</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, p, t)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">6</span>), p <span class="op">=</span> <span class="fu">randn</span>(), t <span class="op">=</span> <span class="fl">0</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    sys <span class="op">=</span> f.sys</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    u0 <span class="op">=</span> <span class="fu">get_u0</span>(sys, [<span class="op">:</span>x, <span class="op">:</span>y, <span class="op">:</span>z, <span class="op">:</span>ẋ, <span class="op">:</span>ẏ, <span class="op">:</span>ż] <span class="op">.=&gt;</span> u) <span class="co"># Or get_u0(sys, ModelingToolkit.unknowns(sys) .=&gt; u)</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> <span class="fu">get_p</span>(sys, [<span class="op">:</span>μ <span class="op">=&gt;</span> p]) <span class="co"># Or get_p(sys, ModelingToolkit.parameters(sys) .=&gt; p)</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u0, p, t)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </div>
@@ -789,7 +795,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CR3BSystem</span>(; stm, name, defaults, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CR3BSystem</span>(; stm, name, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A <code>ModelingToolkit.System</code> for the Circular Restricted Three-body Problem.</p>
 <p>The order of the states follows: <code>[x, y, z, ẋ, ẏ, ż]</code>.</p>
 <p>The order of the parameters follows: <code>[μ]</code>.</p>
@@ -940,9 +946,12 @@ window.onload = function () {
 <h5 class="unnumbered anchored" data-anchor-id="usage-4">Usage</h5>
 <p>The <code>stm</code>, and <code>name</code> keyword arguments are passed to <code>NBP</code>. All other keyword arguments are passed directly to <code>SciMLBase.ODEFunction</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">NBFunction</span>(<span class="fl">3</span>; stm<span class="op">=</span><span class="cn">false</span>, name<span class="op">=:</span>NBP, jac<span class="op">=</span><span class="cn">false</span>, sparse<span class="op">=</span><span class="cn">false</span>)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">3</span><span class="op">*</span><span class="fl">6</span>), p <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">1</span> <span class="op">+</span> <span class="fl">3</span>), t <span class="op">=</span> <span class="fl">0</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, p, t)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">3</span><span class="op">*</span><span class="fl">6</span>), p <span class="op">=</span> [<span class="fu">randn</span>(<span class="fl">3</span>), <span class="fu">randn</span>()], t <span class="op">=</span> <span class="fl">0</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    sys <span class="op">=</span> f.sys</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    u0 <span class="op">=</span> <span class="fu">get_u0</span>(sys, ModelingToolkit.<span class="fu">unknowns</span>(sys) <span class="op">.=&gt;</span> u)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> <span class="fu">get_p</span>(sys, [<span class="op">:</span>m <span class="op">=&gt;</span> p[<span class="fl">1</span>], <span class="op">:</span>G <span class="op">=&gt;</span> p[<span class="fl">2</span>]]) <span class="co"># Or get_p(sys, ModelingToolkit.parameters(sys) .=&gt; p)</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u0, p, t)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </div>
@@ -958,7 +967,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">NBSystem</span>(N; stm, name, defaults, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">NBSystem</span>(N; stm, name, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A <code>ModelingToolkit.System</code> for the Newtonian N-body Problem.</p>
 <p>The order of the states follows: <code>[x₁, y₁, z₁, ..., xₙ, yₙ, zₙ, ẋ₁, ẏ₁, ż₁, ..., ẋₙ, ẏₙ, żₙ]</code>.</p>
 <p>The order of the parameters follows: <code>[G, m₁, m₂, ..., mₙ]</code>.</p>
@@ -1039,8 +1048,11 @@ window.onload = function () {
 <p>The <code>name</code> keyword argument is ]passed to <code>PlanarEntry</code>. All other keyword arguments are passed directly to <code>SciMLBase.ODEFunction</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">PlanarEntryFunction</span>()</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">4</span>), p <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">7</span>), t <span class="op">=</span> <span class="cn">NaN</span> <span class="co"># time invariant</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, p, t)</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    sys <span class="op">=</span> f.sys</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    u0 <span class="op">=</span> <span class="fu">get_u0</span>(sys, [<span class="op">:</span>γ, <span class="op">:</span>v, <span class="op">:</span>r, <span class="op">:</span>θ] <span class="op">.=&gt;</span> u) <span class="co"># Or get_u0(sys, ModelingToolkit.unknowns(sys) .=&gt; u)</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> <span class="fu">get_p</span>(sys, ModelingToolkit.<span class="fu">parameters</span>(sys) <span class="op">.=&gt;</span> p)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u0, p, t)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </div>
@@ -1086,7 +1098,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PlanarEntrySystem</span>(; name, defaults, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PlanarEntrySystem</span>(; name, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A <code>ModelingToolkit.System</code> for atmospheric entry. Currently, only exponential atmosphere models are provided! The output model is cached with <code>Memoize.jl</code>. Planet-specific parameters default to Earth values.</p>
 <p>The order of the states follows: <code>[γ, v, r, θ]</code>.</p>
 <p>The order of the parameters follows: <code>[R, P, H, m, A, C, μ]</code></p>
@@ -1121,9 +1133,12 @@ window.onload = function () {
 <h5 class="unnumbered anchored" data-anchor-id="usage-8">Usage</h5>
 <p>The <code>stm</code>, and <code>name</code> keyword arguments are passed to <code>R2B</code>. All other keyword arguments are passed directly to <code>SciMLBase.ODEFunction</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">R2BFunction</span>(; stm<span class="op">=</span><span class="cn">false</span>, name<span class="op">=:</span>R2B, jac<span class="op">=</span><span class="cn">true</span>)</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">6</span>), p <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">1</span>), t <span class="op">=</span> <span class="fl">0</span></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u, p, t)</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> u <span class="op">=</span> <span class="fu">randn</span>(<span class="fl">6</span>), p <span class="op">=</span> <span class="fu">randn</span>(), t <span class="op">=</span> <span class="fl">0</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    sys <span class="op">=</span> f.sys</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    u0 <span class="op">=</span> <span class="fu">get_u0</span>(sys, [<span class="op">:</span>x, <span class="op">:</span>y, <span class="op">:</span>z, <span class="op">:</span>ẋ, <span class="op">:</span>ẏ, <span class="op">:</span>ż] <span class="op">.=&gt;</span> u) <span class="co"># Or get_u0(sys, ModelingToolkit.unknowns(sys) .=&gt; u)</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> <span class="fu">get_p</span>(sys, [<span class="op">:</span>μ <span class="op">=&gt;</span> p]) <span class="co"># Or get_p(sys, ModelingToolkit.parameters(sys) .=&gt; p)</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(u0, p, t)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </div>
@@ -1186,7 +1201,7 @@ window.onload = function () {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">R2BSystem</span>(; stm, name, defaults, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">R2BSystem</span>(; stm, name, kwargs<span class="op">...</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A <code>ModelingToolkit.System</code> for the Restricted Two-body Problem.</p>
 <p>The order of the states follows: <code>[x, y, z, ẋ, ẏ, ż]</code>.</p>
 <p>The order of the parameters follows: <code>[μ]</code>.</p>
