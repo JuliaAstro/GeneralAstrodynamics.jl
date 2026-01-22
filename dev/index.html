@@ -613,13 +613,24 @@ ENV["GROUP"] = &lt;subpackage&gt;
 <pre class="julia-repl"><code>&gt; j --proj
 
 (GeneralAstrodynamics/lib/AstrodynamicalCalculations) pkg&gt; test</code></pre>
+<p>List available tests for a given <subpackage>:</subpackage></p>
+<pre class="julia-repl"><code>&gt; julia --proj
+
+julia&gt; using Pkg
+
+julia&gt; Pkg.test("&lt;subpackage&gt;"; test_args = `--list`)</code></pre>
+<p>Run specific tests for a given <subpackage>:</subpackage></p>
+<pre class="julia-repl"><code>&gt; julia --proj
+
+julia&gt; using Pkg
+
+julia&gt; Pkg.test("&lt;subpackage&gt;"; test_args = `--verbose &lt;filename&gt;`)</code></pre>
+<p>for a given filename listed in the previous usage example. Partial matches for the start of the filename are also accepted.</p>
 </section>
 <section id="explicit-imports" class="level3">
 <h3 class="anchored" data-anchor-id="explicit-imports">Explicit imports</h3>
 <p>See the documentation for <a href=""><code>ExplicitImports.jl</code></a> for standard usage. For non-package files at path <code>&lt;fpath&gt;</code> relative to the top-level of <code>&lt;subpackage&gt;</code>, run the following:</p>
-<pre class="julia-repl"><code>&gt; julia --proj
-
-julia&gt; using ExplicitImports, &lt;subpackage&gt;
+<pre class="julia-repl"><code>julia&gt; using ExplicitImports, &lt;subpackage&gt;
 
 julia&gt; include(&lt;fpath&gt;)
 
