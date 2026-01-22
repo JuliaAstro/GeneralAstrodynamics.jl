@@ -62,4 +62,4 @@ end
     @test ODEFunction(orbit) isa ODEFunction
 end
 
-end
+end # module

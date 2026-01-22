@@ -96,13 +96,33 @@ or navigate to top-level of `<subpackage>` and run tests as usual:
 (GeneralAstrodynamics/lib/AstrodynamicalCalculations) pkg> test
 ```
 
+List available tests for a given <subpackage>:
+
+```julia-repl
+> julia --proj
+
+julia> using Pkg
+
+julia> Pkg.test("<subpackage>"; test_args = `--list`)
+```
+
+Run specific tests for a given <subpackage>:
+
+```julia-repl
+> julia --proj
+
+julia> using Pkg
+
+julia> Pkg.test("<subpackage>"; test_args = `--verbose <filename>`)
+```
+
+for a given filename listed in the previous usage example. Partial matches for the start of the filename are also accepted.
+
 ### Explicit imports
 
 See the documentation for [`ExplicitImports.jl`]() for standard usage. For non-package files at path `<fpath>` relative to the top-level of `<subpackage>`, run the following:
 
 ```julia-repl
-> julia --proj
-
 julia> using ExplicitImports, <subpackage>
 
 julia> include(<fpath>)

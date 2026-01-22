@@ -1,11 +1,18 @@
-#
-# Unit tests for AstrodynamicalModels.jl
-#
+"""
+Unit tests for AstrodynamicalModels.jl
+"""
+module AstrodynamicalModelsTests
 
-include("Aqua.jl")
-include("R2BP.jl")
-include("CR3BP.jl")
-include("NBP.jl")
-include("Orbits.jl")
-include("Entry.jl")
-include("Attitude.jl")
+using ParallelTestRunner: runtests, find_tests, parse_args
+import AstrodynamicalModels
+
+const init_code = quote
+    using Test
+end
+
+args = parse_args(Base.ARGS)
+testsuite = find_tests(@__DIR__)
+
+runtests(AstrodynamicalModels, args; testsuite, init_code)
+
+end

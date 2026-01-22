@@ -20,4 +20,4 @@ end
     @test true
 end
 
-end
+end # module
