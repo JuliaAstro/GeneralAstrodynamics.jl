@@ -17,7 +17,7 @@
 		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {},
 		"ghcr.io/julialang/devcontainer-features/julia:1": {},
 		"ghcr.io/devcontainer-community/devcontainer-features/starship.rs:1": {},
-		"ghcr.io/devcontainers/features/git:1": {},
+		"ghcr.io/devcontainers/features/git:": {},
 		"ghcr.io/devcontainers/features/git-lfs:1": {},
 		"ghcr.io/devcontainers-extra/features/pre-commit:2": {},
 		"ghcr.io/devcontainers/features/github-cli:": {},
