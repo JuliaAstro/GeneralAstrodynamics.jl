@@ -1,9 +1,9 @@
 {
   "features": {
-    "ghcr.io/devcontainer-community/devcontainer-features/starship.rs:1": {
-      "version": "1.0.0",
-      "resolved": "ghcr.io/devcontainer-community/devcontainer-features/starship.rs@sha256:436765d97a663dc00b69466dca52dd7dcc073ad43c1aa25237852c291ffb2489",
-      "integrity": "sha256:436765d97a663dc00b69466dca52dd7dcc073ad43c1aa25237852c291ffb2489"
+    "ghcr.io/devcontainer-community/devcontainer-features/starship.rs:": {
+      "version": "1.0.1",
+      "resolved": "ghcr.io/devcontainer-community/devcontainer-features/starship.rs@sha256:15e7e5023079ffbd2d5a080d21738912339bc3d1064719d880f3bb5dee797e27",
+      "integrity": "sha256:15e7e5023079ffbd2d5a080d21738912339bc3d1064719d880f3bb5dee797e27"
     },
     "ghcr.io/devcontainers-extra/features/pre-commit:2": {
       "version": "2.0.18",
