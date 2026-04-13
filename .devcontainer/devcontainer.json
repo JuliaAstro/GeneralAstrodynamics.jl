@@ -14,7 +14,7 @@
 			"installJupyterlab": true,
 			"version": "3.12"
 		},
-		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {},
+		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:": {},
 		"ghcr.io/julialang/devcontainer-features/julia:1": {},
 		"ghcr.io/devcontainer-community/devcontainer-features/starship.rs:1": {},
 		"ghcr.io/devcontainers/features/git:1": {},

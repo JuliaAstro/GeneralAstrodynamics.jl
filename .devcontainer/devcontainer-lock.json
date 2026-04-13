@@ -40,10 +40,10 @@
       "resolved": "ghcr.io/rocker-org/devcontainer-features/apt-packages@sha256:87a4d7750a596a5db034ba8508782f31aebdc2ffe955c66aaecb33d9de2ecdae",
       "integrity": "sha256:87a4d7750a596a5db034ba8508782f31aebdc2ffe955c66aaecb33d9de2ecdae"
     },
-    "ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {
-      "version": "1.1.4",
-      "resolved": "ghcr.io/rocker-org/devcontainer-features/quarto-cli@sha256:74960cb27e2be0dbea52c666342fd4eb69475cec971440265b3944eee30e1f86",
-      "integrity": "sha256:74960cb27e2be0dbea52c666342fd4eb69475cec971440265b3944eee30e1f86"
+    "ghcr.io/rocker-org/devcontainer-features/quarto-cli:": {
+      "version": "1.1.5",
+      "resolved": "ghcr.io/rocker-org/devcontainer-features/quarto-cli@sha256:7d1ba1c977b72d616e76089f016c87c1a581a05386aee635bae08e5a1375507d",
+      "integrity": "sha256:7d1ba1c977b72d616e76089f016c87c1a581a05386aee635bae08e5a1375507d"
     }
   }
 }
