@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Circular Restricted Three Body Calculations – AstrodynamicalCalculations</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -20,45 +23,10 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -68,19 +36,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../api/r2b/index.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-b758ccaa5987ceb1b75504551e579abf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-b9efe103605aac5501d162c1b35daf72.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-94a51ee850811f79d9cf93158755d08b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-b9efe103605aac5501d162c1b35daf72.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-3613f8738cfd167806af24985f671658.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-92475d0c63e09df4038a46b5a9b5a3e2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-3613f8738cfd167806af24985f671658.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -107,6 +74,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 <script>
 //
 // The code below was originally written by the authors of Wflow.jl. Their
@@ -490,42 +460,8 @@ window.onload = function () {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of Contents</h2>
-   
-  <ul>
-  <li><a href="#cr3bpcalculations" id="toc-cr3bpcalculations" class="nav-link active" data-scroll-target="#cr3bpcalculations"><code>CR3BPCalculations</code></a></li>
-  <li><a href="#converge" id="toc-converge" class="nav-link" data-scroll-target="#converge"><code>converge</code></a></li>
-  <li><a href="#converge-1" id="toc-converge-1" class="nav-link" data-scroll-target="#converge-1"><code>converge!</code></a></li>
-  <li><a href="#convergent_direction" id="toc-convergent_direction" class="nav-link" data-scroll-target="#convergent_direction"><code>convergent_direction</code></a></li>
-  <li><a href="#distance_scaling" id="toc-distance_scaling" class="nav-link" data-scroll-target="#distance_scaling"><code>distance_scaling</code></a></li>
-  <li><a href="#distance_to_primary" id="toc-distance_to_primary" class="nav-link" data-scroll-target="#distance_to_primary"><code>distance_to_primary</code></a></li>
-  <li><a href="#distance_to_secondary" id="toc-distance_to_secondary" class="nav-link" data-scroll-target="#distance_to_secondary"><code>distance_to_secondary</code></a></li>
-  <li><a href="#diverge" id="toc-diverge" class="nav-link" data-scroll-target="#diverge"><code>diverge</code></a></li>
-  <li><a href="#diverge-1" id="toc-diverge-1" class="nav-link" data-scroll-target="#diverge-1"><code>diverge!</code></a></li>
-  <li><a href="#divergent_direction" id="toc-divergent_direction" class="nav-link" data-scroll-target="#divergent_direction"><code>divergent_direction</code></a></li>
-  <li><a href="#inertial_to_synodic" id="toc-inertial_to_synodic" class="nav-link" data-scroll-target="#inertial_to_synodic"><code>inertial_to_synodic</code></a></li>
-  <li><a href="#jacobi_constant" id="toc-jacobi_constant" class="nav-link" data-scroll-target="#jacobi_constant"><code>jacobi_constant</code></a></li>
-  <li><a href="#lagrange_point" id="toc-lagrange_point" class="nav-link" data-scroll-target="#lagrange_point"><code>lagrange_point</code></a></li>
-  <li><a href="#nondimensional" id="toc-nondimensional" class="nav-link" data-scroll-target="#nondimensional"><code>nondimensional</code></a></li>
-  <li><a href="#nondimensional_radii" id="toc-nondimensional_radii" class="nav-link" data-scroll-target="#nondimensional_radii"><code>nondimensional_radii</code></a></li>
-  <li><a href="#perturb" id="toc-perturb" class="nav-link" data-scroll-target="#perturb"><code>perturb</code></a></li>
-  <li><a href="#perturb-1" id="toc-perturb-1" class="nav-link" data-scroll-target="#perturb-1"><code>perturb!</code></a></li>
-  <li><a href="#perturbation" id="toc-perturbation" class="nav-link" data-scroll-target="#perturbation"><code>perturbation</code></a></li>
-  <li><a href="#potential_energy" id="toc-potential_energy" class="nav-link" data-scroll-target="#potential_energy"><code>potential_energy</code></a></li>
-  <li><a href="#primary_synodic_position" id="toc-primary_synodic_position" class="nav-link" data-scroll-target="#primary_synodic_position"><code>primary_synodic_position</code></a></li>
-  <li><a href="#redimensioned" id="toc-redimensioned" class="nav-link" data-scroll-target="#redimensioned"><code>redimensioned</code></a></li>
-  <li><a href="#reduced_mass" id="toc-reduced_mass" class="nav-link" data-scroll-target="#reduced_mass"><code>reduced_mass</code></a></li>
-  <li><a href="#richardson_halo" id="toc-richardson_halo" class="nav-link" data-scroll-target="#richardson_halo"><code>richardson_halo</code></a></li>
-  <li><a href="#richardson_ic" id="toc-richardson_ic" class="nav-link" data-scroll-target="#richardson_ic"><code>richardson_ic</code></a></li>
-  <li><a href="#secondary_synodic_position" id="toc-secondary_synodic_position" class="nav-link" data-scroll-target="#secondary_synodic_position"><code>secondary_synodic_position</code></a></li>
-  <li><a href="#synodic_to_inertial" id="toc-synodic_to_inertial" class="nav-link" data-scroll-target="#synodic_to_inertial"><code>synodic_to_inertial</code></a></li>
-  <li><a href="#time_scaling" id="toc-time_scaling" class="nav-link" data-scroll-target="#time_scaling"><code>time_scaling</code></a></li>
-  <li><a href="#velocity_scaling" id="toc-velocity_scaling" class="nav-link" data-scroll-target="#velocity_scaling"><code>velocity_scaling</code></a></li>
-  <li><a href="#zero_velocity_curves" id="toc-zero_velocity_curves" class="nav-link" data-scroll-target="#zero_velocity_curves"><code>zero_velocity_curves</code></a></li>
-  </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/JuliaAstro/GeneralAstrodynamics.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -551,918 +487,754 @@ window.onload = function () {
 
 
 <p><em>Docstrings for <code>AstrodynamicalCalculations.CR3BPCalculations</code>.</em></p>
-<section id="cr3bpcalculations" class="level2">
-<h2 class="anchored" data-anchor-id="cr3bpcalculations"><code>CR3BPCalculations</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
+<div class="markdown"><h2 class="anchored">`CR3BPCalculations`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
 <p>Common calculations within Circular Restricted Three Body Problem dynamics.</p>
-<section id="extended-help" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="extended-help">Extended Help</h3>
-<section id="imports" class="level4 unnumbered">
-<h4 class="unnumbered anchored" data-anchor-id="imports">Imports</h4>
+<h3 class="anchored">Extended Help {.unnumbered}</h3>
+<h4 class="anchored">Imports {.unnumbered}</h4>
 <ul>
-<li><code>Base</code></li>
-<li><code>DocStringExtensions</code></li>
-<li><code>LinearAlgebra</code></li>
-<li><code>Roots</code></li>
-<li><code>StaticArrays</code></li>
+<li><p><code>Base</code></p>
+</li>
 </ul>
-</section>
-<section id="exports" class="level4 unnumbered">
-<h4 class="unnumbered anchored" data-anchor-id="exports">Exports</h4>
+<h4 class="anchored">Exports {.unnumbered}</h4>
 <ul>
-<li><a href="#converge"><code>converge</code></a></li>
-<li><a href="#converge!"><code>converge!</code></a></li>
-<li><a href="#convergent_direction"><code>convergent_direction</code></a></li>
-<li><a href="#distance_scaling"><code>distance_scaling</code></a></li>
-<li><a href="#distance_to_primary"><code>distance_to_primary</code></a></li>
-<li><a href="#distance_to_secondary"><code>distance_to_secondary</code></a></li>
-<li><a href="#diverge"><code>diverge</code></a></li>
-<li><a href="#diverge!"><code>diverge!</code></a></li>
-<li><a href="#divergent_direction"><code>divergent_direction</code></a></li>
-<li><a href="#inertial_to_synodic"><code>inertial_to_synodic</code></a></li>
-<li><a href="#jacobi_constant"><code>jacobi_constant</code></a></li>
-<li><a href="#lagrange_point"><code>lagrange_point</code></a></li>
-<li><a href="#nondimensional"><code>nondimensional</code></a></li>
-<li><a href="#nondimensional_radii"><code>nondimensional_radii</code></a></li>
-<li><a href="#perturb"><code>perturb</code></a></li>
-<li><a href="#perturb!"><code>perturb!</code></a></li>
-<li><a href="#perturbation"><code>perturbation</code></a></li>
-<li><a href="#potential_energy"><code>potential_energy</code></a></li>
-<li><a href="#primary_synodic_position"><code>primary_synodic_position</code></a></li>
-<li><a href="#redimensioned"><code>redimensioned</code></a></li>
-<li><a href="#reduced_mass"><code>reduced_mass</code></a></li>
-<li><a href="#richardson_halo"><code>richardson_halo</code></a></li>
-<li><a href="#richardson_ic"><code>richardson_ic</code></a></li>
-<li><a href="#secondary_synodic_position"><code>secondary_synodic_position</code></a></li>
-<li><a href="#synodic_to_inertial"><code>synodic_to_inertial</code></a></li>
-<li><a href="#time_scaling"><code>time_scaling</code></a></li>
-<li><a href="#velocity_scaling"><code>velocity_scaling</code></a></li>
-<li><a href="#zero_velocity_curves"><code>zero_velocity_curves</code></a></li>
+<li><p><a href="#converge"><code>converge</code></a></p>
+</li>
+<li><p><a href="#converge!"><code>converge!</code></a></p>
+</li>
+<li><p><a href="#convergent_direction"><code>convergent_direction</code></a></p>
+</li>
+<li><p><a href="#distance_scaling"><code>distance_scaling</code></a></p>
+</li>
+<li><p><a href="#distance_to_primary"><code>distance_to_primary</code></a></p>
+</li>
+<li><p><a href="#distance_to_secondary"><code>distance_to_secondary</code></a></p>
+</li>
+<li><p><a href="#diverge"><code>diverge</code></a></p>
+</li>
+<li><p><a href="#diverge!"><code>diverge!</code></a></p>
+</li>
+<li><p><a href="#divergent_direction"><code>divergent_direction</code></a></p>
+</li>
+<li><p><a href="#inertial_to_synodic"><code>inertial_to_synodic</code></a></p>
+</li>
+<li><p><a href="#jacobi_constant"><code>jacobi_constant</code></a></p>
+</li>
+<li><p><a href="#lagrange_point"><code>lagrange_point</code></a></p>
+</li>
+<li><p><a href="#nondimensional"><code>nondimensional</code></a></p>
+</li>
+<li><p><a href="#nondimensional_radii"><code>nondimensional_radii</code></a></p>
+</li>
+<li><p><a href="#perturb"><code>perturb</code></a></p>
+</li>
+<li><p><a href="#perturb!"><code>perturb!</code></a></p>
+</li>
+<li><p><a href="#perturbation"><code>perturbation</code></a></p>
+</li>
+<li><p><a href="#potential_energy"><code>potential_energy</code></a></p>
+</li>
+<li><p><a href="#primary_synodic_position"><code>primary_synodic_position</code></a></p>
+</li>
+<li><p><a href="#redimensioned"><code>redimensioned</code></a></p>
+</li>
+<li><p><a href="#reduced_mass"><code>reduced_mass</code></a></p>
+</li>
+<li><p><a href="#richardson_halo"><code>richardson_halo</code></a></p>
+</li>
+<li><p><a href="#richardson_ic"><code>richardson_ic</code></a></p>
+</li>
+<li><p><a href="#secondary_synodic_position"><code>secondary_synodic_position</code></a></p>
+</li>
+<li><p><a href="#synodic_to_inertial"><code>synodic_to_inertial</code></a></p>
+</li>
+<li><p><a href="#time_scaling"><code>time_scaling</code></a></p>
+</li>
+<li><p><a href="#velocity_scaling"><code>velocity_scaling</code></a></p>
+</li>
+<li><p><a href="#zero_velocity_curves"><code>zero_velocity_curves</code></a></p>
+</li>
 </ul>
-</section>
-</section>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="converge" class="level2">
-<h2 class="anchored" data-anchor-id="converge"><code>converge</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">converge</span>(u, stm, Φ; eps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`converge`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">converge(u, stm, Φ; eps)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
-<p>Perturb halo orbit conditions onto the orbit’s unstable manifold.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="converge-1" class="level2">
-<h2 class="anchored" data-anchor-id="converge-1"><code>converge!</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">converge!</span>(p, u, stm, Φ; eps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+<p>:::</p>
+
+
+<p>Perturb halo orbit conditions onto the orbit's unstable manifold.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`converge!`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">converge!(p, u, stm, Φ; eps)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
-<p>Perturb halo orbit conditions in-place onto the orbit’s stable manifold.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="convergent_direction" class="level2">
-<h2 class="anchored" data-anchor-id="convergent_direction"><code>convergent_direction</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">convergent_direction</span>(stm; atol)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+<p>:::</p>
+
+
+<p>Perturb halo orbit conditions in-place onto the orbit's stable manifold.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`convergent_direction`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">convergent_direction(stm; atol)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Calculates the eigenvector associated with the stable manifold of a Monodromy matrix.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="distance_scaling" class="level2">
-<h2 class="anchored" data-anchor-id="distance_scaling"><code>distance_scaling</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">distance_scaling</span>(a)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`distance_scaling`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">distance_scaling(a)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>The length scale factor used to nondimensionalize CR3BP states.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="distance_to_primary" class="level2">
-<h2 class="anchored" data-anchor-id="distance_to_primary"><code>distance_to_primary</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">distance_to_primary</span>(r, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`distance_to_primary`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">distance_to_primary(r, μ)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Returns synodic distance to primary body.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="distance_to_secondary" class="level2">
-<h2 class="anchored" data-anchor-id="distance_to_secondary"><code>distance_to_secondary</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">distance_to_secondary</span>(r, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`distance_to_secondary`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">distance_to_secondary(r, μ)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Returns synodic distance to secondary body.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="diverge" class="level2">
-<h2 class="anchored" data-anchor-id="diverge"><code>diverge</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">diverge</span>(u, stm, Φ; eps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`diverge`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">diverge(u, stm, Φ; eps)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
-<p>Perturb halo orbit conditions onto the orbit’s unstable manifold.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="diverge-1" class="level2">
-<h2 class="anchored" data-anchor-id="diverge-1"><code>diverge!</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">diverge!</span>(p, u, stm, Φ; eps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+<p>:::</p>
+
+
+<p>Perturb halo orbit conditions onto the orbit's unstable manifold.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`diverge!`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">diverge!(p, u, stm, Φ; eps)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
-<p>Perturb halo orbit conditions in-place onto the orbit’s unstable manifold.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="divergent_direction" class="level2">
-<h2 class="anchored" data-anchor-id="divergent_direction"><code>divergent_direction</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">divergent_direction</span>(stm; atol)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+<p>:::</p>
+
+
+<p>Perturb halo orbit conditions in-place onto the orbit's unstable manifold.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`divergent_direction`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">divergent_direction(stm; atol)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Calculates the direction associated with the unstable manifold of a Monodromy matrix.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="inertial_to_synodic" class="level2">
-<h2 class="anchored" data-anchor-id="inertial_to_synodic"><code>inertial_to_synodic</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">inertial_to_synodic</span>(x, y, z, t, ω)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`inertial_to_synodic`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">inertial_to_synodic(x, y, z, t, ω)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Given a barycentric-inertial Cartesian state, returns the state in the synodic (rotating) reference frame.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="jacobi_constant" class="level2">
-<h2 class="anchored" data-anchor-id="jacobi_constant"><code>jacobi_constant</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">jacobi_constant</span>(x, y, z, ẋ, ẏ, ż, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`jacobi_constant`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">jacobi_constant(x, y, z, ẋ, ẏ, ż, μ)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Returns the Jacobi Constant, <code>C</code> in the Synodic frame with Normalized units.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="lagrange_point" class="level2">
-<h2 class="anchored" data-anchor-id="lagrange_point"><code>lagrange_point</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lagrange_point</span>(μ, L)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`lagrange_point`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">lagrange_point(μ, L)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Returns the lagrange points for a CR3BP system.</p>
 <p><strong>Arguments:</strong></p>
 <ul>
-<li><code>μ</code>: Non-dimensional mass parameter for the CR3BP system.</li>
-<li><code>L</code>: Langrange points requested, must be in range [1,5]</li>
+<li><p><code>μ</code>: Non-dimensional mass parameter for the CR3BP system.</p>
+</li>
+<li><p><code>L</code>: Langrange points requested, must be in range [1,5]</p>
+</li>
 </ul>
 <p><strong>Outputs:</strong></p>
 <ul>
-<li>Tuple of Lagrange points</li>
-<li>Throws <code>ArgumentError</code> if L is out of range [1,5]</li>
+<li><p>Tuple of Lagrange points</p>
+</li>
+<li><p>Throws <code>ArgumentError</code> if L is out of range [1,5]</p>
+</li>
 </ul>
 <p><strong>References:</strong></p>
 <ul>
-<li><a href="https://digitalcommons.calpoly.edu/theses/1853/">Rund, 2018</a></li>
+<li><p><a href="https://digitalcommons.calpoly.edu/theses/1853/">Rund, 2018</a></p>
+</li>
 </ul>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="nondimensional" class="level2">
-<h2 class="anchored" data-anchor-id="nondimensional"><code>nondimensional</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nondimensional</span>(x, y, z, ẋ, ẏ, ż, t, a, μ₁, μ₂)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`nondimensional`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">nondimensional(x, y, z, ẋ, ẏ, ż, t, a, μ₁, μ₂)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Normalizes a CR3BP orbit in the rotating reference frame.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="nondimensional_radii" class="level2">
-<h2 class="anchored" data-anchor-id="nondimensional_radii"><code>nondimensional_radii</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nondimensional_radii</span>(x, y, z, xᵢ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`nondimensional_radii`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">nondimensional_radii(x, y, z, xᵢ)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
-<p>Returns the spacecraft’s nondimensional position w.r.t. body 1 (or 2).</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="perturb" class="level2">
-<h2 class="anchored" data-anchor-id="perturb"><code>perturb</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">perturb</span>(u, stm, direction; eps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+<p>:::</p>
+
+
+<p>Returns the spacecraft's nondimensional position w.r.t. body 1 (or 2).</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`perturb`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">perturb(u, stm, direction; eps)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Perturb a Cartesian state along a halo orbit onto a stable or unstable manifold.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="perturb-1" class="level2">
-<h2 class="anchored" data-anchor-id="perturb-1"><code>perturb!</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">perturb!</span>(p, u, stm, direction; eps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`perturb!`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">perturb!(p, u, stm, direction; eps)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Perturb a Cartesian state in-place along a halo orbit onto a stable or unstable manifold.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="perturbation" class="level2">
-<h2 class="anchored" data-anchor-id="perturbation"><code>perturbation</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">perturbation</span>(stm, direction; eps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`perturbation`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">perturbation(stm, direction; eps)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Return the perturbation in Cartesian state space along a halo orbit onto the provided direction of the provided manifold.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="potential_energy" class="level2">
-<h2 class="anchored" data-anchor-id="potential_energy"><code>potential_energy</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">potential_energy</span>(x, y, z, μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`potential_energy`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">potential_energy(x, y, z, μ)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Returns the potential energy <code>U</code> in the Synodic frame with Normalized units.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="primary_synodic_position" class="level2">
-<h2 class="anchored" data-anchor-id="primary_synodic_position"><code>primary_synodic_position</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">primary_synodic_position</span>(μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`primary_synodic_position`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">primary_synodic_position(μ)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Position of primary body.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="redimensioned" class="level2">
-<h2 class="anchored" data-anchor-id="redimensioned"><code>redimensioned</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">redimensioned</span>(x, y, z, ẋ, ẏ, ż, t, μ, a, T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`redimensioned`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">redimensioned(x, y, z, ẋ, ẏ, ż, t, μ, a, T)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Redimensionalizes a CR3BP orbit in the rotating reference frame.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="reduced_mass" class="level2">
-<h2 class="anchored" data-anchor-id="reduced_mass"><code>reduced_mass</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">reduced_mass</span>(μ₁, μ₂)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`reduced_mass`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">reduced_mass(μ₁, μ₂)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Return the reduced mass.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="richardson_halo" class="level2">
-<h2 class="anchored" data-anchor-id="richardson_halo"><code>richardson_halo</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">richardson_halo</span>(μ, L; Z, hemisphere, ϕ, length)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`richardson_halo`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">richardson_halo(μ, L; Z, hemisphere, ϕ, length)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Returns an analytical solution for a Halo orbit about <code>L</code>.</p>
-<section id="extended-help-1" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="extended-help-1">Extended Help</h3>
-<section id="arguments" class="level4 unnumbered">
-<h4 class="unnumbered anchored" data-anchor-id="arguments">Arguments</h4>
+<h3 class="anchored">Extended Help {.unnumbered}</h3>
+<h4 class="anchored">Arguments {.unnumbered}</h4>
 <ul>
-<li><code>μ</code>: Non-dimensional mass parameter for the CR3BP system.</li>
-<li><code>L</code>: Lagrange point to orbit (L1 or L2).</li>
-<li><code>Z</code>: Desired non-dimensional Z-amplitude for Halo orbit.</li>
-<li><code>hemisphere</code>: Specifies northern or southern Halo orbit.</li>
-<li><code>ϕ</code>: Desired Halo orbit phase.</li>
-<li><code>steps</code>: Number of non-dimensional timepoints in returned state.</li>
+<li><p><code>μ</code>: Non-dimensional mass parameter for the CR3BP system.</p>
+</li>
+<li><p><code>L</code>: Lagrange point to orbit (L1 or L2).</p>
+</li>
+<li><p><code>Z</code>: Desired non-dimensional Z-amplitude for Halo orbit.</p>
+</li>
+<li><p><code>hemisphere</code>: Specifies northern or southern Halo orbit.</p>
+</li>
+<li><p><code>ϕ</code>: Desired Halo orbit phase.</p>
+</li>
+<li><p><code>steps</code>: Number of non-dimensional timepoints in returned state.</p>
+</li>
 </ul>
-</section>
-<section id="outputs" class="level4 unnumbered">
-<h4 class="unnumbered anchored" data-anchor-id="outputs">Outputs</h4>
+<h4 class="anchored">Outputs {.unnumbered}</h4>
 <ul>
-<li>Near-periodic initial condition <code>u</code></li>
-<li>Halo orbit period <code>T</code>.</li>
-<li>Throws <code>ArgumentError</code> if L is not <code>1</code> or <code>2</code>.</li>
+<li><p>Near-periodic initial condition <code>u</code></p>
+</li>
+<li><p>Halo orbit period <code>T</code>.</p>
+</li>
+<li><p>Throws <code>ArgumentError</code> if L is not <code>1</code> or <code>2</code>.</p>
+</li>
 </ul>
 <p><strong>References:</strong></p>
 <ul>
-<li><a href="https://digitalcommons.calpoly.edu/theses/1853/">Rund, 2018</a>.</li>
+<li><p><a href="https://digitalcommons.calpoly.edu/theses/1853/">Rund, 2018</a>.</p>
+</li>
 </ul>
-</section>
-</section>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="richardson_ic" class="level2">
-<h2 class="anchored" data-anchor-id="richardson_ic"><code>richardson_ic</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">richardson_ic</span>(μ, L; Z, hemisphere, ϕ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`richardson_ic`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">richardson_ic(μ, L; Z, hemisphere, ϕ)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Returns an analytical solution for a Halo orbit about <code>L</code>.</p>
-<section id="extended-help-2" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="extended-help-2">Extended Help</h3>
-<section id="arguments-1" class="level4 unnumbered">
-<h4 class="unnumbered anchored" data-anchor-id="arguments-1">Arguments</h4>
+<h3 class="anchored">Extended Help {.unnumbered}</h3>
+<h4 class="anchored">Arguments {.unnumbered}</h4>
 <ul>
-<li><code>μ</code>: Non-dimensional mass parameter for the CR3BP system.</li>
-<li><code>L</code>: Lagrange point to orbit (L1 or L2).</li>
-<li><code>Z</code>: Desired non-dimensional Z-amplitude for Halo orbit.</li>
-<li><code>hemisphere</code>: Specifies northern or southern Halo orbit.</li>
-<li><code>ϕ</code>: Desired Halo orbit phase.</li>
-<li><code>steps</code>: Number of non-dimensional timepoints in returned state.</li>
+<li><p><code>μ</code>: Non-dimensional mass parameter for the CR3BP system.</p>
+</li>
+<li><p><code>L</code>: Lagrange point to orbit (L1 or L2).</p>
+</li>
+<li><p><code>Z</code>: Desired non-dimensional Z-amplitude for Halo orbit.</p>
+</li>
+<li><p><code>hemisphere</code>: Specifies northern or southern Halo orbit.</p>
+</li>
+<li><p><code>ϕ</code>: Desired Halo orbit phase.</p>
+</li>
+<li><p><code>steps</code>: Number of non-dimensional timepoints in returned state.</p>
+</li>
 </ul>
-</section>
-<section id="outputs-1" class="level4 unnumbered">
-<h4 class="unnumbered anchored" data-anchor-id="outputs-1">Outputs</h4>
+<h4 class="anchored">Outputs {.unnumbered}</h4>
 <ul>
-<li>Near-periodic initial condition <code>u</code></li>
-<li>Halo orbit period <code>T</code>.</li>
-<li>Throws <code>ArgumentError</code> if L is not <code>1</code> or <code>2</code>.</li>
+<li><p>Near-periodic initial condition <code>u</code></p>
+</li>
+<li><p>Halo orbit period <code>T</code>.</p>
+</li>
+<li><p>Throws <code>ArgumentError</code> if L is not <code>1</code> or <code>2</code>.</p>
+</li>
 </ul>
 <p><strong>References:</strong></p>
 <ul>
-<li><a href="https://digitalcommons.calpoly.edu/theses/1853/">Rund, 2018</a>.</li>
+<li><p><a href="https://digitalcommons.calpoly.edu/theses/1853/">Rund, 2018</a>.</p>
+</li>
 </ul>
-</section>
-</section>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="secondary_synodic_position" class="level2">
-<h2 class="anchored" data-anchor-id="secondary_synodic_position"><code>secondary_synodic_position</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">secondary_synodic_position</span>(μ)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`secondary_synodic_position`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">secondary_synodic_position(μ)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Position of primary body.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="synodic_to_inertial" class="level2">
-<h2 class="anchored" data-anchor-id="synodic_to_inertial"><code>synodic_to_inertial</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">synodic_to_inertial</span>(x, y, z, t, ω)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`synodic_to_inertial`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">synodic_to_inertial(x, y, z, t, ω)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Given the Synodic frame vector, returns the vector in the barycentric-inertial reference frame.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="time_scaling" class="level2">
-<h2 class="anchored" data-anchor-id="time_scaling"><code>time_scaling</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">time_scaling</span>(a, μ₁, μ₂)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`time_scaling`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">time_scaling(a, μ₁, μ₂)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>The time scale factor used to nondimensionalize CR3BP states.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="velocity_scaling" class="level2">
-<h2 class="anchored" data-anchor-id="velocity_scaling"><code>velocity_scaling</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">velocity_scaling</span>(a, μ₁, μ₂)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`velocity_scaling`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">velocity_scaling(a, μ₁, μ₂)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>The velocity scale factor used to nondimensionalize CR3BP states.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="zero_velocity_curves" class="level2">
-<h2 class="anchored" data-anchor-id="zero_velocity_curves"><code>zero_velocity_curves</code></h2>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">zero_velocity_curves</span>(r, v, μ; nondimensional_range)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="CR3BP Dynamics">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>CR3BP Dynamics
-</div>
-</div>
-<div class="callout-body-container callout-body">
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`zero_velocity_curves`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">zero_velocity_curves(r, v, μ; nondimensional_range)
+</code></pre>
+<p>:::{.callout-warning title="CR3BP Dynamics"}</p>
+
 <p>This computation is valid for Circular Restricted Three Body Problem dynamics.</p>
-</div>
-</div>
+<p>:::</p>
+
+
 <p>Returns a <code>Vector</code> of <code>Matrix</code> values. Each <code>Matrix</code> contains a 3-column nondimensional position trajectory in the Synodic frame which represents a Zero Velocity Curve.</p>
-</div>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
 
 
-</section>
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+</div>
+
+
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -1892,4 +1664,4 @@ window.onload = function () {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/JuliaAstro/GeneralAstrodynamics.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/JuliaAstro/GeneralAstrodynamics.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
