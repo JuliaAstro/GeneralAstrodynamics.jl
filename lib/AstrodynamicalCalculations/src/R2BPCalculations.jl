@@ -14,8 +14,8 @@ $(EXPORTS)
 """
 module R2BPCalculations
 
-using StaticArrays
-using LinearAlgebra
+using StaticArrays: SMatrix, SVector
+using LinearAlgebra: dot, norm, normalize, ×, ⋅
 
 export conic,
     cartesian_to_keplerian,
@@ -50,7 +50,7 @@ export conic,
     kepler,
     lambert
 
-using DocStringExtensions
+using DocStringExtensions: @template, DOCSTRING, IMPORTS, EXPORTS, LICENSE, SIGNATURES
 
 @template (
     FUNCTIONS,

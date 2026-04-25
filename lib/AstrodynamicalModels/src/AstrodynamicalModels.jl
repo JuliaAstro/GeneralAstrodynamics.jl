@@ -45,14 +45,25 @@ export Orbit, R2BOrbit, CR3BOrbit, CartesianOrbit, KeplerianOrbit
 # Export every method
 export state, parameters, dynamics, system
 
-using Symbolics
-using SciMLBase
-using Memoize
-using LinearAlgebra
-using ModelingToolkit
-using StaticArrays
+using SciMLBase: SciMLBase
+using Memoize: @memoize
+using LinearAlgebra: I, norm
+using ModelingToolkit:
+    @independent_variables,
+    Differential,
+    @parameters,
+    @variables,
+    t_nounits as t,
+    D_nounits as D,
+    ODEFunction,
+    ODEProblem,
+    Symbolics,
+    System,
+    complete
+import ModelingToolkit
+using StaticArrays: FieldMatrix, FieldVector
 
-using DocStringExtensions
+using DocStringExtensions: @template, DOCSTRING, EXPORTS, IMPORTS, LICENSE, SIGNATURES, TYPEDEF
 @template (FUNCTIONS, METHODS, MACROS) = """
                                          $(SIGNATURES)
 
@@ -567,6 +578,14 @@ state(orbit::Orbit) = orbit.state
 Return the parameter vector for an `Orbit`.
 """
 parameters(orbit::Orbit) = orbit.parameters
+
+"""
+Return the operating point for an `Orbit`.
+"""
+op(orbit::Orbit) = [
+    [:x, :y, :z, :ẋ, :ẏ, :ż] .=> orbit.state
+    :μ => orbit.parameters[1]
+]
 
 Base.getindex(orbit::AstrodynamicalOrbit, args...) = Base.getindex(state(orbit), args...)
 Base.setindex!(orbit::AstrodynamicalOrbit, args...) = Base.setindex!(state(orbit), args...)

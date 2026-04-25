@@ -167,52 +167,43 @@ model = Attitude()
 @memoize function AttitudeSystem(;
     stm = false,
     name = :Attitude,
-    defaults = Pair{ModelingToolkit.Num,<:Number}[],
     kwargs...,
 )
 
-    @independent_variables t
-    @variables (q(t))[1:4] [description = "scalar-last attitude quaternion"]
-    @variables (ω(t))[1:3] [description = "body rates in radians per second"]
-    @parameters J[1:3, 1:3] [description = "moment of inertial matrix"]
-    @parameters L[1:3] [description = "lever arm where input torque is applied"]
-    @parameters f[1:3] [description = "input torque"]
-    δ = Differential(t)
+    @variables begin
+        q(t)[1:4],   [description = "scalar-last attitude quaternion"]
+        ω(t)[1:3],   [description = "body rates in radians per second"]
+    end
 
-    q = Symbolics.scalarize(q)
-    ω = Symbolics.scalarize(ω)
-    J = Symbolics.scalarize(J)
-    L = Symbolics.scalarize(L)
-    f = Symbolics.scalarize(f)
+    @parameters begin
+        J[1:3, 1:3], [description = "moment of inertial matrix"]
+        L[1:3],      [description = "lever arm where input torque is applied"]
+        f[1:3],      [description = "input torque"]
+    end
 
     A = [
-        0 ω[3] -ω[2] ω[1]
-        -ω[3] 0 ω[1] ω[2]
-        ω[2] -ω[1] 0 ω[3]
-        -ω[1] -ω[2] -ω[3] 0
+            0  ω[3] -ω[2] ω[1]
+        -ω[3]     0  ω[1] ω[2]
+         ω[2] -ω[1]     0 ω[3]
+        -ω[1] -ω[2] -ω[3]    0
     ]
 
     ωx = [
-        0 -ω[3] ω[2]
-        ω[3] 0 -ω[1]
-        -ω[2] ω[1] 0
+            0 -ω[3]  ω[2]
+         ω[3]     0 -ω[1]
+        -ω[2]  ω[1]     0
     ]
 
-    eqs =
-        vcat(δ.(q) .~ (1 // 2) * (A * q), δ.(ω) .~ (-inv(J) * ωx * J * ω + inv(J) * L + f))
-
-    u = vcat(q, ω)
+    eqs = [
+        Symbolics.scalarize(D(q) ~ (1 // 2) * (A * q)) ;
+        Symbolics.scalarize(D(ω) ~ -inv(J) * ωx * (J * ω) + inv(J) * L + f)
+    ]
 
     if stm
-        @variables (Φ(t))[1:7, 1:7] [description = "state transition matrix estimate"]
-        A = Symbolics.jacobian(map(el -> el.rhs, eqs), u)
+        @variables Φ(t)[1:7, 1:7], [description = "state transition matrix estimate"]
 
-        Φ = Symbolics.scalarize(Φ)
-
-        LHS = δ.(Φ)
-        RHS = A * Φ
-
-        eqs = vcat(eqs, vec([LHS[i] ~ RHS[i] for i in eachindex(LHS)]))
+        A = Symbolics.jacobian(map(el -> el.rhs, eqs), vcat(q, ω))
+        eqs = vcat(eqs, vec(Symbolics.scalarize(D(Φ) ~ A * Φ)))
     end
 
     if string(name) == "Attitude" && stm
@@ -221,28 +212,10 @@ model = Attitude()
         modelname = name
     end
 
-    if stm
-        defaults = vcat(defaults, vec(Φ .=> Float64.(I(7))))
-        return System(
-            eqs,
-            t,
-            vcat(u, vec(Φ)),
-            vcat(vec(J), L, f);
-            name = name,
-            defaults = defaults,
-            kwargs...,
-        )
-    else
-        return System(
-            eqs,
-            t,
-            u,
-            vcat(vec(J), L, f);
-            name = name,
-            defaults = defaults,
-            kwargs...,
-        )
-    end
+    return System(eqs, t;
+        name = modelname,
+        kwargs...,
+    )
 end
 
 
@@ -258,15 +231,18 @@ are passed directly to `SciMLBase.ODEFunction`.
 
 ```julia
 f = AttitudeFunction()
-let u = randn(7), p = randn(15), t = NaN # time invariant
-    f(u, p, t)
+let u = randn(7), p = [randn(9), randn(3), rand(3)], t = NaN
+    sys = f.sys
+    u0 = get_u0(sys, ModelingToolkit.unknowns(sys) .=> u)
+    p = get_p(sys, [:J => p[1], :L => p[2], :f => p[3]]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=> p)
+    f(u0, p, t)
 end
 ```
 """
 @memoize function AttitudeFunction(; stm = false, name = :Attitude, kwargs...)
     defaults = (; jac = true)
     options = merge(defaults, kwargs)
-    sys = complete(AttitudeSystem(; stm = stm, name = name); split = false)
+    sys = complete(AttitudeSystem(; stm, name); split = true)
     return ODEFunction{true,SciMLBase.FullSpecialize}(
         sys;
         options...,
