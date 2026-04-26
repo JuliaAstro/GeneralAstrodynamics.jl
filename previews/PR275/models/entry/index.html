@@ -577,8 +577,8 @@ window.Quarto = {
   r(t): polar distance relative to planet center in meters
   θ(t): polar angle relative to planet horizontal in degrees
 <span class="ansi-bold">Parameters (7):</span> see parameters(PlanarEntry)
-  μ: planet mass parameter in meters per second cubed
   R: spherical planet radius
+  μ: planet mass parameter in meters per second cubed
   m: entry vehicle mass in kilograms
   H: scale factor for exponential atmosphere in meters
   ⋮</pre>
@@ -591,8 +591,8 @@ window.Quarto = {
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div class="ansi-escaped-output">
 <pre>4×4 Matrix{SymbolicUtils.BasicSymbolicImpl.var"typeof(BasicSymbolicImpl)"{SymReal}}:
- ((<span class="ansi-blue-fg">1</span> - ((v(t) / sqrt(μ / r(t)))^<span class="ansi-blue-fg">2</span>))*sin(γ(t))*((R / r(t))^<span class="ansi-blue-fg">2</span>)*μ) / ((R^<span class="ansi-blue-fg">2</span>)*v(t))  …  <span class="ansi-blue-fg">0</span>
- (-cos(γ(t))*((R / r(t))^<span class="ansi-blue-fg">2</span>)*μ) / (R^<span class="ansi-blue-fg">2</span>)                                             <span class="ansi-blue-fg">0</span>
+ (sin(γ(t))*(<span class="ansi-blue-fg">1</span> - ((v(t) / sqrt(μ / r(t)))^<span class="ansi-blue-fg">2</span>))*((R / r(t))^<span class="ansi-blue-fg">2</span>)*μ) / ((R^<span class="ansi-blue-fg">2</span>)*v(t))  …  <span class="ansi-blue-fg">0</span>
+ (-((R / r(t))^<span class="ansi-blue-fg">2</span>)*cos(γ(t))*μ) / (R^<span class="ansi-blue-fg">2</span>)                                             <span class="ansi-blue-fg">0</span>
  v(t)*cos(γ(t))                                                                    <span class="ansi-blue-fg">0</span>
  (-v(t)*sin(γ(t))) / r(t)                                                          <span class="ansi-blue-fg">0</span></pre>
 </div>
@@ -609,10 +609,10 @@ window.Quarto = {
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>4-element Vector{Float64}:
-  0.9707731115848777
- -1.3785754617790007
-  1.2266002215922445
-  0.676805333818467</code></pre>
+     -2.008663869763666
+ -62689.09531836443
+      0.7667531996836979
+      0.5411457414289738</code></pre>
 </div>
 </div>
 
