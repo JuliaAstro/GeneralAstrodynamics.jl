@@ -577,10 +577,10 @@ window.Quarto = {
   r(t): polar distance relative to planet center in meters
   θ(t): polar angle relative to planet horizontal in degrees
 <span class="ansi-bold">Parameters (7):</span> see parameters(PlanarEntry)
-  m: entry vehicle mass in kilograms
+  μ: planet mass parameter in meters per second cubed
   R: spherical planet radius
+  m: entry vehicle mass in kilograms
   H: scale factor for exponential atmosphere in meters
-  P: atmospheric density at sea level in kilograms per meter cubed
   ⋮</pre>
 </div>
 </div>
@@ -591,7 +591,7 @@ window.Quarto = {
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div class="ansi-escaped-output">
 <pre>4×4 Matrix{SymbolicUtils.BasicSymbolicImpl.var"typeof(BasicSymbolicImpl)"{SymReal}}:
- (((R / r(t))^<span class="ansi-blue-fg">2</span>)*sin(γ(t))*(<span class="ansi-blue-fg">1</span> - ((v(t) / sqrt(μ / r(t)))^<span class="ansi-blue-fg">2</span>))*μ) / ((R^<span class="ansi-blue-fg">2</span>)*v(t))  …  <span class="ansi-blue-fg">0</span>
+ ((<span class="ansi-blue-fg">1</span> - ((v(t) / sqrt(μ / r(t)))^<span class="ansi-blue-fg">2</span>))*((R / r(t))^<span class="ansi-blue-fg">2</span>)*sin(γ(t))*μ) / ((R^<span class="ansi-blue-fg">2</span>)*v(t))  …  <span class="ansi-blue-fg">0</span>
  (-((R / r(t))^<span class="ansi-blue-fg">2</span>)*cos(γ(t))*μ) / (R^<span class="ansi-blue-fg">2</span>)                                             <span class="ansi-blue-fg">0</span>
  v(t)*cos(γ(t))                                                                    <span class="ansi-blue-fg">0</span>
  (-v(t)*sin(γ(t))) / r(t)                                                          <span class="ansi-blue-fg">0</span></pre>
@@ -609,10 +609,10 @@ window.Quarto = {
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>4-element Vector{Float64}:
-  1.5287035632320936e27
- -0.22105535125192277
-  0.23131797086977174
-  0.12387498841198323</code></pre>
+  3.4416327040849763
+ -0.63130565867724
+  0.539531805699516
+  0.10620439378715757</code></pre>
 </div>
 </div>
 
