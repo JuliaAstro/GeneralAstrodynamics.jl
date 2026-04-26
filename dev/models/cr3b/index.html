@@ -574,12 +574,12 @@ window.Quarto = {
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>6×6 Matrix{Float64}:
-  0.0          0.0          0.0         1.0  0.0  0.0
-  0.0          0.0          0.0         0.0  1.0  0.0
-  0.0          0.0          0.0         0.0  0.0  1.0
-  0.818443    -0.00414512  -0.173297    0.0  2.0  0.0
- -0.00414512   0.706001     0.0184176  -2.0  0.0  0.0
- -0.173297     0.0184176    0.475555    0.0  0.0  0.0</code></pre>
+  0.0         0.0         0.0         1.0  0.0  0.0
+  0.0         0.0         0.0         0.0  1.0  0.0
+  0.0         0.0         0.0         0.0  0.0  1.0
+  0.912707    0.0246225  -0.0142568   0.0  2.0  0.0
+  0.0246225   1.11034    -0.11618    -2.0  0.0  0.0
+ -0.0142568  -0.11618    -0.0230443   0.0  0.0  0.0</code></pre>
 </div>
 </div>
 <p>The Jacobian will always have this form (zeros in the top-left, the identity matrix in the top-right, a dense matrix in the bottom-left, and the same sparse “-2, 2” matrix in the bottom-right). We can include the state transition dynamics in our model with <code>stm=true</code>, initialize the state transition matrix states to the identity matrix, and propagate our spacecraft for one periodic orbit: the result is known as the Monodromy Matrix! The Monodromy Matrix provides stability characteristics for the entire periodic orbit.</p>
