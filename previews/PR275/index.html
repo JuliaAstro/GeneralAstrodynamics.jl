@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,6 +11,9 @@
 
 <title>GeneralAstrodynamics</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -70,19 +73,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="./api/index.html" rel="next">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b758ccaa5987ceb1b75504551e579abf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-9b9ab561748734de7860198df689a1db.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-8a50eab4b7db743692d454fa34d79486.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-9b9ab561748734de7860198df689a1db.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-80feefea816772455f5dd223cd7f96f5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-76c4dff68fd3c2bb791ce639a8646267.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-80feefea816772455f5dd223cd7f96f5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -486,6 +488,11 @@ window.onload = function () {
   <li><a href="#n-body-problem-nbp" id="toc-n-body-problem-nbp" class="nav-link" data-scroll-target="#n-body-problem-nbp">N-body Problem (NBP)</a></li>
   </ul></li>
   <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
+  <li><a href="#developer-documentation" id="toc-developer-documentation" class="nav-link" data-scroll-target="#developer-documentation">Developer documentation</a>
+  <ul class="collapse">
+  <li><a href="#tests" id="toc-tests" class="nav-link" data-scroll-target="#tests">Tests</a></li>
+  <li><a href="#explicit-imports" id="toc-explicit-imports" class="nav-link" data-scroll-target="#explicit-imports">Explicit imports</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/JuliaAstro/GeneralAstrodynamics.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
@@ -525,9 +532,10 @@ window.onload = function () {
 </header>
 
 
-<p><a href="https://github.com/cadojo/GeneralAstrodynamics.jl/actions?query=workflow%3ATests"><img src="https://github.com/cadojo/GeneralAstrodynamics.jl/workflows/Tests/badge.svg" class="img-fluid" alt="Tests"></a> <a href="https://cadojo.github.io/GeneralAstrodynamics.jl/"><img src="https://github.com/cadojo/GeneralAstrodynamics.jl/workflows/Documentation/badge.svg" class="img-fluid" alt="Docs"></a></p>
 <section id="generalastrodynamics.jl" class="level1">
 <h1><code>GeneralAstrodynamics.jl</code></h1>
+<p><a href="https://juliaastro.org/GeneralAstrodynamics.jl/stable/"><img src="https://img.shields.io/badge/docs-stable-blue.svg" class="img-fluid" alt="Stable"></a> <a href="https://juliaastro.org/GeneralAstrodynamics.jl/dev/"><img src="https://img.shields.io/badge/docs-dev-blue.svg" class="img-fluid" alt="Dev"></a></p>
+<p><a href="https://github.com/JuliaAstro/GeneralAstrodynamics.jl/actions/workflows/Tests.yml"><img src="https://github.com/JuliaAstro/GeneralAstrodynamics.jl/actions/workflows/Tests.yml/badge.svg" class="img-fluid" alt="Tests"></a> <a href="https://codecov.io/gh/JuliaAstro/GeneralAstrodynamics.jl"><img src="https://codecov.io/gh/JuliaAstro/GeneralAstrodynamics.jl/graph/badge.svg" class="img-fluid" alt="Codecov"></a> <a href="https://github.com/JuliaTesting/Aqua.jl"><img src="https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg" class="img-fluid" alt="Aqua"></a> <a href="https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html"><img src="https://juliaci.github.io/NanosoldierReports/pkgeval_badges/G/GeneralAstrodynamics.svg" class="img-fluid" alt="PkgEval"></a> <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" class="img-fluid" alt="License"></a></p>
 <p><em>Common astrodynamics calculations, with hooks into the SciML ecosystem.</em></p>
 <section id="juliacon-talk" class="level2">
 <h2 class="anchored" data-anchor-id="juliacon-talk">JuliaCon Talk</h2>
@@ -588,8 +596,50 @@ window.onload = function () {
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>trajectory <span class="op">=</span> <span class="fu">propagate</span>(orbit, T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="developer-documentation" class="level2">
+<h2 class="anchored" data-anchor-id="developer-documentation">Developer documentation</h2>
+<section id="tests" class="level3">
+<h3 class="anchored" data-anchor-id="tests">Tests</h3>
+<p>Run all tests from top-level of monorepo:</p>
+<pre class="julia-repl"><code>&gt; j --proj
+
+(GeneralAstrodynamics) pkg&gt; test</code></pre>
+<p>Run all tests for <code>&lt;subpackage&gt;</code> from top-level of monorepo:</p>
+<pre class="julia-repl"><code>&gt; j --proj
+
+ENV["GROUP"] = &lt;subpackage&gt;
+
+(GeneralAstrodynamics) pkg&gt; test</code></pre>
+<p>or navigate to top-level of <code>&lt;subpackage&gt;</code> and run tests as usual:</p>
+<pre class="julia-repl"><code>&gt; j --proj
+
+(GeneralAstrodynamics/lib/AstrodynamicalCalculations) pkg&gt; test</code></pre>
+<p>List available tests for a given <subpackage>:</subpackage></p>
+<pre class="julia-repl"><code>&gt; julia --proj
+
+julia&gt; using Pkg
+
+julia&gt; Pkg.test("&lt;subpackage&gt;"; test_args = `--list`)</code></pre>
+<p>Run specific tests for a given <subpackage>:</subpackage></p>
+<pre class="julia-repl"><code>&gt; julia --proj
+
+julia&gt; using Pkg
+
+julia&gt; Pkg.test("&lt;subpackage&gt;"; test_args = `--verbose &lt;filename&gt;`)</code></pre>
+<p>for a given filename listed in the previous usage example. Partial matches for the start of the filename are also accepted.</p>
+</section>
+<section id="explicit-imports" class="level3">
+<h3 class="anchored" data-anchor-id="explicit-imports">Explicit imports</h3>
+<p>See the documentation for <a href=""><code>ExplicitImports.jl</code></a> for standard usage. For non-package files at path <code>&lt;fpath&gt;</code> relative to the top-level of <code>&lt;subpackage&gt;</code>, run the following:</p>
+<pre class="julia-repl"><code>julia&gt; using ExplicitImports, &lt;subpackage&gt;
+
+julia&gt; include(&lt;fpath&gt;)
+
+julia&gt; print_explicit_imports(Main.&lt;subpackage&gt;Tests, &lt;fpath&gt;)</code></pre>
 
 
+</section>
 </section>
 </section>
 
