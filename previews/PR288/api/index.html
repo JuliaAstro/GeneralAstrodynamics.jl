@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Reference – AstrodynamicalModels</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../models/nb/index.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-31eb6308353233fbc3195c6cd4c3f27c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-fa008c7b712b9f7e489e7a8b7c74231e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-31eb6308353233fbc3195c6cd4c3f27c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script>
+//
+// The code below was originally written by the authors of Wflow.jl. Their
+// license is provided below. ChatGPT was used to iterately modify the code.
+//
+
+// MIT License for Wflow.jl
+//
+// Copyright (c) 2020 Deltares and contributors
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+window.onload = function () {
+    const versionsUrl = 'https://raw.githubusercontent.com/JuliaAstro/GeneralAstrodynamics.jl/gh-pages/lib/AstrodynamicalModels/versions.js';
+
+    // Fetch the versions.js file
+    fetch(versionsUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to fetch ${versionsUrl}: ${response.statusText}`);
+            }
+            return response.text();
+        })
+        .then(scriptContent => {
+            // Use a regular expression to find the DOC_VERSIONS array
+            const regex = /var DOC_VERSIONS = (\[.*?\]);/s;
+            const match = scriptContent.match(regex);
+
+            if (match && match[1]) {
+                // Remove trailing commas if they exist and fix the array syntax for JSON
+                let arrayString = match[1].trim();
+
+                // Remove any trailing comma before closing bracket
+                arrayString = arrayString.replace(/,\s*([\]}])/g, '$1');
+
+                // Parse the cleaned array string
+                try {
+                    const DOC_VERSIONS = JSON.parse(arrayString);
+
+                    console.log('DOC_VERSIONS loaded:', DOC_VERSIONS);
+
+                    // Process DOC_VERSIONS as usual
+                    const dropdown = document.querySelector('#nav-menu-version')?.nextElementSibling;
+                    if (!dropdown) {
+                        console.error('Dropdown element not found!');
+                        return;
+                    }
+
+                    dropdown.innerHTML = ''; // Clear existing items
+                    DOC_VERSIONS.forEach(version => {
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+                        a.className = 'dropdown-item';
+                        a.href = `../${version}/index.html`;
+
+                        // Wrap version text in a <code> element
+                        const code = document.createElement('code');
+                        code.textContent = version;
+
+                        // Add <code> to <a>
+                        a.appendChild(code);
+
+                        li.appendChild(a); // Add <a> to <li>
+                        dropdown.appendChild(li); // Add <li> to the dropdown
+                    });
+
+                    console.log('Dropdown populated:', dropdown);
+
+                } catch (error) {
+                    console.error('Error parsing DOC_VERSIONS:', error);
+                }
+            } else {
+                console.error('DOC_VERSIONS not found in script.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching versions.js:', error);
+        });
+};
+</script>
+
+
+<link rel="stylesheet" href="../_static/style.css">
+<meta property="og:title" content="Reference – AstrodynamicalModels">
+<meta property="og:description" content="">
+<meta property="og:site_name" content="AstrodynamicalModels">
+<meta name="twitter:title" content="Reference – AstrodynamicalModels">
+<meta name="twitter:description" content="">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">AstrodynamicalModels</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-version" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Version</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-version">    
+        <li class="dropdown-header">dev</li>
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+    <a href="https://github.com/JuliaAstro/GeneralAstrodynamics.jl" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/index.html"><span class="chapter-title">Reference</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../models/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../models/attitude/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Attitude Dynamics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../models/entry/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Planar Entry Dynamics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../models/r2b/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Restricted Two-body Dynamics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../models/cr3b/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Circular Restricted Three-body Dynamics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../models/nb/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">N-body Problem Dynamics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Reference</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">Reference</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><em>Docstrings for AstrodynamicalModels.</em></p>
+<div class="markdown"><h2 class="anchored">`AstrodynamicalModels`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<p>Provides astrodynamical models as <code>AstrodynamicalModels.System</code> instances. Check out the <code>ModelingToolkit</code> docs to learn how to use these systems for orbit propagation with <code>DifferentialEquations</code>, or see <code>GeneralAstrodynamics</code> for some convenient orbit propagation wrappers.</p>
+<h3 class="anchored">Extended help {.unnumbered}</h3>
+<h4 class="anchored">License {.unnumbered}</h4>
+<p>MIT License</p>
+<p>Copyright (c) 2023 Joseph D Carpinelli</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+<h4 class="anchored">Exports {.unnumbered}</h4>
+<ul>
+<li><p><a href="#AttitudeFunction"><code>AttitudeFunction</code></a></p>
+</li>
+<li><p><a href="#AttitudeParameters"><code>AttitudeParameters</code></a></p>
+</li>
+<li><p><a href="#AttitudeState"><code>AttitudeState</code></a></p>
+</li>
+<li><p><a href="#AttitudeSystem"><code>AttitudeSystem</code></a></p>
+</li>
+<li><p><a href="#CR3BFunction"><code>CR3BFunction</code></a></p>
+</li>
+<li><p><a href="#CR3BOrbit"><code>CR3BOrbit</code></a></p>
+</li>
+<li><p><a href="#CR3BParameters"><code>CR3BParameters</code></a></p>
+</li>
+<li><p><a href="#CR3BState"><code>CR3BState</code></a></p>
+</li>
+<li><p><a href="#CR3BSystem"><code>CR3BSystem</code></a></p>
+</li>
+<li><p><a href="#CartesianOrbit"><code>CartesianOrbit</code></a></p>
+</li>
+<li><p><a href="#CartesianSTM"><code>CartesianSTM</code></a></p>
+</li>
+<li><p><a href="#CartesianState"><code>CartesianState</code></a></p>
+</li>
+<li><p><a href="#KeplerianOrbit"><code>KeplerianOrbit</code></a></p>
+</li>
+<li><p><a href="#KeplerianParameters"><code>KeplerianParameters</code></a></p>
+</li>
+<li><p><a href="#KeplerianState"><code>KeplerianState</code></a></p>
+</li>
+<li><p><a href="#NBFunction"><code>NBFunction</code></a></p>
+</li>
+<li><p><a href="#NBSystem"><code>NBSystem</code></a></p>
+</li>
+<li><p><a href="#Orbit"><code>Orbit</code></a></p>
+</li>
+<li><p><a href="#OrbitalElements"><code>OrbitalElements</code></a></p>
+</li>
+<li><p><a href="#PlanarEntryFunction"><code>PlanarEntryFunction</code></a></p>
+</li>
+<li><p><a href="#PlanarEntryParameters"><code>PlanarEntryParameters</code></a></p>
+</li>
+<li><p><a href="#PlanarEntryState"><code>PlanarEntryState</code></a></p>
+</li>
+<li><p><a href="#PlanarEntrySystem"><code>PlanarEntrySystem</code></a></p>
+</li>
+<li><p><a href="#R2BFunction"><code>R2BFunction</code></a></p>
+</li>
+<li><p><a href="#R2BOrbit"><code>R2BOrbit</code></a></p>
+</li>
+<li><p><a href="#R2BParameters"><code>R2BParameters</code></a></p>
+</li>
+<li><p><a href="#R2BState"><code>R2BState</code></a></p>
+</li>
+<li><p><a href="#R2BSystem"><code>R2BSystem</code></a></p>
+</li>
+<li><p><a href="#dynamics"><code>dynamics</code></a></p>
+</li>
+<li><p><a href="#parameters"><code>parameters</code></a></p>
+</li>
+<li><p><a href="#state"><code>state</code></a></p>
+</li>
+<li><p><a href="#system"><code>system</code></a></p>
+</li>
+</ul>
+<h4 class="anchored">Imports {.unnumbered}</h4>
+<ul>
+<li><p><code>Base</code></p>
+</li>
+</ul>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`AttitudeFunction`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">AttitudeFunction(; stm, name, kwargs...)
+</code></pre>
+<p>Returns an <code>ODEFunction</code> for spacecraft attitude dynamics.</p>
+<h3 class="anchored">Extended Help {.unnumbered}</h3>
+<h5 class="anchored">Usage {.unnumbered}</h5>
+<p>The <code>stm</code> and <code>name</code> keyword arguments are passed to <code>Attitude</code>. All other keyword arguments are passed directly to <code>SciMLBase.ODEFunction</code>.</p>
+<pre><code class="language-julia">f = AttitudeFunction()
+let u = randn(7), p = [randn(9), randn(3), rand(3)], t = NaN
+    sys = f.sys
+    u0 = get_u0(sys, ModelingToolkit.unknowns(sys) .=&gt; u)
+    p = get_p(sys, [:J =&gt; p[1], :L =&gt; p[2], :f =&gt; p[3]]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=&gt; p)
+    f(u0, p, t)
+end</code></pre>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`AttitudeParameters`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">struct AttitudeParameters{F} &lt;: AstrodynamicalModels.AstrodynamicalParameters{F, 15}</code></pre>
+<p>A parameter vector for attitude dynamics.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`AttitudeState`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">mutable struct AttitudeState{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 7}</code></pre>
+<p>A mutable state vector for attitude dynamics.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`AttitudeSystem`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">AttitudeSystem(; stm, name, kwargs...)
+</code></pre>
+<p>A <code>ModelingToolkit.System</code> for atmospheric entry. Currently, only exponential atmosphere models are provided! The output model is cached with <code>Memoize.jl</code>. Planet-specific parameters default to Earth values.</p>
+<p>The order of the states follows: <code>[q₁, q₂, q₃, q₄, ω₁, ω₂, ω₃]</code>.</p>
+<p>The order of the parameters follows: <code>[]</code></p>
+<h3 class="anchored">Extended Help {.unnumbered}</h3>
+<p>This model describes how an object moves through an exponential atmosphere, above a spherical planet.</p>
+<h4 class="anchored">States {.unnumbered}</h4>
+<ol>
+<li><p><code>q</code>: scalar-last attitude quaternion</p>
+</li>
+<li><p><code>ω</code>: body rates (radians per second)</p>
+</li>
+</ol>
+<h4 class="anchored">Parameters {.unnumbered}</h4>
+<ol>
+<li><p><code>J</code>: inertial matrix</p>
+</li>
+<li><p><code>L</code>: lever arm where input torque is applied</p>
+</li>
+<li><p><code>f</code>: torques on the vehicle body (Newton-meters)</p>
+</li>
+</ol>
+<h5 class="anchored">Usage {.unnumbered}</h5>
+<pre><code class="language-julia">model = Attitude()</code></pre>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`CR3BFunction`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">CR3BFunction(; stm, name, kwargs...)
+</code></pre>
+<p>Returns an <code>ODEFunction</code> for CR3B dynamics.</p>
+<p>The order of the states follows: <code>[μ]</code>.</p>
+<p>The order of the parameters follows: <code>[μ]</code>.</p>
+<h3 class="anchored">Extended Help {.unnumbered}</h3>
+<h5 class="anchored">Usage {.unnumbered}</h5>
+<p>The <code>stm</code>, and <code>name</code> keyword arguments are passed to <code>CR3B</code>. All other keyword arguments are passed directly to <code>SciMLBase.ODEFunction</code>.</p>
+<pre><code class="language-julia">f = CR3BFunction(; stm=false, jac=true)
+let u = randn(6), p = randn(), t = 0
+    sys = f.sys
+    u0 = get_u0(sys, [:x, :y, :z, :ẋ, :ẏ, :ż] .=&gt; u) # Or get_u0(sys, ModelingToolkit.unknowns(sys) .=&gt; u)
+    p = get_p(sys, [:μ =&gt; p]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=&gt; p)
+    f(u0, p, t)
+end</code></pre>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`CR3BOrbit`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">struct Orbit{var"#s83"&lt;:AstrodynamicalModels.CartesianState, var"#s82"&lt;:AstrodynamicalModels.CR3BParameters} &lt;: AstrodynamicalModels.AstrodynamicalOrbit{var"#s83"&lt;:AstrodynamicalModels.CartesianState, var"#s82"&lt;:AstrodynamicalModels.CR3BParameters}</code></pre>
+<p>An <code>Orbit</code> which exists within CR3BP dynamics.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`CR3BParameters`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">struct CR3BParameters{F} &lt;: AstrodynamicalModels.AstrodynamicalParameters{F, 1}</code></pre>
+<p>A parameter vector for CR3BP dynamics.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`CR3BState`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">mutable struct CartesianState{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 6}</code></pre>
+<p>AstrodynamicalModels.CartesianState</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`CR3BSystem`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">CR3BSystem(; stm, name, kwargs...)
+</code></pre>
+<p>A <code>ModelingToolkit.System</code> for the Circular Restricted Three-body Problem.</p>
+<p>The order of the states follows: <code>[x, y, z, ẋ, ẏ, ż]</code>.</p>
+<p>The order of the parameters follows: <code>[μ]</code>.</p>
+<h3 class="anchored">Extended Help {.unnumbered}</h3>
+<p>The Circular Restricted Three-body Problem is a simplified dynamical model describing one small body (spacecraft, etc.) and two celestial bodies moving in a circle about their common center of mass. This may seem like an arbitrary simplification, but this assumption holds reasonably well for the Earth-Moon, Sun-Earth, and many other systems in our solar system.</p>
+<h5 class="anchored">Usage {.unnumbered}</h5>
+<pre><code class="language-julia">model = CR3BSystem(; stm=true)</code></pre>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`CartesianOrbit`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">struct Orbit{var"#s83"&lt;:AstrodynamicalModels.CartesianState, P&lt;:(AbstractVector)} &lt;: AstrodynamicalModels.AstrodynamicalOrbit{var"#s83"&lt;:AstrodynamicalModels.CartesianState, P&lt;:(AbstractVector)}</code></pre>
+<p>An <code>Orbit</code> which exists within R2BP dynamics.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`CartesianSTM`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">mutable struct CartesianSTM{F} &lt;: StaticArraysCore.FieldMatrix{6, 6, F}</code></pre>
+<p>A mutable matrix, with labels, for a 6DOF Cartesian state transition matrix.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`CartesianState`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">mutable struct CartesianState{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 6}</code></pre>
+<p>A mutable vector, with labels, for 6DOF Cartesian states.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`KeplerianOrbit`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">struct Orbit{var"#s83"&lt;:AstrodynamicalModels.OrbitalElements, var"#s82"&lt;:AstrodynamicalModels.KeplerianParameters} &lt;: AstrodynamicalModels.AstrodynamicalOrbit{var"#s83"&lt;:AstrodynamicalModels.OrbitalElements, var"#s82"&lt;:AstrodynamicalModels.KeplerianParameters}</code></pre>
+<p>An <code>Orbit</code> which exists within Keplerian dynamics.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`KeplerianParameters`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">struct KeplerianParameters{F} &lt;: AstrodynamicalModels.AstrodynamicalParameters{F, 1}</code></pre>
+<p>A parameter vector for Keplerian dynamics.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`KeplerianState`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">mutable struct OrbitalElements{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 6}</code></pre>
+<p>AstrodynamicalModels.OrbitalElements</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`NBFunction`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">NBFunction(N; stm, name, kwargs...)
+</code></pre>
+<p>Returns an <code>ODEFunction</code> for NBP dynamics. The order of states and parameters in the <code>ODEFunction</code> arguments are equivalent to the order of states and parameters for the system produced with <code>NBP(N)</code>. As a general rule, the order of the states follows: <code>[x₁, y₁, z₁, ..., xₙ, yₙ, zₙ, ẋ₁, ẏ₁, ż₁, ..., ẋₙ, ẏₙ, żₙ]</code>.</p>
+<p>:::{.callout-note title="Note"}</p>
+
+<p>Unlike <code>R2BP</code> and <code>CR3BP</code>, <code>jac</code> is set to <code>false</code> by default. The number of states for <code>NBP</code> systems can be very large for relatively small numbers of bodies (<code>N</code>). Enabling <code>jac=true</code> by default would cause unnecessarily long waiting times for this @memoize function to return for <code>N ≥ 3</code> or so. If <code>N=2</code> and <code>stm=true</code>, setting <code>jac=true</code> could still result in several minutes of calculations, depending on the computer you're using.</p>
+<p>:::</p>
+
+
+<p>:::{.callout-warning title="Warning"}</p>
+
+<p>Be careful about specifying <code>stm=true</code> for systems with <code>N ≥ 3</code>! If state transition matrix dynamics are enabled, you can calculate the total number of system states with <code>N*6 + (N*6)^2</code>. Note that this increases exponentially as <code>N</code> grows! For <code>N == 6</code>, unless you're using parallelization, your computer may run for several hours.</p>
+<p>:::</p>
+
+
+<h3 class="anchored">Extended Help {.unnumbered}</h3>
+<h5 class="anchored">Usage {.unnumbered}</h5>
+<p>The <code>stm</code>, and <code>name</code> keyword arguments are passed to <code>NBP</code>. All other keyword arguments are passed directly to <code>SciMLBase.ODEFunction</code>.</p>
+<pre><code class="language-julia">f = NBFunction(3; stm=false, name=:NBP, jac=false, sparse=false)
+let u = randn(3*6), p = [randn(3), randn()], t = 0
+    sys = f.sys
+    u0 = get_u0(sys, ModelingToolkit.unknowns(sys) .=&gt; u)
+    p = get_p(sys, [:m =&gt; p[1], :G =&gt; p[2]]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=&gt; p)
+    f(u0, p, t)
+end</code></pre>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`NBSystem`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">NBSystem(N; stm, name, kwargs...)
+</code></pre>
+<p>A <code>ModelingToolkit.System</code> for the Newtonian N-body Problem.</p>
+<p>The order of the states follows: <code>[x₁, y₁, z₁, ..., xₙ, yₙ, zₙ, ẋ₁, ẏ₁, ż₁, ..., ẋₙ, ẏₙ, żₙ]</code>.</p>
+<p>The order of the parameters follows: <code>[G, m₁, m₂, ..., mₙ]</code>.</p>
+<p>:::{.callout-warning title="Warning"}</p>
+
+<p>Be careful about specifying <code>stm=true</code> for systems with <code>N ≥ 3</code>! If state transition matrix dynamics are enabled, you can calculate the total number of system states with <code>N*6 + (N*6)^2</code>. Note that this increases exponentially as <code>N</code> grows! For <code>N == 6</code>, unless you're using parallelization, your computer may run for several hours.</p>
+<p>:::</p>
+
+
+<h3 class="anchored">Extended Help {.unnumbered}</h3>
+<p>The N-body problem is a model which describes how <code>N</code> bodies will move with respect to a common origin. This problem typically involves many bodies which act due to one force: electromagentism, gravity, etc. This model applies most closely to many celestial bodies moving due to gravity. That's about right for a model in a package called <code>AstrodynamicalModels</code>!</p>
+<h5 class="anchored">Usage {.unnumbered}</h5>
+<pre><code class="language-julia"># One model for ALL the planets in our solar system 😎
+model = NBSystem(9)</code></pre>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`Orbit`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">struct Orbit{U&lt;:(AbstractVector), P&lt;:(AbstractVector)} &lt;: AstrodynamicalModels.AstrodynamicalOrbit{U&lt;:(AbstractVector), P&lt;:(AbstractVector)}</code></pre>
+<p>A full representation of an orbit, including a numerical state, and the parameters of the system.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`OrbitalElements`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">mutable struct OrbitalElements{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 6}</code></pre>
+<p>A mutable vector, with labels, for 6DOF Keplerian states.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`PlanarEntryFunction`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">PlanarEntryFunction(; name, kwargs...)
+</code></pre>
+<p>Returns an <code>ODEFunction</code> for Planar Entry dynamics. Results are cached with <code>Memoize.jl</code>.</p>
+<p>The order of the states follows: <code>[γ, v, r, θ]</code>.</p>
+<p>The order of the parameters follows: <code>[R, P, H, m, A, C, μ]</code></p>
+<h3 class="anchored">Extended Help {.unnumbered}</h3>
+<h5 class="anchored">Usage {.unnumbered}</h5>
+<p>The <code>name</code> keyword argument is ]passed to <code>PlanarEntry</code>. All other keyword arguments are passed directly to <code>SciMLBase.ODEFunction</code>.</p>
+<pre><code class="language-julia">f = PlanarEntryFunction()
+let u = randn(4), p = randn(7), t = NaN # time invariant
+    sys = f.sys
+    u0 = get_u0(sys, [:γ, :v, :r, :θ] .=&gt; u) # Or get_u0(sys, ModelingToolkit.unknowns(sys) .=&gt; u)
+    p = get_p(sys, ModelingToolkit.parameters(sys) .=&gt; p)
+    f(u0, p, t)
+end</code></pre>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`PlanarEntryParameters`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">struct PlanarEntryParameters{F} &lt;: AstrodynamicalModels.AstrodynamicalParameters{F, 7}</code></pre>
+<p>A parameter vector for planar entry dynamics.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`PlanarEntryState`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">mutable struct PlanarEntryState{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 4}</code></pre>
+<p>A state vector for planar entry dynamics.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`PlanarEntrySystem`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">PlanarEntrySystem(; name, kwargs...)
+</code></pre>
+<p>A <code>ModelingToolkit.System</code> for atmospheric entry. Currently, only exponential atmosphere models are provided! The output model is cached with <code>Memoize.jl</code>. Planet-specific parameters default to Earth values.</p>
+<p>The order of the states follows: <code>[γ, v, r, θ]</code>.</p>
+<p>The order of the parameters follows: <code>[R, P, H, m, A, C, μ]</code></p>
+<h3 class="anchored">Extended Help {.unnumbered}</h3>
+<p>This model describes how an object moves through an exponential atmosphere, above a spherical planet.</p>
+<h5 class="anchored">Usage {.unnumbered}</h5>
+<pre><code class="language-julia">model = PlanarEntrySystem()</code></pre>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`R2BFunction`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">R2BFunction(; stm, name, kwargs...)
+</code></pre>
+<p>Returns an <code>ODEFunction</code> for R2B dynamics.</p>
+<p>The order of the states follows: <code>[x, y, z, ẋ, ẏ, ż]</code>.</p>
+<p>The order of the parameters follows: <code>[μ]</code>.</p>
+<h3 class="anchored">Extended Help {.unnumbered}</h3>
+<h5 class="anchored">Usage {.unnumbered}</h5>
+<p>The <code>stm</code>, and <code>name</code> keyword arguments are passed to <code>R2B</code>. All other keyword arguments are passed directly to <code>SciMLBase.ODEFunction</code>.</p>
+<pre><code class="language-julia">f = R2BFunction(; stm=false, name=:R2B, jac=true)
+let u = randn(6), p = randn(), t = 0
+    sys = f.sys
+    u0 = get_u0(sys, [:x, :y, :z, :ẋ, :ẏ, :ż] .=&gt; u) # Or get_u0(sys, ModelingToolkit.unknowns(sys) .=&gt; u)
+    p = get_p(sys, [:μ =&gt; p]) # Or get_p(sys, ModelingToolkit.parameters(sys) .=&gt; p)
+    f(u0, p, t)
+end</code></pre>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`R2BOrbit`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">struct Orbit{var"#s83"&lt;:AstrodynamicalModels.CartesianState, var"#s82"&lt;:AstrodynamicalModels.R2BParameters} &lt;: AstrodynamicalModels.AstrodynamicalOrbit{var"#s83"&lt;:AstrodynamicalModels.CartesianState, var"#s82"&lt;:AstrodynamicalModels.R2BParameters}</code></pre>
+<p>An <code>Orbit</code> which exists within R2BP dynamics.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`R2BParameters`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">struct R2BParameters{F} &lt;: AstrodynamicalModels.AstrodynamicalParameters{F, 1}</code></pre>
+<p>A parameter vector for R2BP dynamics.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`R2BState`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">mutable struct CartesianState{F} &lt;: AstrodynamicalModels.AstrodynamicalState{F, 6}</code></pre>
+<p>AstrodynamicalModels.CartesianState</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`R2BSystem`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">R2BSystem(; stm, name, kwargs...)
+</code></pre>
+<p>A <code>ModelingToolkit.System</code> for the Restricted Two-body Problem.</p>
+<p>The order of the states follows: <code>[x, y, z, ẋ, ẏ, ż]</code>.</p>
+<p>The order of the parameters follows: <code>[μ]</code>.</p>
+<h3 class="anchored">Extended Help {.unnumbered}</h3>
+<p>The Restricted Two-body Problem is a simplified dynamical model describing one small body (spacecraft, etc.) and one celestial body. The gravity of the celestial body exhibits a force on the small body. This model is commonly used as a simplification to describe our solar systems' planets orbiting our sun, or a spacecraft orbiting Earth.</p>
+<h5 class="anchored">Usage {.unnumbered}</h5>
+<pre><code class="language-julia">model = R2BSystem()</code></pre>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`dynamics`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">dynamics(orbit, args; kwargs...)
+</code></pre>
+<p>Return the underlying dynamics of the system in the form of a <code>ModelingToolkit.ODEFunction</code>.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`parameters`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">parameters(orbit)
+</code></pre>
+<p>Return the parameter vector for an <code>Orbit</code>.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`state`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">state(orbit)
+</code></pre>
+<p>Return the state vector for an <code>Orbit</code>.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+<h2 class="anchored">`system`</h2>
+<p>:::{.callout appearance="minimal"}</p>
+
+<pre><code class="language-julia">system(orbit, args; kwargs...)
+</code></pre>
+<p>Return the underlying dynamics of the system in the form of a <code>ModelingToolkit.System</code>.</p>
+
+
+
+<p>:::</p>
+
+
+<p>{{&lt; pagebreak &gt;}}</p>
+
+
+</div>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../models/nb/index.html" class="pagination-link" aria-label="N-body Problem Dynamics">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">N-body Problem Dynamics</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/JuliaAstro/GeneralAstrodynamics.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
