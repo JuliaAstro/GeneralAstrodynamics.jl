@@ -14,5 +14,5 @@ using GeneralAstrodynamics
 
 ```{julia}
 #| output: asis
-DocumenterQuarto.doc(Main, :GeneralAstrodynamics)
+DocumenterQuarto.doc(@__MODULE__, :GeneralAstrodynamics)
 ```
