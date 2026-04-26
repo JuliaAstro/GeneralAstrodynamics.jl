@@ -1,6 +1,6 @@
 name = "GeneralAstrodynamics"
 uuid = "8068df5b-8501-4530-bd82-d24d3c9619db"
-version = "0.11.0"
+version = "0.11.1"
 authors = ["Joey Carpinelli <joey@loopy.codes>"]
 
 [workspace]
